@@ -1,4 +1,4 @@
-package model
+package main.model
 
 import java.time.DayOfWeek
 import java.time.Instant
