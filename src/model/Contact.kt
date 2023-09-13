@@ -6,7 +6,5 @@ open class Contact(
     private val number: String,
     topics: Array<String>,
     startTime: Instant,
-    endTime: Instant,
-    conversation: Boolean,
-    numberClose: Boolean
-) : Convo(topics, startTime, endTime, conversation, numberClose)
+    endTime: Instant
+) : Convo(topics, startTime, endTime, true)
