@@ -2,10 +2,19 @@ package main.manager
 
 import main.model.Session
 
-class SessionManager(
-    topics: Array<Session>?
-) {
-    // TODO: compute index moving average
+class SessionManager {
+    companion object {
+        fun computeIndexMovingAverage(sessions: Array<Session>, window: Int): Double {
+            val reversedSessions: Array<Session> = sessions.reversedArray()
+            var totalIndex = 0.0
+            for (i in reversedSessions.indices) {
+                if (i < window) {
+                    totalIndex += reversedSessions.get(i).index
+                }
+            }
+            return totalIndex / window.toDouble()
+        }
+    }
     // TODO: compute sets histogram
     // TODO: compute convos histogram
     // TODO: compute contacts histogram
