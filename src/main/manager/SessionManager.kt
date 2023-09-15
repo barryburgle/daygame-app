@@ -16,7 +16,7 @@ class SessionManager {
         }
 
         fun computeSetsHistogram(sessions: Array<Session>): Map<Int, Double> {
-            var histogramMap = mutableMapOf<Int, Double>()
+            val histogramMap = mutableMapOf<Int, Double>()
             for (session in sessions) {
                 val count = session.sets.size
                 histogramMap[count] = histogramMap.getOrDefault(count, 0.0) + 1.0
@@ -25,7 +25,7 @@ class SessionManager {
         }
 
         fun computeConvosHistogram(sessions: Array<Session>): Map<Int, Double> {
-            var histogramMap = mutableMapOf<Int, Double>()
+            val histogramMap = mutableMapOf<Int, Double>()
             for (session in sessions) {
                 val count = session.convos.size
                 histogramMap[count] = histogramMap.getOrDefault(count, 0.0) + 1.0
@@ -34,7 +34,7 @@ class SessionManager {
         }
 
         fun computeContactsHistogram(sessions: Array<Session>): Map<Int, Double> {
-            var histogramMap = mutableMapOf<Int, Double>()
+            val histogramMap = mutableMapOf<Int, Double>()
             for (session in sessions) {
                 val count = session.contacts.size
                 histogramMap[count] = histogramMap.getOrDefault(count, 0.0) + 1.0
