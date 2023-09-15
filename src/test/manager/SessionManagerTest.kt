@@ -31,12 +31,30 @@ class SessionManagerTest {
 
     @Test
     fun computeIndexMovingAverageLastThreeTest() {
-        doComputeIndexMovingAverageLastNTest(3, INDEX_LAST_3_SESSIONS);
+        doComputeIndexMovingAverageLastNTest(3, INDEX_LAST_3_SESSIONS)
     }
 
     @Test
     fun computeIndexMovingAverageLastFourTest() {
-        doComputeIndexMovingAverageLastNTest(4, INDEX_LAST_4_SESSIONS);
+        doComputeIndexMovingAverageLastNTest(4, INDEX_LAST_4_SESSIONS)
+    }
+
+    @Test
+    fun computeSetsHistogramTest() {
+        val actualSetsHistogram: Map<Int, Double> = SessionManager.computeSetsHistogram(createSessions())
+        assertEquals(createExpectedSetsHistogram(), actualSetsHistogram)
+    }
+
+    @Test
+    fun computeConvosHistogramTest() {
+        val actualConvosHistogram: Map<Int, Double> = SessionManager.computeConvosHistogram(createSessions())
+        assertEquals(createExpectedConvosHistogram(), actualConvosHistogram)
+    }
+
+    @Test
+    fun computeContactsHistogramTest() {
+        val actualContactsHistogram: Map<Int, Double> = SessionManager.computeContactsHistogram(createSessions())
+        assertEquals(createExpectedContactsHistogram(), actualContactsHistogram)
     }
 
     private fun doComputeIndexMovingAverageLastNTest(window: Int, expectedIndexAverage: Double) {
@@ -51,5 +69,32 @@ class SessionManagerTest {
             Session(INSERT_TIME, DATE, START_HOUR, END_HOUR, SETS_3, CONVOS_3, CONTACTS_3, STICKING_POINTS),
             Session(INSERT_TIME, DATE, START_HOUR, END_HOUR, SETS_4, CONVOS_4, CONTACTS_4, STICKING_POINTS)
         )
+    }
+
+    private fun createExpectedSetsHistogram(): MutableMap<Int, Double> {
+        val expectedSetHistogram = mutableMapOf<Int, Double>()
+        expectedSetHistogram[3] = 25.0
+        expectedSetHistogram[4] = 25.0
+        expectedSetHistogram[5] = 25.0
+        expectedSetHistogram[6] = 25.0
+        return expectedSetHistogram
+    }
+
+    private fun createExpectedConvosHistogram(): MutableMap<Int, Double> {
+        val expectedSetHistogram = mutableMapOf<Int, Double>()
+        expectedSetHistogram[2] = 25.0
+        expectedSetHistogram[3] = 25.0
+        expectedSetHistogram[4] = 25.0
+        expectedSetHistogram[5] = 25.0
+        return expectedSetHistogram
+    }
+
+    private fun createExpectedContactsHistogram(): MutableMap<Int, Double> {
+        val expectedSetHistogram = mutableMapOf<Int, Double>()
+        expectedSetHistogram[1] = 25.0
+        expectedSetHistogram[2] = 25.0
+        expectedSetHistogram[3] = 25.0
+        expectedSetHistogram[4] = 25.0
+        return expectedSetHistogram
     }
 }
