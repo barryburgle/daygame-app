@@ -36,4 +36,10 @@ class Session(
         val weekFields: WeekFields = WeekFields.of(Locale.getDefault());
         return date.get(weekFields.weekOfWeekBasedYear());
     }
+
+    fun getYearAndWeek(session: Session): Pair<Int, Int> {
+        // TODO: method useful tot track weekly total sets + convos + contacts
+        val year = session.date.year
+        return year to weekNumber
+    }
 }
