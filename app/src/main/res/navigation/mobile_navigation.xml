@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_input">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_input"
         android:name="com.barryburgle.gameapp.ui.home.HomeFragment"
-        android:label="@string/title_home"
+        android:label="@string/title_input"
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_output"
         android:name="com.barryburgle.gameapp.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_output"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_tool"
         android:name="com.barryburgle.gameapp.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_tool"
         tools:layout="@layout/fragment_notifications" />
 </navigation>
