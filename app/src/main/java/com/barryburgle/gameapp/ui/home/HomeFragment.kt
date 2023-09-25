@@ -32,7 +32,26 @@ class HomeFragment : Fragment() {
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+        // TODO: integrate model session creation inside following method call
+        listenSessionInsert()
         return root
+    }
+
+    private fun listenSessionInsert() {
+        binding.button.setOnClickListener {
+            val sets: Int = binding.sets.text.toString().toInt()
+            val convos: Int = binding.convos.text.toString().toInt()
+            val contacts: Int = binding.contacts.text.toString().toInt()
+            val convoRatio: Double = computePercentage(convos, sets)
+            val contactRatio: Double = computePercentage(contacts, sets)
+            binding.textHome.text = "Convo Ratio = $convoRatio\nContact Ratio = $contactRatio"
+        }
+    }
+
+    private fun computePercentage(numerator: Int, denominator: Int): Double {
+        val result = numerator.toDouble() / denominator.toDouble()
+        val percentage = result * 100
+        return percentage
     }
 
     override fun onDestroyView() {
