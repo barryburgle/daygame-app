@@ -1,4 +1,4 @@
-package main.model
+package com.barryburgle.gameapp.model
 
 import java.time.DayOfWeek
 import java.time.Instant

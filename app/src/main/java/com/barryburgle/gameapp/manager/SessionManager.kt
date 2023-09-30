@@ -1,6 +1,6 @@
-package main.manager
+package com.barryburgle.gameapp.manager
 
-import main.model.Session
+import com.barryburgle.gameapp.model.Session
 
 class SessionManager {
     companion object {
