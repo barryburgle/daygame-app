@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.ui.home
+package com.barryburgle.gameapp.ui.input
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

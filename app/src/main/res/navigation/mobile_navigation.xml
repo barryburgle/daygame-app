@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_input"
-        android:name="com.barryburgle.gameapp.ui.home.InputFragment"
+        android:name="com.barryburgle.gameapp.ui.input.InputFragment"
         android:label="@string/title_input"
         tools:layout="@layout/fragment_input" />
 
