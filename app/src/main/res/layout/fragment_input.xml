@@ -38,7 +38,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="Enter end hour"
         android:inputType="time"
@@ -51,7 +50,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="Enter sets"
         android:inputType="number"
@@ -79,21 +77,21 @@
         android:ems="10"
         android:hint="Enter Contacts"
         android:inputType="number"
-        app:layout_constraintBottom_toTopOf="@+id/text_home"
+        app:layout_constraintBottom_toTopOf="@+id/sticking_points"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/text_home"
+    <EditText
+        android:id="@+id/sticking_points"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:ems="10"
-        android:textColor="@color/palette_color_2"
-        android:textSize="20sp"
+        android:hint="Enter sticking points"
+        android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"  />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/button"
@@ -105,7 +103,7 @@
         android:textColor="@color/palette_color_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_home" />
+        app:layout_constraintTop_toBottomOf="@+id/sticking_points" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

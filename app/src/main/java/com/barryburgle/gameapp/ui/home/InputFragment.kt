@@ -35,10 +35,6 @@ class InputFragment : Fragment() {
         _binding = FragmentInputBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        inputViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
         // TODO: integrate model session creation inside following method call
         listenSessionInsert()
         return root
@@ -54,10 +50,8 @@ class InputFragment : Fragment() {
                 binding.sets.text.toString().toInt(),
                 binding.convos.text.toString().toInt(),
                 binding.contacts.text.toString().toInt(),
-                "stiking-points"
+                binding.stickingPoints.text.toString()
             )
-            binding.textHome.text =
-                "Approach Time Spent = ${batchSession.approachTime}\nContact Ratio = ${batchSession.contactRatio}"
         }
     }
 
