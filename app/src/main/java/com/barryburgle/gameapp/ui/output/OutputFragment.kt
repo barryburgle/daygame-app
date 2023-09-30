@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.ui.dashboard
+package com.barryburgle.gameapp.ui.output
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.barryburgle.gameapp.databinding.FragmentDashboardBinding
+import com.barryburgle.gameapp.databinding.FragmentOutputBinding
 
-class DashboardFragment : Fragment() {
+class OutputFragment : Fragment() {
 
-    private var _binding: FragmentDashboardBinding? = null
+    private var _binding: FragmentOutputBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,14 +22,14 @@ class DashboardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val dashboardViewModel =
-            ViewModelProvider(this).get(DashboardViewModel::class.java)
+        val outputViewModel =
+            ViewModelProvider(this).get(OutputViewModel::class.java)
 
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentOutputBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textDashboard
-        dashboardViewModel.text.observe(viewLifecycleOwner) {
+        outputViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

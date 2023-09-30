@@ -1,13 +1,13 @@
-package com.barryburgle.gameapp.ui.notifications
+package com.barryburgle.gameapp.ui.output
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class NotificationsViewModel : ViewModel() {
+class OutputViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is tool Fragment"
+        value = "This is output Fragment"
     }
     val text: LiveData<String> = _text
 }
