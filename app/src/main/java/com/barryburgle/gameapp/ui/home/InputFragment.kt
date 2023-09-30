@@ -8,6 +8,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.barryburgle.gameapp.databinding.FragmentHomeBinding
+import com.barryburgle.gameapp.model.session.BatchSession
+import com.barryburgle.gameapp.model.session.LiveSession
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalTime
 
 class HomeFragment : Fragment() {
 
@@ -39,12 +44,18 @@ class HomeFragment : Fragment() {
 
     private fun listenSessionInsert() {
         binding.button.setOnClickListener {
-            val sets: Int = binding.sets.text.toString().toInt()
-            val convos: Int = binding.convos.text.toString().toInt()
-            val contacts: Int = binding.contacts.text.toString().toInt()
-            val convoRatio: Double = computePercentage(convos, sets)
-            val contactRatio: Double = computePercentage(contacts, sets)
-            binding.textHome.text = "Convo Ratio = $convoRatio\nContact Ratio = $contactRatio"
+            val batchSession = BatchSession(
+                Instant.now(),
+                LocalDate.now(),
+                LocalTime.of(6, 30),
+                LocalTime.of(7, 30),
+                binding.sets.text.toString().toInt(),
+                binding.convos.text.toString().toInt(),
+                binding.contacts.text.toString().toInt(),
+                "stiking-points"
+            )
+            binding.textHome.text =
+                "Approach Time Spent = ${batchSession.approachTime}\nContact Ratio = ${batchSession.contactRatio}"
         }
     }
 
