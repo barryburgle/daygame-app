@@ -2,7 +2,7 @@ package com.barryburgle.gameapp.manager
 
 import com.barryburgle.gameapp.model.Contact
 import com.barryburgle.gameapp.model.Convo
-import com.barryburgle.gameapp.model.Session
+import com.barryburgle.gameapp.model.session.LiveSession
 import com.barryburgle.gameapp.model.Set
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
@@ -10,7 +10,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 
-class SessionManagerTest {
+class LiveSessionManagerTest {
     val INSERT_TIME = Instant.now()
     val DATE = LocalDate.of(2023, 9, 13)
     val START_HOUR = LocalTime.of(16, 0, 0)
@@ -67,9 +67,9 @@ class SessionManagerTest {
         assertEquals(expectedIndexAverage, actualIndex, 0.0001)
     }
 
-    private fun createSessions(): Array<Session> {
+    private fun createSessions(): Array<LiveSession> {
         return arrayOf(
-            Session(
+            LiveSession(
                 INSERT_TIME,
                 DATE,
                 START_HOUR,
@@ -79,7 +79,7 @@ class SessionManagerTest {
                 CONTACTS_1,
                 STICKING_POINTS
             ),
-            Session(
+            LiveSession(
                 INSERT_TIME,
                 DATE,
                 START_HOUR,
@@ -89,7 +89,7 @@ class SessionManagerTest {
                 CONTACTS_2,
                 STICKING_POINTS
             ),
-            Session(
+            LiveSession(
                 INSERT_TIME,
                 DATE,
                 START_HOUR,
@@ -99,7 +99,7 @@ class SessionManagerTest {
                 CONTACTS_3,
                 STICKING_POINTS
             ),
-            Session(
+            LiveSession(
                 INSERT_TIME,
                 DATE,
                 START_HOUR,
