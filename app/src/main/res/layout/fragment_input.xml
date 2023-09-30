@@ -4,19 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".ui.home.InputFragment">
+
+    <EditText
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="Enter date"
+        android:inputType="date"
+        app:layout_constraintBottom_toTopOf="@+id/start_hour"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/start_hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="Enter start hour"
+        android:inputType="time"
+        app:layout_constraintBottom_toTopOf="@+id/end_hour"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/end_hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="Enter end hour"
+        android:inputType="time"
+        app:layout_constraintBottom_toTopOf="@+id/sets"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/sets"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="Enter sets"
         android:inputType="number"
         app:layout_constraintBottom_toTopOf="@+id/convos"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -24,7 +63,7 @@
         android:id="@+id/convos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="20dp"
         android:ems="10"
         android:hint="Enter Convos"
         android:inputType="number"
@@ -36,7 +75,7 @@
         android:id="@+id/contacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="20dp"
         android:ems="10"
         android:hint="Enter Contacts"
         android:inputType="number"
@@ -48,7 +87,7 @@
         android:id="@+id/text_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="20dp"
         android:ems="10"
         android:textColor="@color/palette_color_2"
         android:textSize="20sp"
@@ -60,7 +99,7 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="20dp"
         android:background="@color/palette_color_2"
         android:text="Record session"
         android:textColor="@color/palette_color_1"
