@@ -1,45 +1,48 @@
 package com.barryburgle.gameapp.manager
 
-import com.barryburgle.gameapp.model.Session
+import com.barryburgle.gameapp.model.session.AbstractSession
 
 class SessionManager {
     companion object {
-        fun computeIndexMovingAverage(sessions: Array<Session>, window: Int): Double {
-            val reversedSessions: Array<Session> = sessions.reversedArray()
+        fun computeIndexMovingAverage(
+            abstractSessions: Array<AbstractSession>,
+            window: Int
+        ): Double {
+            val reversedAbstractSessions: Array<AbstractSession> = abstractSessions.reversedArray()
             var totalIndex = 0.0
-            for (i in reversedSessions.indices) {
+            for (i in reversedAbstractSessions.indices) {
                 if (i < window) {
-                    totalIndex += reversedSessions.get(i).index
+                    totalIndex += reversedAbstractSessions.get(i).index
                 }
             }
             return totalIndex / window.toDouble()
         }
 
-        fun computeSetsHistogram(sessions: Array<Session>): Map<Int, Double> {
+        fun computeSetsHistogram(abstractSessions: Array<AbstractSession>): Map<Int, Double> {
             val histogramMap = mutableMapOf<Int, Double>()
-            for (session in sessions) {
-                val count = session.sets.size
+            for (session in abstractSessions) {
+                val count = session.sets
                 histogramMap[count] = histogramMap.getOrDefault(count, 0.0) + 1.0
             }
-            return computePercentageFrequency(histogramMap, sessions.size.toDouble());
+            return computePercentageFrequency(histogramMap, abstractSessions.size.toDouble());
         }
 
-        fun computeConvosHistogram(sessions: Array<Session>): Map<Int, Double> {
+        fun computeConvosHistogram(abstractSessions: Array<AbstractSession>): Map<Int, Double> {
             val histogramMap = mutableMapOf<Int, Double>()
-            for (session in sessions) {
-                val count = session.convos.size
+            for (session in abstractSessions) {
+                val count = session.convos
                 histogramMap[count] = histogramMap.getOrDefault(count, 0.0) + 1.0
             }
-            return computePercentageFrequency(histogramMap, sessions.size.toDouble());
+            return computePercentageFrequency(histogramMap, abstractSessions.size.toDouble());
         }
 
-        fun computeContactsHistogram(sessions: Array<Session>): Map<Int, Double> {
+        fun computeContactsHistogram(abstractSessions: Array<AbstractSession>): Map<Int, Double> {
             val histogramMap = mutableMapOf<Int, Double>()
-            for (session in sessions) {
-                val count = session.contacts.size
+            for (session in abstractSessions) {
+                val count = session.contacts
                 histogramMap[count] = histogramMap.getOrDefault(count, 0.0) + 1.0
             }
-            return computePercentageFrequency(histogramMap, sessions.size.toDouble());
+            return computePercentageFrequency(histogramMap, abstractSessions.size.toDouble());
         }
 
         private fun computePercentageFrequency(

@@ -4,29 +4,31 @@ import com.barryburgle.gameapp.model.Contact
 import com.barryburgle.gameapp.model.Convo
 import com.barryburgle.gameapp.model.session.LiveSession
 import com.barryburgle.gameapp.model.Set
+import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.BatchSession
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 
-class LiveSessionManagerTest {
+class SessionManagerTest {
     val INSERT_TIME = Instant.now()
     val DATE = LocalDate.of(2023, 9, 13)
     val START_HOUR = LocalTime.of(16, 0, 0)
     val END_HOUR = LocalTime.of(18, 0, 0)
-    val SETS_1 = Array(3) { Set() }
-    val SETS_2 = Array(4) { Set() }
-    val SETS_3 = Array(5) { Set() }
-    val SETS_4 = Array(6) { Set() }
-    val CONVOS_1 = Array(2) { Convo() }
-    val CONVOS_2 = Array(3) { Convo() }
-    val CONVOS_3 = Array(4) { Convo() }
-    val CONVOS_4 = Array(5) { Convo() }
-    val CONTACTS_1 = Array(1) { Contact() }
-    val CONTACTS_2 = Array(2) { Contact() }
-    val CONTACTS_3 = Array(3) { Contact() }
-    val CONTACTS_4 = Array(4) { Contact() }
+    val SETS_1 = 3
+    val SETS_2 = 4
+    val SETS_3 = 5
+    val SETS_4 = 6
+    val CONVOS_1 = 2
+    val CONVOS_2 = 3
+    val CONVOS_3 = 4
+    val CONVOS_4 = 5
+    val CONTACTS_1 = 1
+    val CONTACTS_2 = 2
+    val CONTACTS_3 = 3
+    val CONTACTS_4 = 4
     val STICKING_POINTS = "sticking-points"
     val INDEX_LAST_3_SESSIONS: Double = 0.1654
     val INDEX_LAST_4_SESSIONS: Double = 0.1352
@@ -67,9 +69,9 @@ class LiveSessionManagerTest {
         assertEquals(expectedIndexAverage, actualIndex, 0.0001)
     }
 
-    private fun createSessions(): Array<LiveSession> {
+    private fun createSessions(): Array<AbstractSession> {
         return arrayOf(
-            LiveSession(
+            BatchSession(
                 INSERT_TIME,
                 DATE,
                 START_HOUR,
@@ -79,7 +81,7 @@ class LiveSessionManagerTest {
                 CONTACTS_1,
                 STICKING_POINTS
             ),
-            LiveSession(
+            BatchSession(
                 INSERT_TIME,
                 DATE,
                 START_HOUR,
@@ -89,7 +91,7 @@ class LiveSessionManagerTest {
                 CONTACTS_2,
                 STICKING_POINTS
             ),
-            LiveSession(
+            BatchSession(
                 INSERT_TIME,
                 DATE,
                 START_HOUR,
@@ -99,7 +101,7 @@ class LiveSessionManagerTest {
                 CONTACTS_3,
                 STICKING_POINTS
             ),
-            LiveSession(
+            BatchSession(
                 INSERT_TIME,
                 DATE,
                 START_HOUR,
