@@ -1,8 +1,7 @@
-package test.model
+package com.barryburgle.gameapp.model
 
-import main.model.Session
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import junit.framework.TestCase.assertEquals
+import org.junit.Test
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -14,9 +13,9 @@ internal class SessionTest {
     val DATE = LocalDate.of(2023, 9, 13)
     val START_HOUR = LocalTime.of(16, 0, 0)
     val END_HOUR = LocalTime.of(18, 0, 0)
-    val SETS = Array(3) { main.model.Set() }
-    val CONVOS = Array(2) { main.model.Convo() }
-    val CONTACTS = Array(1) { main.model.Contact() }
+    val SETS = Array(3) { Set() }
+    val CONVOS = Array(2) { Convo() }
+    val CONTACTS = Array(1) { Contact() }
     val STICKING_POINTS = "sticking-points"
     val SESSION_TIME: Long = 7200
     val APPROACH_TIME: Long = 2400
