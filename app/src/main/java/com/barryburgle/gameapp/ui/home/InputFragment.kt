@@ -7,16 +7,18 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.barryburgle.gameapp.databinding.FragmentHomeBinding
+import com.barryburgle.gameapp.databinding.FragmentInputBinding
 import com.barryburgle.gameapp.model.session.BatchSession
-import com.barryburgle.gameapp.model.session.LiveSession
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
-class HomeFragment : Fragment() {
+class InputFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+    private var _binding: FragmentInputBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -27,14 +29,14 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+        val inputViewModel =
+            ViewModelProvider(this).get(InputViewModel::class.java)
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentInputBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
+        inputViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         // TODO: integrate model session creation inside following method call
@@ -46,9 +48,9 @@ class HomeFragment : Fragment() {
         binding.button.setOnClickListener {
             val batchSession = BatchSession(
                 Instant.now(),
-                LocalDate.now(),
-                LocalTime.of(6, 30),
-                LocalTime.of(7, 30),
+                LocalDate.parse(binding.date.text.toString(), dateFormatter),
+                LocalTime.parse(binding.startHour.text.toString(), timeFormatter),
+                LocalTime.parse(binding.endHour.text.toString(), timeFormatter),
                 binding.sets.text.toString().toInt(),
                 binding.convos.text.toString().toInt(),
                 binding.contacts.text.toString().toInt(),
@@ -57,12 +59,6 @@ class HomeFragment : Fragment() {
             binding.textHome.text =
                 "Approach Time Spent = ${batchSession.approachTime}\nContact Ratio = ${batchSession.contactRatio}"
         }
-    }
-
-    private fun computePercentage(numerator: Int, denominator: Int): Double {
-        val result = numerator.toDouble() / denominator.toDouble()
-        val percentage = result * 100
-        return percentage
     }
 
     override fun onDestroyView() {
