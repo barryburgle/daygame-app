@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.databinding.FragmentInputBinding
 import com.barryburgle.gameapp.model.session.BatchSession
 import java.time.Instant
@@ -34,12 +35,11 @@ class InputFragment : Fragment() {
         _binding = FragmentInputBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // TODO: integrate model session creation inside following method call
-        listenSessionInsert()
+        listenInputClickEvent()
         return root
     }
 
-    private fun listenSessionInsert() {
+    private fun listenInputClickEvent() {
         binding.button.setOnClickListener {
             val batchSession = BatchSession(
                 Instant.now(),
@@ -51,6 +51,7 @@ class InputFragment : Fragment() {
                 binding.contacts.text.toString().toInt(),
                 binding.stickingPoints.text.toString()
             )
+            AbstractSessionDao.insertSession(batchSession)
         }
     }
 
