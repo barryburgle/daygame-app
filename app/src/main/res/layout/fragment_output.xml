@@ -7,17 +7,123 @@
     android:layout_height="match_parent"
     tools:context=".ui.output.OutputFragment">
 
-    <TextView
-        android:id="@+id/text_dashboard"
-        android:layout_width="match_parent"
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/sessionTimeDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_margin="10dp" />
+
+            <TextView
+                android:id="@+id/sessionTime"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="10dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/approachTimeDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_margin="10dp" />
+
+            <TextView
+                android:id="@+id/approachTime"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="10dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/rejectionRatioDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_margin="10dp" />
+
+            <TextView
+                android:id="@+id/rejectionRatio"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="10dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/contactRatioDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_margin="10dp" />
+
+            <TextView
+                android:id="@+id/contactRatio"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="10dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/convoRatioDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_margin="10dp" />
+
+            <TextView
+                android:id="@+id/convoRatio"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="10dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/indexDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_margin="10dp" />
+
+            <TextView
+                android:id="@+id/index"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="10dp" />
+        </TableRow>
+    </TableLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
