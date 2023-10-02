@@ -1,5 +1,7 @@
 package com.barryburgle.gameapp.service
 
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
@@ -10,6 +12,9 @@ import java.util.Locale
 
 class AbstractSessionService {
     companion object {
+        val roundingMode: RoundingMode = RoundingMode.HALF_UP
+        val scale: Int = 3
+
         fun computeSessionTime(
             startHour: LocalTime,
             endHour: LocalTime
@@ -28,21 +33,24 @@ class AbstractSessionService {
             convos: Int,
             sets: Int
         ): Double {
-            return convos.toDouble() / sets.toDouble()
+            val convoRatio = convos.toDouble() / sets.toDouble()
+            return round(convoRatio)
         }
 
         fun computeRejectionRatio(
             convos: Int,
             sets: Int
         ): Double {
-            return 1 - convos.toDouble() / sets.toDouble()
+            val rejectionRatio = 1 - convos.toDouble() / sets.toDouble()
+            return round(rejectionRatio)
         }
 
         fun computeContactRatio(
             contacts: Int,
             sets: Int
         ): Double {
-            return contacts.toDouble() / sets.toDouble()
+            val contactRatio = contacts.toDouble() / sets.toDouble()
+            return round(contactRatio)
         }
 
         fun computeDayOfWeek(
@@ -53,7 +61,9 @@ class AbstractSessionService {
 
         fun computeIndex(sets: Int, convos: Int, contacts: Int, sessionTime: Long): Double {
             // TODO: create method for formula change
-            return (sets.toDouble() * (12 * sets + 20 * convos + 30 * contacts).toDouble() / sessionTime.toDouble())
+            val index =
+                (sets.toDouble() * (12 * sets + 20 * convos + 30 * contacts).toDouble() / sessionTime.toDouble())
+            return round(index)
         }
 
         fun computeWeekOfYear(date: LocalDate): Int {
@@ -63,6 +73,10 @@ class AbstractSessionService {
 
         fun computeMonthOfYear(date: LocalDate): Month {
             return date.month
+        }
+
+        private fun round(toRound: Double): Double {
+            return BigDecimal(toRound).setScale(scale, roundingMode).toDouble()
         }
     }
 }
