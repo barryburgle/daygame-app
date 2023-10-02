@@ -1,12 +1,10 @@
 package com.barryburgle.gameapp.model.session
 
+import com.barryburgle.gameapp.service.AbstractSessionService
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.temporal.ChronoUnit
-import java.time.temporal.WeekFields
-import java.util.Locale
 
 abstract class AbstractSession(
     insertTime: Instant,
@@ -36,25 +34,14 @@ abstract class AbstractSession(
     val weekNumber: Int
 
     init {
-        sessionTime = startHour.until(endHour, ChronoUnit.SECONDS)
-        approachTime = sessionTime / sets
-        convoRatio = (convos.toDouble() / sets.toDouble()).toDouble()
-        rejectionRatio = 1 - convoRatio
-        contactRatio = (contacts.toDouble() / sets.toDouble()).toDouble()
-        index = computeIndex(sets, convos, contacts, sessionTime)
-        dayOfWeek = date.dayOfWeek
-        weekNumber = computeWeekOfYear(date)
-    }
-
-
-    protected fun computeIndex(sets: Int, convos: Int, contacts: Int, sessionTime: Long): Double {
-        // TODO: create method for formula change
-        return (sets.toDouble() * (12 * sets + 20 * convos + 30 * contacts).toDouble() / sessionTime.toDouble())
-    }
-
-    protected fun computeWeekOfYear(date: LocalDate): Int {
-        val weekFields: WeekFields = WeekFields.of(Locale.getDefault());
-        return date.get(weekFields.weekOfWeekBasedYear());
+        sessionTime = AbstractSessionService.computeSessionTime(startHour, endHour)
+        approachTime = AbstractSessionService.computeApproachTime(sessionTime, sets)
+        convoRatio = AbstractSessionService.computeConvoRatio(convos, sets)
+        rejectionRatio = AbstractSessionService.computeRejectionRatio(convos, sets)
+        contactRatio = AbstractSessionService.computeContactRatio(contacts, sets)
+        index = AbstractSessionService.computeIndex(sets, convos, contacts, sessionTime)
+        dayOfWeek = AbstractSessionService.computeDayOfWeek(date)
+        weekNumber = AbstractSessionService.computeWeekOfYear(date)
     }
 
     fun getYearAndWeek(liveSession: LiveSession, weekNumber: Int): Pair<Int, Int> {
