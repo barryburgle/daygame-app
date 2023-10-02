@@ -9,9 +9,6 @@ class AbstractSessionDao {
         fun insertSession(abstractSession: AbstractSession) {
             // TODO: substitute with real db insert
             abstractSessionList.add(abstractSession)
-            abstractSessionList.add(abstractSession)
-            abstractSessionList.add(abstractSession)
-            abstractSessionList.add(abstractSession)
         }
 
         fun selectLastSession(): List<AbstractSession> {
