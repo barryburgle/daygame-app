@@ -32,6 +32,8 @@ class ToolFragment : Fragment() {
         toolViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+
+        // TODO: set in tools the amount of sessions you want to see in output and make output table scrollable
         return root
     }
 
