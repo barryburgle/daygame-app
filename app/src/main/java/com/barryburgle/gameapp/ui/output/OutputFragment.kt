@@ -35,45 +35,47 @@ class OutputFragment : Fragment() {
     }
 
     private fun populateAllOutput() {
-        setColumnDescriptors()
-        setRowDescriptors()
         val abstractSessionList: List<AbstractSession> = AbstractSessionDao.selectLastSession()
-        populateSingleOutput(
-            binding.firstSessionTime,
-            binding.firstApproachTime,
-            binding.firstRejectionRatio,
-            binding.firstContactRatio,
-            binding.firstConvoRatio,
-            binding.firstIndex,
-            abstractSessionList.get(0)
-        )
-        populateSingleOutput(
-            binding.secondSessionTime,
-            binding.secondApproachTime,
-            binding.secondRejectionRatio,
-            binding.secondContactRatio,
-            binding.secondConvoRatio,
-            binding.secondIndex,
-            abstractSessionList.get(1)
-        )
-        populateSingleOutput(
-            binding.thirdSessionTime,
-            binding.thirdApproachTime,
-            binding.thirdRejectionRatio,
-            binding.thirdContactRatio,
-            binding.thirdConvoRatio,
-            binding.thirdIndex,
-            abstractSessionList.get(2)
-        )
-        populateSingleOutput(
-            binding.fourthSessionTime,
-            binding.fourthApproachTime,
-            binding.fourthRejectionRatio,
-            binding.fourthContactRatio,
-            binding.fourthConvoRatio,
-            binding.fourthIndex,
-            abstractSessionList.get(3)
-        )
+        if (abstractSessionList.isNotEmpty()) {
+            setColumnDescriptors()
+            setRowDescriptors()
+            populateSingleOutput(
+                binding.firstSessionTime,
+                binding.firstApproachTime,
+                binding.firstRejectionRatio,
+                binding.firstContactRatio,
+                binding.firstConvoRatio,
+                binding.firstIndex,
+                abstractSessionList.get(0)
+            )
+            populateSingleOutput(
+                binding.secondSessionTime,
+                binding.secondApproachTime,
+                binding.secondRejectionRatio,
+                binding.secondContactRatio,
+                binding.secondConvoRatio,
+                binding.secondIndex,
+                abstractSessionList.get(1)
+            )
+            populateSingleOutput(
+                binding.thirdSessionTime,
+                binding.thirdApproachTime,
+                binding.thirdRejectionRatio,
+                binding.thirdContactRatio,
+                binding.thirdConvoRatio,
+                binding.thirdIndex,
+                abstractSessionList.get(2)
+            )
+            populateSingleOutput(
+                binding.fourthSessionTime,
+                binding.fourthApproachTime,
+                binding.fourthRejectionRatio,
+                binding.fourthContactRatio,
+                binding.fourthConvoRatio,
+                binding.fourthIndex,
+                abstractSessionList.get(3)
+            )
+        }
     }
 
     private fun populateSingleOutput(
