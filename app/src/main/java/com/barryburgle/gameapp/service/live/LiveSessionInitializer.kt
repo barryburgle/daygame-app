@@ -1,4 +1,4 @@
 package com.barryburgle.gameapp.service
 
-class LiveSessionService {
+interface LiveSessionInitializer {
 }
