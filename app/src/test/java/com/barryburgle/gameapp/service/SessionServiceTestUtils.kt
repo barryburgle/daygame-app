@@ -10,7 +10,7 @@ open class SessionServiceTestUtils {
     val END_HOUR = LocalTime.of(18, 0, 0)
     val SESSION_TIME: Long = 7200
     val APPROACH_TIME: Long = 2400
-    val CONVO_RATIO = 0.666
+    val CONVO_RATIO = 0.667
     val REJECTION_RATIO = 0.333
     val CONTACT_RATIO = 0.333
     val INDEX = 0.044

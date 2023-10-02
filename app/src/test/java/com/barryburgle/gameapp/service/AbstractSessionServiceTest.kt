@@ -17,6 +17,11 @@ class AbstractSessionServiceTest : SessionServiceTestUtils() {
     }
 
     @Test
+    fun computeConvoRatioTest() {
+        assertEquals(CONVO_RATIO, AbstractSessionService.computeConvoRatio(CONVOS, SETS))
+    }
+
+    @Test
     fun computeRejectionRatioTest() {
         assertEquals(REJECTION_RATIO, AbstractSessionService.computeRejectionRatio(CONVOS, SETS))
     }
