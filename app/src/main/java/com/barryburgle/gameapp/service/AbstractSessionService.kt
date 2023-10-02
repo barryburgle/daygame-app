@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit
 import java.time.temporal.WeekFields
 import java.util.Locale
 
-class AbstractSessionService {
+open class AbstractSessionService {
     companion object {
         val roundingMode: RoundingMode = RoundingMode.HALF_UP
         val scale: Int = 3
