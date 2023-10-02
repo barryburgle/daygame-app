@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
@@ -29,24 +30,85 @@ class OutputFragment : Fragment() {
         _binding = FragmentOutputBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        populateOutput()
+        populateAllOutput()
         return root
     }
 
-    private fun populateOutput() {
-        val abstractSession: AbstractSession = AbstractSessionDao.selectLastSession()
+    private fun populateAllOutput() {
+        setColumnDescriptors()
+        setRowDescriptors()
+        val abstractSessionList: List<AbstractSession> = AbstractSessionDao.selectLastSession()
+        populateSingleOutput(
+            binding.firstSessionTime,
+            binding.firstApproachTime,
+            binding.firstRejectionRatio,
+            binding.firstContactRatio,
+            binding.firstConvoRatio,
+            binding.firstIndex,
+            abstractSessionList.get(0)
+        )
+        populateSingleOutput(
+            binding.secondSessionTime,
+            binding.secondApproachTime,
+            binding.secondRejectionRatio,
+            binding.secondContactRatio,
+            binding.secondConvoRatio,
+            binding.secondIndex,
+            abstractSessionList.get(1)
+        )
+        populateSingleOutput(
+            binding.thirdSessionTime,
+            binding.thirdApproachTime,
+            binding.thirdRejectionRatio,
+            binding.thirdContactRatio,
+            binding.thirdConvoRatio,
+            binding.thirdIndex,
+            abstractSessionList.get(2)
+        )
+        populateSingleOutput(
+            binding.fourthSessionTime,
+            binding.fourthApproachTime,
+            binding.fourthRejectionRatio,
+            binding.fourthContactRatio,
+            binding.fourthConvoRatio,
+            binding.fourthIndex,
+            abstractSessionList.get(3)
+        )
+    }
+
+    private fun populateSingleOutput(
+        sessionTime: TextView,
+        approachTime: TextView,
+        rejectionRatio: TextView,
+        contactRatio: TextView,
+        convoRatio: TextView,
+        index: TextView,
+        abstractSession: AbstractSession
+    ) {
+        sessionTime.text =
+            (abstractSession.sessionTime / 3600).toString() // TODO: do this conversion in service layer
+        approachTime.text =
+            (abstractSession.approachTime / 60).toString()// TODO: do this conversion in service layer
+        rejectionRatio.text = String.format("%.2f", abstractSession.rejectionRatio)
+        contactRatio.text = String.format("%.2f", abstractSession.contactRatio)
+        convoRatio.text = String.format("%.2f", abstractSession.convoRatio)
+        index.text = String.format("%.2f", abstractSession.index)
+    }
+
+    private fun setColumnDescriptors() {
+        binding.firstSessionColumn.text = "Last Session: "
+        binding.secondSessionColumn.text = "Two Sessions Ago: "
+        binding.thirdSessionColumn.text = "Three Sessions Ago: "
+        binding.fourthSessionColumn.text = "Four Sessions Ago: "
+    }
+
+    private fun setRowDescriptors() {
         binding.sessionTimeDesc.text = "Session Time: "
-        binding.sessionTime.text = abstractSession.sessionTime.toString()
         binding.approachTimeDesc.text = "Approach Time: "
-        binding.approachTime.text = abstractSession.approachTime.toString()
         binding.rejectionRatioDesc.text = "Rejection Ratio: "
-        binding.rejectionRatio.text = abstractSession.rejectionRatio.toString()
         binding.contactRatioDesc.text = "Contact Ratio: "
-        binding.contactRatio.text = abstractSession.contactRatio.toString()
         binding.convoRatioDesc.text = "Convo Ratio: "
-        binding.convoRatio.text = abstractSession.convoRatio.toString()
         binding.indexDesc.text = "Index: "
-        binding.index.text = abstractSession.index.toString()
     }
 
     override fun onDestroyView() {
