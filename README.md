@@ -14,11 +14,10 @@ Data are exportable in .csv or .xlsx format for other uses.
 
 The app shows 4 bottom tabs:
 
-1. Input - pen icon: triple vertically scrolling panels view:
+1. Input - pen icon: double vertically scrolling panels view:
     1. First panel is for single session import `[form-like]`
     2. Second panel is for live session `[start-stop-set pin pointed in time and space]`: live session set starting
        prompts a button to stealthy record the set (automatic stop setting 10-20-30) mins by settings
-    3. The third one is for the no fap reset buttons `[fap/org]`
 2. Outputs - chart icon: a list of configurable (order & presence) charts coming from the inserted data. Each graph is a
    vertical scrolling tab (Apple Health style). Each graph provides better infos and correlation with other variables
    one touched
