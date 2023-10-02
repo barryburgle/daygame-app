@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.model.session
 
+import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -12,7 +13,15 @@ class BatchSession(
     sets: Int,
     convos: Int,
     contacts: Int,
-    stickingPoints: String
+    stickingPoints: String,
+    sessionTime: Long,
+    approachTime: Long,
+    convoRatio: Double,
+    rejectionRatio: Double,
+    contactRatio: Double,
+    index: Double,
+    dayOfWeek: DayOfWeek,
+    weekNumber: Int
 ) : AbstractSession(
     insertTime,
     date,
@@ -21,7 +30,13 @@ class BatchSession(
     sets,
     convos,
     contacts,
-    stickingPoints
+    stickingPoints,
+    sessionTime,
+    approachTime,
+    convoRatio,
+    rejectionRatio,
+    contactRatio,
+    index,
+    dayOfWeek,
+    weekNumber
 )
-
-// TODO: do BatchSession unit tests class

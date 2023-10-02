@@ -1,6 +1,5 @@
 package com.barryburgle.gameapp.model.session
 
-import com.barryburgle.gameapp.service.AbstractSessionService
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -14,8 +13,17 @@ abstract class AbstractSession(
     sets: Int,
     convos: Int,
     contacts: Int,
-    stickingPoints: String
+    stickingPoints: String,
+    sessionTime: Long,
+    approachTime: Long,
+    convoRatio: Double,
+    rejectionRatio: Double,
+    contactRatio: Double,
+    index: Double,
+    dayOfWeek: DayOfWeek,
+    weekNumber: Int
 ) {
+
     val insertTime = insertTime
     val date = date
     val startHour = startHour
@@ -24,29 +32,12 @@ abstract class AbstractSession(
     val convos = convos
     val contacts = contacts
     val stickingPoints = stickingPoints
-    val sessionTime: Long
-    val approachTime: Long
-    val convoRatio: Double
-    val rejectionRatio: Double
-    val contactRatio: Double
-    val index: Double
-    val dayOfWeek: DayOfWeek
-    val weekNumber: Int
-
-    init {
-        sessionTime = AbstractSessionService.computeSessionTime(startHour, endHour)
-        approachTime = AbstractSessionService.computeApproachTime(sessionTime, sets)
-        convoRatio = AbstractSessionService.computeConvoRatio(convos, sets)
-        rejectionRatio = AbstractSessionService.computeRejectionRatio(convos, sets)
-        contactRatio = AbstractSessionService.computeContactRatio(contacts, sets)
-        index = AbstractSessionService.computeIndex(sets, convos, contacts, sessionTime)
-        dayOfWeek = AbstractSessionService.computeDayOfWeek(date)
-        weekNumber = AbstractSessionService.computeWeekOfYear(date)
-    }
-
-    fun getYearAndWeek(liveSession: LiveSession, weekNumber: Int): Pair<Int, Int> {
-        // TODO: method useful tot track weekly total sets + convos + contacts
-        val year = liveSession.date.year
-        return year to weekNumber
-    }
+    val sessionTime = sessionTime
+    val approachTime = approachTime
+    val convoRatio = convoRatio
+    val rejectionRatio = rejectionRatio
+    val contactRatio = contactRatio
+    val index = index
+    val dayOfWeek = dayOfWeek
+    val weekNumber = weekNumber
 }
