@@ -27,6 +27,7 @@ class BatchSessionServiceTest : SessionServiceTestUtils() {
         assertEquals(END_HOUR, batchSession.endHour)
         assertEquals(SETS, batchSession.sets)
         assertEquals(CONVOS, batchSession.convos)
+        assertEquals(CONTACTS, batchSession.contacts)
         assertEquals(STICKING_POINTS, batchSession.stickingPoints)
         assertEquals(SESSION_TIME, batchSession.sessionTime)
         assertEquals(APPROACH_TIME, batchSession.approachTime)
