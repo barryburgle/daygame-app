@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.databinding.FragmentInputBinding
-import com.barryburgle.gameapp.model.session.BatchSession
+import com.barryburgle.gameapp.service.batch.BatchSessionService
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -18,6 +18,7 @@ class InputFragment : Fragment() {
 
     private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+    private val batchSessionService = BatchSessionService()
     private var _binding: FragmentInputBinding? = null
 
     // This property is only valid between onCreateView and
@@ -41,7 +42,7 @@ class InputFragment : Fragment() {
 
     private fun listenInputClickEvent() {
         binding.button.setOnClickListener {
-            val batchSession = BatchSession(
+            val batchSession = batchSessionService.init(
                 Instant.now(),
                 LocalDate.parse(binding.date.text.toString(), dateFormatter),
                 LocalTime.parse(binding.startHour.text.toString(), timeFormatter),
