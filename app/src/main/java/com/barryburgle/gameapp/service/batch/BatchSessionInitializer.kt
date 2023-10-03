@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.service
+package com.barryburgle.gameapp.service.batch
 
 import com.barryburgle.gameapp.model.session.AbstractSession
 import java.time.Instant
