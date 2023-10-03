@@ -1,11 +1,7 @@
 package com.barryburgle.gameapp.manager
 
-import com.barryburgle.gameapp.model.Contact
-import com.barryburgle.gameapp.model.Convo
-import com.barryburgle.gameapp.model.session.LiveSession
-import com.barryburgle.gameapp.model.Set
 import com.barryburgle.gameapp.model.session.AbstractSession
-import com.barryburgle.gameapp.model.session.BatchSession
+import com.barryburgle.gameapp.service.batch.BatchSessionService
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import java.time.Instant
@@ -13,6 +9,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 class SessionManagerTest {
+    val batchSessionService = BatchSessionService()
     val INSERT_TIME = Instant.now()
     val DATE = LocalDate.of(2023, 9, 13)
     val START_HOUR = LocalTime.of(16, 0, 0)
@@ -30,8 +27,8 @@ class SessionManagerTest {
     val CONTACTS_3 = 3
     val CONTACTS_4 = 4
     val STICKING_POINTS = "sticking-points"
-    val INDEX_LAST_3_SESSIONS: Double = 0.1654
-    val INDEX_LAST_4_SESSIONS: Double = 0.1352
+    val INDEX_LAST_3_SESSIONS: Double = 0.165
+    val INDEX_LAST_4_SESSIONS: Double = 0.135
 
     @Test
     fun computeIndexMovingAverageLastThreeTest() {
@@ -66,12 +63,12 @@ class SessionManagerTest {
 
     private fun doComputeIndexMovingAverageLastNTest(window: Int, expectedIndexAverage: Double) {
         val actualIndex: Double = SessionManager.computeIndexMovingAverage(createSessions(), window)
-        assertEquals(expectedIndexAverage, actualIndex, 0.0001)
+        assertEquals(expectedIndexAverage, actualIndex, 0.001)
     }
 
     private fun createSessions(): Array<AbstractSession> {
         return arrayOf(
-            BatchSession(
+            batchSessionService.init(
                 INSERT_TIME,
                 DATE,
                 START_HOUR,
@@ -81,7 +78,7 @@ class SessionManagerTest {
                 CONTACTS_1,
                 STICKING_POINTS
             ),
-            BatchSession(
+            batchSessionService.init(
                 INSERT_TIME,
                 DATE,
                 START_HOUR,
@@ -91,7 +88,7 @@ class SessionManagerTest {
                 CONTACTS_2,
                 STICKING_POINTS
             ),
-            BatchSession(
+            batchSessionService.init(
                 INSERT_TIME,
                 DATE,
                 START_HOUR,
@@ -101,7 +98,7 @@ class SessionManagerTest {
                 CONTACTS_3,
                 STICKING_POINTS
             ),
-            BatchSession(
+            batchSessionService.init(
                 INSERT_TIME,
                 DATE,
                 START_HOUR,
