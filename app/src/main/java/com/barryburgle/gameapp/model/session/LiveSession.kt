@@ -26,6 +26,7 @@ class LiveSession(
     dayOfWeek: DayOfWeek,
     weekNumber: Int
 ) : AbstractSession(
+    null,
     insertTime,
     date,
     startHour,

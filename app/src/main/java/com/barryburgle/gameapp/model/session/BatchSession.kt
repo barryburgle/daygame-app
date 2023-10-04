@@ -23,6 +23,7 @@ class BatchSession(
     dayOfWeek: DayOfWeek,
     weekNumber: Int
 ) : AbstractSession(
+    null,
     insertTime,
     date,
     startHour,
