@@ -2,7 +2,7 @@ package com.barryburgle.gameapp.dao.session
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import com.barryburgle.gameapp.model.session.AbstractSession
 import java.time.LocalDate
@@ -35,5 +35,5 @@ interface AbstractSessionDao {
     fun getByDate(sessionDate: LocalDate): List<AbstractSession>
 
     @Query("SELECT * from abstract_session ORDER BY insert_time LIMIT :limit")
-    fun selectLastNSessions(limit: Int)
+    fun selectLastNSessions(limit: Int): List<AbstractSession>
 }
