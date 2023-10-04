@@ -9,7 +9,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @Entity(tableName = "abstract_session")
-abstract class AbstractSession(
+open class AbstractSession(
     @PrimaryKey(autoGenerate = true) var id: Long?,
     @ColumnInfo(name = "insert_time") var insertTime: Instant,
     @ColumnInfo(name = "session_date") var date: LocalDate,
