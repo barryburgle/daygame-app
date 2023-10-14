@@ -9,22 +9,22 @@ import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.converter.DateConverter
 import com.barryburgle.gameapp.model.session.AbstractSession
 
-@Database(entities = arrayOf(AbstractSession::class), version = 1)
+@Database(entities = [AbstractSession::class], version = 1)
 @TypeConverters(DateConverter::class)
 abstract class GameAppDatabase : RoomDatabase() {
-    abstract fun abstractSessionDao(): AbstractSessionDao
+    abstract val abstractSessionDao: AbstractSessionDao
 
     companion object {
+        private const val DATABASE_NAME = "game_app_db"
         private var INSTANCE: GameAppDatabase? = null
 
         fun getInstance(context: Context): GameAppDatabase? {
             if (INSTANCE == null) {
                 synchronized(GameAppDatabase::class) {
                     INSTANCE = Room.databaseBuilder(
-                        context.getApplicationContext(),
-                        GameAppDatabase::class.java, "game_app_db"
-                    )
-                        .build()
+                        context.applicationContext,
+                        GameAppDatabase::class.java, DATABASE_NAME
+                    ).build()
                 }
             }
             return INSTANCE
