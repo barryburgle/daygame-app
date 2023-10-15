@@ -24,7 +24,7 @@ open class AbstractSessionService {
             startHour: LocalTime,
             endHour: LocalTime
         ): Long {
-            return startHour.until(endHour, ChronoUnit.SECONDS)
+            return startHour.until(endHour, ChronoUnit.MINUTES)
         }
 
         fun computeApproachTime(
