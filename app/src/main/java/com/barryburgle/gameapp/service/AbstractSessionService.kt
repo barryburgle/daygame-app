@@ -31,6 +31,9 @@ open class AbstractSessionService {
             sessionTime: Long,
             sets: Int
         ): Long {
+            if(sets==0){
+                return 0
+            }
             return sessionTime / sets
         }
 
@@ -38,6 +41,9 @@ open class AbstractSessionService {
             convos: Int,
             sets: Int
         ): Double {
+            if(sets==0){
+                return 0.0
+            }
             val convoRatio = convos.toDouble() / sets.toDouble()
             return round(convoRatio)
         }
@@ -46,6 +52,9 @@ open class AbstractSessionService {
             convos: Int,
             sets: Int
         ): Double {
+            if(sets==0){
+                return 1.0
+            }
             val rejectionRatio = 1 - convos.toDouble() / sets.toDouble()
             return round(rejectionRatio)
         }
@@ -54,6 +63,9 @@ open class AbstractSessionService {
             contacts: Int,
             sets: Int
         ): Double {
+            if(sets==0){
+                return 0.0
+            }
             val contactRatio = contacts.toDouble() / sets.toDouble()
             return round(contactRatio)
         }

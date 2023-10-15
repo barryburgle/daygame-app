@@ -17,8 +17,18 @@ class AbstractSessionServiceTest : SessionServiceTestUtils() {
     }
 
     @Test
+    fun computeApproachTimeNoSetsTest() {
+        assertEquals(0, AbstractSessionService.computeApproachTime(SESSION_TIME, 0))
+    }
+
+    @Test
     fun computeConvoRatioTest() {
         assertEquals(CONVO_RATIO, AbstractSessionService.computeConvoRatio(CONVOS, SETS))
+    }
+
+    @Test
+    fun computeConvoRatioNoSetsTest() {
+        assertEquals(0.0, AbstractSessionService.computeConvoRatio(CONVOS, 0))
     }
 
     @Test
@@ -27,8 +37,18 @@ class AbstractSessionServiceTest : SessionServiceTestUtils() {
     }
 
     @Test
+    fun computeRejectionRatioNoSetsTest() {
+        assertEquals(1.0, AbstractSessionService.computeRejectionRatio(CONVOS, 0))
+    }
+
+    @Test
     fun computeContactRatioTest() {
         assertEquals(CONTACT_RATIO, AbstractSessionService.computeContactRatio(CONTACTS, SETS))
+    }
+
+    @Test
+    fun computeContactRatioNoSetsTest() {
+        assertEquals(0.0, AbstractSessionService.computeContactRatio(CONTACTS, 0))
     }
 
     @Test
