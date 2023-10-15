@@ -3,18 +3,14 @@ package com.barryburgle.gameapp.model.session
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.DayOfWeek
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
 
 @Entity(tableName = "abstract_session")
 open class AbstractSession(
     @PrimaryKey(autoGenerate = true) var id: Long?,
-    @ColumnInfo(name = "insert_time") var insertTime: Instant,
-    @ColumnInfo(name = "session_date") var date: LocalDate,
-    @ColumnInfo(name = "start_hour") var startHour: LocalTime,
-    @ColumnInfo(name = "end_hour") var endHour: LocalTime,
+    @ColumnInfo(name = "insert_time") var insertTime: String,
+    @ColumnInfo(name = "session_date") var date: String,
+    @ColumnInfo(name = "start_hour") var startHour: String,
+    @ColumnInfo(name = "end_hour") var endHour: String,
     @ColumnInfo(name = "sets") var sets: Int,
     @ColumnInfo(name = "convos") var convos: Int,
     @ColumnInfo(name = "contacts") var contacts: Int,
@@ -25,6 +21,6 @@ open class AbstractSession(
     @ColumnInfo(name = "rejection_ratio") var rejectionRatio: Double,
     @ColumnInfo(name = "contact_ratio") var contactRatio: Double,
     @ColumnInfo(name = "index") var index: Double,
-    @ColumnInfo(name = "day_of_week") var dayOfWeek: DayOfWeek,
+    @ColumnInfo(name = "day_of_week") var dayOfWeek: Int,
     @ColumnInfo(name = "week_number") var weekNumber: Int
 )
