@@ -1,15 +1,10 @@
 package com.barryburgle.gameapp.model.session
 
-import java.time.DayOfWeek
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
-
 class BatchSession(
-    insertTime: Instant,
-    date: LocalDate,
-    startHour: LocalTime,
-    endHour: LocalTime,
+    insertTime: String,
+    date: String,
+    startHour: String,
+    endHour: String,
     sets: Int,
     convos: Int,
     contacts: Int,
@@ -20,7 +15,7 @@ class BatchSession(
     rejectionRatio: Double,
     contactRatio: Double,
     index: Double,
-    dayOfWeek: DayOfWeek,
+    dayOfWeek: Int,
     weekNumber: Int
 ) : AbstractSession(
     null,
