@@ -1,12 +1,10 @@
 package com.barryburgle.gameapp.service
 
 import java.time.DayOfWeek
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 
 open class SessionServiceTestUtils {
-    val INSERT_TIME = Instant.now()
     val DATE = LocalDate.of(2023, 9, 13)
     val START_HOUR = LocalTime.of(16, 0, 0)
     val END_HOUR = LocalTime.of(18, 0, 0)
