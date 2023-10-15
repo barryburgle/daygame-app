@@ -21,16 +21,16 @@ interface AbstractSessionDao {
     @Query("SELECT * from abstract_session")
     fun getAll(): Flow<List<AbstractSession>>
 
-    @Query("SELECT * from abstract_session ORDER BY session_date")
+    @Query("SELECT * from abstract_session ORDER BY session_date DESC")
     fun getByDate(): Flow<List<AbstractSession>>
 
-    @Query("SELECT * from abstract_session ORDER BY sets")
+    @Query("SELECT * from abstract_session ORDER BY sets DESC")
     fun getBySets(): Flow<List<AbstractSession>>
 
-    @Query("SELECT * from abstract_session ORDER BY convos")
+    @Query("SELECT * from abstract_session ORDER BY convos DESC")
     fun getByConvos(): Flow<List<AbstractSession>>
 
-    @Query("SELECT * from abstract_session ORDER BY contacts")
+    @Query("SELECT * from abstract_session ORDER BY contacts DESC")
     fun getByContacts(): Flow<List<AbstractSession>>
 
     @Query("SELECT * from abstract_session ORDER BY session_time")
@@ -39,16 +39,16 @@ interface AbstractSessionDao {
     @Query("SELECT * from abstract_session ORDER BY approach_time")
     fun getByApproachTime(): Flow<List<AbstractSession>>
 
-    @Query("SELECT * from abstract_session ORDER BY convo_ratio")
+    @Query("SELECT * from abstract_session ORDER BY convo_ratio DESC")
     fun getByConvoRatio(): Flow<List<AbstractSession>>
 
-    @Query("SELECT * from abstract_session ORDER BY rejection_ratio")
+    @Query("SELECT * from abstract_session ORDER BY rejection_ratio DESC")
     fun getByRejectionRatio(): Flow<List<AbstractSession>>
 
-    @Query("SELECT * from abstract_session ORDER BY contact_ratio")
+    @Query("SELECT * from abstract_session ORDER BY contact_ratio DESC")
     fun getByContactRatio(): Flow<List<AbstractSession>>
 
-    @Query("SELECT * from abstract_session ORDER BY `index`")
+    @Query("SELECT * from abstract_session ORDER BY `index` DESC")
     fun getByIndex(): Flow<List<AbstractSession>>
 
     @Query("SELECT * from abstract_session ORDER BY day_of_week")
