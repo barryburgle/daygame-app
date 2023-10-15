@@ -1,36 +1,47 @@
 package com.barryburgle.gameapp
 
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.barryburgle.gameapp.databinding.ActivityMainBinding
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.room.Room
+import com.barryburgle.gameapp.database.session.GameAppDatabase
+import com.barryburgle.gameapp.ui.input.InputScreen
+import com.barryburgle.gameapp.ui.input.InputViewModel
+import com.barryburgle.gameapp.ui.theme.GameAppOriginalTheme
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    private val db by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            GameAppDatabase::class.java,
+            "game_app_db"
+        ).build()
+    }
+    private val viewModel by viewModels<InputViewModel>(
+        factoryProducer = {
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return InputViewModel(db.abstractSessionDao) as T
+                }
+            }
+        }
+    )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        val navView: BottomNavigationView = binding.navView
-
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_input, R.id.navigation_output, R.id.navigation_tool
-            )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        setContent {
+            GameAppOriginalTheme {
+                val state by viewModel.state.collectAsState()
+                InputScreen(state = state, onEvent = viewModel::onEvent)
+            }
+        }
     }
 }
