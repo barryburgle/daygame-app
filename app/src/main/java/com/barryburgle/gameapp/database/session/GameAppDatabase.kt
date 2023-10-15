@@ -4,13 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
-import com.barryburgle.gameapp.dao.session.converter.DateConverter
 import com.barryburgle.gameapp.model.session.AbstractSession
 
 @Database(entities = [AbstractSession::class], version = 1)
-@TypeConverters(DateConverter::class)
 abstract class GameAppDatabase : RoomDatabase() {
     abstract val abstractSessionDao: AbstractSessionDao
 
