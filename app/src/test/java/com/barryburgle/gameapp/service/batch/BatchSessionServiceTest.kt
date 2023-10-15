@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.service.batch
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.SessionServiceTestUtils
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
 import org.junit.Test
 
 class BatchSessionServiceTest : SessionServiceTestUtils() {
@@ -12,19 +13,18 @@ class BatchSessionServiceTest : SessionServiceTestUtils() {
     @Test
     fun initTest() {
         val batchSession: AbstractSession = batchSessionService.init(
-            INSERT_TIME,
-            DATE,
-            START_HOUR,
-            END_HOUR,
-            SETS,
-            CONVOS,
-            CONTACTS,
+            DATE.toString(),
+            START_HOUR.toString(),
+            END_HOUR.toString(),
+            SETS.toString(),
+            CONVOS.toString(),
+            CONTACTS.toString(),
             STICKING_POINTS
         )
-        assertEquals(INSERT_TIME, batchSession.insertTime)
-        assertEquals(DATE, batchSession.date)
-        assertEquals(START_HOUR, batchSession.startHour)
-        assertEquals(END_HOUR, batchSession.endHour)
+        assertNotNull(batchSession.insertTime)
+        assertEquals(DATE.toString(), batchSession.date.substring(0,10))
+        assertEquals(START_HOUR.toString(), batchSession.startHour.substring(11,16))
+        assertEquals(END_HOUR.toString(), batchSession.endHour.substring(11,16))
         assertEquals(SETS, batchSession.sets)
         assertEquals(CONVOS, batchSession.convos)
         assertEquals(CONTACTS, batchSession.contacts)
@@ -35,7 +35,7 @@ class BatchSessionServiceTest : SessionServiceTestUtils() {
         assertEquals(REJECTION_RATIO, batchSession.rejectionRatio)
         assertEquals(CONTACT_RATIO, batchSession.contactRatio)
         assertEquals(INDEX, batchSession.index)
-        assertEquals(DAY_OF_WEEK, batchSession.dayOfWeek)
+        assertEquals(DAY_OF_WEEK.value, batchSession.dayOfWeek)
         assertEquals(WEEK_NUMBER, batchSession.weekNumber)
     }
 }
