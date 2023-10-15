@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.model.enums.SortType
+import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.state.InputState
 
 @Composable
@@ -45,7 +47,7 @@ fun InputScreen(
             AddInputDialog(state = state, onEvent = onEvent)
         }
         LazyColumn(
-            contentPadding = padding,
+            contentPadding = PaddingValues(16.dp),
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -83,11 +85,27 @@ fun InputScreen(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "${abstractSession.date} ${abstractSession.sessionTime}",
+                            text = "Sets: ${abstractSession.sets} - Convos: ${abstractSession.convos} - Contacts: ${abstractSession.contacts}",
                             fontSize = 20.sp
                         )
                         Text(
-                            text = "${abstractSession.sets} sets - ${abstractSession.convos} convos - ${abstractSession.convos} convos",
+                            text = "Convo Ratio: ${abstractSession.convoRatio} - Rejection Ratio: ${abstractSession.rejectionRatio} - Contact Ratio: ${abstractSession.contactRatio}",
+                            fontSize = 12.sp
+                        )
+                        Text(
+                            text = "Index: ${abstractSession.index}",
+                            fontSize = 16.sp
+                        )
+                        Text(
+                            text = "Day: ${FormatService.getDate(abstractSession.date)}",
+                            fontSize = 12.sp
+                        )
+                        Text(
+                            text = "Start: ${FormatService.getTime(abstractSession.startHour)} - End: ${
+                                FormatService.getTime(
+                                    abstractSession.endHour
+                                )
+                            }",
                             fontSize = 12.sp
                         )
                     }
