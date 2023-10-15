@@ -14,6 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.theme.Colors
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.date.datepicker
+import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
+import com.vanpra.composematerialdialogs.datetime.time.timepicker
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Composable
 fun AddInputDialog(
@@ -21,6 +29,56 @@ fun AddInputDialog(
     onEvent: (AbstractSessionEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val dateDialogState = rememberMaterialDialogState()
+    val startHourDialogState = rememberMaterialDialogState()
+    val endHourDialogState = rememberMaterialDialogState()
+    MaterialDialog(dialogState = dateDialogState,
+        elevation = 10.dp,
+        buttons = {
+            positiveButton("Ok")
+            negativeButton("Cancel")
+        }) {
+        this.datepicker(
+            initialDate = LocalDate.now(),
+            title = "Set date"
+        ){
+            onEvent(AbstractSessionEvent.SetDate(it.toString()))
+        }
+    }
+    MaterialDialog(dialogState = startHourDialogState,
+        elevation = 10.dp,
+        buttons = {
+            positiveButton("Ok")
+            negativeButton("Cancel")
+        }) {
+        this.timepicker(
+            initialTime = LocalTime.now(),
+            title = "Set start hour",
+            colors = TimePickerDefaults.colors(
+                activeBackgroundColor = Colors.Mid,
+                inactiveBackgroundColor = Colors.Light
+            )
+        ){
+            onEvent(AbstractSessionEvent.SetStartHour(it.toString().substring(0,5)))
+        }
+    }
+    MaterialDialog(dialogState = endHourDialogState,
+        elevation = 10.dp,
+        buttons = {
+            positiveButton("Ok")
+            negativeButton("Cancel")
+        }) {
+        this.timepicker(
+            initialTime = LocalTime.now(),
+            title = "Set end hour",
+            colors = TimePickerDefaults.colors(
+                activeBackgroundColor = Colors.Mid,
+                inactiveBackgroundColor = Colors.Light
+            )
+        ){
+            onEvent(AbstractSessionEvent.SetEndHour(it.toString().substring(0,5)))
+        }
+    }
     AlertDialog(
         modifier = modifier,
         onDismissRequest = {
@@ -31,17 +89,18 @@ fun AddInputDialog(
         },
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TextField(value = state.date,
-                    onValueChange = { onEvent(AbstractSessionEvent.SetDate(it)) },
-                    placeholder = { Text(text = "yyyy-MM-dd date") })
-                TextField(value = state.startHour,
-                    onValueChange = { onEvent(AbstractSessionEvent.SetStartHour(it)) },
-                    placeholder = { Text(text = "hh:mm Start Hour") })
-                TextField(value = state.endHour,
-                    onValueChange = { onEvent(AbstractSessionEvent.SetEndHour(it)) },
-                    placeholder = { Text(text = "hh:mm End Hour") })
+                Button(onClick = { dateDialogState.show() }) {
+                    Text(text = "Set date")
+                }
+                Button(onClick = { startHourDialogState.show() }) {
+                    Text(text = "Set start time")
+                }
+                Button(onClick = { endHourDialogState.show() }) {
+                    Text(text = "Set end time")
+                }
                 TextField(value = state.sets,
                     onValueChange = { onEvent(AbstractSessionEvent.SetSets(it)) },
                     placeholder = { Text(text = "Sets") })
