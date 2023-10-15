@@ -38,10 +38,10 @@ fun AddInputDialog(
                     placeholder = { Text(text = "yyyy-MM-dd date") })
                 TextField(value = state.startHour,
                     onValueChange = { onEvent(AbstractSessionEvent.SetStartHour(it)) },
-                    placeholder = { Text(text = "hh:mm:ss Start Hour") })
+                    placeholder = { Text(text = "hh:mm Start Hour") })
                 TextField(value = state.endHour,
                     onValueChange = { onEvent(AbstractSessionEvent.SetEndHour(it)) },
-                    placeholder = { Text(text = "hh:mm:ss End Hour") })
+                    placeholder = { Text(text = "hh:mm End Hour") })
                 TextField(value = state.sets,
                     onValueChange = { onEvent(AbstractSessionEvent.SetSets(it)) },
                     placeholder = { Text(text = "Sets") })
