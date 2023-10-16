@@ -4,17 +4,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.ui.input.state.InputState
-import com.barryburgle.gameapp.ui.theme.Colors
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
@@ -41,7 +40,7 @@ fun AddInputDialog(
         this.datepicker(
             initialDate = LocalDate.now(),
             title = "Set date"
-        ){
+        ) {
             onEvent(AbstractSessionEvent.SetDate(it.toString()))
         }
     }
@@ -53,13 +52,9 @@ fun AddInputDialog(
         }) {
         this.timepicker(
             initialTime = LocalTime.now(),
-            title = "Set start hour",
-            colors = TimePickerDefaults.colors(
-                activeBackgroundColor = Colors.Mid,
-                inactiveBackgroundColor = Colors.Light
-            )
-        ){
-            onEvent(AbstractSessionEvent.SetStartHour(it.toString().substring(0,5)))
+            title = "Set start hour"
+        ) {
+            onEvent(AbstractSessionEvent.SetStartHour(it.toString().substring(0, 5)))
         }
     }
     MaterialDialog(dialogState = endHourDialogState,
@@ -71,12 +66,8 @@ fun AddInputDialog(
         this.timepicker(
             initialTime = LocalTime.now(),
             title = "Set end hour",
-            colors = TimePickerDefaults.colors(
-                activeBackgroundColor = Colors.Mid,
-                inactiveBackgroundColor = Colors.Light
-            )
-        ){
-            onEvent(AbstractSessionEvent.SetEndHour(it.toString().substring(0,5)))
+        ) {
+            onEvent(AbstractSessionEvent.SetEndHour(it.toString().substring(0, 5)))
         }
     }
     AlertDialog(
@@ -115,7 +106,7 @@ fun AddInputDialog(
                     placeholder = { Text(text = "Sticking Points") })
             }
         },
-        buttons = {
+        confirmButton = {
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterEnd
