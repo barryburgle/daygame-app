@@ -53,7 +53,7 @@ fun InputCard(
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete Session",
-                        tint = MaterialTheme.colorScheme.errorContainer
+                        tint = MaterialTheme.colorScheme.onErrorContainer
                     )
                 }
             }
