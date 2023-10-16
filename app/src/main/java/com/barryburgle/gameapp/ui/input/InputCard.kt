@@ -1,0 +1,67 @@
+package com.barryburgle.gameapp.ui.input
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.model.session.AbstractSession
+import java.time.DayOfWeek
+
+@ExperimentalMaterial3Api
+@Composable
+fun ImageCard(
+    abstractSession: AbstractSession,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        shape = MaterialTheme.shapes.large
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "Session ${abstractSession.date}",
+                style = MaterialTheme.typography.titleLarge
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "[${abstractSession.sessionTime}] minutes - Start: ${abstractSession.startHour} - End: ${abstractSession.endHour}",
+                style = MaterialTheme.typography.titleSmall
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "${abstractSession.sets} Sets - ${abstractSession.convos} Conversations - ${abstractSession.contacts} Contacts",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Index: ${abstractSession.index} - Approach Time: ${abstractSession.approachTime}",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Sticking Points: ${abstractSession.stickingPoints}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Conversation Ratio: ${abstractSession.convoRatio}\nRejection Ratio: ${abstractSession.rejectionRatio}\nContact Ratio: ${abstractSession.contactRatio}\nWeekday: ${
+                    DayOfWeek.valueOf(
+                        abstractSession.dayOfWeek.toString()
+                    )
+                }",
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+}
