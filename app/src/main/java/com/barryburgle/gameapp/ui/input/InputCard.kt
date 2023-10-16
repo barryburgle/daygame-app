@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.service.FormatService
 import java.time.DayOfWeek
 
 @ExperimentalMaterial3Api
@@ -36,12 +37,16 @@ fun InputCard(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Session ${abstractSession.date}",
+                text = "Session ${FormatService.getDate(abstractSession.date)}",
                 style = MaterialTheme.typography.titleLarge
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "[${abstractSession.sessionTime}] minutes - Start: ${abstractSession.startHour} - End: ${abstractSession.endHour}",
+                text = "[${abstractSession.sessionTime}] minutes - Start: ${
+                    FormatService.getTime(
+                        abstractSession.startHour
+                    )
+                } - End: ${FormatService.getTime(abstractSession.endHour)}",
                 style = MaterialTheme.typography.titleSmall
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -62,8 +67,8 @@ fun InputCard(
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Conversation Ratio: ${abstractSession.convoRatio}\nRejection Ratio: ${abstractSession.rejectionRatio}\nContact Ratio: ${abstractSession.contactRatio}\nWeekday: ${
-                    DayOfWeek.valueOf(
-                        abstractSession.dayOfWeek.toString()
+                    DayOfWeek.of(
+                        abstractSession.dayOfWeek
                     )
                 }",
                 style = MaterialTheme.typography.bodySmall
