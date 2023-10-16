@@ -1,15 +1,11 @@
 package com.barryburgle.gameapp.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorPalette = darkColorScheme(
     primary = Green80,
@@ -24,7 +20,7 @@ private val DarkColorPalette = darkColorScheme(
     error = Red80,
     onError = Red20,
     errorContainer = Red30,
-    onErrorContainer = Red90,
+    onErrorContainer = Red80,
     background = Green10,
     onBackground = Green90,
     surface = GreenGrey30,
@@ -53,7 +49,7 @@ private val LightColorPalette = lightColorScheme(
     error = Red40,
     onError = Color.White,
     errorContainer = Red90,
-    onErrorContainer = Red10,
+    onErrorContainer = Red40,
     background = Grey99,
     onBackground = Grey10,
     surface = GreenGrey90,
@@ -70,12 +66,10 @@ fun GameAppOriginalTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val useDynamicColors = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-    val colors = when (darkTheme) {
-        (useDynamicColors && darkTheme) -> dynamicDarkColorScheme(LocalContext.current)
-        (useDynamicColors && !darkTheme) -> dynamicLightColorScheme(LocalContext.current)
-        darkTheme -> DarkColorPalette
-        else -> LightColorPalette
+    val colors = if (darkTheme) {
+        DarkColorPalette
+    } else {
+        LightColorPalette
     }
 
     MaterialTheme(
