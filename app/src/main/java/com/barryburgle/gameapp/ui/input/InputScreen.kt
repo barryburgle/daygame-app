@@ -42,7 +42,6 @@ fun InputScreen(
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Session")
             }
         },
-        modifier = Modifier.padding(16.dp),
         topBar = {
             SmallTopAppBar(
                 title = {
