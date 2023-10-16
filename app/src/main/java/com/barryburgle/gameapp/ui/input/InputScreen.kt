@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -18,10 +17,9 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,16 +39,6 @@ fun InputScreen(
             FloatingActionButton(onClick = { onEvent(AbstractSessionEvent.ShowDialog) }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Session")
             }
-        },
-        topBar = {
-            SmallTopAppBar(
-                title = {
-                    Text(text = "Sessions")
-                }, colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    titleContentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            )
         }
     ) { padding ->
         if (state.isAddingSession) {
@@ -70,23 +58,33 @@ fun InputScreen(
                 ) {
                     SortType.values().forEach { sortType ->
                         Row(
-                            modifier = Modifier.clickable {
-                                onEvent(
-                                    AbstractSessionEvent.SortSessions(
-                                        sortType
+                            modifier = Modifier
+                                .clickable {
+                                    onEvent(
+                                        AbstractSessionEvent.SortSessions(
+                                            sortType
+                                        )
                                     )
-                                )
-                            },
+                                },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            RadioButton(selected = state.sortType == sortType, onClick = {
-                                onEvent(
-                                    AbstractSessionEvent.SortSessions(
-                                        sortType
+                            RadioButton(
+                                selected = state.sortType == sortType, onClick = {
+                                    onEvent(
+                                        AbstractSessionEvent.SortSessions(
+                                            sortType
+                                        )
                                     )
+                                },
+                                colors = RadioButtonDefaults.colors(
+                                    selectedColor = MaterialTheme.colorScheme.secondary,
+                                    unselectedColor = MaterialTheme.colorScheme.secondaryContainer
                                 )
-                            })
-                            Text(text = sortType.field)
+                            )
+                            Text(
+                                text = sortType.field,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
                         }
                     }
                 }
