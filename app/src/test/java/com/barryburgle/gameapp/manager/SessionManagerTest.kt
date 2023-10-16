@@ -27,8 +27,8 @@ class SessionManagerTest {
     val CONTACTS_3 = 3
     val CONTACTS_4 = 4
     val STICKING_POINTS = "sticking-points"
-    val INDEX_LAST_3_SESSIONS: Double = 0.165
-    val INDEX_LAST_4_SESSIONS: Double = 0.135
+    val INDEX_LAST_3_SESSIONS: Double = 9.9277
+    val INDEX_LAST_4_SESSIONS: Double = 8.1083
 
     @Test
     fun computeIndexMovingAverageLastThreeTest() {
@@ -69,43 +69,39 @@ class SessionManagerTest {
     private fun createSessions(): Array<AbstractSession> {
         return arrayOf(
             batchSessionService.init(
-                INSERT_TIME,
-                DATE,
-                START_HOUR,
-                END_HOUR,
-                SETS_1,
-                CONVOS_1,
-                CONTACTS_1,
+                DATE.toString(),
+                START_HOUR.toString(),
+                END_HOUR.toString(),
+                SETS_1.toString(),
+                CONVOS_1.toString(),
+                CONTACTS_1.toString(),
                 STICKING_POINTS
             ),
             batchSessionService.init(
-                INSERT_TIME,
-                DATE,
-                START_HOUR,
-                END_HOUR,
-                SETS_2,
-                CONVOS_2,
-                CONTACTS_2,
+                DATE.toString(),
+                START_HOUR.toString(),
+                END_HOUR.toString(),
+                SETS_2.toString(),
+                CONVOS_2.toString(),
+                CONTACTS_2.toString(),
                 STICKING_POINTS
             ),
             batchSessionService.init(
-                INSERT_TIME,
-                DATE,
-                START_HOUR,
-                END_HOUR,
-                SETS_3,
-                CONVOS_3,
-                CONTACTS_3,
+                DATE.toString(),
+                START_HOUR.toString(),
+                END_HOUR.toString(),
+                SETS_3.toString(),
+                CONVOS_3.toString(),
+                CONTACTS_3.toString(),
                 STICKING_POINTS
             ),
             batchSessionService.init(
-                INSERT_TIME,
-                DATE,
-                START_HOUR,
-                END_HOUR,
-                SETS_4,
-                CONVOS_4,
-                CONTACTS_4,
+                DATE.toString(),
+                START_HOUR.toString(),
+                END_HOUR.toString(),
+                SETS_4.toString(),
+                CONVOS_4.toString(),
+                CONTACTS_4.toString(),
                 STICKING_POINTS
             )
         )
