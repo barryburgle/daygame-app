@@ -1,9 +1,9 @@
 package com.barryburgle.gameapp
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
@@ -15,7 +15,7 @@ import com.barryburgle.gameapp.ui.input.InputViewModel
 import com.barryburgle.gameapp.ui.theme.GameAppOriginalTheme
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     private val db by lazy {
         Room.databaseBuilder(
