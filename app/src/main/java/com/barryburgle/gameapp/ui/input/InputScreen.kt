@@ -25,6 +25,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.model.enums.SortType
@@ -95,7 +96,12 @@ fun InputScreen(
                 InputCard(
                     abstractSession,
                     onEvent,
-                    Modifier.fillMaxWidth()
+                    Modifier
+                        .fillMaxWidth()
+                        .shadow(
+                            elevation = 5.dp,
+                            shape = MaterialTheme.shapes.large
+                        )
                 )
             }
         }
