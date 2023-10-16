@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.ui.input
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
@@ -36,10 +38,25 @@ fun InputCard(
         shape = MaterialTheme.shapes.large
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = "Session ${FormatService.getDate(abstractSession.date)}",
-                style = MaterialTheme.typography.titleLarge
-            )
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)) {
+                Text(
+                    text = "Session ${FormatService.getDate(abstractSession.date)}",
+                    style = MaterialTheme.typography.titleLarge
+                )
+                IconButton(onClick = {
+                    onEvent(
+                        AbstractSessionEvent.DeleteSession(
+                            abstractSession
+                        )
+                    )
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete Session",
+                        tint = MaterialTheme.colorScheme.errorContainer
+                    )
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "[${abstractSession.sessionTime}] minutes - Start: ${
@@ -61,7 +78,7 @@ fun InputCard(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Sticking Points: ${abstractSession.stickingPoints}",
+                text = "Sticking Points:\n${abstractSession.stickingPoints}",
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -72,18 +89,6 @@ fun InputCard(
                     )
                 }",
                 style = MaterialTheme.typography.bodySmall
-            )
-        }
-        IconButton(onClick = {
-            onEvent(
-                AbstractSessionEvent.DeleteSession(
-                    abstractSession
-                )
-            )
-        }) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Delete Session"
             )
         }
     }
