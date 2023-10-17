@@ -6,17 +6,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
-import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalDate
@@ -92,18 +93,30 @@ fun AddInputDialog(
                 Button(onClick = { endHourDialogState.show() }) {
                     Text(text = "Set end time")
                 }
-                TextField(value = state.sets,
+                OutlinedTextField(
+                    value = state.sets,
                     onValueChange = { onEvent(AbstractSessionEvent.SetSets(it)) },
-                    placeholder = { Text(text = "Sets") })
-                TextField(value = state.convos,
+                    placeholder = { Text(text = "Sets") },
+                    shape = MaterialTheme.shapes.large
+                )
+                OutlinedTextField(
+                    value = state.convos,
                     onValueChange = { onEvent(AbstractSessionEvent.SetConvos(it)) },
-                    placeholder = { Text(text = "Convos") })
-                TextField(value = state.contacts,
+                    placeholder = { Text(text = "Convos") },
+                    shape = MaterialTheme.shapes.large
+                )
+                OutlinedTextField(
+                    value = state.contacts,
                     onValueChange = { onEvent(AbstractSessionEvent.SetContacts(it)) },
-                    placeholder = { Text(text = "Contacts") })
-                TextField(value = state.stickingPoints,
+                    placeholder = { Text(text = "Contacts") },
+                    shape = MaterialTheme.shapes.large
+                )
+                OutlinedTextField(
+                    value = state.stickingPoints,
                     onValueChange = { onEvent(AbstractSessionEvent.SetStickingPoints(it)) },
-                    placeholder = { Text(text = "Sticking Points") })
+                    placeholder = { Text(text = "Sticking Points") },
+                    shape = MaterialTheme.shapes.large
+                )
             }
         },
         confirmButton = {
