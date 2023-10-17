@@ -59,7 +59,7 @@ fun InputCard(
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "[${abstractSession.sessionTime}] minutes - Start: ${
+                text = "${abstractSession.sessionTime} minutes - Start: ${
                     FormatService.getTime(
                         abstractSession.startHour
                     )
