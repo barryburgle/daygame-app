@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
@@ -43,5 +44,9 @@ class MainActivity : ComponentActivity() {
                 InputScreen(state = state, onEvent = viewModel::onEvent)
             }
         }
+        WindowCompat.setDecorFitsSystemWindows(
+            window,
+            false
+        )
     }
 }
