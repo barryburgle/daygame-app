@@ -71,7 +71,7 @@ fun AddInputDialog(
         }
     }
     AlertDialog(
-        modifier = modifier,
+        modifier = modifier.shadow(elevation = 10.dp),
         onDismissRequest = {
             onEvent(AbstractSessionEvent.HideDialog)
         },
