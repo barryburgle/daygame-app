@@ -13,11 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
+import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalDate
@@ -32,41 +35,96 @@ fun AddInputDialog(
     val dateDialogState = rememberMaterialDialogState()
     val startHourDialogState = rememberMaterialDialogState()
     val endHourDialogState = rememberMaterialDialogState()
-    MaterialDialog(dialogState = dateDialogState,
+    MaterialDialog(
+        dialogState = dateDialogState,
         elevation = 10.dp,
         buttons = {
-            positiveButton("Ok")
-            negativeButton("Cancel")
-        }) {
+            positiveButton(
+                "Ok",
+                textStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            )
+            negativeButton(
+                "Cancel",
+                textStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            )
+        },
+        shape = MaterialTheme.shapes.extraLarge
+    ) {
         this.datepicker(
             initialDate = LocalDate.now(),
-            title = "Set date"
+            title = "Set date",
+            colors = DatePickerDefaults.colors(
+                headerBackgroundColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                headerTextColor = MaterialTheme.colorScheme.onPrimary,
+                dateActiveBackgroundColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                dateInactiveBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+            )
         ) {
             onEvent(AbstractSessionEvent.SetDate(it.toString()))
         }
     }
-    MaterialDialog(dialogState = startHourDialogState,
+    MaterialDialog(
+        dialogState = startHourDialogState,
         elevation = 10.dp,
         buttons = {
-            positiveButton("Ok")
-            negativeButton("Cancel")
-        }) {
+            positiveButton(
+                "Ok",
+                textStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            )
+            negativeButton(
+                "Cancel",
+                textStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            )
+        },
+        shape = MaterialTheme.shapes.extraLarge
+    ) {
         this.timepicker(
             initialTime = LocalTime.now(),
-            title = "Set start hour"
+            title = "Set start hour",
+            colors = TimePickerDefaults.colors(
+                selectorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                activeBackgroundColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                inactiveBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+            )
         ) {
             onEvent(AbstractSessionEvent.SetStartHour(it.toString().substring(0, 5)))
         }
     }
-    MaterialDialog(dialogState = endHourDialogState,
+    MaterialDialog(
+        dialogState = endHourDialogState,
         elevation = 10.dp,
         buttons = {
-            positiveButton("Ok")
-            negativeButton("Cancel")
-        }) {
+            positiveButton(
+                "Ok",
+                textStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            )
+            negativeButton(
+                "Cancel",
+                textStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            )
+        },
+        shape = MaterialTheme.shapes.extraLarge
+    ) {
         this.timepicker(
             initialTime = LocalTime.now(),
             title = "Set end hour",
+            colors = TimePickerDefaults.colors(
+                selectorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                activeBackgroundColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                inactiveBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+            )
         ) {
             onEvent(AbstractSessionEvent.SetEndHour(it.toString().substring(0, 5)))
         }
@@ -88,10 +146,10 @@ fun AddInputDialog(
                     Text(text = "Set date")
                 }
                 Button(onClick = { startHourDialogState.show() }) {
-                    Text(text = "Set start time")
+                    Text(text = "Set start hour")
                 }
                 Button(onClick = { endHourDialogState.show() }) {
-                    Text(text = "Set end time")
+                    Text(text = "Set end hour")
                 }
                 OutlinedTextField(
                     value = state.sets,
