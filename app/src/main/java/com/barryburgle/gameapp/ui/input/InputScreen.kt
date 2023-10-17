@@ -37,7 +37,7 @@ fun InputScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = { onEvent(AbstractSessionEvent.ShowDialog) }) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Session")
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add a session")
             }
         }
     ) { padding ->
