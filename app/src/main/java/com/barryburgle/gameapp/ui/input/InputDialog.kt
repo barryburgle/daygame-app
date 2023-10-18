@@ -3,7 +3,9 @@ package com.barryburgle.gameapp.ui.input
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -142,38 +144,48 @@ fun AddInputDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Button(onClick = { dateDialogState.show() }) {
+                Button(
+                    onClick = { dateDialogState.show() }) {
                     Text(text = "Set date")
                 }
-                Button(onClick = { startHourDialogState.show() }) {
+                Button(
+                    onClick = { startHourDialogState.show() }) {
                     Text(text = "Set start hour")
                 }
-                Button(onClick = { endHourDialogState.show() }) {
+                Button(
+                    onClick = { endHourDialogState.show() }) {
                     Text(text = "Set end hour")
                 }
-                OutlinedTextField(
-                    value = state.sets,
-                    onValueChange = { onEvent(AbstractSessionEvent.SetSets(it)) },
-                    placeholder = { Text(text = "Sets") },
-                    shape = MaterialTheme.shapes.large
-                )
-                OutlinedTextField(
-                    value = state.convos,
-                    onValueChange = { onEvent(AbstractSessionEvent.SetConvos(it)) },
-                    placeholder = { Text(text = "Convos") },
-                    shape = MaterialTheme.shapes.large
-                )
-                OutlinedTextField(
-                    value = state.contacts,
-                    onValueChange = { onEvent(AbstractSessionEvent.SetContacts(it)) },
-                    placeholder = { Text(text = "Contacts") },
-                    shape = MaterialTheme.shapes.large
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    InputCountComponent(
+                        inputTitle = "Sets", modifier = Modifier,
+                        style = MaterialTheme.typography.titleSmall,
+                        onEvent = onEvent,
+                        saveEvent = AbstractSessionEvent::SetSets
+                    )
+                    InputCountComponent(
+                        inputTitle = "Convos", modifier = Modifier,
+                        style = MaterialTheme.typography.titleSmall,
+                        onEvent = onEvent,
+                        saveEvent = AbstractSessionEvent::SetConvos
+                    )
+                    InputCountComponent(
+                        inputTitle = "Contacts", modifier = Modifier,
+                        style = MaterialTheme.typography.titleSmall,
+                        onEvent = onEvent,
+                        saveEvent = AbstractSessionEvent::SetContacts
+                    )
+                }
                 OutlinedTextField(
                     value = state.stickingPoints,
                     onValueChange = { onEvent(AbstractSessionEvent.SetStickingPoints(it)) },
                     placeholder = { Text(text = "Sticking Points") },
-                    shape = MaterialTheme.shapes.large
+                    shape = MaterialTheme.shapes.large,
+                    modifier = Modifier.height(100.dp)
                 )
             }
         },
@@ -182,9 +194,10 @@ fun AddInputDialog(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterEnd
             ) {
-                Button(onClick = {
-                    onEvent(AbstractSessionEvent.SaveAbstractSession)
-                }) {
+                Button(
+                    onClick = {
+                        onEvent(AbstractSessionEvent.SaveAbstractSession)
+                    }) {
                     Text(text = "Save")
                 }
             }
