@@ -47,13 +47,13 @@ fun AddInputDialog(
             positiveButton(
                 "Ok",
                 textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.surfaceVariant
                 )
             )
             negativeButton(
                 "Cancel",
                 textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.surfaceVariant
                 )
             )
         },
@@ -63,10 +63,13 @@ fun AddInputDialog(
             initialDate = LocalDate.now(),
             title = "Set date",
             colors = DatePickerDefaults.colors(
-                headerBackgroundColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                headerBackgroundColor = MaterialTheme.colorScheme.background,
                 headerTextColor = MaterialTheme.colorScheme.onPrimary,
-                dateActiveBackgroundColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                dateInactiveBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+                dateActiveBackgroundColor = MaterialTheme.colorScheme.tertiary,
+                dateActiveTextColor = MaterialTheme.colorScheme.onPrimary,
+                dateInactiveBackgroundColor = MaterialTheme.colorScheme.onTertiary,
+                dateInactiveTextColor = MaterialTheme.colorScheme.background
+
             )
         ) {
             onEvent(AbstractSessionEvent.SetDate(it.toString()))
@@ -79,13 +82,13 @@ fun AddInputDialog(
             positiveButton(
                 "Ok",
                 textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.surfaceVariant
                 )
             )
             negativeButton(
                 "Cancel",
                 textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.surfaceVariant
                 )
             )
         },
@@ -95,9 +98,11 @@ fun AddInputDialog(
             initialTime = LocalTime.now(),
             title = "Set start hour",
             colors = TimePickerDefaults.colors(
-                selectorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                activeBackgroundColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                inactiveBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+                selectorColor = MaterialTheme.colorScheme.onPrimary,
+                activeBackgroundColor = MaterialTheme.colorScheme.tertiary,
+                activeTextColor = MaterialTheme.colorScheme.background,
+                inactiveBackgroundColor = MaterialTheme.colorScheme.primary,
+                inactiveTextColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
             onEvent(AbstractSessionEvent.SetStartHour(it.toString().substring(0, 5)))
@@ -110,13 +115,13 @@ fun AddInputDialog(
             positiveButton(
                 "Ok",
                 textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.surfaceVariant
                 )
             )
             negativeButton(
                 "Cancel",
                 textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.surfaceVariant
                 )
             )
         },
@@ -126,9 +131,11 @@ fun AddInputDialog(
             initialTime = LocalTime.now(),
             title = "Set end hour",
             colors = TimePickerDefaults.colors(
-                selectorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                activeBackgroundColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                inactiveBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+                selectorColor = MaterialTheme.colorScheme.onPrimary,
+                activeBackgroundColor = MaterialTheme.colorScheme.tertiary,
+                activeTextColor = MaterialTheme.colorScheme.background,
+                inactiveBackgroundColor = MaterialTheme.colorScheme.primary,
+                inactiveTextColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
             onEvent(AbstractSessionEvent.SetEndHour(it.toString().substring(0, 5)))
