@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.input
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
@@ -34,6 +36,7 @@ fun AddInputDialog(
     onEvent: (AbstractSessionEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val localContext = LocalContext.current.applicationContext
     val dateDialogState = rememberMaterialDialogState()
     val startHourDialogState = rememberMaterialDialogState()
     val endHourDialogState = rememberMaterialDialogState()
@@ -197,6 +200,8 @@ fun AddInputDialog(
                 Button(
                     onClick = {
                         onEvent(AbstractSessionEvent.SaveAbstractSession)
+                        Toast.makeText(localContext, "Session saved", Toast.LENGTH_SHORT)
+                            .show()
                     }) {
                     Text(text = "Save")
                 }
