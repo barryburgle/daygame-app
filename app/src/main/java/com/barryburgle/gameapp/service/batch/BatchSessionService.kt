@@ -20,15 +20,17 @@ class BatchSessionService : BatchSessionInitializer, AbstractSessionService() {
         contacts: String,
         stickingPoints: String
     ): AbstractSession {
-        val parsedDate =
+        val parsedDate = if (date.isBlank()) getLocalDateTimeNow(15, "00:00:00.000Z") else
             LocalDateTime.parse(date + DATE_SUFFIX, savingFormatter)
         val parsedStartHour =
-            LocalDateTime.parse(date + SEPARATOR + startHour + TIME_SUFFIX, savingFormatter)
+            if (date.isBlank() || startHour.isBlank()) getLocalDateTimeNow(10, ":00.000Z") else
+                LocalDateTime.parse(date + SEPARATOR + startHour + TIME_SUFFIX, savingFormatter)
         val parsedEndHour =
-            LocalDateTime.parse(date + SEPARATOR + endHour + TIME_SUFFIX, savingFormatter)
-        val parsedSets: Int = sets.toInt()
-        val parsedConvos: Int = convos.toInt()
-        val parsedContacts: Int = contacts.toInt()
+            if (date.isBlank() || endHour.isBlank()) getLocalDateTimeNow(10, ":00.000Z") else
+                LocalDateTime.parse(date + SEPARATOR + endHour + TIME_SUFFIX, savingFormatter)
+        val parsedSets: Int = if (sets.isBlank()) 0 else sets.toInt()
+        val parsedConvos: Int = if (convos.isBlank()) 0 else convos.toInt()
+        val parsedContacts: Int = if (contacts.isBlank()) 0 else contacts.toInt()
         val sessionTime: Long = computeSessionTime(
             parsedStartHour.toLocalTime(),
             parsedEndHour.toLocalTime()
@@ -76,6 +78,14 @@ class BatchSessionService : BatchSessionInitializer, AbstractSessionService() {
             index,
             dayOfWeek.value,
             weekOfYear
+        )
+    }
+
+    private fun getLocalDateTimeNow(last: Int, suffix: String): LocalDateTime {
+        val localDateTime = LocalDateTime.now()
+        return LocalDateTime.parse(
+            localDateTime.toString().dropLast(last) + suffix,
+            savingFormatter
         )
     }
 }
