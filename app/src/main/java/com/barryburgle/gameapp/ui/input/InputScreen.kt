@@ -98,7 +98,7 @@ fun InputScreen(
                                     )
                                 )
                                 Text(
-                                    text = sortType.field,
+                                    text = sortType.field + " ",
                                     color = MaterialTheme.colorScheme.secondary
                                 )
                             }
