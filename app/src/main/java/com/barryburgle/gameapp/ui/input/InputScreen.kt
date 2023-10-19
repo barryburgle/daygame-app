@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -55,40 +57,51 @@ fun InputScreen(
         ) {
             item {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState()),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(5.dp)
                 ) {
-                    SortType.values().forEach { sortType ->
-                        Row(
-                            modifier = Modifier
-                                .clickable {
-                                    onEvent(
-                                        AbstractSessionEvent.SortSessions(
-                                            sortType
+                    Text(
+                        text = "Sort by: ",
+                        color = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.offset(y = 10.dp)
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .offset(y = 10.dp)
+                            .horizontalScroll(rememberScrollState()),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        SortType.values().forEach { sortType ->
+                            Row(
+                                modifier = Modifier
+                                    .clickable {
+                                        onEvent(
+                                            AbstractSessionEvent.SortSessions(
+                                                sortType
+                                            )
                                         )
-                                    )
-                                },
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            RadioButton(
-                                selected = state.sortType == sortType, onClick = {
-                                    onEvent(
-                                        AbstractSessionEvent.SortSessions(
-                                            sortType
+                                    },
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                RadioButton(
+                                    selected = state.sortType == sortType, onClick = {
+                                        onEvent(
+                                            AbstractSessionEvent.SortSessions(
+                                                sortType
+                                            )
                                         )
+                                    },
+                                    colors = RadioButtonDefaults.colors(
+                                        selectedColor = MaterialTheme.colorScheme.secondary,
+                                        unselectedColor = MaterialTheme.colorScheme.secondaryContainer
                                     )
-                                },
-                                colors = RadioButtonDefaults.colors(
-                                    selectedColor = MaterialTheme.colorScheme.secondary,
-                                    unselectedColor = MaterialTheme.colorScheme.secondaryContainer
                                 )
-                            )
-                            Text(
-                                text = sortType.field,
-                                color = MaterialTheme.colorScheme.secondary
-                            )
+                                Text(
+                                    text = sortType.field,
+                                    color = MaterialTheme.colorScheme.secondary
+                                )
+                            }
                         }
                     }
                 }
