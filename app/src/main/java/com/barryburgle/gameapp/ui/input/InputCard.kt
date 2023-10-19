@@ -33,7 +33,7 @@ fun InputCard(
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         shape = MaterialTheme.shapes.large
     ) {
