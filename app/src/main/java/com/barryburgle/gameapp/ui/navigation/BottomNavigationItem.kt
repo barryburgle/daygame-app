@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.ui.input.state
+package com.barryburgle.gameapp.ui.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
 
