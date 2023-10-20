@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.ui
+package com.barryburgle.gameapp.ui.navigation
 
 import android.annotation.SuppressLint
 import androidx.compose.material.icons.Icons
@@ -27,10 +27,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.ui.input.InputScreen
-import com.barryburgle.gameapp.ui.input.OutputScreen
-import com.barryburgle.gameapp.ui.input.state.BottomNavigationItem
+import com.barryburgle.gameapp.ui.output.OutputScreen
 import com.barryburgle.gameapp.ui.input.state.InputState
-import com.barryburgle.gameapp.ui.input.state.ToolsScreen
+import com.barryburgle.gameapp.ui.tool.ToolsScreen
 
 @SuppressLint("ComposableDestinationInComposeScope")
 @OptIn(ExperimentalMaterial3Api::class)
