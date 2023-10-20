@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.ui
+package com.barryburgle.gameapp.ui.navigation
 
 sealed class Screen(val route: String) {
     object InputScreen : Screen("input")
