@@ -7,5 +7,6 @@ data class BottomNavigationItem(
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
     val hasNews: Boolean,
-    val badgeCount: Int?? = null
+    val badgeCount: Int?? = null,
+    val destinationScreen: String
 )
