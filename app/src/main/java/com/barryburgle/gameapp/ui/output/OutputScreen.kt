@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.ui.input
+package com.barryburgle.gameapp.ui.output
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
