@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.input
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -38,11 +38,13 @@ import com.barryburgle.gameapp.ui.input.state.InputState
 fun InputScreen(
     state: InputState, onEvent: (AbstractSessionEvent) -> Unit, navController: NavController
 ) {
+    val spaceFromTop = 80.dp
+    val spaceFromBottom = 60.dp
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { onEvent(AbstractSessionEvent.ShowDialog) },
-                modifier = Modifier.offset(y = -80.dp)
+                modifier = Modifier.offset(y = -spaceFromTop)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -56,14 +58,12 @@ fun InputScreen(
         }
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(50.dp),
+            modifier = Modifier.background(MaterialTheme.colorScheme.primary)
         ) {
             item {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(5.dp)
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Sort by: ",
@@ -99,7 +99,7 @@ fun InputScreen(
                                     },
                                     colors = RadioButtonDefaults.colors(
                                         selectedColor = MaterialTheme.colorScheme.secondary,
-                                        unselectedColor = MaterialTheme.colorScheme.secondaryContainer
+                                        unselectedColor = MaterialTheme.colorScheme.surface
                                     )
                                 )
                                 Text(
@@ -111,6 +111,14 @@ fun InputScreen(
                     }
                 }
             }
+        }
+        LazyColumn(
+            contentPadding = PaddingValues(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(y = spaceFromTop),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             items(state.abstractSessions) { abstractSession ->
                 InputCard(
                     abstractSession,
@@ -123,7 +131,7 @@ fun InputScreen(
                         )
                 )
             }
-            item { Row(modifier = Modifier.height(55.dp)) {} }
+            item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom)) {} }
         }
     }
 }
