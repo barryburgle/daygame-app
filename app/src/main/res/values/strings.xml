@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GameApp</string>
+    <string name="app_name">Daygame</string>
     <string name="title_input">Input</string>
     <string name="title_output">Output</string>
     <string name="title_tool">Tool</string>
