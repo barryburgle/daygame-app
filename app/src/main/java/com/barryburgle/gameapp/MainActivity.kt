@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import com.barryburgle.gameapp.database.session.GameAppDatabase
-import com.barryburgle.gameapp.ui.input.InputScreen
+import com.barryburgle.gameapp.ui.navigation.Navigation
 import com.barryburgle.gameapp.ui.input.InputViewModel
 import com.barryburgle.gameapp.ui.theme.GameAppOriginalTheme
 
@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             GameAppOriginalTheme {
                 val state by viewModel.state.collectAsState()
-                InputScreen(state = state, onEvent = viewModel::onEvent)
+                Navigation(state = state, onEvent = viewModel::onEvent)
             }
         }
         WindowCompat.setDecorFitsSystemWindows(
