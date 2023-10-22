@@ -21,7 +21,7 @@ interface AbstractSessionDao {
     @Query("SELECT * from abstract_session")
     fun getAll(): Flow<List<AbstractSession>>
 
-    @Query("SELECT * from abstract_session ORDER BY session_date DESC")
+    @Query("SELECT * from abstract_session ORDER BY session_date DESC, end_hour DESC")
     fun getByDate(): Flow<List<AbstractSession>>
 
     @Query("SELECT * from abstract_session ORDER BY sets DESC")
