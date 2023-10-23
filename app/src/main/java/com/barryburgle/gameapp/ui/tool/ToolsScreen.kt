@@ -15,7 +15,7 @@ import com.barryburgle.gameapp.ui.input.state.InputState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ToolsScreen(
-    state: InputState, onEvent: (AbstractSessionEvent) -> Unit, navController: NavController
+    state: InputState, onEvent: (AbstractSessionEvent) -> Unit
 ) {
     Scaffold { padding ->
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
