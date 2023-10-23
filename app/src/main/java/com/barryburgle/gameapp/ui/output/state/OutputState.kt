@@ -1,4 +1,7 @@
 package com.barryburgle.gameapp.ui.output.state
 
-class OutputState {
-}
+import com.barryburgle.gameapp.model.enums.ChartType
+
+data class OutputState(
+    val chartType: ChartType = ChartType.ABSOLUTE
+)
