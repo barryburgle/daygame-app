@@ -28,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.ui.input.state.InputState
@@ -36,7 +35,7 @@ import com.barryburgle.gameapp.ui.input.state.InputState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputScreen(
-    state: InputState, onEvent: (AbstractSessionEvent) -> Unit, navController: NavController
+    state: InputState, onEvent: (AbstractSessionEvent) -> Unit
 ) {
     val spaceFromTop = 80.dp
     val spaceFromBottom = 60.dp
