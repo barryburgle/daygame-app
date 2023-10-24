@@ -14,7 +14,9 @@ import androidx.room.Room
 import com.barryburgle.gameapp.database.session.GameAppDatabase
 import com.barryburgle.gameapp.ui.navigation.Navigation
 import com.barryburgle.gameapp.ui.input.InputViewModel
+import com.barryburgle.gameapp.ui.output.OutputViewModel
 import com.barryburgle.gameapp.ui.theme.GameAppOriginalTheme
+import com.barryburgle.gameapp.ui.tool.ToolViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -26,11 +28,29 @@ class MainActivity : ComponentActivity() {
             "game_app_db"
         ).build()
     }
-    private val viewModel by viewModels<InputViewModel>(
+    private val inputViewModel by viewModels<InputViewModel>(
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     return InputViewModel(db.abstractSessionDao) as T
+                }
+            }
+        }
+    )
+    private val outputViewModel by viewModels<OutputViewModel>(
+        factoryProducer = {
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return OutputViewModel(db.abstractSessionDao) as T
+                }
+            }
+        }
+    )
+    private val toolViewModel by viewModels<ToolViewModel>(
+        factoryProducer = {
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return ToolViewModel(db.abstractSessionDao) as T
                 }
             }
         }
@@ -42,8 +62,15 @@ class MainActivity : ComponentActivity() {
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
             GameAppOriginalTheme {
-                val state by viewModel.state.collectAsState()
-                Navigation(state = state, onEvent = viewModel::onEvent)
+                val inputState by inputViewModel.state.collectAsState()
+                val outputState by outputViewModel.state.collectAsState()
+                val toolsState by toolViewModel.state.collectAsState()
+                Navigation(
+                    inputState = inputState,
+                    outputState = outputState,
+                    toolState = toolsState,
+                    onEvent = inputViewModel::onEvent
+                )
             }
         }
         WindowCompat.setDecorFitsSystemWindows(
