@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.ui.output
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
+import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.model.enums.ChartType
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +20,7 @@ class OutputViewModel(private val abstractSessionDao: AbstractSessionDao) : View
     val state =
         combine(_state, _chartType, _abstractSessions) { state, chartType, abstractSessions ->
             state.copy(
-                abstractSessions = abstractSessions,
+                abstractSessions = SessionManager.normalizeSessionsIds(abstractSessions),
                 chartType = chartType
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), OutputState())
