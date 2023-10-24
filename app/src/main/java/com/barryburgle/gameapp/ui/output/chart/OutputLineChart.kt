@@ -8,14 +8,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.barryburgle.gameapp.ui.theme.Shapes
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.LineData
@@ -24,7 +21,12 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 
 
 @Composable
-fun OutputLineChart(barEntryList: List<BarEntry>, description: String) {
+fun OutputLineChart(
+    barEntryList: List<BarEntry>,
+    description: String,
+    integerValues: Boolean,
+    ratio: Boolean
+) {
     val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface.toArgb()
     Column(
@@ -36,7 +38,7 @@ fun OutputLineChart(barEntryList: List<BarEntry>, description: String) {
     ) {
         Text(
             text = description,
-            fontSize = 24.sp,
+            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .background(
                     MaterialTheme.colorScheme.surface,
@@ -54,8 +56,7 @@ fun OutputLineChart(barEntryList: List<BarEntry>, description: String) {
                         LineChart(context),
                         surfaceColor,
                         barEntryList,
-                        onSurfaceColor,
-                        15f
+                        ratio
                     )
                 val formatter: ValueFormatter = object : ValueFormatter() {
                     override fun getFormattedValue(value: Float): String {
@@ -67,8 +68,12 @@ fun OutputLineChart(barEntryList: List<BarEntry>, description: String) {
                 val dataset =
                     LineDataSet(barEntryList, "Label").apply {
                         color = onSurfaceColor
-                        valueTextColor = Color.White.toArgb()
-                        setDrawValues(false)
+                        valueTextColor = onSurfaceColor
+                        valueTextSize = 12f
+                        setDrawValues(true)
+                        if (integerValues) {
+                            valueFormatter = IntegerValueFormatter()
+                        }
                         lineWidth = 3f
                         isHighlightEnabled = true
                         setDrawHighlightIndicators(false)
@@ -90,34 +95,27 @@ fun styleLineChart(
     lineChart: LineChart,
     surfaceColor: Int,
     barEntryList: List<BarEntry>,
-    textColor: Int,
-    fontSize: Float
+    ratio: Boolean
 ): LineChart {
     lineChart.apply {
         setBackgroundColor(surfaceColor)
         axisRight.isEnabled = false
         axisLeft.apply {
-            axisMinimum = -1f
-            val max = barEntryList.maxOf { barEntry -> barEntry.y }.toInt()
-            axisMaximum = max.toFloat() + 1
-            labelCount = if (max % 2 == 0) {
-                (max + 2) / 2
+            isEnabled = false
+            if (!ratio) {
+                axisMinimum = -1f
+                val max = barEntryList.maxOf { barEntry -> barEntry.y }.toInt()
+                axisMaximum = max.toFloat() + 1
             } else {
-                (max + 1) / 2
+                axisMinimum = -.05f
+                axisMaximum = 1.05f
             }
-            setDrawGridLines(true)
-            setDrawAxisLine(true)
-            textSize = fontSize
-            setTextColor(textColor)
         }
         xAxis.apply {
-            setDrawGridLines(true)
-            setDrawAxisLine(true)
-            position = XAxis.XAxisPosition.BOTTOM
-            textSize = fontSize
             isEnabled = false
-            setTextColor(textColor)
         }
+        setTouchEnabled(true)
+        isDragEnabled = true
         setScaleEnabled(false)
         setPinchZoom(false)
         description = null
@@ -125,4 +123,11 @@ fun styleLineChart(
         extraBottomOffset = 15f
     }
     return lineChart
+}
+
+private class IntegerValueFormatter : ValueFormatter() {
+    override fun getFormattedValue(value: Float): String {
+        val integer = value.toInt()
+        return integer.toString()
+    }
 }
