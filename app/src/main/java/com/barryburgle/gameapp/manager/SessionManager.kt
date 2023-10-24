@@ -4,6 +4,15 @@ import com.barryburgle.gameapp.model.session.AbstractSession
 
 class SessionManager {
     companion object {
+        fun normalizeSessionsIds(
+            abstractSessions: List<AbstractSession>
+        ): List<AbstractSession> {
+            for (index in abstractSessions.indices) {
+                abstractSessions[index].id = index.toLong()
+            }
+            return abstractSessions
+        }
+
         fun computeIndexMovingAverage(
             abstractSessions: Array<AbstractSession>,
             window: Int

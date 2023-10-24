@@ -31,6 +31,14 @@ class SessionManagerTest {
     val INDEX_LAST_4_SESSIONS: Double = 8.1083
 
     @Test
+    fun normalizeSessionsIdsTest() {
+        val normalizedSessionList: List<AbstractSession> =
+            SessionManager.normalizeSessionsIds(createSessionList())
+        assertEquals(0L, normalizedSessionList.get(0).id)
+        assertEquals(1L, normalizedSessionList.get(1).id)
+    }
+
+    @Test
     fun computeIndexMovingAverageLastThreeTest() {
         doComputeIndexMovingAverageLastNTest(3, INDEX_LAST_3_SESSIONS)
     }
@@ -102,6 +110,29 @@ class SessionManagerTest {
                 SETS_4.toString(),
                 CONVOS_4.toString(),
                 CONTACTS_4.toString(),
+                STICKING_POINTS
+            )
+        )
+    }
+
+    private fun createSessionList(): List<AbstractSession> {
+        return listOf(
+            batchSessionService.init(
+                DATE.toString(),
+                START_HOUR.toString(),
+                END_HOUR.toString(),
+                SETS_1.toString(),
+                CONVOS_1.toString(),
+                CONTACTS_1.toString(),
+                STICKING_POINTS
+            ),
+            batchSessionService.init(
+                DATE.toString(),
+                START_HOUR.toString(),
+                END_HOUR.toString(),
+                SETS_2.toString(),
+                CONVOS_2.toString(),
+                CONTACTS_2.toString(),
                 STICKING_POINTS
             )
         )
