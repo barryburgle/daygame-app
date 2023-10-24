@@ -8,14 +8,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import com.barryburgle.gameapp.event.AbstractSessionEvent
-import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.tool.state.ToolsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ToolsScreen(
-    state: InputState, onEvent: (AbstractSessionEvent) -> Unit
+    state: ToolsState, onEvent: (AbstractSessionEvent) -> Unit
 ) {
     Scaffold { padding ->
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
