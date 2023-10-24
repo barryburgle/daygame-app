@@ -3,11 +3,11 @@ package com.barryburgle.gameapp.model.enums
 enum class SortType(val field: String) {
     DATE("Date"),
     SETS("Sets"),
-    CONVOS("Convos"),
+    CONVOS("Conversations"),
     CONTACS("Contacts"),
     SESSION_TIME("Session Time"),
     APPROACH_TIME("Approach Time"),
-    CONVO_RATIO("Convo Ratio"),
+    CONVO_RATIO("Conversation Ratio"),
     REJECTION_RATIO("Rejection Ratio"),
     CONTACT_RATIO("Contact Ratio"),
     INDEX("Index"),

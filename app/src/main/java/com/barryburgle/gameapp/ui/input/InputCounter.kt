@@ -40,13 +40,13 @@ fun InputCounter(
             val char = if (oldChar == newChar) {
                 oldCountString[charIndex]
             } else {
-                newChar
+                countString[charIndex]
             }
             AnimatedContent(
                 targetState = char,
                 transitionSpec = {
                     slideInVertically { it } with slideOutVertically { -it }
-                }) {
+                }) { char ->
                 Text(
                     text = char.toString(),
                     style = style,
