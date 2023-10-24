@@ -24,7 +24,9 @@ fun OutputCard(
             elevation = 5.dp,
             shape = MaterialTheme.shapes.large
         ),
-    barEntryList: List<BarEntry>
+    barEntryList: List<BarEntry>,
+    integerValues: Boolean,
+    ratio: Boolean
 ) {
     Card(
         modifier = modifier,
@@ -34,7 +36,12 @@ fun OutputCard(
         shape = MaterialTheme.shapes.large
     ) {
         Row {
-            OutputLineChart(barEntryList = barEntryList, description = chartLabel)
+            OutputLineChart(
+                barEntryList = barEntryList,
+                description = chartLabel,
+                integerValues = integerValues,
+                ratio = ratio
+            )
         }
     }
 }
