@@ -178,7 +178,7 @@ fun AddInputDialog(
                         saveEvent = AbstractSessionEvent::SetSets
                     )
                     InputCountComponent(
-                        inputTitle = "Convos", modifier = Modifier,
+                        inputTitle = "Conversations", modifier = Modifier,
                         style = MaterialTheme.typography.titleSmall,
                         onEvent = onEvent,
                         saveEvent = AbstractSessionEvent::SetConvos
