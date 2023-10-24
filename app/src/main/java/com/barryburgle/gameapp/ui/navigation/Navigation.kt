@@ -3,11 +3,11 @@ package com.barryburgle.gameapp.ui.navigation
 import android.annotation.SuppressLint
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Build
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,14 +27,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.ui.input.InputScreen
-import com.barryburgle.gameapp.ui.output.OutputScreen
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.output.OutputScreen
+import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.barryburgle.gameapp.ui.tool.ToolsScreen
+import com.barryburgle.gameapp.ui.tool.state.ToolsState
 
 @SuppressLint("ComposableDestinationInComposeScope")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Navigation(state: InputState, onEvent: (AbstractSessionEvent) -> Unit) {
+fun Navigation(
+    inputState: InputState,
+    outputState: OutputState,
+    toolState: ToolsState,
+    onEvent: (AbstractSessionEvent) -> Unit
+) {
     val navController = rememberNavController()
 
     val items = listOf(
@@ -47,8 +54,8 @@ fun Navigation(state: InputState, onEvent: (AbstractSessionEvent) -> Unit) {
         ),
         BottomNavigationItem(
             title = "Output",
-            selectedIcon = Icons.Filled.Star,
-            unselectedIcon = Icons.Outlined.Star,
+            selectedIcon = Icons.Filled.CheckCircle,
+            unselectedIcon = Icons.Outlined.CheckCircle,
             hasNews = false,
             destinationScreen = Screen.OutputScreen.route
         ),
@@ -101,13 +108,13 @@ fun Navigation(state: InputState, onEvent: (AbstractSessionEvent) -> Unit) {
     ) { padding ->
         NavHost(navController = navController, startDestination = Screen.InputScreen.route) {
             composable(Screen.InputScreen.route) {
-                InputScreen(state = state, onEvent = onEvent, navController = navController)
+                InputScreen(state = inputState, onEvent = onEvent)
             }
             composable(Screen.OutputScreen.route) {
-                OutputScreen(state = state, onEvent = onEvent, navController = navController)
+                OutputScreen(state = outputState, onEvent = onEvent)
             }
             composable(Screen.ToolScreen.route) {
-                ToolsScreen(state = state, onEvent = onEvent, navController = navController)
+                ToolsScreen(state = toolState, onEvent = onEvent)
             }
         }
     }
