@@ -8,6 +8,7 @@ Everything is stored locally on your device.
 - [ ] Define new beta version `v0.0.1` and create a badge
 - [ ] Version `v0.0.1` apk available to download
 - [ ] `Tools screen` Lead tracker with reminder feature for numbers and IG closes
+- [ ] `Input screen` Sticking points reminder of last session
 - [ ] `Data` Schema extendable database
 - [ ] `Data` Data export in .csv or .xlsx formats
 - [ ] `Input screen` Live session insert with stealth set recording during a live session import (
