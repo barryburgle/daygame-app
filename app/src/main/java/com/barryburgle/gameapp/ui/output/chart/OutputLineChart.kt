@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.ui.output.chart
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -9,8 +10,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.ui.theme.Shapes
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.YAxis
@@ -36,6 +40,8 @@ fun OutputLineChart(
                 Shapes.large
             )
     ) {
+        val context = LocalContext.current
+        val darkThemeEnabled = isSystemInDarkTheme()
         Text(
             text = description,
             style = MaterialTheme.typography.titleLarge,
@@ -82,6 +88,14 @@ fun OutputLineChart(
                         circleColors = listOf(onSurfaceColor)
                         circleHoleColor = onSurfaceColor
                         mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+                        setDrawFilled(true)
+                        if (darkThemeEnabled) {
+                            fillDrawable =
+                                ContextCompat.getDrawable(context, R.drawable.bg_output_line_b)
+                        } else {
+                            fillDrawable =
+                                ContextCompat.getDrawable(context, R.drawable.bg_output_line_w)
+                        }
                     }
                 val barData = LineData(dataset)
                 barChart.data = barData
