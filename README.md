@@ -16,7 +16,7 @@ Everything is stored locally on your device.
 
 ## Features
 - [x] `Input screen` Session import with date, start hour, end hour, sets, conversations, contacts, sticking points
-- [x] `Output screen` Charts for sets, conversations, contacts, session performance index, approach time, conversation ratio and contact ratio
+- [x] `Output screen` Charts for sets, conversations, contacts, session performance index, approach time, conversation ratio, contact ratio and average values
 
 ## Previews
 
