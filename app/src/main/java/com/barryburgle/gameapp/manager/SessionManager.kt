@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.manager
 
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.github.mikephil.charting.data.BarEntry
 
 class SessionManager {
     companion object {
@@ -11,6 +12,19 @@ class SessionManager {
                 abstractSessions[index].id = index.toLong()
             }
             return abstractSessions
+        }
+
+        fun computeAverageBarEntryList(barEntryList: List<BarEntry>): List<BarEntry> {
+            var total = 0.0f
+            for (barEntry in barEntryList) {
+                total += barEntry.y
+            }
+            val avg = total / barEntryList.size
+            val avgBarEntryList = ArrayList<BarEntry>()
+            for (barEntry in barEntryList) {
+                avgBarEntryList.add(BarEntry(barEntry.x, avg))
+            }
+            return avgBarEntryList
         }
 
         fun computeIndexMovingAverage(

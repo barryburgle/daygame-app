@@ -2,15 +2,14 @@ package com.barryburgle.gameapp.manager
 
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.batch.BatchSessionService
+import com.github.mikephil.charting.data.BarEntry
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 
 class SessionManagerTest {
     val batchSessionService = BatchSessionService()
-    val INSERT_TIME = Instant.now()
     val DATE = LocalDate.of(2023, 9, 13)
     val START_HOUR = LocalTime.of(16, 0, 0)
     val END_HOUR = LocalTime.of(18, 0, 0)
@@ -36,6 +35,17 @@ class SessionManagerTest {
             SessionManager.normalizeSessionsIds(createSessionList())
         assertEquals(0L, normalizedSessionList.get(0).id)
         assertEquals(1L, normalizedSessionList.get(1).id)
+    }
+
+    @Test
+    fun computeAverageBarEntryListTest() {
+        val barEntryList: List<BarEntry> =
+            listOf(BarEntry(0f, 0f), BarEntry(0f, 1f), BarEntry(0f, 2f))
+        val averageBarEntryList: List<BarEntry> =
+            SessionManager.computeAverageBarEntryList(barEntryList)
+        for (averageBarEntry in averageBarEntryList) {
+            assertEquals(1f, averageBarEntry.y)
+        }
     }
 
     @Test
