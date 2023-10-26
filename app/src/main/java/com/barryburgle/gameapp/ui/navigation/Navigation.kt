@@ -111,10 +111,10 @@ fun Navigation(
                 InputScreen(state = inputState, onEvent = onEvent)
             }
             composable(Screen.OutputScreen.route) {
-                OutputScreen(state = outputState, onEvent = onEvent)
+                OutputScreen(state = outputState)
             }
             composable(Screen.ToolScreen.route) {
-                ToolsScreen(state = toolState, onEvent = onEvent)
+                ToolsScreen(state = toolState)
             }
         }
     }
