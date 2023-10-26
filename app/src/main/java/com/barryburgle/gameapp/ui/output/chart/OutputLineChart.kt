@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.output.chart
 
+import android.graphics.Color
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -10,11 +11,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.barryburgle.gameapp.R
+import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.ui.theme.Shapes
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.YAxis
@@ -33,6 +34,7 @@ fun OutputLineChart(
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface.toArgb()
+    val inChartTextSize = 12f
     Column(
         modifier = Modifier
             .background(
@@ -40,7 +42,6 @@ fun OutputLineChart(
                 Shapes.large
             )
     ) {
-        val context = LocalContext.current
         val darkThemeEnabled = isSystemInDarkTheme()
         Text(
             text = description,
@@ -62,7 +63,9 @@ fun OutputLineChart(
                         LineChart(context),
                         surfaceColor,
                         barEntryList,
-                        ratio
+                        ratio,
+                        onSurfaceColor,
+                        inChartTextSize
                     )
                 val formatter: ValueFormatter = object : ValueFormatter() {
                     override fun getFormattedValue(value: Float): String {
@@ -72,10 +75,10 @@ fun OutputLineChart(
                 val leftAxis: YAxis = barChart.getAxisLeft()
                 leftAxis.setValueFormatter(formatter)
                 val dataset =
-                    LineDataSet(barEntryList, "Label").apply {
+                    LineDataSet(barEntryList, description).apply {
                         color = onSurfaceColor
                         valueTextColor = onSurfaceColor
-                        valueTextSize = 12f
+                        valueTextSize = inChartTextSize
                         setDrawValues(true)
                         if (integerValues) {
                             valueFormatter = IntegerValueFormatter()
@@ -97,7 +100,19 @@ fun OutputLineChart(
                                 ContextCompat.getDrawable(context, R.drawable.bg_output_line_w)
                         }
                     }
-                val barData = LineData(dataset)
+                val avgDataset =
+                    LineDataSet(
+                        SessionManager.computeAverageBarEntryList(barEntryList),
+                        description + " average"
+                    ).apply {
+                        color = Color.RED
+                        lineWidth = 2f
+                        setDrawValues(false)
+                        setDrawCircles(false)
+                        mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+                        enableDashedLine(50f, 35f, 0f)
+                    }
+                val barData = LineData(dataset, avgDataset)
                 barChart.data = barData
                 barChart.invalidate()
                 barChart
@@ -109,7 +124,9 @@ fun styleLineChart(
     lineChart: LineChart,
     surfaceColor: Int,
     barEntryList: List<BarEntry>,
-    ratio: Boolean
+    ratio: Boolean,
+    onSurfacecolor: Int,
+    inChartTextSize: Float
 ): LineChart {
     lineChart.apply {
         setBackgroundColor(surfaceColor)
@@ -133,7 +150,9 @@ fun styleLineChart(
         setScaleEnabled(false)
         setPinchZoom(false)
         description = null
-        legend.isEnabled = false
+        legend.isEnabled = true
+        legend.textColor = onSurfacecolor
+        legend.textSize = inChartTextSize
         extraBottomOffset = 15f
     }
     return lineChart
