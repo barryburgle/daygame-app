@@ -14,7 +14,7 @@ import com.barryburgle.gameapp.ui.tool.state.ToolsState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ToolsScreen(
-    state: ToolsState, onEvent: (AbstractSessionEvent) -> Unit
+    state: ToolsState
 ) {
     Scaffold { padding ->
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

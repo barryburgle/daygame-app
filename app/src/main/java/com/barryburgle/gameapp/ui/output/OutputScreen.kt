@@ -23,7 +23,7 @@ import com.github.mikephil.charting.data.BarEntry
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OutputScreen(
-    state: OutputState, onEvent: (AbstractSessionEvent) -> Unit
+    state: OutputState
 ) {
     val spaceFromTop = 5.dp // TODO: centralize across screens
     val spaceFromBottom = 60.dp // TODO: centralize across screens
