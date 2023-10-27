@@ -26,8 +26,18 @@ class SessionManagerTest {
     val CONTACTS_3 = 3
     val CONTACTS_4 = 4
     val STICKING_POINTS = "sticking-points"
-    val INDEX_LAST_3_SESSIONS: Double = 9.9277
-    val INDEX_LAST_4_SESSIONS: Double = 8.1083
+    val EXPECTED_MOVING_AVERAGE_3: List<BarEntry> = listOf(
+        BarEntry(0f, 1f),
+        BarEntry(1f, 1.5f),
+        BarEntry(2f, 2f),
+        BarEntry(3f, 3f),
+    )
+    val EXPECTED_MOVING_AVERAGE_4: List<BarEntry> = listOf(
+        BarEntry(0f, 1f),
+        BarEntry(1f, 1.5f),
+        BarEntry(2f, 2f),
+        BarEntry(3f, 2.5f),
+    )
 
     @Test
     fun normalizeSessionsIdsTest() {
@@ -50,12 +60,12 @@ class SessionManagerTest {
 
     @Test
     fun computeIndexMovingAverageLastThreeTest() {
-        doComputeIndexMovingAverageLastNTest(3, INDEX_LAST_3_SESSIONS)
+        doComputeMovingAverageLastNTest(3, EXPECTED_MOVING_AVERAGE_3)
     }
 
     @Test
     fun computeIndexMovingAverageLastFourTest() {
-        doComputeIndexMovingAverageLastNTest(4, INDEX_LAST_4_SESSIONS)
+        doComputeMovingAverageLastNTest(4, EXPECTED_MOVING_AVERAGE_4)
     }
 
     @Test
@@ -79,9 +89,25 @@ class SessionManagerTest {
         assertEquals(createExpectedContactsHistogram(), actualContactsHistogram)
     }
 
-    private fun doComputeIndexMovingAverageLastNTest(window: Int, expectedIndexAverage: Double) {
-        val actualIndex: Double = SessionManager.computeIndexMovingAverage(createSessions(), window)
-        assertEquals(expectedIndexAverage, actualIndex, 0.001)
+    private fun doComputeMovingAverageLastNTest(
+        window: Int,
+        expectedMovingAverage: List<BarEntry>
+    ) {
+        val movingAverageBarEntryList: List<BarEntry> =
+            SessionManager.computeMovingAverage(createBarEntryList(), window)
+        for (index in movingAverageBarEntryList.indices) {
+            assertEquals(expectedMovingAverage.get(index).x, movingAverageBarEntryList.get(index).x)
+            assertEquals(expectedMovingAverage.get(index).y, movingAverageBarEntryList.get(index).y)
+        }
+    }
+
+    private fun createBarEntryList(): List<BarEntry> {
+        return listOf(
+            BarEntry(0f, 1f),
+            BarEntry(0f, 2f),
+            BarEntry(0f, 3f),
+            BarEntry(0f, 4f),
+        )
     }
 
     private fun createSessions(): Array<AbstractSession> {

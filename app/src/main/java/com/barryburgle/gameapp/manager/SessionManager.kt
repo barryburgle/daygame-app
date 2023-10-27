@@ -27,18 +27,32 @@ class SessionManager {
             return avgBarEntryList
         }
 
-        fun computeIndexMovingAverage(
-            abstractSessions: Array<AbstractSession>,
+        fun computeMovingAverage(
+            barEntryList: List<BarEntry>,
             window: Int
-        ): Double {
-            val reversedAbstractSessions: Array<AbstractSession> = abstractSessions.reversedArray()
-            var totalIndex = 0.0
-            for (i in reversedAbstractSessions.indices) {
-                if (i < window) {
-                    totalIndex += reversedAbstractSessions.get(i).index
-                }
+        ): List<BarEntry> {
+            var valuesList = ArrayList<Float>()
+            barEntryList.map { barEntry -> valuesList.add(barEntry.y) }
+            var averageList = ArrayList<Float>()
+            for (windowSize in 0 until window - 1) {
+                val lastAverage =
+                    valuesList.windowed(windowSize + 1, 1) { it.average() }.get(0)
+                averageList.add(lastAverage.toFloat())
             }
-            return totalIndex / window.toDouble()
+            val remainderAverage =
+                valuesList.windowed(window, 1) { it.average() }.map { item -> item.toFloat() }
+            var avgBarEntryList = ArrayList<BarEntry>()
+            var count = 0
+            averageList.addAll(remainderAverage)
+            averageList.map { average ->
+                avgBarEntryList.add(
+                    BarEntry(
+                        (count++).toFloat(),
+                        average
+                    )
+                )
+            }
+            return avgBarEntryList.toList()
         }
 
         fun computeSetsHistogram(abstractSessions: Array<AbstractSession>): Map<Int, Double> {
