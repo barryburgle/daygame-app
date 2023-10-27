@@ -35,6 +35,7 @@ fun OutputLineChart(
     val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface.toArgb()
     val inChartTextSize = 12f
+    val movingAverageWindow = 4
     Column(
         modifier = Modifier
             .background(
@@ -100,19 +101,30 @@ fun OutputLineChart(
                                 ContextCompat.getDrawable(context, R.drawable.bg_output_line_w)
                         }
                     }
-                val avgDataset =
+                val averageDataset =
                     LineDataSet(
                         SessionManager.computeAverageBarEntryList(barEntryList),
-                        description + " average"
+                        "Average"
+                    ).apply {
+                        color = Color.YELLOW
+                        lineWidth = 1f
+                        setDrawValues(false)
+                        setDrawCircles(false)
+                        mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+                        enableDashedLine(15f, 10f, 0f)
+                    }
+                val movingAverageDataset =
+                    LineDataSet(
+                        SessionManager.computeMovingAverage(barEntryList, movingAverageWindow),
+                        "Last ${movingAverageWindow} average"
                     ).apply {
                         color = Color.RED
                         lineWidth = 2f
                         setDrawValues(false)
                         setDrawCircles(false)
                         mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-                        enableDashedLine(50f, 35f, 0f)
                     }
-                val barData = LineData(dataset, avgDataset)
+                val barData = LineData(dataset, averageDataset, movingAverageDataset)
                 barChart.data = barData
                 barChart.invalidate()
                 barChart
@@ -145,8 +157,8 @@ fun styleLineChart(
         xAxis.apply {
             isEnabled = false
         }
-        setTouchEnabled(true)
-        isDragEnabled = true
+        setTouchEnabled(false)
+        isDragEnabled = false
         setScaleEnabled(false)
         setPinchZoom(false)
         description = null
