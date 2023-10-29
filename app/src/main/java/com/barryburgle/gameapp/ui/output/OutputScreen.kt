@@ -1,270 +1,111 @@
 package com.barryburgle.gameapp.ui.output
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.event.ChartTypeEvent
+import com.barryburgle.gameapp.model.enums.ChartType
+import com.barryburgle.gameapp.ui.output.section.MonthSection
+import com.barryburgle.gameapp.ui.output.section.SessionSection
+import com.barryburgle.gameapp.ui.output.section.WeekSection
 import com.barryburgle.gameapp.ui.output.state.OutputState
-import com.github.mikephil.charting.data.BarEntry
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OutputScreen(
-    state: OutputState
+    state: OutputState,
+    onEvent: (ChartTypeEvent) -> Unit
 ) {
-    val spaceFromTop = 5.dp // TODO: centralize across screens
+    val spaceFromTop = 80.dp // TODO: centralize across screens
     val spaceFromBottom = 60.dp // TODO: centralize across screens
     // TODO: make cards with injectable type of charts
     // TODO: make different types of charts injectable with arrays
     // TODO: substitute the following with table fetch
-    Scaffold {
+    Scaffold { padding ->
+        LazyColumn(
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(50.dp),
+            modifier = Modifier.background(MaterialTheme.colorScheme.primary)
+        ) {
+            item {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .offset(y = 10.dp)
+                            .horizontalScroll(rememberScrollState()),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+                        ChartType.values().forEach { chartType ->
+                            Row(
+                                modifier = Modifier
+                                    .clickable {
+                                        onEvent(ChartTypeEvent.SortCharts(chartType))
+                                    },
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                RadioButton(
+                                    selected = state.chartType == chartType,
+                                    onClick = {
+                                        onEvent(ChartTypeEvent.SortCharts(chartType))
+                                    },
+                                    colors = RadioButtonDefaults.colors(
+                                        selectedColor = MaterialTheme.colorScheme.secondary,
+                                        unselectedColor = MaterialTheme.colorScheme.surface
+                                    )
+                                )
+                                Text(
+                                    text = chartType.field,
+                                    color = MaterialTheme.colorScheme.secondary
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .offset(y = spaceFromTop),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             if (state.abstractSessions.isNotEmpty()) {
                 // TODO: refactor all the following labdas inside items to be called passing the abstract session attribute + description
-                item {
-                    Row(modifier = Modifier.height(spaceFromTop)) {}
+                if (ChartType.SESSION.equals(state.chartType)) {
+                    SessionSection(state)
                 }
-                item {
-                    state.abstractSessions.map { abstractSession ->
-                        abstractSession.id?.toInt()?.let {
-                            BarEntry(
-                                it.toFloat(),
-                                abstractSession.sets.toFloat()
-                            )
-                        }
-                    }?.let { it ->
-                        OutputCard(
-                            chartLabel = "Sets",
-                            barEntryList = it as List<BarEntry>,
-                            integerValues = true,
-                            ratio = false
-                        )
-                    }
+                if (ChartType.WEEK.equals(state.chartType)) {
+                    WeekSection(state)
                 }
-                item {
-                    state.abstractSessions.map { abstractSession ->
-                        abstractSession.id?.toInt()?.let {
-                            BarEntry(
-                                it.toFloat(),
-                                abstractSession.convos.toFloat()
-                            )
-                        }
-                    }?.let { it ->
-                        OutputCard(
-                            chartLabel = "Conversations",
-                            barEntryList = it as List<BarEntry>,
-                            integerValues = true,
-                            ratio = false
-                        )
-                    }
-                }
-                item {
-                    state.abstractSessions.map { abstractSession ->
-                        abstractSession.id?.toInt()?.let {
-                            BarEntry(
-                                it.toFloat(),
-                                abstractSession.contacts.toFloat()
-                            )
-                        }
-                    }?.let { it ->
-                        OutputCard(
-                            chartLabel = "Contacts",
-                            barEntryList = it as List<BarEntry>,
-                            integerValues = true,
-                            ratio = false
-                        )
-                    }
-                }
-                item {
-                    // TODO: use chart with double on y axis
-                    state.abstractSessions.map { abstractSession ->
-                        abstractSession.id?.toInt()?.let {
-                            BarEntry(
-                                it.toFloat(),
-                                abstractSession.index.toFloat()
-                            )
-                        }
-                    }?.let { it ->
-                        OutputCard(
-                            chartLabel = "Index",
-                            barEntryList = it as List<BarEntry>,
-                            integerValues = false,
-                            ratio = false
-                        )
-                    }
-                }
-                item {
-                    state.abstractSessions.map { abstractSession ->
-                        abstractSession.id?.toInt()?.let {
-                            BarEntry(
-                                it.toFloat(),
-                                abstractSession.approachTime.toFloat()
-                            )
-                        }
-                    }?.let { it ->
-                        OutputCard(
-                            chartLabel = "Approach Time",
-                            barEntryList = it as List<BarEntry>,
-                            integerValues = true,
-                            ratio = false
-                        )
-                    }
-                }
-                item {
-                    // TODO: use chart with double on y axis
-                    state.abstractSessions.map { abstractSession ->
-                        abstractSession.id?.toInt()?.let {
-                            BarEntry(
-                                it.toFloat(),
-                                abstractSession.convoRatio.toFloat()
-                            )
-                        }
-                    }?.let { it ->
-                        OutputCard(
-                            chartLabel = "Conversation Ratio",
-                            barEntryList = it as List<BarEntry>,
-                            integerValues = false,
-                            ratio = true
-                        )
-                    }
-                }
-                item {
-                    // TODO: use chart with double on y axis
-                    state.abstractSessions.map { abstractSession ->
-                        abstractSession.id?.toInt()?.let {
-                            BarEntry(
-                                it.toFloat(),
-                                abstractSession.contactRatio.toFloat()
-                            )
-                        }
-                    }?.let { it ->
-                        OutputCard(
-                            chartLabel = "Contact Ratio",
-                            barEntryList = it as List<BarEntry>,
-                            integerValues = false,
-                            ratio = true
-                        )
-                    }
-                }
-                item {
-                    state.weekStats.map { weekStat ->
-                        weekStat.weekNumber?.let {
-                            BarEntry(
-                                it.toFloat(),
-                                weekStat.sets
-                            )
-                        }
-                    }?.let { it ->
-                        OutputCard(
-                            chartLabel = "Weekly Sets",
-                            barEntryList = it as List<BarEntry>,
-                            integerValues = true,
-                            ratio = false
-                        )
-                    }
-                }
-                item {
-                    state.weekStats.map { weekStat ->
-                        weekStat.weekNumber?.let {
-                            BarEntry(
-                                it.toFloat(),
-                                weekStat.convos
-                            )
-                        }
-                    }?.let { it ->
-                        OutputCard(
-                            chartLabel = "Weekly Conversations",
-                            barEntryList = it as List<BarEntry>,
-                            integerValues = true,
-                            ratio = false
-                        )
-                    }
-                }
-                item {
-                    state.weekStats.map { weekStat ->
-                        weekStat.weekNumber?.let {
-                            BarEntry(
-                                it.toFloat(),
-                                weekStat.contacts
-                            )
-                        }
-                    }?.let { it ->
-                        OutputCard(
-                            chartLabel = "Weekly Contacts",
-                            barEntryList = it as List<BarEntry>,
-                            integerValues = true,
-                            ratio = false
-                        )
-                    }
-                }
-                item {
-                    state.weekStats.map { weekStat ->
-                        weekStat.weekNumber?.let {
-                            BarEntry(
-                                it.toFloat(),
-                                weekStat.avgIndex
-                            )
-                        }
-                    }?.let { it ->
-                        OutputCard(
-                            chartLabel = "Weekly Average Index",
-                            barEntryList = it as List<BarEntry>,
-                            integerValues = false,
-                            ratio = false
-                        )
-                    }
-                }
-                item {
-                    state.weekStats.map { weekStat ->
-                        weekStat.weekNumber?.let {
-                            BarEntry(
-                                it.toFloat(),
-                                weekStat.avgConvoRatio
-                            )
-                        }
-                    }?.let { it ->
-                        OutputCard(
-                            chartLabel = "Weekly Average Conversation Ratio",
-                            barEntryList = it as List<BarEntry>,
-                            integerValues = false,
-                            ratio = true
-                        )
-                    }
-                }
-                item {
-                    state.weekStats.map { weekStat ->
-                        weekStat.weekNumber?.let {
-                            BarEntry(
-                                it.toFloat(),
-                                weekStat.avgContactRatio
-                            )
-                        }
-                    }?.let { it ->
-                        OutputCard(
-                            chartLabel = "Weekly Average Contact Ratio",
-                            barEntryList = it as List<BarEntry>,
-                            integerValues = false,
-                            ratio = true
-                        )
-                    }
+                if (ChartType.MONTH.equals(state.chartType)) {
+                    MonthSection(state)
                 }
                 item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom)) {} }
             } else {
