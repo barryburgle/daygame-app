@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return OutputViewModel(db.abstractSessionDao, db.weekStatDao) as T
+                    return OutputViewModel(db.abstractSessionDao, db.aggregatedStatDao) as T
                 }
             }
         }
@@ -69,7 +69,8 @@ class MainActivity : ComponentActivity() {
                     inputState = inputState,
                     outputState = outputState,
                     toolState = toolsState,
-                    onEvent = inputViewModel::onEvent
+                    inputOnEvent = inputViewModel::onEvent,
+                    outputOnEvent = outputViewModel::onEvent,
                 )
             }
         }
