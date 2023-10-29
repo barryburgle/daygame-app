@@ -18,8 +18,8 @@ interface AbstractSessionDao {
     @Delete
     suspend fun delete(abstractSession: AbstractSession)
 
-    @Query("SELECT * from abstract_session")
-    fun getAll(): Flow<List<AbstractSession>>
+    @Query("SELECT * from abstract_session LIMIT :limit")
+    fun getAll(limit: Int): Flow<List<AbstractSession>>
 
     @Query("SELECT * from abstract_session ORDER BY session_date DESC, end_hour DESC")
     fun getByDate(): Flow<List<AbstractSession>>
