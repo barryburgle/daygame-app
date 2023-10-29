@@ -26,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.event.ChartTypeEvent
 import com.barryburgle.gameapp.ui.input.InputScreen
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.output.OutputScreen
@@ -40,7 +41,8 @@ fun Navigation(
     inputState: InputState,
     outputState: OutputState,
     toolState: ToolsState,
-    onEvent: (AbstractSessionEvent) -> Unit
+    inputOnEvent: (AbstractSessionEvent) -> Unit,
+    outputOnEvent: (ChartTypeEvent) -> Unit
 ) {
     val navController = rememberNavController()
 
@@ -108,10 +110,10 @@ fun Navigation(
     ) { padding ->
         NavHost(navController = navController, startDestination = Screen.InputScreen.route) {
             composable(Screen.InputScreen.route) {
-                InputScreen(state = inputState, onEvent = onEvent)
+                InputScreen(state = inputState, onEvent = inputOnEvent)
             }
             composable(Screen.OutputScreen.route) {
-                OutputScreen(state = outputState)
+                OutputScreen(state = outputState, onEvent = outputOnEvent)
             }
             composable(Screen.ToolScreen.route) {
                 ToolsScreen(state = toolState)
