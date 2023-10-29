@@ -115,7 +115,7 @@ fun OutputLineChart(
                     }
                 val movingAverageDataset =
                     LineDataSet(
-                        SessionManager.computeMovingAverage(barEntryList, movingAverageWindow),
+                        SessionManager.computeMovingAverage(barEntryList, minOf(movingAverageWindow,barEntryList.size)),
                         "Last ${movingAverageWindow} average"
                     ).apply {
                         color = Color.RED
