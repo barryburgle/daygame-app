@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.manager
 
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.stat.WeekStat
 import com.github.mikephil.charting.data.BarEntry
 
 class SessionManager {
@@ -12,6 +13,15 @@ class SessionManager {
                 abstractSessions[index].id = index.toLong()
             }
             return abstractSessions
+        }
+
+        fun normalizeWeekNumbers(
+            weekStats: List<WeekStat>
+        ): List<WeekStat> {
+            for (index in weekStats.indices) {
+                weekStats[index].weekNumber = index
+            }
+            return weekStats
         }
 
         fun computeAverageBarEntryList(barEntryList: List<BarEntry>): List<BarEntry> {
@@ -94,12 +104,6 @@ class SessionManager {
         }
 
     }
-    // TODO: week total sets
-    // TODO: week total convos
-    // TODO: week total contacts
-    // TODO: week average index
-    // TODO: week convo ratio
-    // TODO: week contact ratio
     // TODO: week total time spent
     // TODO: week frequency
 }
