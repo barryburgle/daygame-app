@@ -19,7 +19,7 @@ class OutputViewModel(
 ) : ViewModel() {
     private val _state = MutableStateFlow(OutputState())
     private val _chartType = MutableStateFlow(ChartType.SESSION)
-    private val _abstractSessions = abstractSessionDao.getAll(14)
+    private val _abstractSessions = abstractSessionDao.getAllLimit(14)
     private val _weekStats = aggregatedStatDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _monthStats = aggregatedStatDao.groupStatsByMonth()
