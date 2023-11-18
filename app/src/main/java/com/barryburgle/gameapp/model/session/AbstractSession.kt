@@ -25,17 +25,18 @@ open class AbstractSession(
     @ColumnInfo(name = "week_number") var weekNumber: Int
 ) {
     companion object {
+        val separator = ";"
         fun header(): String {
-            return "Id;InsertTime;Date;StartHour;EndHour;Sets;Convos;Contacts;StickingPoints;SessionTime;ApproachTime;ConvoRatio;RejectionRatio;ContactRatio;Index;DayOfWeek;WeekNumber"
+            return "Id${separator}InsertTime${separator}Date${separator}StartHour${separator}EndHour${separator}Sets${separator}Convos${separator}Contacts${separator}StickingPoints${separator}SessionTime${separator}ApproachTime${separator}ConvoRatio${separator}RejectionRatio${separator}ContactRatio${separator}Index${separator}DayOfWeek${separator}WeekNumber"
         }
     }
 
     override fun toString(): String {
-        return "${id};${insertTime};${date};${startHour};${endHour};${sets};${convos};${contacts};${
+        return "${id}${separator}${insertTime}${separator}${date}${separator}${startHour}${separator}${endHour}${separator}${sets}${separator}${convos}${separator}${contacts}${separator}${
             stickingPoints.replace(
                 "\n",
                 " "
             )
-        };${sessionTime};${approachTime};${convoRatio};${rejectionRatio};${contactRatio};${index};${dayOfWeek};${weekNumber}"
+        }${separator}${sessionTime}${separator}${approachTime}${separator}${convoRatio}${separator}${rejectionRatio}${separator}${contactRatio}${separator}${index}${separator}${dayOfWeek}${separator}${weekNumber}"
     }
 }
