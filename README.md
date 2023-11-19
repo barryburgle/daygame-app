@@ -6,10 +6,10 @@ Everything is stored locally on your device.
 ## Features
 - [x] `Input screen` Session import with date, start hour, end hour, sets, conversations, contacts, sticking points
 - [x] `Output screen` Charts for sets, conversations, contacts, session performance index, approach time, conversation ratio, contact ratio and average values
+- [x] `Data` Data import/export in .csv with header
 
 ## What's next
 
-- [ ] `Data` Data import/export in .csv and .xlsx with settable header
 - [ ] `Input screen` Sticking points reminder of last session
 - [ ] `Input screen` Input lead names and acquire date in input card
 - [ ] `Tools screen` Lead tracker with acquire-date-based reminder ("Flight Control")
