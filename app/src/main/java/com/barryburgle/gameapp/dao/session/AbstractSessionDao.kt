@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.Flow
 interface AbstractSessionDao {
 
     @Insert(onConflict = REPLACE)
+    suspend fun batchInsert(abstractSessions: List<AbstractSession>)
+
+    @Insert(onConflict = REPLACE)
     suspend fun insert(abstractSession: AbstractSession)
 
     @Delete
