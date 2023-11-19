@@ -1,24 +1,44 @@
 package com.barryburgle.gameapp.ui.tool
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.barryburgle.gameapp.event.AbstractSessionEvent
+import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ToolsScreen(
-    state: ToolsState
+    state: ToolsState,
+    onEvent: (ToolEvent) -> Unit
 ) {
+    val spaceFromTop = 20.dp
+    val spaceFromBottom = 60.dp
     Scaffold { padding ->
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(text = "Tools Screen")
+        LazyColumn(
+            contentPadding = PaddingValues(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(y = spaceFromTop),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item {
+                ToolCard(
+                    state = state,
+                    toolLabel = "Import/Export",
+                    onEvent = onEvent
+                )
+            }
+            item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom)) {} }
         }
     }
 }
