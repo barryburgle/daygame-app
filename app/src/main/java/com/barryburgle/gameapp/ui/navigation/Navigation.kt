@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.ui.navigation
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.CheckCircle
@@ -22,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -75,6 +77,7 @@ fun Navigation(
         mutableStateOf(0)
     }
     Scaffold(
+        modifier = Modifier.navigationBarsPadding(),
         bottomBar = {
             NavigationBar(
                 containerColor = MaterialTheme.colorScheme.primary
