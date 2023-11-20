@@ -1,7 +1,13 @@
-# Daygame
+# Daygame App
 
-The main goal of this app it to provide a tool for measure and improvement of your daygame.
-Everything is stored locally on your device.
+The main goal of this daygame app it to provide a tool for measurement and improvement of your daygame.
+Everything is stored locally on your device. The app provides three tabs: 
+- the "Input" tab where you can see all the sessions recorded and add a new one
+- the "Output" tab where you can see all the charts for the latest 14 sessions
+- the "Tools" tab where you can find other useful tools
+
+![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_screen_v_1_b.png?raw=true) ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_dialog_v_1_b.png?raw=true) 
+![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/output_screen_v_1_b.png?raw=true) ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/tool_screen_v_1_b.png?raw=true)
 
 ## Features
 - [x] `Input screen` Session import with date, start hour, end hour, sets, conversations, contacts, sticking points
@@ -24,11 +30,5 @@ Everything is stored locally on your device.
 
 ## Previews
 
-![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_screen_v_1_w.png?raw=true)
-![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_dialog_v_1_w.png?raw=true)
-![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/output_screen_v_1_w.png?raw=true)
-![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/tool_screen_v_1_w.png?raw=true)
-![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_screen_v_1_b.png?raw=true)
-![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_dialog_v_1_b.png?raw=true)
-![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/output_screen_v_1_b.png?raw=true)
-![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/tool_screen_v_1_b.png?raw=true)
+![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_screen_v_1_w.png?raw=true) ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_dialog_v_1_w.png?raw=true) 
+![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/output_screen_v_1_w.png?raw=true) ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/tool_screen_v_1_w.png?raw=true)
