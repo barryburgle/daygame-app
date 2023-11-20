@@ -6,8 +6,11 @@ Everything is stored locally on your device. The app provides three tabs:
 - the "Output" tab where you can see all the charts for the latest 14 sessions
 - the "Tools" tab where you can find other useful tools
 
-![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_screen_v_1_b.png?raw=true) ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_dialog_v_1_b.png?raw=true) 
-![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/output_screen_v_1_b.png?raw=true) ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/tool_screen_v_1_b.png?raw=true)
+| Input                                                                                                                        | Add Session                                                                                                                  | Output                                                                                                                        | Tools                                                                                                                       |
+|------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_screen_v_1_b.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_dialog_v_1_b.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/output_screen_v_1_b.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/tool_screen_v_1_b.png?raw=true)   |
+| ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_screen_v_1_w.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_dialog_v_1_w.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/output_screen_v_1_w.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/tool_screen_v_1_w.png?raw=true)   |
 
 ## Features
 - [x] `Input screen` Session import with date, start hour, end hour, sets, conversations, contacts, sticking points
@@ -27,8 +30,3 @@ Everything is stored locally on your device. The app provides three tabs:
 - [ ] `Output screen` Custom chart generation from extended tables
 - [ ] Define new beta version `v0.0.1` and create a badge
 - [ ] Version `v0.0.1` apk available to download
-
-## Previews
-
-![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_screen_v_1_w.png?raw=true) ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_dialog_v_1_w.png?raw=true) 
-![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/output_screen_v_1_w.png?raw=true) ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/tool_screen_v_1_w.png?raw=true)
