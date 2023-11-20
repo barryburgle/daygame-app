@@ -39,7 +39,7 @@ fun InputScreen(
 ) {
     val spaceFromTop = 80.dp
     val spaceFromBottom = 60.dp
-    val spaceFromNavBar = 30.dp
+    val spaceFromNavBar = 50.dp
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
