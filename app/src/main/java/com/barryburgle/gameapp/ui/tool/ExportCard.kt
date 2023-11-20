@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -49,7 +50,7 @@ fun ExportCard(
         shape = MaterialTheme.shapes.large
     ) {
         val textFieldHeight = 55.dp
-        val textFieldWidth = 250.dp
+        val textFieldWidth = 230.dp
         val localContext = LocalContext.current.applicationContext
         Text(
             text = "Import/Export",
@@ -100,7 +101,11 @@ fun ExportCard(
                         .width(textFieldWidth)
                 )
             }
-            Column {
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
                 Button(onClick = {
                     CsvService.exportRows(
                         state.exportFolder,
