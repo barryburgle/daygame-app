@@ -39,11 +39,12 @@ fun InputScreen(
 ) {
     val spaceFromTop = 80.dp
     val spaceFromBottom = 60.dp
+    val spaceFromNavBar = 30.dp
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { onEvent(AbstractSessionEvent.ShowDialog) },
-                modifier = Modifier.offset(y = -spaceFromTop)
+                modifier = Modifier.offset(y = - spaceFromNavBar)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
