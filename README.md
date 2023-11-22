@@ -48,5 +48,3 @@ Everything is stored locally on your device. The app provides three tabs:
 - [ ] `Output screen` Sessions histogram output cards
 - [ ] `Data` Schema extendable database
 - [ ] `Output screen` Custom chart generation from extended tables
-- [ ] Define new beta version `v0.0.1` and create a badge
-- [ ] Version `v0.0.1` apk available to download
