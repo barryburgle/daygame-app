@@ -16,9 +16,6 @@
   <img src="https://img.shields.io/github/license/barryburgle/daygame-app?style=for-the-badge" alt="License GPL-3.0" />
   <img src="https://img.shields.io/github/languages/code-size/barryburgle/daygame-app?style=for-the-badge" alt="GitHub code size in bytes" />
   <br /><br />
-  <a href="https://github.com/barryburgle/daygame-app/releases/latest">
-      <img src="https://img.shields.io/github/v/release/barryburgle/daygame-app?color=purple&include_prereleases&logo=github&style=for-the-badge" alt="Download from GitHub" />
-  </a>
 </div>
 
 The main goal of this daygame app it to provide a tool for measurement and improvement of your daygame.
@@ -31,6 +28,14 @@ Everything is stored locally on your device. The app provides three tabs:
 |------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
 | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_screen_v_1_b.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_dialog_v_1_b.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/output_screen_v_1_b.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/tool_screen_v_1_b.png?raw=true)   |
 | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_screen_v_1_w.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_dialog_v_1_w.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/output_screen_v_1_w.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/tool_screen_v_1_w.png?raw=true)   |
+
+## Download
+
+You can download the app .apk installer on the release page clicking on the following badge: 
+
+<a href="https://github.com/barryburgle/daygame-app/releases/latest">
+      <img src="https://img.shields.io/github/v/release/barryburgle/daygame-app?color=purple&include_prereleases&logo=github&style=for-the-badge" alt="Download from GitHub" />
+</a>
 
 ## Features
 - [x] `Input screen` Session import with date, start hour, end hour, sets, conversations, contacts, sticking points
