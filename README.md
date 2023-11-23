@@ -16,6 +16,9 @@
   <img src="https://img.shields.io/github/license/barryburgle/daygame-app?style=for-the-badge" alt="License GPL-3.0" />
   <img src="https://img.shields.io/github/languages/code-size/barryburgle/daygame-app?style=for-the-badge" alt="GitHub code size in bytes" />
   <br /><br />
+  <a href="https://github.com/barryburgle/daygame-app/releases/latest">
+    <img src="https://img.shields.io/github/v/release/barryburgle/daygame-app?color=purple&include_prereleases&logo=github&style=for-the-badge" alt="Download from GitHub" />
+  </a>
 </div>
 
 The main goal of this daygame app it to provide a tool for measurement and improvement of your daygame.
@@ -34,7 +37,7 @@ Everything is stored locally on your device. The app provides three tabs:
 You can download the app .apk installer on the release page clicking on the following badge: 
 
 <a href="https://github.com/barryburgle/daygame-app/releases/latest">
-      <img src="https://img.shields.io/github/v/release/barryburgle/daygame-app?color=purple&include_prereleases&logo=github&style=for-the-badge" alt="Download from GitHub" />
+  <img src="https://i.ibb.co/q0mdc4Z/get-it-on-github.png" alt="Get it on Github" height="80">]
 </a>
 
 ## Features
@@ -48,8 +51,14 @@ You can download the app .apk installer on the release page clicking on the foll
 - [ ] `Input screen` Input lead names and acquire date in input card
 - [ ] `Tools screen` Lead tracker with acquire-date-based reminder ("Flight Control")
 - [ ] `Input screen` Live session insert red card
-- [ ] `Input screen` Increase input card loading performances
 - [ ] `Input screen` Live session stealth set recording (mic access, AI-based set detection, AI-based set record trim, settable record folder)
 - [ ] `Output screen` Sessions histogram output cards
 - [ ] `Data` Schema extendable database
 - [ ] `Output screen` Custom chart generation from extended tables
+
+## Bugs
+To file a bug or report and issue please log in to github and open an issue on this repository or send an email to barryburgle@gmail.com .
+Follow these steps:
+- Give a descriptive title/object to the issue/mail. If mail please write `[Daygame App] Issue:` before the issue description in the mail object
+- Try to describe in the most accurate way how the problem arose and after which steps or inserted data
+  - Attach screenshots to clarify descriptions
