@@ -37,7 +37,7 @@ Everything is stored locally on your device. The app provides three tabs:
 You can download the app .apk installer on the release page clicking on the following badge: 
 
 <a href="https://github.com/barryburgle/daygame-app/releases/latest">
-  <img src="https://i.ibb.co/q0mdc4Z/get-it-on-github.png" alt="Get it on Github" height="80">]
+  <img src="https://i.ibb.co/q0mdc4Z/get-it-on-github.png" alt="Get it on Github" height="80">
 </a>
 
 ## Features
