@@ -36,6 +36,10 @@ fun ToolsScreen(
                     state = state,
                     onEvent = onEvent
                 )
+                SettingsCard(
+                    state = state,
+                    onEvent = onEvent
+                )
             }
             item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom)) {} }
         }
