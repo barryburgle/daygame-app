@@ -24,7 +24,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.room.Room
 import com.barryburgle.gameapp.database.session.GameAppDatabase
 import com.barryburgle.gameapp.ui.input.InputViewModel
 import com.barryburgle.gameapp.ui.navigation.Navigation
@@ -36,17 +35,14 @@ import com.barryburgle.gameapp.ui.tool.ToolViewModel
 class MainActivity : ComponentActivity() {
 
     private val db by lazy {
-        Room.databaseBuilder(
-            applicationContext,
-            GameAppDatabase::class.java,
-            "game_app_db"
-        ).build()
+        GameAppDatabase.getInstance(applicationContext)
     }
+
     private val inputViewModel by viewModels<InputViewModel>(
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return InputViewModel(db.abstractSessionDao) as T
+                    return db?.let { InputViewModel(it.abstractSessionDao) } as T
                 }
             }
         }
@@ -55,7 +51,12 @@ class MainActivity : ComponentActivity() {
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return OutputViewModel(db.abstractSessionDao, db.aggregatedStatDao) as T
+                    return db?.let {
+                        OutputViewModel(
+                            it.abstractSessionDao,
+                            it.aggregatedStatDao
+                        )
+                    } as T
                 }
             }
         }
@@ -64,7 +65,7 @@ class MainActivity : ComponentActivity() {
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ToolViewModel(db.abstractSessionDao, db.settingDao) as T
+                    return db?.let { ToolViewModel(it.abstractSessionDao, it.settingDao) } as T
                 }
             }
         }
