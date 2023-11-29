@@ -20,7 +20,8 @@ fun LazyListScope.MonthSection(state: OutputState) {
                 chartLabel = "Monthly Sets",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false
+                ratio = false,
+                movingAverageWindow = state.movingAverageWindow
             )
         }
     }
@@ -37,7 +38,8 @@ fun LazyListScope.MonthSection(state: OutputState) {
                 chartLabel = "Monthly Conversations",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false
+                ratio = false,
+                movingAverageWindow = state.movingAverageWindow
             )
         }
     }
@@ -54,7 +56,8 @@ fun LazyListScope.MonthSection(state: OutputState) {
                 chartLabel = "Monthly Contacts",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false
+                ratio = false,
+                movingAverageWindow = state.movingAverageWindow
             )
         }
     }
@@ -71,7 +74,8 @@ fun LazyListScope.MonthSection(state: OutputState) {
                 chartLabel = "Monthly Average Index",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
-                ratio = false
+                ratio = false,
+                movingAverageWindow = state.movingAverageWindow
             )
         }
     }
@@ -88,7 +92,8 @@ fun LazyListScope.MonthSection(state: OutputState) {
                 chartLabel = "Monthly Average Conversation Ratio",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
-                ratio = true
+                ratio = true,
+                movingAverageWindow = state.movingAverageWindow
             )
         }
     }
@@ -105,7 +110,8 @@ fun LazyListScope.MonthSection(state: OutputState) {
                 chartLabel = "Monthly Average Contact Ratio",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
-                ratio = true
+                ratio = true,
+                movingAverageWindow = state.movingAverageWindow
             )
         }
     }

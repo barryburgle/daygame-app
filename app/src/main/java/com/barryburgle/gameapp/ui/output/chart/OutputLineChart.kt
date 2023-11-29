@@ -30,12 +30,12 @@ fun OutputLineChart(
     barEntryList: List<BarEntry>,
     description: String,
     integerValues: Boolean,
-    ratio: Boolean
+    ratio: Boolean,
+    movingAverageWindow: Int
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface.toArgb()
     val inChartTextSize = 12f
-    val movingAverageWindow = 4
     Column(
         modifier = Modifier
             .background(

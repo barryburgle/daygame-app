@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.ui.output.chart.OutputLineChart
 import com.github.mikephil.charting.data.BarEntry
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OutputCard(
     chartLabel: String,
@@ -26,7 +24,8 @@ fun OutputCard(
         ),
     barEntryList: List<BarEntry>,
     integerValues: Boolean,
-    ratio: Boolean
+    ratio: Boolean,
+    movingAverageWindow: Int
 ) {
     Card(
         modifier = modifier,
@@ -40,7 +39,8 @@ fun OutputCard(
                 barEntryList = barEntryList,
                 description = chartLabel,
                 integerValues = integerValues,
-                ratio = ratio
+                ratio = ratio,
+                movingAverageWindow = movingAverageWindow
             )
         }
     }

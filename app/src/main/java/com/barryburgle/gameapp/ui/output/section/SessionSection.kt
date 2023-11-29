@@ -19,7 +19,8 @@ fun LazyListScope.SessionSection(state: OutputState) {
                 chartLabel = "Sets",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false
+                ratio = false,
+                movingAverageWindow = state.movingAverageWindow
             )
         }
     }
@@ -36,7 +37,8 @@ fun LazyListScope.SessionSection(state: OutputState) {
                 chartLabel = "Conversations",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false
+                ratio = false,
+                movingAverageWindow = state.movingAverageWindow
             )
         }
     }
@@ -53,7 +55,8 @@ fun LazyListScope.SessionSection(state: OutputState) {
                 chartLabel = "Contacts",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false
+                ratio = false,
+                movingAverageWindow = state.movingAverageWindow
             )
         }
     }
@@ -71,7 +74,8 @@ fun LazyListScope.SessionSection(state: OutputState) {
                 chartLabel = "Index",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
-                ratio = false
+                ratio = false,
+                movingAverageWindow = state.movingAverageWindow
             )
         }
     }
@@ -88,7 +92,8 @@ fun LazyListScope.SessionSection(state: OutputState) {
                 chartLabel = "Approach Time",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false
+                ratio = false,
+                movingAverageWindow = state.movingAverageWindow
             )
         }
     }
@@ -106,7 +111,8 @@ fun LazyListScope.SessionSection(state: OutputState) {
                 chartLabel = "Conversation Ratio",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
-                ratio = true
+                ratio = true,
+                movingAverageWindow = state.movingAverageWindow
             )
         }
     }
@@ -124,7 +130,8 @@ fun LazyListScope.SessionSection(state: OutputState) {
                 chartLabel = "Contact Ratio",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
-                ratio = true
+                ratio = true,
+                movingAverageWindow = state.movingAverageWindow
             )
         }
     }
