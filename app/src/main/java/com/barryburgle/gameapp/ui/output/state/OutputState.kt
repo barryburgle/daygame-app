@@ -8,5 +8,6 @@ data class OutputState(
     val chartType: ChartType = ChartType.SESSION,
     val abstractSessions: List<AbstractSession> = emptyList(),
     val weekStats: List<AggregatedStat> = emptyList(),
-    val monthStats: List<AggregatedStat> = emptyList()
+    val monthStats: List<AggregatedStat> = emptyList(),
+    val movingAverageWindow: Int = 4
 )
