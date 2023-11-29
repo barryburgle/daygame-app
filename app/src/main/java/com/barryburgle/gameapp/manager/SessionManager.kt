@@ -39,8 +39,9 @@ class SessionManager {
 
         fun computeMovingAverage(
             barEntryList: List<BarEntry>,
-            window: Int
+            movingAverageWindow: Int
         ): List<BarEntry> {
+            val window = if (movingAverageWindow > 0) movingAverageWindow else 1
             var valuesList = ArrayList<Float>()
             barEntryList.map { barEntry -> valuesList.add(barEntry.y) }
             var averageList = ArrayList<Float>()
