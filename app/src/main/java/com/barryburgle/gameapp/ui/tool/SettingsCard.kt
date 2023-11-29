@@ -4,22 +4,26 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.ui.theme.Shapes
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
+import com.vanpra.composematerialdialogs.datetime.time.timepicker
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import java.time.LocalTime
 
 @ExperimentalMaterial3Api
 @Composable
@@ -32,6 +36,40 @@ fun SettingsCard(
         ),
     onEvent: (ToolEvent) -> Unit
 ) {
+    val notificationHourDialogState = rememberMaterialDialogState()
+    MaterialDialog(
+        dialogState = notificationHourDialogState,
+        elevation = 10.dp,
+        buttons = {
+            positiveButton(
+                "Ok",
+                textStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.surfaceVariant
+                )
+            )
+            negativeButton(
+                "Cancel",
+                textStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.surfaceVariant
+                )
+            )
+        },
+        shape = MaterialTheme.shapes.extraLarge
+    ) {
+        this.timepicker(
+            initialTime = LocalTime.now(),
+            title = "Set notification hour",
+            colors = TimePickerDefaults.colors(
+                selectorColor = MaterialTheme.colorScheme.onPrimary,
+                activeBackgroundColor = MaterialTheme.colorScheme.tertiary,
+                activeTextColor = MaterialTheme.colorScheme.background,
+                inactiveBackgroundColor = MaterialTheme.colorScheme.primary,
+                inactiveTextColor = MaterialTheme.colorScheme.onPrimary
+            )
+        ) {
+            onEvent(ToolEvent.SetNotificationTime(it.toString().substring(0, 5)))
+        }
+    }
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
@@ -56,33 +94,18 @@ fun SettingsCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text(text = "Average last:")
-            OutlinedTextField(
-                value = state.lastSessionAverageQuantity.toString(),
-                onValueChange = { onEvent(ToolEvent.SetLastSessionAverageQuantity(it)) },
-                placeholder = { Text(text = "4") },
-                shape = MaterialTheme.shapes.large,
-                modifier = Modifier.height(50.dp).width(80.dp)
+            ToolCountComponent(
+                inputTitle = "Average last", modifier = Modifier,
+                style = MaterialTheme.typography.titleSmall,
+                onEvent = onEvent,
+                saveEvent = ToolEvent::SetLastSessionAverageQuantity,
+                initialCount = state.lastSessionAverageQuantity
             )
-            // TODO: integer needs to be validated as 0<n<8
-            // TODO: instead of text box use the same used in input dialog for integer
-        }
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text(text = "Last session notification time:")
-            OutlinedTextField(
-                value = state.notificationTime,
-                onValueChange = { onEvent(ToolEvent.SetNotificationTime(it)) },
-                placeholder = { Text(text = "18:00") },
-                shape = MaterialTheme.shapes.large,
-                modifier = Modifier.height(50.dp).width(80.dp)
-            )
+            Button(
+                onClick = { notificationHourDialogState.show() }) {
+                Text(text = "Set notification hour")
+            }
             // TODO: time has to be validated
-            // TODO: instead of text box use the same used in input dialog for time
         }
     }
 }
