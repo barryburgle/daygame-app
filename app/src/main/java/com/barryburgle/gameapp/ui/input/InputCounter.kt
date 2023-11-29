@@ -45,6 +45,7 @@ fun InputCounter(
             AnimatedContent(
                 targetState = char,
                 transitionSpec = {
+                    // TODO: fix slide down when value decreases
                     slideInVertically { it } with slideOutVertically { -it }
                 }) { char ->
                 Text(
