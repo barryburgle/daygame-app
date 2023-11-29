@@ -54,7 +54,8 @@ class MainActivity : ComponentActivity() {
                     return db?.let {
                         OutputViewModel(
                             it.abstractSessionDao,
-                            it.aggregatedStatDao
+                            it.aggregatedStatDao,
+                            it.settingDao
                         )
                     } as T
                 }
