@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.dao.session
+package com.barryburgle.gameapp.dao.setting
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SettingDao {
-    // TODO: get out of package dao.session and put in dao.setting
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(setting: Setting)
 

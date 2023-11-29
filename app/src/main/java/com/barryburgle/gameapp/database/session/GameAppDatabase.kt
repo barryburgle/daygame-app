@@ -8,7 +8,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedStatDao
-import com.barryburgle.gameapp.dao.session.SettingDao
+import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.setting.Setting
 

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedStatDao
-import com.barryburgle.gameapp.dao.session.SettingDao
+import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ChartTypeEvent
 import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.model.enums.ChartType
