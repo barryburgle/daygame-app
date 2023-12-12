@@ -32,7 +32,6 @@ import com.barryburgle.gameapp.ui.output.section.WeekSection
 import com.barryburgle.gameapp.ui.output.state.OutputState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OutputScreen(
     state: OutputState,
