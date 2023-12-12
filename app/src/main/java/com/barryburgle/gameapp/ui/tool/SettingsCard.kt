@@ -2,9 +2,12 @@ package com.barryburgle.gameapp.ui.tool
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -12,6 +15,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.TextStyle
@@ -92,7 +96,9 @@ fun SettingsCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .fillMaxHeight()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             ToolCountComponent(
                 inputTitle = "Average last", modifier = Modifier,
@@ -101,9 +107,20 @@ fun SettingsCard(
                 saveEvent = ToolEvent::SetLastSessionAverageQuantity,
                 initialCount = state.lastSessionAverageQuantity
             )
-            Button(
-                onClick = { notificationHourDialogState.show() }) {
-                Text(text = "Set notification hour")
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier.width(120.dp),
+                ) {
+                    Button(
+                        onClick = { notificationHourDialogState.show() }) {
+                        Text(text = "Set notification hour")
+                    }
+                }
             }
             // TODO: time has to be validated
         }
