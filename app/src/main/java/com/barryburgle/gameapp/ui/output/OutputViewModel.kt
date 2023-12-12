@@ -21,27 +21,21 @@ class OutputViewModel(
 ) : ViewModel() {
     private val _state = MutableStateFlow(OutputState())
     private val _chartType = MutableStateFlow(ChartType.SESSION)
-    private val _abstractSessions = MutableStateFlow(abstractSessionDao.getAllLimit(14))
-    private val _weekStats = MutableStateFlow(
-        aggregatedStatDao.groupStatsByWeekNumber()
+    private val _abstractSessions = abstractSessionDao.getAllLimit(14)
+    private val _weekStats = aggregatedStatDao.groupStatsByWeekNumber()
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    )
-    private val _monthStats = MutableStateFlow(
-        aggregatedStatDao.groupStatsByMonth()
+    private val _monthStats = aggregatedStatDao.groupStatsByMonth()
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    )
-    private val _averageLast = MutableStateFlow(
-        settingDao.getAverageLast()
-    )
+    private val _averageLast = settingDao.getAverageLast()
 
     // TODO: create a dao method to get last n sessions and then let user set n from tools screen
     val state = CombineSix(
         _state,
-        _abstractSessions.value,
-        _weekStats.value,
-        _monthStats.value,
+        _abstractSessions,
+        _weekStats,
+        _monthStats,
         _chartType,
-        _averageLast.value
+        _averageLast
     )
     { state, abstractSessions, weekStats, monthStats, chartType, averageLast ->
         state.copy(
