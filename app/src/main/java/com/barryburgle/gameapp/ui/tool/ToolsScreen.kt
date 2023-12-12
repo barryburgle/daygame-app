@@ -36,6 +36,8 @@ fun ToolsScreen(
                     state = state,
                     onEvent = onEvent
                 )
+            }
+            item {
                 SettingsCard(
                     state = state,
                     onEvent = onEvent
