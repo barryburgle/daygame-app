@@ -8,7 +8,7 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ChartTypeEvent
 import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.model.enums.ChartType
-import com.barryburgle.gameapp.ui.CombineMore
+import com.barryburgle.gameapp.ui.CombineSix
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,7 +35,7 @@ class OutputViewModel(
     )
 
     // TODO: create a dao method to get last n sessions and then let user set n from tools screen
-    val state = CombineMore(
+    val state = CombineSix(
         _state,
         _abstractSessions.value,
         _weekStats.value,
