@@ -15,6 +15,11 @@ interface SettingDao {
         const val EXPORT_FOLDER_ID: String = "export_folder"
         const val LAST_SESSION_AVERAGE_QUANTITY_ID: String = "average_last"
         const val NOTIFICATION_TIME_ID: String = "notification_time"
+        const val DEFAULT_MOVING_AVERAGE_WINDOW: Int = 4
+        const val DEFAULT_EXPORT_FILE_NAME: String = "daygame_export"
+        const val DEFAULT_IMPORT_FILE_NAME: String = "daygame_export_yyyy_mm_dd_hh_mm.csv"
+        const val DEFAULT_EXPORT_FOLDER: String = "Download"
+        const val DEFAULT_NOTIFICATION_TIME: String = "18:00"
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -23,18 +28,18 @@ interface SettingDao {
     @Query("SELECT * FROM setting WHERE id=:id")
     fun getById(id: String): Flow<Setting>
 
-    @Query("SELECT COALESCE(value,'daygame_export') FROM setting WHERE id='${EXPORT_FILE_NAME_ID}'")
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_EXPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${EXPORT_FILE_NAME_ID}'")
     fun getExportFilename(): Flow<String>
 
-    @Query("SELECT COALESCE(value,'daygame_export_yyyy_mm_dd_hh_mm.csv') FROM setting WHERE id='${IMPORT_FILE_NAME_ID}'")
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_IMPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${IMPORT_FILE_NAME_ID}'")
     fun getImportFilename(): Flow<String>
 
-    @Query("SELECT COALESCE(value,'Download') FROM setting WHERE id='${EXPORT_FOLDER_ID}'")
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_EXPORT_FOLDER}' ELSE value END FROM setting WHERE id = '${EXPORT_FOLDER_ID}'")
     fun getExportFolder(): Flow<String>
 
-    @Query("SELECT COALESCE(value,4) FROM setting WHERE id='${LAST_SESSION_AVERAGE_QUANTITY_ID}'")
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_MOVING_AVERAGE_WINDOW}' ELSE value END FROM setting WHERE id = '${LAST_SESSION_AVERAGE_QUANTITY_ID}'")
     fun getAverageLast(): Flow<Int>
 
-    @Query("SELECT COALESCE(value,'18:00') FROM setting WHERE id='${NOTIFICATION_TIME_ID}'")
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_NOTIFICATION_TIME}' ELSE value END FROM setting WHERE id = '${NOTIFICATION_TIME_ID}'")
     fun getNotificationTime(): Flow<String>
 }
