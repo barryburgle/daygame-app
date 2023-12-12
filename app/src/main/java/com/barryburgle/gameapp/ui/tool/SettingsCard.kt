@@ -93,7 +93,7 @@ fun SettingsCard(
             color = MaterialTheme.colorScheme.onSurface
         )
         Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
@@ -109,9 +109,7 @@ fun SettingsCard(
             )
             Row(
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                modifier = Modifier.padding(16.dp)
             ) {
                 Column(
                     modifier = Modifier.width(120.dp),
