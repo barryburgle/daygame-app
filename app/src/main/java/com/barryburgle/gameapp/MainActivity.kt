@@ -3,6 +3,8 @@ package com.barryburgle.gameapp
 import android.Manifest
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
@@ -25,6 +27,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.barryburgle.gameapp.database.session.GameAppDatabase
+import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.ui.input.InputViewModel
 import com.barryburgle.gameapp.ui.navigation.Navigation
 import com.barryburgle.gameapp.ui.output.OutputViewModel
@@ -75,6 +78,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        createNotificationChannel()
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         if (!checkPermission(applicationContext)) {
             requestPermission(applicationContext)
@@ -98,6 +102,20 @@ class MainActivity : ComponentActivity() {
             window,
             false
         )
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                NotificationService.STICKING_POINT_NOTIFICATION_CHANNEL_ID,
+                NotificationService.STICKING_POINT_NOTIFICATION_CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            channel.description = "Daygame sticking point notification"
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 
     private fun checkPermission(context: Context): Boolean {
