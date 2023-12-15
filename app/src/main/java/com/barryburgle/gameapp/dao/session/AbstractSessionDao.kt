@@ -63,4 +63,6 @@ interface AbstractSessionDao {
     @Query("SELECT * from abstract_session ORDER BY week_number")
     fun getByWeekNumber(): Flow<List<AbstractSession>>
 
+    @Query("SELECT * from abstract_session ORDER BY session_date DESC, end_hour DESC LIMIT 1")
+    fun getLastSession(): Flow<AbstractSession>
 }
