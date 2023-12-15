@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -49,7 +50,7 @@ fun InputCard(
         ),
         shape = MaterialTheme.shapes.large
     ) {
-        Row {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Column(
                 modifier = Modifier
                     .padding(16.dp)
@@ -134,24 +135,25 @@ fun InputCard(
                         )
                     }
                 }
-                if (!abstractSession.stickingPoints.isBlank()) {
-                    Column(
-                        modifier = Modifier
-                            .background(
-                                MaterialTheme.colorScheme.inversePrimary,
-                                shape = RoundedCornerShape(10.dp)
-                            )
-                            .padding(7.dp)
-                    ) {
-                        Text(
-                            text = "Sticking Points:",
-                            style = MaterialTheme.typography.bodySmall
+                Column(
+                    modifier = Modifier
+                        .width(300.dp)
+                        .background(
+                            MaterialTheme.colorScheme.inversePrimary,
+                            shape = RoundedCornerShape(10.dp)
                         )
-                        Text(
-                            text = "${abstractSession.stickingPoints}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
+                        .padding(7.dp)
+                ) {
+                    Text(
+                        text = "Sticking Points:",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    val stickingPoints =
+                        if (abstractSession.stickingPoints.isBlank()) "No sticking points" else abstractSession.stickingPoints
+                    Text(
+                        text = stickingPoints,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             }
             Column(
