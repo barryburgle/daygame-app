@@ -18,9 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
+import com.barryburgle.gameapp.notification.AndroidNotificationScheduler
+import com.barryburgle.gameapp.notification.state.NotificationState
+import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.ui.theme.Shapes
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -41,6 +45,10 @@ fun SettingsCard(
     onEvent: (ToolEvent) -> Unit
 ) {
     val notificationHourDialogState = rememberMaterialDialogState()
+    val localContext = LocalContext.current.applicationContext
+    val notificationScheduler = AndroidNotificationScheduler(localContext)
+    var notificationState: NotificationState? = null
+
     MaterialDialog(
         dialogState = notificationHourDialogState,
         elevation = 10.dp,
@@ -72,6 +80,12 @@ fun SettingsCard(
             )
         ) {
             onEvent(ToolEvent.SetNotificationTime(it.toString().substring(0, 5)))
+            notificationState = NotificationState(
+                NotificationService.getNotificationLocalDateTime(it.toString().substring(0, 5)),
+                state.lastSessionDate,
+                state.lastSessionStickingPoints
+            )
+            notificationScheduler.schedule(notificationState!!)
         }
     }
     Card(
@@ -112,15 +126,14 @@ fun SettingsCard(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Column(
-                    modifier = Modifier.width(120.dp),
+                    modifier = Modifier.width(150.dp)
                 ) {
                     Button(
                         onClick = { notificationHourDialogState.show() }) {
-                        Text(text = "Set notification hour")
+                        Text(text = "Remind me sticking points")
                     }
                 }
             }
-            // TODO: time has to be validated
         }
     }
 }
