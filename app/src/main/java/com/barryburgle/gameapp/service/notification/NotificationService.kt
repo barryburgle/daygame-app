@@ -24,7 +24,7 @@ class NotificationService(
 
         fun getNotificationLocalDateTime(hour: String): LocalDateTime {
             val time = LocalTime.parse(hour, DateTimeFormatter.ofPattern("HH:mm"))
-            val tomorrowDate = LocalDate.now()//.plusDays(1)
+            val tomorrowDate = LocalDate.now().plusDays(1)
             return LocalDateTime.of(tomorrowDate, time)
         }
     }
