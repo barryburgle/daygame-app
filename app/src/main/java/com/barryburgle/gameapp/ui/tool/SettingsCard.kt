@@ -45,9 +45,6 @@ fun SettingsCard(
     onEvent: (ToolEvent) -> Unit
 ) {
     val notificationHourDialogState = rememberMaterialDialogState()
-    val localContext = LocalContext.current.applicationContext
-    val notificationScheduler = AndroidNotificationScheduler(localContext)
-    var notificationState: NotificationState? = null
 
     MaterialDialog(
         dialogState = notificationHourDialogState,
@@ -80,12 +77,6 @@ fun SettingsCard(
             )
         ) {
             onEvent(ToolEvent.SetNotificationTime(it.toString().substring(0, 5)))
-            notificationState = NotificationState(
-                NotificationService.getNotificationLocalDateTime(it.toString().substring(0, 5)),
-                state.lastSessionDate,
-                state.lastSessionStickingPoints
-            )
-            notificationScheduler.schedule(notificationState!!)
         }
     }
     Card(
