@@ -1,11 +1,16 @@
 package com.barryburgle.gameapp.ui.input
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
+import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.model.enums.SortType
+import com.barryburgle.gameapp.notification.AndroidNotificationScheduler
+import com.barryburgle.gameapp.notification.state.NotificationState
 import com.barryburgle.gameapp.service.batch.BatchSessionService
+import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +22,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class InputViewModel(private val abstractSessionDao: AbstractSessionDao) : ViewModel() {
+class InputViewModel(
+    private val context: Context,
+    private val abstractSessionDao: AbstractSessionDao,
+    private val settingDao: SettingDao
+) : ViewModel() {
+
+    val notificationScheduler = AndroidNotificationScheduler(context)
+    var notificationState: NotificationState? = null
 
     private val _batchSessionService = BatchSessionService()
     private val _sortType = MutableStateFlow(SortType.DATE)
@@ -37,11 +49,18 @@ class InputViewModel(private val abstractSessionDao: AbstractSessionDao) : ViewM
             SortType.WEEK_NUMBER -> abstractSessionDao.getByWeekNumber()
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _notificationTime = settingDao.getNotificationTime()
     private val _state = MutableStateFlow(InputState())
-    val state = combine(_state, _sortType, _abstractSessions) { state, sortType, abstractSessions ->
+    val state = combine(
+        _state,
+        _sortType,
+        _abstractSessions,
+        _notificationTime
+    ) { state, sortType, abstractSessions, notificationTime ->
         state.copy(
             abstractSessions = abstractSessions,
-            sortType = sortType
+            sortType = sortType,
+            notificationTime = notificationTime
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())
 
@@ -81,6 +100,12 @@ class InputViewModel(private val abstractSessionDao: AbstractSessionDao) : ViewM
                         stickingPoints = stickingPoints
                     )
                     viewModelScope.launch { abstractSessionDao.insert(abstractSession) }
+                    notificationState = NotificationService.createNotificationState(
+                        state.value.notificationTime,
+                        abstractSession.date,
+                        abstractSession.stickingPoints
+                    )
+                    notificationScheduler.schedule(notificationState!!)
                     _state.update {
                         it.copy(
                             date = "",

@@ -8,6 +8,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.barryburgle.gameapp.MainActivity
 import com.barryburgle.gameapp.R
+import com.barryburgle.gameapp.notification.state.NotificationState
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -21,6 +22,17 @@ class NotificationService(
         const val STICKING_POINT_NOTIFICATION_CHANNEL_ID = "daygame_channel_id"
         const val STICKING_POINT_NOTIFICATION_CHANNEL_NAME = "Daygame"
 
+        fun createNotificationState(
+            notificationDate: String,
+            lastSessionDate: String,
+            lastSessionStickingPoints: String
+        ): NotificationState {
+            return NotificationState(
+                getNotificationLocalDateTime(notificationDate.substring(0, 5)),
+                lastSessionDate,
+                lastSessionStickingPoints
+            )
+        }
 
         fun getNotificationLocalDateTime(hour: String): LocalDateTime {
             val time = LocalTime.parse(hour, DateTimeFormatter.ofPattern("HH:mm"))

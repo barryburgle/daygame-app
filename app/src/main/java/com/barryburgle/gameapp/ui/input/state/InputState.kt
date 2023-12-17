@@ -13,5 +13,6 @@ data class InputState(
     var contacts: String = "",
     var stickingPoints: String = "",
     val sortType: SortType = SortType.DATE,
-    val isAddingSession: Boolean = false
+    val isAddingSession: Boolean = false,
+    val notificationTime: String = ""
 )

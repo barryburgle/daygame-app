@@ -45,7 +45,13 @@ class MainActivity : ComponentActivity() {
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return db?.let { InputViewModel(it.abstractSessionDao) } as T
+                    return db?.let {
+                        InputViewModel(
+                            applicationContext,
+                            it.abstractSessionDao,
+                            it.settingDao
+                        )
+                    } as T
                 }
             }
         }
