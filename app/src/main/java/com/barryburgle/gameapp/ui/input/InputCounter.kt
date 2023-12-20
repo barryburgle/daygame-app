@@ -1,10 +1,9 @@
 package com.barryburgle.gameapp.ui.input
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun InputCounter(
     count: Int,
@@ -32,29 +30,50 @@ fun InputCounter(
         oldCount = count
     }
     Row(modifier = modifier) {
-        val countString = count.toString()
+        var countString = count.toString()
         val oldCountString = oldCount.toString()
-        for (charIndex in countString.indices) {
-            val oldChar = oldCountString.getOrNull(charIndex)
-            val newChar = countString[charIndex]
-            val char = if (oldChar == newChar) {
-                oldCountString[charIndex]
-            } else {
-                countString[charIndex]
-            }
-            AnimatedContent(
-                targetState = char,
-                transitionSpec = {
-                    // TODO: fix slide down when value decreases
-                    slideInVertically { it } with slideOutVertically { -it }
-                }) { char ->
-                Text(
-                    text = char.toString(),
-                    style = style,
-                    softWrap = false,
-                    fontSize = 35.sp
-                )
+        if (count < 0) {
+            Text(
+                text = "0",
+                style = style,
+                softWrap = false,
+                fontSize = 35.sp
+            )
+        } else {
+            for (charIndex in countString.indices) {
+                val oldChar = oldCountString.getOrNull(charIndex)
+                val newChar = countString[charIndex]
+                val char = if (oldChar == newChar) {
+                    oldCountString[charIndex]
+                } else {
+                    countString[charIndex]
+                }
+                AnimatedContent(
+                    targetState = char,
+                    transitionSpec = {
+                        transitionSpec(newChar, oldChar!!)
+                    }) { char ->
+                    Text(
+                        text = char.toString(),
+                        style = style,
+                        softWrap = false,
+                        fontSize = 35.sp
+                    )
+                }
             }
         }
     }
+}
+
+fun transitionSpec(newChar: Char, oldChar: Char): ContentTransform {
+    if (newChar > oldChar) {
+        return ContentTransform(
+            targetContentEnter = slideInVertically { it },
+            initialContentExit = slideOutVertically { -it }
+        )
+    }
+    return ContentTransform(
+        targetContentEnter = slideInVertically { -it },
+        initialContentExit = slideOutVertically { it }
+    )
 }
