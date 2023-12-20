@@ -45,7 +45,9 @@ You can download the app .apk installer on the release page clicking on the foll
 - [x] `Output screen` Charts for sets, conversations, contacts, session performance index, approach time, conversation ratio, contact ratio and average values
 - [x] `Data` Data import/export in .csv with header
 - [x] `Input screen` Sticking points reminder of last session
-
+- [x] `Tools screen` Average last settable
+- [x] `Tools screen` Last session sticking point notification
+ 
 ## What's next
 
 - [ ] `Input screen` Input lead names and acquire date in input card
