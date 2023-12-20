@@ -15,13 +15,19 @@ class FormatService {
         fun getDate(
             localDate: String
         ): String {
-            return DATE_FORMATTER.format(LocalDate.parse(localDate, SAVE_FORMATTER))
+            return DATE_FORMATTER.format(parseDate(localDate))
         }
 
         fun getTime(
             localTime: String
         ): String {
             return TIME_FORMATTER.format(LocalTime.parse(localTime, SAVE_FORMATTER))
+        }
+
+        fun parseDate(
+            localDate: String
+        ): LocalDate {
+            return LocalDate.parse(localDate, SAVE_FORMATTER)
         }
     }
 }
