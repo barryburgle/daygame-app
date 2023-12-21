@@ -59,8 +59,12 @@ You can download the app .apk installer on the release page clicking on the foll
 - [ ] `Output screen` Custom chart generation from extended tables
 
 ## Bugs
-To file a bug or report and issue please log in to github and open an issue on this repository or send an email to barryburgle@gmail.com .
+To file a bug or report and issue please log in to Github and open an issue on this repository, alternatively send an email to barryburgle@gmail.com .
 Follow these steps:
 - Give a descriptive title/object to the issue/mail. If mail please write `[Daygame App] Issue:` before the issue description in the mail object
 - Try to describe in the most accurate way how the problem arose and after which steps or inserted data
-  - Attach screenshots to clarify descriptions
+  - If mail, attach screenshots to clarify descriptions
+
+## Contribute
+If you want to contribute please look at TODOs in code and open a Pull Request (guide [here](https://www.youtube.com/watch?v=jRLGobWwA3Y)).
+Same if you would like to implement new features. Last, if you want to fork the code and create your own version of Daygame you're welcome to do it. 
