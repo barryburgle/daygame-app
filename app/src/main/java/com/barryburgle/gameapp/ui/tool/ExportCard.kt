@@ -128,7 +128,6 @@ fun ExportCard(
                         )
                     )
                     Toast.makeText(localContext, "Successfully imported", Toast.LENGTH_SHORT).show()
-                    // TODO: insert filename import proposal according to correspondent user name given for export
                 }) {
                     Text(text = "Import")
                 }
