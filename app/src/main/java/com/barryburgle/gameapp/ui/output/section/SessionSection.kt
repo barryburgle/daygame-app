@@ -61,7 +61,6 @@ fun LazyListScope.SessionSection(state: OutputState) {
         }
     }
     item {
-        // TODO: use chart with double on y axis
         state.abstractSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
                 BarEntry(
@@ -98,7 +97,6 @@ fun LazyListScope.SessionSection(state: OutputState) {
         }
     }
     item {
-        // TODO: use chart with double on y axis
         state.abstractSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
                 BarEntry(
@@ -117,7 +115,6 @@ fun LazyListScope.SessionSection(state: OutputState) {
         }
     }
     item {
-        // TODO: use chart with double on y axis
         state.abstractSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
                 BarEntry(
