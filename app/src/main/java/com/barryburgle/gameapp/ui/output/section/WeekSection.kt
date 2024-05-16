@@ -114,4 +114,22 @@ fun LazyListScope.WeekSection(state: OutputState) {
             )
         }
     }
+    item {
+        state.weekStats.map { weekStat ->
+            weekStat.periodNumber?.let {
+                BarEntry(
+                    it.toFloat(),
+                    weekStat.timeSpent
+                )
+            }
+        }?.let { it ->
+            OutputCard(
+                chartLabel = "Weekly Time Spent [Hours]",
+                barEntryList = it as List<BarEntry>,
+                integerValues = false,
+                ratio = false,
+                movingAverageWindow = state.movingAverageWindow
+            )
+        }
+    }
 }
