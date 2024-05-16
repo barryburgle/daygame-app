@@ -105,6 +105,5 @@ class SessionManager {
         }
 
     }
-    // TODO: week total time spent
     // TODO: week frequency
 }
