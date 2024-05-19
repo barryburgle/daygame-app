@@ -42,10 +42,19 @@ You can download the app .apk installer on the release page clicking on the foll
 
 ## Features
 - [x] `Input screen` Session import with date, start hour, end hour, sets, conversations, contacts, sticking points
-- [x] `Output screen` Charts for sets, conversations, contacts, session performance index, approach time, conversation ratio, contact ratio and average values
+- [x] `Output screen` Charts for:
+  - sets
+  - conversations
+  - contacts
+  - session performance index
+  - approach time
+  - conversation ratio
+  - contact ratio
+  - time spent
+  plus average values
 - [x] `Data` Data import/export in .csv with header
-- [x] `Tools screen` Average last settable
-- [x] `Tools screen` Last session sticking point notification
+- [x] `Tools screen` Average moving window
+- [x] `Tools screen` Last session sticking points notification reminder
  
 ## What's next
 

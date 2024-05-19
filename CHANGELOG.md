@@ -1,3 +1,13 @@
+# Version 1.1.0-beta (2024-05-19)
+
+**Features**
+- Weekly and monthly total time spent charts
+- Sticking points notification reminder
+- Moving average window
+
+**Bugs**
+- Counter number moving now up and down
+
 # Version 1.0.0-beta (2023-11-22)
 
 **Features**
