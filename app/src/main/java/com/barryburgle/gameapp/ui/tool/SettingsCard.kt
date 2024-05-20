@@ -18,13 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
-import com.barryburgle.gameapp.notification.AndroidNotificationScheduler
-import com.barryburgle.gameapp.notification.state.NotificationState
-import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.ui.theme.Shapes
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.vanpra.composematerialdialogs.MaterialDialog
