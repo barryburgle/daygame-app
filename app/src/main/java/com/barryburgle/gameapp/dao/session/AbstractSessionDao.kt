@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.stat.Histogram
 import kotlinx.coroutines.flow.Flow
 
 
@@ -20,6 +21,15 @@ interface AbstractSessionDao {
 
     @Delete
     suspend fun delete(abstractSession: AbstractSession)
+
+    @Query("SELECT contacts as metric, COUNT(*) as frequency from abstract_session GROUP By contacts ORDER BY contacts")
+    fun getContactsHistogram(): Flow<List<Histogram>>
+
+    @Query("SELECT convos as metric, COUNT(*) as frequency from abstract_session GROUP By convos ORDER BY convos")
+    fun getConvosHistogram(): Flow<List<Histogram>>
+
+    @Query("SELECT sets as metric, COUNT(*) as frequency from abstract_session GROUP By sets ORDER BY sets")
+    fun getSetsHistogram(): Flow<List<Histogram>>
 
     @Query("SELECT * from abstract_session")
     fun getAll(): Flow<List<AbstractSession>>
