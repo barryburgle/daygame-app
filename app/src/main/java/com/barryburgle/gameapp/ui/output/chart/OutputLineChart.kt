@@ -35,6 +35,7 @@ fun OutputLineChart(
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface.toArgb()
+    val commonLineWidth = 1f
     val inChartTextSize = 12f
     Column(
         modifier = Modifier
@@ -84,11 +85,11 @@ fun OutputLineChart(
                         if (integerValues) {
                             valueFormatter = IntegerValueFormatter()
                         }
-                        lineWidth = 3f
+                        lineWidth = commonLineWidth
                         isHighlightEnabled = true
                         setDrawHighlightIndicators(false)
                         setDrawCircles(true)
-                        circleRadius = 4f
+                        circleRadius = 2f
                         circleColors = listOf(onSurfaceColor)
                         circleHoleColor = onSurfaceColor
                         mode = LineDataSet.Mode.HORIZONTAL_BEZIER
@@ -107,7 +108,7 @@ fun OutputLineChart(
                         "Average"
                     ).apply {
                         color = Color.YELLOW
-                        lineWidth = 1f
+                        lineWidth = commonLineWidth
                         setDrawValues(false)
                         setDrawCircles(false)
                         mode = LineDataSet.Mode.HORIZONTAL_BEZIER
@@ -115,11 +116,14 @@ fun OutputLineChart(
                     }
                 val movingAverageDataset =
                     LineDataSet(
-                        SessionManager.computeMovingAverage(barEntryList, minOf(movingAverageWindow,barEntryList.size)),
+                        SessionManager.computeMovingAverage(
+                            barEntryList,
+                            minOf(movingAverageWindow, barEntryList.size)
+                        ),
                         "Last ${movingAverageWindow} average"
                     ).apply {
                         color = Color.RED
-                        lineWidth = 2f
+                        lineWidth = commonLineWidth
                         setDrawValues(false)
                         setDrawCircles(false)
                         mode = LineDataSet.Mode.HORIZONTAL_BEZIER
