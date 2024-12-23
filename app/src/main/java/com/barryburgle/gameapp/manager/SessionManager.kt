@@ -103,7 +103,5 @@ class SessionManager {
             }
             return histogramMap;
         }
-
     }
-    // TODO: week frequency
 }
