@@ -170,9 +170,3 @@ fun styleLineChart(
     return lineChart
 }
 
-private class IntegerValueFormatter : ValueFormatter() {
-    override fun getFormattedValue(value: Float): String {
-        val integer = value.toInt()
-        return integer.toString()
-    }
-}
