@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ChartTypeEvent
 import com.barryburgle.gameapp.model.enums.ChartType
+import com.barryburgle.gameapp.ui.output.section.HistogramSection
 import com.barryburgle.gameapp.ui.output.section.MonthSection
 import com.barryburgle.gameapp.ui.output.section.SessionSection
 import com.barryburgle.gameapp.ui.output.section.WeekSection
@@ -104,6 +105,9 @@ fun OutputScreen(
                 }
                 if (ChartType.MONTH.equals(state.chartType)) {
                     MonthSection(state)
+                }
+                if (ChartType.HISTOGRAM.equals(state.chartType)) {
+                    HistogramSection(state)
                 }
                 item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom)) {} }
             } else {
