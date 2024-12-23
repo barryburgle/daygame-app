@@ -1,3 +1,11 @@
+# Version 1.2.0-beta (2024-12-23)
+
+**Features**
+- Sets, convos & contacts histograms
+
+**Bugs**
+- Startup crash v1.1.0
+
 # Version 1.1.0-beta (2024-05-19)
 
 **Features**
