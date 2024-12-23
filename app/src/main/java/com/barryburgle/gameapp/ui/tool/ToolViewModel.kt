@@ -7,7 +7,7 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.setting.Setting
-import com.barryburgle.gameapp.ui.CombineEight
+import com.barryburgle.gameapp.ui.CombineSeven
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,18 +28,16 @@ class ToolViewModel(
     private val _exportFolder = settingDao.getExportFolder()
     private val _notificationTime = settingDao.getNotificationTime()
     private val _averageLast = settingDao.getAverageLast()
-    private val _lastSession = abstractSessionDao.getLastSession()
     val state =
-        CombineEight(
+        CombineSeven(
             _state,
             _abstractSessions,
             _exportFilename,
             _importFilename,
             _exportFolder,
             _notificationTime,
-            _averageLast,
-            _lastSession
-        ) { state, abstractSessions, exportFilename, importFilename, exportFolder, notificationTime, averageLast, lastSession ->
+            _averageLast
+        ) { state, abstractSessions, exportFilename, importFilename, exportFolder, notificationTime, averageLast ->
             state.copy(
                 exportFileName = exportFilename,
                 importFileName = importFilename,
@@ -47,9 +45,7 @@ class ToolViewModel(
                 notificationTime = notificationTime,
                 abstractSessionHeader = _abstractSessionHeader,
                 abstractSessions = abstractSessions,
-                lastSessionAverageQuantity = averageLast,
-                lastSessionDate = lastSession.date,
-                lastSessionStickingPoints = lastSession.stickingPoints
+                lastSessionAverageQuantity = averageLast
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ToolsState())
 
