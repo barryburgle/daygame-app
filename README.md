@@ -25,7 +25,7 @@ The main goal of this daygame app it to provide a tool for measurement and impro
 Everything is stored locally on your device. The app provides three tabs: 
 - the "Input" tab where you can see all the sessions recorded and add a new one
 - the "Output" tab where you can see all the charts for the latest 14 sessions
-- the "Tools" tab where you can find other useful tools
+- the "Tools" tab where you can find other useful tools to set
 
 | Input                                                                                                                        | Add Session                                                                                                                  | Output                                                                                                                        | Tools                                                                                                                       |
 |------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
@@ -54,16 +54,17 @@ You can download the app .apk installer on the release page clicking on the foll
 - [x] `Data` Data import/export in .csv with or without header ([file example](https://github.com/barryburgle/game-app/blob/main/resources/files/daygame_export_2025_01_17_18_09.csv))
 - [x] `Tools screen` Average moving window
 - [x] `Tools screen` Last session sticking points notification reminder
+- [x] `Output screen` Sessions histogram output cards
  
 ## What's next
 
-- [ ] `Input screen` Input lead names and acquire date in input card
-- [ ] `Tools screen` Lead tracker with acquire-date-based reminder ("Flight Control")
 - [ ] `Input screen` Live session insert red card
-- [ ] `Input screen` Live session stealth set recording (mic access, AI-based set detection, AI-based set record trim, settable record folder)
-- [ ] `Output screen` Sessions histogram output cards
-- [ ] `Data` Schema extendable database
+- [ ] `Input screen` Input lead names on input card
+- [ ] `Input screen` Dates insert on input screen + dates table
+- [ ] `Tools screen` Lead tracker with get-back-in-touch reminder ("Flight Control")
 - [ ] `Output screen` Custom chart generation from extended tables
+- [ ] `Data` Schema extendable database
+- [ ] `Input screen` Live session stealth set recording (mic access, AI-based set detection, AI-based set record trim, settable record folder)
 
 ## Bugs
 To file a bug or report and issue please log in to Github and open an issue on this repository, alternatively send an email to barryburgle@gmail.com .
