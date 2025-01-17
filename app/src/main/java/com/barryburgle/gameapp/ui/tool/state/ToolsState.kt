@@ -10,6 +10,5 @@ data class ToolsState(
     val abstractSessions: List<AbstractSession> = emptyList(),
     val lastSessionAverageQuantity: Int = 4,
     val notificationTime: String = "",
-    val lastSessionStickingPoints: String = "",
-    var lastSessionDate: String = ""
+    var exportHeader: Boolean = true
 )
