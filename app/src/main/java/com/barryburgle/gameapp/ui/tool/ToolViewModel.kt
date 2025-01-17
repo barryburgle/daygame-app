@@ -7,7 +7,7 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.setting.Setting
-import com.barryburgle.gameapp.ui.CombineSeven
+import com.barryburgle.gameapp.ui.CombineEight
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,18 +26,20 @@ class ToolViewModel(
     private val _exportFilename = settingDao.getExportFilename()
     private val _importFilename = settingDao.getImportFilename()
     private val _exportFolder = settingDao.getExportFolder()
+    private val _exportHeader = settingDao.getExportHeaderFlag()
     private val _notificationTime = settingDao.getNotificationTime()
     private val _averageLast = settingDao.getAverageLast()
     val state =
-        CombineSeven(
+        CombineEight(
             _state,
             _abstractSessions,
             _exportFilename,
             _importFilename,
             _exportFolder,
             _notificationTime,
-            _averageLast
-        ) { state, abstractSessions, exportFilename, importFilename, exportFolder, notificationTime, averageLast ->
+            _averageLast,
+            _exportHeader
+        ) { state, abstractSessions, exportFilename, importFilename, exportFolder, notificationTime, averageLast, exportHeader ->
             state.copy(
                 exportFileName = exportFilename,
                 importFileName = importFilename,
@@ -45,7 +47,8 @@ class ToolViewModel(
                 notificationTime = notificationTime,
                 abstractSessionHeader = _abstractSessionHeader,
                 abstractSessions = abstractSessions,
-                lastSessionAverageQuantity = averageLast
+                lastSessionAverageQuantity = averageLast,
+                exportHeader = exportHeader.toBoolean()
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ToolsState())
 
@@ -116,6 +119,17 @@ class ToolViewModel(
                 }
                 val notificationTime = _state.value.notificationTime
                 val setting = Setting(SettingDao.NOTIFICATION_TIME_ID, notificationTime)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetExportHeader -> {
+                _state.update {
+                    it.copy(
+                        exportHeader = event.exportHeader
+                    )
+                }
+                val exportHeader = _state.value.exportHeader
+                val setting = Setting(SettingDao.EXPORT_HEADER_ID, exportHeader.toString())
                 viewModelScope.launch { settingDao.insert(setting) }
             }
         }
