@@ -1,6 +1,8 @@
 package com.barryburgle.gameapp.ui.tool
 
 import android.widget.Toast
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,8 +17,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -27,7 +32,6 @@ import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.ui.theme.Shapes
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
-
 
 @Composable
 fun ExportCard(
@@ -102,14 +106,15 @@ fun ExportCard(
             Column(
                 modifier = Modifier.fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly
+                verticalArrangement = Arrangement.SpaceAround
             ) {
                 Button(onClick = {
                     CsvService.exportRows(
                         state.exportFolder,
                         state.exportFileName,
                         state.abstractSessions,
-                        state.abstractSessionHeader
+                        state.abstractSessionHeader,
+                        state.exportHeader
                     )
                     Toast.makeText(localContext, "Successfully exported", Toast.LENGTH_SHORT).show()
                 }) {
@@ -122,7 +127,7 @@ fun ExportCard(
                             CsvService.importRows(
                                 state.exportFolder,
                                 importFileName,
-                                true, // TODO: settable by user interface
+                                state.exportHeader,
                                 AbstractSession.separator
                             )
                         )
@@ -130,6 +135,39 @@ fun ExportCard(
                     Toast.makeText(localContext, "Successfully imported", Toast.LENGTH_SHORT).show()
                 }) {
                     Text(text = "Import")
+                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    var checked = state.exportHeader
+                    Text(
+                        text = "Export Header",
+                        modifier = Modifier
+                            .height(15.dp)
+                            .width(90.dp),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    val thumbColor by animateColorAsState(
+                        targetValue = if (checked) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface,
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                    val trackColor by animateColorAsState(
+                        targetValue = if (checked) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surface,
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                    Switch(
+                        checked = checked,
+                        onCheckedChange = {
+                            checked = it
+                            onEvent(ToolEvent.SetExportHeader(it))
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = thumbColor,
+                            checkedTrackColor = trackColor,
+                            uncheckedThumbColor = thumbColor,
+                            uncheckedTrackColor = trackColor
+                        ),
+                    )
                 }
             }
         }
