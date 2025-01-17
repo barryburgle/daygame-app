@@ -51,7 +51,7 @@ You can download the app .apk installer on the release page clicking on the foll
   - conversation ratio
   - contact ratio
   - time spent
-- [x] `Data` Data import/export in .csv with header
+- [x] `Data` Data import/export in .csv with or without header ([file example](https://github.com/barryburgle/game-app/blob/main/resources/files/daygame_export_2025_01_17_18_09.csv))
 - [x] `Tools screen` Average moving window
 - [x] `Tools screen` Last session sticking points notification reminder
  
