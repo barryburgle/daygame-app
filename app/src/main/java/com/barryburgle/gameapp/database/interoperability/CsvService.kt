@@ -52,7 +52,7 @@ class CsvService {
         fun importRows(
             importFolder: String,
             filename: String,
-            skipHeader: Boolean,
+            exportHeader: Boolean,
             separator: String
         ): List<AbstractSession> {
             val csvReader = CSVReader(
@@ -64,7 +64,7 @@ class CsvService {
             listOfStrings = csvReader.readAll().map {
                 it
             }
-            val startCount: Int = if (skipHeader) 1 else 0
+            val startCount: Int = if (exportHeader) 1 else 0
             var abstractSessionList: MutableList<AbstractSession> = mutableListOf()
             for (index in startCount..listOfStrings.lastIndex) {
                 var fields: List<String> = listOfStrings.get(index)[0].split(separator)
