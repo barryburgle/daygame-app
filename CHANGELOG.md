@@ -1,3 +1,11 @@
+# Version 1.3.0-beta (2025-02-01)
+
+**Features**
+- Settable header export and import
+
+**Bugs**
+- Fixed bug on " surrounding entire exported csv row
+
 # Version 1.2.0-beta (2024-12-23)
 
 **Features**
