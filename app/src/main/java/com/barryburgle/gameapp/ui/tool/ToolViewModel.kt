@@ -21,7 +21,6 @@ class ToolViewModel(
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(ToolsState())
-    private val _abstractSessionHeader = AbstractSession.header()
     private val _abstractSessions = abstractSessionDao.getAll()
     private val _exportFilename = settingDao.getExportFilename()
     private val _importFilename = settingDao.getImportFilename()
@@ -45,7 +44,6 @@ class ToolViewModel(
                 importFileName = importFilename,
                 exportFolder = exportFolder,
                 notificationTime = notificationTime,
-                abstractSessionHeader = _abstractSessionHeader,
                 abstractSessions = abstractSessions,
                 lastSessionAverageQuantity = averageLast,
                 exportHeader = exportHeader.toBoolean()

@@ -6,7 +6,6 @@ data class ToolsState(
     val exportFileName: String = "",
     val importFileName: String = "",
     val exportFolder: String = "",
-    val abstractSessionHeader: String = "",
     val abstractSessions: List<AbstractSession> = emptyList(),
     val lastSessionAverageQuantity: Int = 4,
     val notificationTime: String = "",

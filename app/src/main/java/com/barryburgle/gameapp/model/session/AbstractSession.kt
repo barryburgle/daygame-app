@@ -23,20 +23,4 @@ open class AbstractSession(
     @ColumnInfo(name = "index") var index: Double,
     @ColumnInfo(name = "day_of_week") var dayOfWeek: Int,
     @ColumnInfo(name = "week_number") var weekNumber: Int
-) {
-    companion object {
-        val separator = ";"
-        fun header(): String {
-            return "Id${separator}InsertTime${separator}Date${separator}StartHour${separator}EndHour${separator}Sets${separator}Convos${separator}Contacts${separator}StickingPoints${separator}SessionTime${separator}ApproachTime${separator}ConvoRatio${separator}RejectionRatio${separator}ContactRatio${separator}Index${separator}DayOfWeek${separator}WeekNumber"
-        }
-    }
-
-    override fun toString(): String {
-        return "${id}${separator}${insertTime}${separator}${date}${separator}${startHour}${separator}${endHour}${separator}${sets}${separator}${convos}${separator}${contacts}${separator}${
-            stickingPoints.replace(
-                "\n",
-                " "
-            )
-        }${separator}${sessionTime}${separator}${approachTime}${separator}${convoRatio}${separator}${rejectionRatio}${separator}${contactRatio}${separator}${index}${separator}${dayOfWeek}${separator}${weekNumber}"
-    }
-}
+)

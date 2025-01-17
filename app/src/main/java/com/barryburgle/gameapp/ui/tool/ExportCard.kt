@@ -113,7 +113,6 @@ fun ExportCard(
                         state.exportFolder,
                         state.exportFileName,
                         state.abstractSessions,
-                        state.abstractSessionHeader,
                         state.exportHeader
                     )
                     Toast.makeText(localContext, "Successfully exported", Toast.LENGTH_SHORT).show()
@@ -127,8 +126,7 @@ fun ExportCard(
                             CsvService.importRows(
                                 state.exportFolder,
                                 importFileName,
-                                state.exportHeader,
-                                AbstractSession.separator
+                                state.exportHeader
                             )
                         )
                     )
