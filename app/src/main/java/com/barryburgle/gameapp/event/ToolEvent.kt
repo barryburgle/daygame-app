@@ -9,4 +9,5 @@ sealed interface ToolEvent {
     data class SetAbstractSessions(val abstractSessions: List<AbstractSession>) : ToolEvent
     data class SetLastSessionAverageQuantity(val lastSessionAverageQuantity: String) : ToolEvent
     data class SetNotificationTime(val notificationTime: String) : ToolEvent
+    data class SetExportHeader(val exportHeader: Boolean) : ToolEvent
 }
