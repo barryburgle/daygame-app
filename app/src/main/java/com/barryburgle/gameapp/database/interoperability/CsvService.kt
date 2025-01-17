@@ -22,7 +22,8 @@ class CsvService {
             exportFolder: String,
             filename: String,
             exportRowList: List<AbstractSession>,
-            exportHeader: String
+            headerToExport: String,
+            exportHeader: Boolean
         ) {
             val exportDir = File(localPath, "/$exportFolder")
             if (!exportDir.exists()) {
@@ -35,9 +36,11 @@ class CsvService {
             try {
                 file.createNewFile()
                 val csvWrite = CSVWriter(FileWriter(file))
-                val exportArrayHeader =
-                    arrayOf(exportHeader)
-                csvWrite.writeNext(exportArrayHeader)
+                if (exportHeader) {
+                    val exportArrayHeader =
+                        arrayOf(headerToExport)
+                    csvWrite.writeNext(exportArrayHeader)
+                }
                 for (exportRow in exportRowList) {
                     val exportArrayRow =
                         arrayOf(exportRow.toString())
