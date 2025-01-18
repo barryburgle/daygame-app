@@ -1,4 +1,4 @@
-# Version 1.3.0-beta (2025-01-08)
+# Version 1.3.0-beta (2025-01-18)
 
 **Features**
 - Settable header export and import
