@@ -40,6 +40,10 @@ You can download the app .apk installer on the release page clicking on the foll
   <img src="https://i.ibb.co/q0mdc4Z/get-it-on-github.png" alt="Get it on Github" height="80">
 </a>
 
+## Updates
+
+You can get notified when a new update is available simply installing [Obtainium](https://github.com/ImranR98/Obtainium), searching the Daygame app or adding the current page url in its "Add App" page.
+
 ## Features
 - [x] `Input screen` Session import with date, start hour, end hour, sets, conversations, contacts, sticking points
 - [x] `Output screen` Charts for:
