@@ -12,6 +12,13 @@ class FormatService {
         val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy")
         val TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm")
 
+        fun getPerc(
+            number: Double
+        ): String {
+            val inPerc: Double = (number * 1000).toInt() / 10.0
+            return "${inPerc} %"
+        }
+
         fun getDate(
             localDate: String
         ): String {
