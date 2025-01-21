@@ -32,6 +32,11 @@ fun ToolsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
+                StatsCard(
+                    state = state
+                )
+            }
+            item {
                 ExportCard(
                     state = state,
                     onEvent = onEvent
