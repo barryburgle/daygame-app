@@ -21,10 +21,11 @@ fun InputCountComponent(
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
     onEvent: (AbstractSessionEvent) -> Unit,
+    countStart: Int? = 0,
     saveEvent: (input: String) -> AbstractSessionEvent
 ) {
     var count by remember {
-        mutableStateOf(0)
+        mutableStateOf(if (countStart == null) 0 else countStart)
     }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
