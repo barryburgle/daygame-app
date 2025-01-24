@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.ui.tool
+package com.barryburgle.gameapp.ui.stats
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,12 +21,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.service.GlobalStatsService
 import com.barryburgle.gameapp.ui.input.describedQuantifier
-import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import com.barryburgle.gameapp.ui.stats.state.StatsState
 
 @ExperimentalMaterial3Api
 @Composable
 fun StatsCard(
-    state: ToolsState,
+    state: StatsState,
     modifier: Modifier = Modifier
         .shadow(
             elevation = 5.dp,
