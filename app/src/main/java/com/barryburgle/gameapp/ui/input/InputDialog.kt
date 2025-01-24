@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
@@ -34,12 +35,16 @@ import java.time.LocalTime
 fun AddInputDialog(
     state: InputState,
     onEvent: (AbstractSessionEvent) -> Unit,
+    description: String,
     modifier: Modifier = Modifier
 ) {
     val localContext = LocalContext.current.applicationContext
     val dateDialogState = rememberMaterialDialogState()
     val startHourDialogState = rememberMaterialDialogState()
     val endHourDialogState = rememberMaterialDialogState()
+    if (state.isUpdatingSession) {
+        setState(state)
+    }
     MaterialDialog(
         dialogState = dateDialogState,
         elevation = 10.dp,
@@ -60,7 +65,9 @@ fun AddInputDialog(
         shape = MaterialTheme.shapes.extraLarge
     ) {
         this.datepicker(
-            initialDate = LocalDate.now(),
+            initialDate = if (state.isAddingSession || state.editAbstractSession == null) LocalDate.now() else FormatService.parseDate(
+                state.editAbstractSession.date
+            ),
             title = "Set date",
             colors = DatePickerDefaults.colors(
                 headerBackgroundColor = MaterialTheme.colorScheme.background,
@@ -95,7 +102,9 @@ fun AddInputDialog(
         shape = MaterialTheme.shapes.extraLarge
     ) {
         this.timepicker(
-            initialTime = LocalTime.now(),
+            initialTime = if (state.isAddingSession || state.editAbstractSession == null) LocalTime.now() else FormatService.parseTime(
+                state.editAbstractSession.startHour
+            ),
             title = "Set start hour",
             colors = TimePickerDefaults.colors(
                 selectorColor = MaterialTheme.colorScheme.onPrimary,
@@ -128,7 +137,9 @@ fun AddInputDialog(
         shape = MaterialTheme.shapes.extraLarge
     ) {
         this.timepicker(
-            initialTime = LocalTime.now(),
+            initialTime = if (state.isAddingSession || state.editAbstractSession == null) LocalTime.now() else FormatService.parseTime(
+                state.editAbstractSession.endHour
+            ),
             title = "Set end hour",
             colors = TimePickerDefaults.colors(
                 selectorColor = MaterialTheme.colorScheme.onPrimary,
@@ -147,7 +158,7 @@ fun AddInputDialog(
             onEvent(AbstractSessionEvent.HideDialog)
         },
         title = {
-            Text(text = "Add session")
+            Text(text = description)
         },
         text = {
             Column(
@@ -175,18 +186,21 @@ fun AddInputDialog(
                         inputTitle = "Sets", modifier = Modifier,
                         style = MaterialTheme.typography.titleSmall,
                         onEvent = onEvent,
+                        countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.sets,
                         saveEvent = AbstractSessionEvent::SetSets
                     )
                     InputCountComponent(
                         inputTitle = "Conversations", modifier = Modifier,
                         style = MaterialTheme.typography.titleSmall,
                         onEvent = onEvent,
+                        countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.convos,
                         saveEvent = AbstractSessionEvent::SetConvos
                     )
                     InputCountComponent(
                         inputTitle = "Contacts", modifier = Modifier,
                         style = MaterialTheme.typography.titleSmall,
                         onEvent = onEvent,
+                        countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.contacts,
                         saveEvent = AbstractSessionEvent::SetContacts
                     )
                 }
@@ -204,15 +218,43 @@ fun AddInputDialog(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterEnd
             ) {
-                Button(
-                    onClick = {
-                        onEvent(AbstractSessionEvent.SaveAbstractSession)
-                        Toast.makeText(localContext, "Session saved", Toast.LENGTH_SHORT)
-                            .show()
-                    }) {
-                    Text(text = "Save")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(
+                        onClick = {
+                            onEvent(AbstractSessionEvent.HideDialog)
+                        }) {
+                        Text(text = "Cancel")
+                    }
+                    Button(
+                        onClick = {
+                            onEvent(AbstractSessionEvent.SaveAbstractSession)
+                            onEvent(AbstractSessionEvent.HideDialog)
+                            Toast.makeText(localContext, "Session saved", Toast.LENGTH_SHORT)
+                                .show()
+                        }) {
+                        Text(text = "Save")
+                    }
                 }
             }
         }
     )
+}
+
+fun setState(
+    state: InputState
+) {
+    if (state.editAbstractSession != null) {
+        state.date = state.editAbstractSession.date.substring(0, 10)
+        state.startHour = state.editAbstractSession.startHour.substring(11, 16)
+        state.endHour = state.editAbstractSession.endHour.substring(11, 16)
+        state.sets = state.editAbstractSession.sets.toString()
+        state.convos = state.editAbstractSession.convos.toString()
+        state.contacts = state.editAbstractSession.contacts.toString()
+        if (state.stickingPoints.isBlank()) {
+            state.stickingPoints = state.editAbstractSession.stickingPoints
+        }
+    }
 }
