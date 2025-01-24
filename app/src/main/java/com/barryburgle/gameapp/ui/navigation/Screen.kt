@@ -1,7 +1,8 @@
 package com.barryburgle.gameapp.ui.navigation
 
 sealed class Screen(val route: String) {
-    object InputScreen : Screen("input")
-    object OutputScreen : Screen("output")
-    object ToolScreen : Screen("tool")
+    object InputScreen : Screen("sessions")
+    object OutputScreen : Screen("dashboard")
+    object StatsScreen : Screen("stats")
+    object ToolScreen : Screen("settings")
 }
