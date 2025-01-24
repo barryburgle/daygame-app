@@ -92,29 +92,28 @@ class InputViewModel(
 
             AbstractSessionEvent.SaveAbstractSession ->
                 viewModelScope.launch {
-                    val date = state.value.date
-                    val startHour = state.value.startHour
-                    val endHour = state.value.endHour
-                    val sets = state.value.sets
-                    val convos = state.value.convos
-                    val contacts = state.value.contacts
-                    val stickingPoints = state.value.stickingPoints
                     val abstractSession = _batchSessionService.init(
-                        date = date,
-                        startHour = startHour,
-                        endHour = endHour,
-                        sets = sets,
-                        convos = convos,
-                        contacts = contacts,
-                        stickingPoints = stickingPoints
+                        date = if (_state.value.date.isBlank()) state.value.date else _state.value.date,
+                        startHour = if (_state.value.startHour.isBlank()) state.value.startHour else _state.value.startHour,
+                        endHour = if (_state.value.endHour.isBlank()) state.value.endHour else _state.value.endHour,
+                        sets = if (_state.value.sets.isBlank()) state.value.sets else _state.value.sets,
+                        convos = if (_state.value.convos.isBlank()) state.value.convos else _state.value.convos,
+                        contacts = if (_state.value.contacts.isBlank()) state.value.contacts else _state.value.contacts,
+                        stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
                     )
-                    viewModelScope.launch { abstractSessionDao.insert(abstractSession) }
-                    notificationState = NotificationService.createNotificationState(
-                        state.value.notificationTime,
-                        abstractSession.date,
-                        abstractSession.stickingPoints
-                    )
-                    notificationScheduler.schedule(notificationState!!)
+                    if (state.value.isAddingSession) {
+                        viewModelScope.launch { abstractSessionDao.insert(abstractSession) }
+                        notificationState = NotificationService.createNotificationState(
+                            state.value.notificationTime,
+                            abstractSession.date,
+                            abstractSession.stickingPoints
+                        )
+                        notificationScheduler.schedule(notificationState!!)
+                    } else if (state.value.isUpdatingSession) {
+                        abstractSession.id = state.value.editAbstractSession!!.id
+                        abstractSession.insertTime = state.value.editAbstractSession!!.insertTime
+                        viewModelScope.launch { abstractSessionDao.insert(abstractSession) }
+                    }
                     _state.update {
                         it.copy(
                             date = "",
