@@ -5,7 +5,9 @@ import com.barryburgle.gameapp.model.session.AbstractSession
 
 sealed interface AbstractSessionEvent {
     object SaveAbstractSession : AbstractSessionEvent
-    object ShowDialog : AbstractSessionEvent
+    data class ShowDialog(val addSession: Boolean, val updateSession: Boolean) :
+        AbstractSessionEvent
+
     object HideDialog : AbstractSessionEvent
     data class SetDate(val date: String) : AbstractSessionEvent
     data class SetStartHour(val startHour: String) : AbstractSessionEvent
@@ -16,4 +18,5 @@ sealed interface AbstractSessionEvent {
     data class SetStickingPoints(val stickingPoints: String) : AbstractSessionEvent
     data class SortSessions(val sortType: SortType) : AbstractSessionEvent
     data class DeleteSession(val abstractSession: AbstractSession) : AbstractSessionEvent
+    data class EditSession(val abstractSession: AbstractSession) : AbstractSessionEvent
 }

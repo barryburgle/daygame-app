@@ -67,6 +67,14 @@ class InputViewModel(
     fun onEvent(event: AbstractSessionEvent) {
         when (event) {
 
+            is AbstractSessionEvent.EditSession -> {
+                _state.update {
+                    it.copy(
+                        editAbstractSession = event.abstractSession
+                    )
+                }
+            }
+
             is AbstractSessionEvent.DeleteSession -> {
                 viewModelScope.launch {
                     abstractSessionDao.delete(event.abstractSession)
@@ -76,7 +84,8 @@ class InputViewModel(
             is AbstractSessionEvent.HideDialog -> {
                 _state.update {
                     it.copy(
-                        isAddingSession = false
+                        isAddingSession = false,
+                        isUpdatingSession = false
                     )
                 }
             }
@@ -180,7 +189,8 @@ class InputViewModel(
             is AbstractSessionEvent.ShowDialog -> {
                 _state.update {
                     it.copy(
-                        isAddingSession = true
+                        isAddingSession = event.addSession,
+                        isUpdatingSession = event.updateSession
                     )
                 }
             }

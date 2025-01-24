@@ -14,5 +14,7 @@ data class InputState(
     var stickingPoints: String = "",
     val sortType: SortType = SortType.DATE,
     val isAddingSession: Boolean = false,
-    val notificationTime: String = ""
+    val isUpdatingSession: Boolean = false,
+    val notificationTime: String = "",
+    val editAbstractSession: AbstractSession? = null
 )

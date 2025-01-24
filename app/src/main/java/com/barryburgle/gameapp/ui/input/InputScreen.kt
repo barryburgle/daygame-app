@@ -43,7 +43,7 @@ fun InputScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { onEvent(AbstractSessionEvent.ShowDialog) },
+                onClick = { onEvent(AbstractSessionEvent.ShowDialog(true, false)) },
                 modifier = Modifier.offset(y = - spaceFromNavBar)
             ) {
                 Icon(
@@ -54,7 +54,10 @@ fun InputScreen(
         }
     ) { padding ->
         if (state.isAddingSession) {
-            AddInputDialog(state = state, onEvent = onEvent)
+            AddInputDialog(state = state, onEvent = onEvent, "Add a Session")
+        }
+        if (state.isUpdatingSession) {
+            AddInputDialog(state = state, onEvent = onEvent, "Edit a Session")
         }
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
