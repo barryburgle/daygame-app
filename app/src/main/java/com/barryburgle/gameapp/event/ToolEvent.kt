@@ -6,8 +6,10 @@ sealed interface ToolEvent {
     data class SetExportFileName(val exportFileName: String) : ToolEvent
     data class SetImportFileName(val importFileName: String) : ToolEvent
     data class SetExportFolder(val exportFolder: String) : ToolEvent
+    data class SetImportFolder(val importFolder: String) : ToolEvent
     data class SetAbstractSessions(val abstractSessions: List<AbstractSession>) : ToolEvent
     data class SetLastSessionAverageQuantity(val lastSessionAverageQuantity: String) : ToolEvent
     data class SetNotificationTime(val notificationTime: String) : ToolEvent
     data class SetExportHeader(val exportHeader: Boolean) : ToolEvent
+    data class SetImportHeader(val importHeader: Boolean) : ToolEvent
 }

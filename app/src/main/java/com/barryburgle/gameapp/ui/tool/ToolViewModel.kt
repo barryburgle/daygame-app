@@ -5,9 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
-import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.setting.Setting
-import com.barryburgle.gameapp.ui.CombineEight
+import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,10 +25,11 @@ class ToolViewModel(
     private val _importFilename = settingDao.getImportFilename()
     private val _exportFolder = settingDao.getExportFolder()
     private val _exportHeader = settingDao.getExportHeaderFlag()
+    private val _importHeader = settingDao.getImportHeaderFlag()
     private val _notificationTime = settingDao.getNotificationTime()
     private val _averageLast = settingDao.getAverageLast()
     val state =
-        CombineEight(
+        CombineNine(
             _state,
             _abstractSessions,
             _exportFilename,
@@ -37,8 +37,9 @@ class ToolViewModel(
             _exportFolder,
             _notificationTime,
             _averageLast,
-            _exportHeader
-        ) { state, abstractSessions, exportFilename, importFilename, exportFolder, notificationTime, averageLast, exportHeader ->
+            _exportHeader,
+            _importHeader
+        ) { state, abstractSessions, exportFilename, importFilename, exportFolder, notificationTime, averageLast, exportHeader, importHeader ->
             state.copy(
                 exportFileName = exportFilename,
                 importFileName = importFilename,
@@ -46,7 +47,8 @@ class ToolViewModel(
                 notificationTime = notificationTime,
                 abstractSessions = abstractSessions,
                 lastSessionAverageQuantity = averageLast,
-                exportHeader = exportHeader.toBoolean()
+                exportHeader = exportHeader.toBoolean(),
+                importHeader = importHeader.toBoolean()
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ToolsState())
 
@@ -82,6 +84,17 @@ class ToolViewModel(
                 }
                 val exportFolder = _state.value.exportFolder
                 val setting = Setting(SettingDao.EXPORT_FOLDER_ID, exportFolder)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetImportFolder -> {
+                _state.update {
+                    it.copy(
+                        importFolder = event.importFolder
+                    )
+                }
+                val importFolder = _state.value.importFolder
+                val setting = Setting(SettingDao.IMPORT_FOLDER_ID, importFolder)
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
@@ -128,6 +141,17 @@ class ToolViewModel(
                 }
                 val exportHeader = _state.value.exportHeader
                 val setting = Setting(SettingDao.EXPORT_HEADER_ID, exportHeader.toString())
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetImportHeader -> {
+                _state.update {
+                    it.copy(
+                        importHeader = event.importHeader
+                    )
+                }
+                val importHeader = _state.value.importHeader
+                val setting = Setting(SettingDao.IMPORT_HEADER_ID, importHeader.toString())
                 viewModelScope.launch { settingDao.insert(setting) }
             }
         }
