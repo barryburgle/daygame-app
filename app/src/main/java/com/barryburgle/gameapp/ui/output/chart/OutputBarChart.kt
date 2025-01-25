@@ -2,12 +2,16 @@ package com.barryburgle.gameapp.ui.output.chart
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
@@ -35,51 +39,74 @@ fun OutputBarChart(
         )
     ) {
         val darkThemeEnabled = isSystemInDarkTheme()
-        Text(
-            text = description,
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier
-                .background(
-                    MaterialTheme.colorScheme.surface, Shapes.large
-                )
-                .padding(10.dp),
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        AndroidView(modifier = Modifier.fillMaxSize(), factory = { context ->
-            val barChart = styleBarChart(
-                BarChart(context),
-                surfaceColor,
-                barEntryList,
-                ratio,
-                onSurfaceColor,
-                inChartTextSize
-            )
-            val formatter: ValueFormatter = object : ValueFormatter() {
-                override fun getFormattedValue(value: Float): String {
-                    return value.toInt().toString()
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxWidth()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = description,
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier
+                                .background(
+                                    MaterialTheme.colorScheme.surface,
+                                    Shapes.large
+                                ),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
+                AndroidView(modifier = Modifier.fillMaxSize(), factory = { context ->
+                    val barChart = styleBarChart(
+                        BarChart(context),
+                        surfaceColor,
+                        barEntryList,
+                        ratio,
+                        onSurfaceColor,
+                        inChartTextSize
+                    )
+                    val formatter: ValueFormatter = object : ValueFormatter() {
+                        override fun getFormattedValue(value: Float): String {
+                            return value.toInt().toString()
+                        }
+                    }
+                    val leftAxis: YAxis = barChart.getAxisLeft()
+                    leftAxis.setValueFormatter(formatter)
+                    val dataset =
+                        BarDataSet(barEntryList, description + " Absolute Frequency").apply {
+                            color = onSurfaceColor
+                            valueTextColor = onSurfaceColor
+                            valueTextSize = inChartTextSize
+                            setDrawValues(true)
+                            if (integerValues) {
+                                valueFormatter = IntegerValueFormatter()
+                            }
+                            isHighlightEnabled = true
+                            setGradientColor(surfaceColor, onSurfaceColor)
+                            styleXAxis(barChart, onSurfaceColor, description)
+                        }
+                    val barData = BarData(dataset)
+                    barChart.data = barData
+                    barChart.setFitBars(true);
+                    barChart.animateY(300, Easing.EaseInOutQuad);
+                    barChart.invalidate()
+                    barChart
+                })
             }
-            val leftAxis: YAxis = barChart.getAxisLeft()
-            leftAxis.setValueFormatter(formatter)
-            val dataset = BarDataSet(barEntryList, description + " Absolute Frequency").apply {
-                color = onSurfaceColor
-                valueTextColor = onSurfaceColor
-                valueTextSize = inChartTextSize
-                setDrawValues(true)
-                if (integerValues) {
-                    valueFormatter = IntegerValueFormatter()
-                }
-                isHighlightEnabled = true
-                setGradientColor(surfaceColor, onSurfaceColor)
-                styleXAxis(barChart, onSurfaceColor, description)
-            }
-            val barData = BarData(dataset)
-            barChart.data = barData
-            barChart.setFitBars(true);
-            barChart.animateY(300, Easing.EaseInOutQuad);
-            barChart.invalidate()
-            barChart
-        })
+        }
     }
 }
 
@@ -125,8 +152,10 @@ fun styleBarChart(
 fun styleXAxis(
     barChart: BarChart, textColor: Int, label: String
 ) {
+    // TODO: specify on x axis label as Sets/converstaions/contacts
+    // TODO: specify on y axis label as "Sessions" (vertically written)
     val xAxisFormatter = IntegerValueFormatter()
-    xAxisFormatter.label = styleLabel(label)
+    xAxisFormatter.label = "" //styleLabel(label)
     val xAxis: XAxis = barChart.getXAxis()
     xAxis.position = XAxis.XAxisPosition.BOTTOM
     xAxis.valueFormatter = xAxisFormatter

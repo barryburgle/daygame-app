@@ -3,12 +3,16 @@ package com.barryburgle.gameapp.ui.output.chart
 import android.graphics.Color
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
@@ -45,94 +49,121 @@ fun OutputLineChart(
             )
     ) {
         val darkThemeEnabled = isSystemInDarkTheme()
-        Text(
-            text = description,
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier
-                .background(
-                    MaterialTheme.colorScheme.surface,
-                    Shapes.large
-                )
-                .padding(10.dp),
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        AndroidView(
-            modifier = Modifier
-                .fillMaxSize(),
-            factory = { context ->
-                val barChart =
-                    styleLineChart(
-                        LineChart(context),
-                        surfaceColor,
-                        barEntryList,
-                        ratio,
-                        onSurfaceColor,
-                        inChartTextSize
-                    )
-                val formatter: ValueFormatter = object : ValueFormatter() {
-                    override fun getFormattedValue(value: Float): String {
-                        return value.toInt().toString()
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxWidth()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = description,
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier
+                                .background(
+                                    MaterialTheme.colorScheme.surface,
+                                    Shapes.large
+                                ),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 }
-                val leftAxis: YAxis = barChart.getAxisLeft()
-                leftAxis.setValueFormatter(formatter)
-                val dataset =
-                    LineDataSet(barEntryList, description).apply {
-                        color = onSurfaceColor
-                        valueTextColor = onSurfaceColor
-                        valueTextSize = inChartTextSize
-                        setDrawValues(true)
-                        if (integerValues) {
-                            valueFormatter = IntegerValueFormatter()
+                AndroidView(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    factory = { context ->
+                        val barChart =
+                            styleLineChart(
+                                LineChart(context),
+                                surfaceColor,
+                                barEntryList,
+                                ratio,
+                                onSurfaceColor,
+                                inChartTextSize
+                            )
+                        val formatter: ValueFormatter = object : ValueFormatter() {
+                            override fun getFormattedValue(value: Float): String {
+                                return value.toInt().toString()
+                            }
                         }
-                        lineWidth = commonLineWidth
-                        isHighlightEnabled = true
-                        setDrawHighlightIndicators(false)
-                        setDrawCircles(true)
-                        circleRadius = 2f
-                        circleColors = listOf(onSurfaceColor)
-                        circleHoleColor = onSurfaceColor
-                        mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-                        setDrawFilled(true)
-                        if (darkThemeEnabled) {
-                            fillDrawable =
-                                ContextCompat.getDrawable(context, R.drawable.bg_output_line_b)
-                        } else {
-                            fillDrawable =
-                                ContextCompat.getDrawable(context, R.drawable.bg_output_line_w)
-                        }
-                    }
-                val averageDataset =
-                    LineDataSet(
-                        SessionManager.computeAverageBarEntryList(barEntryList),
-                        "Average"
-                    ).apply {
-                        color = Color.YELLOW
-                        lineWidth = commonLineWidth
-                        setDrawValues(false)
-                        setDrawCircles(false)
-                        mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-                        enableDashedLine(15f, 10f, 0f)
-                    }
-                val movingAverageDataset =
-                    LineDataSet(
-                        SessionManager.computeMovingAverage(
-                            barEntryList,
-                            minOf(movingAverageWindow, barEntryList.size)
-                        ),
-                        "Last ${movingAverageWindow} average"
-                    ).apply {
-                        color = Color.RED
-                        lineWidth = commonLineWidth
-                        setDrawValues(false)
-                        setDrawCircles(false)
-                        mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-                    }
-                val barData = LineData(dataset, averageDataset, movingAverageDataset)
-                barChart.data = barData
-                barChart.invalidate()
-                barChart
-            })
+                        val leftAxis: YAxis = barChart.getAxisLeft()
+                        leftAxis.setValueFormatter(formatter)
+                        val dataset =
+                            LineDataSet(barEntryList, description).apply {
+                                color = onSurfaceColor
+                                valueTextColor = onSurfaceColor
+                                valueTextSize = inChartTextSize
+                                setDrawValues(true)
+                                if (integerValues) {
+                                    valueFormatter = IntegerValueFormatter()
+                                }
+                                lineWidth = commonLineWidth
+                                isHighlightEnabled = true
+                                setDrawHighlightIndicators(false)
+                                setDrawCircles(true)
+                                circleRadius = 2f
+                                circleColors = listOf(onSurfaceColor)
+                                circleHoleColor = onSurfaceColor
+                                mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+                                setDrawFilled(true)
+                                if (darkThemeEnabled) {
+                                    fillDrawable =
+                                        ContextCompat.getDrawable(
+                                            context,
+                                            R.drawable.bg_output_line_b
+                                        )
+                                } else {
+                                    fillDrawable =
+                                        ContextCompat.getDrawable(
+                                            context,
+                                            R.drawable.bg_output_line_w
+                                        )
+                                }
+                            }
+                        val averageDataset =
+                            LineDataSet(
+                                SessionManager.computeAverageBarEntryList(barEntryList),
+                                "Average"
+                            ).apply {
+                                color = Color.YELLOW
+                                lineWidth = commonLineWidth
+                                setDrawValues(false)
+                                setDrawCircles(false)
+                                mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+                                enableDashedLine(15f, 10f, 0f)
+                            }
+                        val movingAverageDataset =
+                            LineDataSet(
+                                SessionManager.computeMovingAverage(
+                                    barEntryList,
+                                    minOf(movingAverageWindow, barEntryList.size)
+                                ),
+                                "Last ${movingAverageWindow} average"
+                            ).apply {
+                                color = Color.RED
+                                lineWidth = commonLineWidth
+                                setDrawValues(false)
+                                setDrawCircles(false)
+                                mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+                            }
+                        val barData = LineData(dataset, averageDataset, movingAverageDataset)
+                        barChart.data = barData
+                        barChart.invalidate()
+                        barChart
+                    })
+            }
+        }
     }
 }
 

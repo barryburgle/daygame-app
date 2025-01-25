@@ -1,11 +1,12 @@
 package com.barryburgle.gameapp.ui.tool
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
@@ -19,9 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
-import com.barryburgle.gameapp.ui.theme.Shapes
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
@@ -41,7 +42,6 @@ fun SettingsCard(
     onEvent: (ToolEvent) -> Unit
 ) {
     val notificationHourDialogState = rememberMaterialDialogState()
-
     MaterialDialog(
         dialogState = notificationHourDialogState,
         elevation = 10.dp,
@@ -82,42 +82,61 @@ fun SettingsCard(
         ),
         shape = MaterialTheme.shapes.large
     ) {
-        Text(
-            text = "Settings",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier
-                .background(
-                    MaterialTheme.colorScheme.surface,
-                    Shapes.large
-                )
-                .padding(10.dp),
-            color = MaterialTheme.colorScheme.onSurface
-        )
         Row(
-            horizontalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ToolCountComponent(
-                inputTitle = "Average last", modifier = Modifier,
-                style = MaterialTheme.typography.titleSmall,
-                onEvent = onEvent,
-                saveEvent = ToolEvent::SetLastSessionAverageQuantity,
-                initialCount = state.lastSessionAverageQuantity
-            )
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(16.dp)
+            Column(
+                modifier = Modifier
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Column(
-                    modifier = Modifier.width(150.dp)
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxWidth()
                 ) {
-                    Button(
-                        onClick = { notificationHourDialogState.show() }) {
-                        Text(text = "Remind me sticking points")
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Settings",
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
+                }
+                Row(
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    ToolCountComponent(
+                        inputTitle = "Average last", modifier = Modifier,
+                        style = MaterialTheme.typography.bodySmall,
+                        onEvent = onEvent,
+                        saveEvent = ToolEvent::SetLastSessionAverageQuantity,
+                        initialCount = state.lastSessionAverageQuantity
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.width(150.dp)
+                        ) {
+                            Button(
+                                onClick = { notificationHourDialogState.show() }) {
+                                Text(
+                                    text = "Sticking points reminder",
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
                     }
                 }
             }
