@@ -45,30 +45,43 @@ You can download the app .apk installer on the release page clicking on the foll
 You can get notified when a new update is available simply installing [Obtainium](https://github.com/ImranR98/Obtainium), searching the Daygame app or adding the current page url in its "Add App" page.
 
 ## Features
-- [x] `Input screen` Session import with date, start hour, end hour, sets, conversations, contacts, sticking points
-- [x] `Output screen` Charts for:
+- [x] `Sessions Tab` Add, edit and delete a new session, or list all of them, sorting by:
+  - date
   - sets
   - conversations
   - contacts
-  - session performance index
+  - session time
+  - approach time
+  - conversation ratio
+  - rejection ratio
+  - contact ratio
+  - index
+  - day of week
+  - week number
+- [x] `Dashboard Tab` Visualize session charts for:
+  - sets
+  - conversations
+  - contacts
+  - index
   - approach time
   - conversation ratio
   - contact ratio
   - time spent
-- [x] `Data` Data import/export in .csv with or without header ([file example](https://github.com/barryburgle/game-app/blob/main/resources/files/daygame_export_2025_01_17_18_09.csv))
-- [x] `Tools screen` Average moving window
-- [x] `Tools screen` Last session sticking points notification reminder
-- [x] `Output screen` Sessions histogram output cards
+  grouped by sessions, weeks, months plus histograms on all sessions
+- [x] `Settings Tab` It is possible to set:
+  - data import/export in .csv with or without header ([file example](https://github.com/barryburgle/game-app/blob/main/resources/files/daygame_export_2025_01_17_18_09.csv))
+  - settable chart average moving window
+  - last session sticking points notification reminder
  
 ## What's next
 
-- [ ] `Input screen` Live session insert red card
-- [ ] `Input screen` Input lead names on input card
-- [ ] `Input screen` Dates insert on input screen + dates table
-- [ ] `Tools screen` Lead tracker with get-back-in-touch reminder ("Flight Control")
-- [ ] `Output screen` Custom chart generation from extended tables
-- [ ] `Data` Schema extendable database
-- [ ] `Input screen` Live session stealth set recording (mic access, AI-based set detection, AI-based set record trim, settable record folder)
+- [ ] `Sessions Tab` Live session insert red card
+- [ ] `Sessions Tab` Lead names on input card
+- [ ] `Date Tab` Dates insert on input screen + dates table
+- [ ] `Dashboard Tab` Lead tracker with get-back-in-touch reminder ("Flight Control")
+- [ ] `Dashboard Tab` Custom chart generation from extended tables
+- [ ] `Settings Tab` Schema extendable database
+- [ ] `Sessions Tab` Live session stealth set recording (mic access, AI-based set detection, AI-based set record trim, settable record folder)
 
 ## Bugs
 To file a bug or report and issue please log in to Github and open an issue on this repository, alternatively send an email to barryburgle@gmail.com .
