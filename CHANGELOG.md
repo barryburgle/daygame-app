@@ -1,3 +1,15 @@
+# Version 1.4.0-beta (2025-01-25)
+
+**Features**
+- Results tab
+- Clearer Settings tab
+- Input card redesign
+- Edit session functionality
+
+**Bugs**
+- Minor Dashboard card graphic improvement
+- Navbar permanent selected background
+
 # Version 1.3.0-beta (2025-01-18)
 
 **Features**
