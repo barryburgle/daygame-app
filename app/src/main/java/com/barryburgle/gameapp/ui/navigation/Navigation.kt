@@ -3,12 +3,14 @@ package com.barryburgle.gameapp.ui.navigation
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.outlined.Build
-import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.automirrored.outlined.TrendingUp
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.EditNote
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +36,8 @@ import com.barryburgle.gameapp.ui.input.InputScreen
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.output.OutputScreen
 import com.barryburgle.gameapp.ui.output.state.OutputState
+import com.barryburgle.gameapp.ui.stats.StatsScreen
+import com.barryburgle.gameapp.ui.stats.state.StatsState
 import com.barryburgle.gameapp.ui.tool.ToolsScreen
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 
@@ -43,32 +47,39 @@ import com.barryburgle.gameapp.ui.tool.state.ToolsState
 fun Navigation(
     inputState: InputState,
     outputState: OutputState,
+    statsState: StatsState,
     toolState: ToolsState,
     inputOnEvent: (AbstractSessionEvent) -> Unit,
     outputOnEvent: (ChartTypeEvent) -> Unit,
     toolOnEvent: (ToolEvent) -> Unit
 ) {
     val navController = rememberNavController()
-
     val items = listOf(
         BottomNavigationItem(
-            title = "Input",
-            selectedIcon = Icons.Filled.Edit,
-            unselectedIcon = Icons.Outlined.Edit,
+            title = "Sessions",
+            selectedIcon = Icons.Filled.EditNote,
+            unselectedIcon = Icons.Outlined.EditNote,
             hasNews = false,
             destinationScreen = Screen.InputScreen.route
         ),
         BottomNavigationItem(
-            title = "Output",
-            selectedIcon = Icons.Filled.CheckCircle,
-            unselectedIcon = Icons.Outlined.CheckCircle,
+            title = "Dashboard",
+            selectedIcon = Icons.AutoMirrored.Filled.TrendingUp,
+            unselectedIcon = Icons.AutoMirrored.Outlined.TrendingUp,
             hasNews = false,
             destinationScreen = Screen.OutputScreen.route
         ),
         BottomNavigationItem(
-            title = "Tools",
-            selectedIcon = Icons.Filled.Build,
-            unselectedIcon = Icons.Outlined.Build,
+            title = "Results",
+            selectedIcon = Icons.Filled.Check,
+            unselectedIcon = Icons.Outlined.Check,
+            hasNews = false,
+            destinationScreen = Screen.StatsScreen.route
+        ),
+        BottomNavigationItem(
+            title = "Settings",
+            selectedIcon = Icons.Filled.Settings,
+            unselectedIcon = Icons.Outlined.Settings,
             hasNews = false,
             destinationScreen = Screen.ToolScreen.route
         )
@@ -83,33 +94,43 @@ fun Navigation(
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 items.forEachIndexed { index, item ->
+                    item.selected = selectedItemIndex == index
+                    val selectedColor =
+                        if (item.selected) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimary
                     NavigationBarItem(
-                        selected = selectedItemIndex == index,
+                        selected = item.selected,
                         onClick = {
                             selectedItemIndex = index
                             navController.navigate(item.destinationScreen)
                         },
-                        label = { Text(text = item.title) },
+                        label = { Text(text = item.title, color = selectedColor) },
                         icon = {
-                            BadgedBox(badge = {
-                                if (item.badgeCount != null) {
-                                    Badge {
-                                        Text(text = item.badgeCount.toString())
+                            BadgedBox(
+                                badge = {
+                                    if (item.badgeCount != null) {
+                                        Badge {
+                                            Text(
+                                                text = item.badgeCount.toString()
+                                            )
+                                        }
+                                    } else if (item.hasNews) {
+                                        Badge()
                                     }
-                                } else if (item.hasNews) {
-                                    Badge()
                                 }
-                            }) {
+                            ) {
                                 Icon(
-                                    imageVector = if (index == selectedItemIndex) {
+                                    imageVector = if (item.selected) {
                                         item.selectedIcon
                                     } else {
                                         item.unselectedIcon
-                                    }, contentDescription = item.title
+                                    },
+                                    contentDescription = item.title,
+                                    tint = selectedColor
                                 )
                             }
                         })
                 }
+                val pippo = false
             }
         }
     ) { padding ->
@@ -119,6 +140,9 @@ fun Navigation(
             }
             composable(Screen.OutputScreen.route) {
                 OutputScreen(state = outputState, onEvent = outputOnEvent)
+            }
+            composable(Screen.StatsScreen.route) {
+                StatsScreen(state = statsState)
             }
             composable(Screen.ToolScreen.route) {
                 ToolsScreen(state = toolState, onEvent = toolOnEvent)
