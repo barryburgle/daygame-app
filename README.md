@@ -22,15 +22,15 @@
 </div>
 
 The main goal of this daygame app it to provide a tool for measurement and improvement of your daygame.
-Everything is stored locally on your device. The app provides three tabs: 
-- the "Input" tab where you can see all the sessions recorded and add a new one
-- the "Output" tab where you can see all the charts for the latest 14 sessions
-- the "Tools" tab where you can find other useful tools to set
+Everything is stored locally on your device. The app provides four tabs: 
+- the Sessions Tab is where you can insert, see and delete all the sessions
+- the Dashboard Tab is where you can observe your progress over time
+- the Results Tab is where you can observe your statics
+- the Settings Tab is where you can import or export data and customize your app experience
 
-| Input                                                                                                                        | Add Session                                                                                                                  | Output                                                                                                                        | Tools                                                                                                                       |
-|------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_screen_v_1_b.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_dialog_v_1_b.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/output_screen_v_1_b.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/tool_screen_v_1_b.png?raw=true)   |
-| ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_screen_v_1_w.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/input_dialog_v_1_w.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/output_screen_v_1_w.png?raw=true)   | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/input/tool_screen_v_1_w.png?raw=true)   |
+| Sessions Tab                                                                                               | Dashboard Tab                                                                                               | Results Tab                                                                                                | Settings Tab                                                                                               |
+|------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
+| ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/sessions.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/dashboard.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/results.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/settings.jpg?raw=true) |
 
 ## Download
 
