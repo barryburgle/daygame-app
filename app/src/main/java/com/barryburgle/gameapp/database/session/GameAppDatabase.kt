@@ -39,13 +39,23 @@ abstract class GameAppDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_2_3: Migration = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "INSERT INTO setting(id,value) VALUES ('${SettingDao.IMPORT_FOLDER_ID}','Download')"
+                )
+            }
+        }
+
+        // TODO: check if database migration queries are executed
+
         fun getInstance(context: Context): GameAppDatabase? {
             if (INSTANCE == null) {
                 synchronized(GameAppDatabase::class) {
                     INSTANCE = Room.databaseBuilder(
                         context.applicationContext,
                         GameAppDatabase::class.java, DATABASE_NAME
-                    ).addMigrations(MIGRATION_1_2).build()
+                    ).addMigrations(MIGRATION_1_2).addMigrations(MIGRATION_2_3).build()
                 }
             }
             return INSTANCE
