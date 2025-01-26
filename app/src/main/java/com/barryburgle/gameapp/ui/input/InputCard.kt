@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -74,43 +75,57 @@ fun InputCard(
                         )
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth(0.6f)
-                                .background(
-                                    MaterialTheme.colorScheme.inversePrimary,
-                                    shape = RoundedCornerShape(10.dp)
-                                ),
+                                .fillMaxWidth(0.75f),
                             horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            IconButton(
-                                onClick = {
-                                    onEvent(
-                                        AbstractSessionEvent.DeleteSession(
-                                            abstractSession
-                                        )
+                            Column(
+                                modifier = Modifier
+                                    .background(
+                                        MaterialTheme.colorScheme.primaryContainer,
+                                        shape = RoundedCornerShape(50.dp)
                                     )
-                                }) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = "Delete Session",
-                                    tint = MaterialTheme.colorScheme.onErrorContainer
-                                )
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        onEvent(
+                                            AbstractSessionEvent.DeleteSession(
+                                                abstractSession
+                                            )
+                                        )
+                                    }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Delete Session",
+                                        tint = MaterialTheme.colorScheme.onErrorContainer
+                                    )
+                                }
                             }
-                            IconButton(
-                                onClick = {
-                                    onEvent(
-                                        AbstractSessionEvent.EditSession(
-                                            abstractSession
+                            Column(
+                                modifier = Modifier
+                                    .background(
+                                        MaterialTheme.colorScheme.primaryContainer,
+                                        shape = RoundedCornerShape(30.dp)
+                                    )
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        onEvent(
+                                            AbstractSessionEvent.EditSession(
+                                                abstractSession
+                                            )
                                         )
+                                        onEvent(
+                                            AbstractSessionEvent.ShowDialog(false, true)
+                                        )
+                                    }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = "Edit Session",
+                                        tint = MaterialTheme.colorScheme.inversePrimary,
+                                        modifier = Modifier.height(20.dp)
                                     )
-                                    onEvent(
-                                        AbstractSessionEvent.ShowDialog(false, true)
-                                    )
-                                }) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = "Edit Session",
-                                    tint = MaterialTheme.colorScheme.tertiary
-                                )
+                                }
                             }
                         }
                     }
