@@ -1,6 +1,6 @@
 package com.barryburgle.gameapp.model.enums
 
-enum class SortType(val field: String) {
+enum class SortType(private val field: String) : FieldEnum {
     DATE("Date"),
     SETS("Sets"),
     CONVOS("Conversations"),
@@ -13,4 +13,8 @@ enum class SortType(val field: String) {
     INDEX("Index"),
     DAY_OF_WEEK("Day of Week"),
     WEEK_NUMBER("Week Number");
+
+    override fun getField(): String {
+        return field
+    }
 }
