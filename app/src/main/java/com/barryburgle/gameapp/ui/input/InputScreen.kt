@@ -1,7 +1,5 @@
 package com.barryburgle.gameapp.ui.input
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,32 +17,31 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.event.GenericEvent
+import com.barryburgle.gameapp.model.enums.SelectionType
 import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.utilities.SelectionRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputScreen(
     state: InputState, onEvent: (AbstractSessionEvent) -> Unit
 ) {
-    val spaceFromTop = 80.dp
     val spaceFromBottom = 60.dp
     val spaceFromNavBar = 80.dp
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { onEvent(AbstractSessionEvent.ShowDialog(true, false)) },
-                modifier = Modifier.offset(y = - spaceFromNavBar)
+                modifier = Modifier.offset(y = -spaceFromNavBar)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -61,18 +58,14 @@ fun InputScreen(
         }
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(50.dp),
-            modifier = Modifier.background(MaterialTheme.colorScheme.primary)
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "Sort by: ",
-                        color = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.offset(y = 10.dp)
-                    )
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -81,47 +74,16 @@ fun InputScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         SortType.values().forEach { sortType ->
-                            Row(
-                                modifier = Modifier
-                                    .clickable {
-                                        onEvent(
-                                            AbstractSessionEvent.SortSessions(
-                                                sortType
-                                            )
-                                        )
-                                    },
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                RadioButton(
-                                    selected = state.sortType == sortType, onClick = {
-                                        onEvent(
-                                            AbstractSessionEvent.SortSessions(
-                                                sortType
-                                            )
-                                        )
-                                    },
-                                    colors = RadioButtonDefaults.colors(
-                                        selectedColor = MaterialTheme.colorScheme.secondary,
-                                        unselectedColor = MaterialTheme.colorScheme.surface
-                                    )
-                                )
-                                Text(
-                                    text = sortType.field + " ",
-                                    color = MaterialTheme.colorScheme.secondary
-                                )
-                            }
+                            SelectionRow(
+                                SelectionType.SESSIONS,
+                                state.sortType,
+                                sortType,
+                                onEvent as (GenericEvent) -> Unit
+                            )
                         }
                     }
                 }
             }
-        }
-        LazyColumn(
-            contentPadding = PaddingValues(16.dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .offset(y = spaceFromTop),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
             items(state.abstractSessions) { abstractSession ->
                 InputCard(
                     abstractSession,
@@ -134,7 +96,7 @@ fun InputScreen(
                         )
                 )
             }
-            item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom)) {} }
+            item { Row(modifier = Modifier.height(spaceFromBottom)) {} }
         }
     }
 }
