@@ -3,7 +3,7 @@ package com.barryburgle.gameapp.event
 import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.model.session.AbstractSession
 
-sealed interface AbstractSessionEvent {
+sealed interface AbstractSessionEvent: GenericEvent {
     object SaveAbstractSession : AbstractSessionEvent
     data class ShowDialog(val addSession: Boolean, val updateSession: Boolean) :
         AbstractSessionEvent
