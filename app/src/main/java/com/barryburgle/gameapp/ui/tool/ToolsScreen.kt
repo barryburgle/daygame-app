@@ -32,13 +32,15 @@ fun ToolsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                ExportCard(
+                DataExchangeCard(
+                    cardTitle = "Export",
                     state = state,
                     onEvent = onEvent
                 )
             }
             item {
-                ImportCard(
+                DataExchangeCard(
+                    cardTitle = "Import",
                     state = state,
                     onEvent = onEvent
                 )
