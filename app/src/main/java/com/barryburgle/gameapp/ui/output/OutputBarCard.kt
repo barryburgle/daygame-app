@@ -1,7 +1,9 @@
 package com.barryburgle.gameapp.ui.output
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -17,7 +19,8 @@ import com.github.mikephil.charting.data.BarEntry
 fun OutputBarCard(
     chartLabel: String,
     modifier: Modifier = Modifier
-        .height(250.dp)
+        .height(180.dp)
+        .width(300.dp)
         .shadow(
             elevation = 5.dp,
             shape = MaterialTheme.shapes.large
@@ -42,4 +45,5 @@ fun OutputBarCard(
             )
         }
     }
+    Spacer(modifier = Modifier.width(5.dp))
 }
