@@ -1,7 +1,6 @@
 package com.barryburgle.gameapp.ui.output.chart
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,7 +37,6 @@ fun OutputBarChart(
             MaterialTheme.colorScheme.surface, Shapes.large
         )
     ) {
-        val darkThemeEnabled = isSystemInDarkTheme()
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -74,9 +72,7 @@ fun OutputBarChart(
                         BarChart(context),
                         surfaceColor,
                         barEntryList,
-                        ratio,
-                        onSurfaceColor,
-                        inChartTextSize
+                        ratio
                     )
                     val formatter: ValueFormatter = object : ValueFormatter() {
                         override fun getFormattedValue(value: Float): String {
@@ -86,7 +82,7 @@ fun OutputBarChart(
                     val leftAxis: YAxis = barChart.getAxisLeft()
                     leftAxis.setValueFormatter(formatter)
                     val dataset =
-                        BarDataSet(barEntryList, description + " Absolute Frequency").apply {
+                        BarDataSet(barEntryList, description).apply {
                             color = onSurfaceColor
                             valueTextColor = onSurfaceColor
                             valueTextSize = inChartTextSize
@@ -114,9 +110,7 @@ fun styleBarChart(
     barChart: BarChart,
     surfaceColor: Int,
     barEntryList: List<BarEntry>,
-    ratio: Boolean,
-    onSurfacecolor: Int,
-    inChartTextSize: Float
+    ratio: Boolean
 ): BarChart {
     barChart.apply {
         setBackgroundColor(surfaceColor)
@@ -142,8 +136,6 @@ fun styleBarChart(
         setPinchZoom(false)
         description = null
         legend.isEnabled = false
-        legend.textColor = onSurfacecolor
-        legend.textSize = inChartTextSize
         extraBottomOffset = 35f
     }
     return barChart
@@ -164,9 +156,4 @@ fun styleXAxis(
     xAxis.setDrawAxisLine(false)
     xAxis.yOffset = 2f
     xAxis.granularity = 1f
-}
-
-fun styleLabel(label: String): String {
-    val cleanLabel = label.dropLast(10)
-    return " " + cleanLabel.lowercase()
 }
