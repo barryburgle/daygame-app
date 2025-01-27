@@ -1,11 +1,16 @@
 package com.barryburgle.gameapp.ui.output.section
 
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.ui.unit.Dp
 import com.barryburgle.gameapp.ui.output.OutputCard
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.github.mikephil.charting.data.BarEntry
 
-fun LazyListScope.WeekSection(state: OutputState) {
+fun LazyListScope.WeekSection(
+    state: OutputState,
+    height: Dp,
+    width: Dp
+) {
     item {
         state.weekStats.map { weekStat ->
             weekStat.periodNumber?.let {
@@ -16,6 +21,8 @@ fun LazyListScope.WeekSection(state: OutputState) {
             }
         }?.let { it ->
             OutputCard(
+                height = height,
+                width = width,
                 chartLabel = "Sets",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
@@ -34,6 +41,8 @@ fun LazyListScope.WeekSection(state: OutputState) {
             }
         }?.let { it ->
             OutputCard(
+                height = height,
+                width = width,
                 chartLabel = "Conversations",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
@@ -52,6 +61,8 @@ fun LazyListScope.WeekSection(state: OutputState) {
             }
         }?.let { it ->
             OutputCard(
+                height = height,
+                width = width,
                 chartLabel = "Contacts",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
@@ -70,6 +81,8 @@ fun LazyListScope.WeekSection(state: OutputState) {
             }
         }?.let { it ->
             OutputCard(
+                height = height,
+                width = width,
                 chartLabel = "Average Index",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
@@ -88,6 +101,8 @@ fun LazyListScope.WeekSection(state: OutputState) {
             }
         }?.let { it ->
             OutputCard(
+                height = height,
+                width = width,
                 chartLabel = "Average Conv. Ratio",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
@@ -106,6 +121,8 @@ fun LazyListScope.WeekSection(state: OutputState) {
             }
         }?.let { it ->
             OutputCard(
+                height = height,
+                width = width,
                 chartLabel = "Average Contact Ratio",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
@@ -124,6 +141,8 @@ fun LazyListScope.WeekSection(state: OutputState) {
             }
         }?.let { it ->
             OutputCard(
+                height = height,
+                width = width,
                 chartLabel = "Time Spent [Hours]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,

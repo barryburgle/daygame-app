@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ChartTypeEvent
 import com.barryburgle.gameapp.ui.output.section.HistogramSection
@@ -59,6 +60,8 @@ fun OutputScreen(
                     }
                 }
             }
+            val heigh: Dp = 200.dp
+            val width: Dp = 320.dp
             if (state.abstractSessions.isNotEmpty()) {
                 item {
                     Text(
@@ -68,7 +71,7 @@ fun OutputScreen(
                     )
                     Spacer(modifier = Modifier.height(15.dp))
                     LazyRow {
-                        SessionSection(state)
+                        SessionSection(state, heigh, width)
                     }
                 }
                 item {
@@ -79,7 +82,7 @@ fun OutputScreen(
                     )
                     Spacer(modifier = Modifier.height(15.dp))
                     LazyRow {
-                        WeekSection(state)
+                        WeekSection(state, heigh, width)
                     }
                 }
                 item {
@@ -90,7 +93,7 @@ fun OutputScreen(
                     )
                     Spacer(modifier = Modifier.height(15.dp))
                     LazyRow {
-                        MonthSection(state)
+                        MonthSection(state, heigh, width)
                     }
                 }
                 item {
@@ -101,7 +104,7 @@ fun OutputScreen(
                     )
                     Spacer(modifier = Modifier.height(15.dp))
                     LazyRow {
-                        HistogramSection(state)
+                        HistogramSection(state, heigh, width)
                     }
                 }
                 item { Row(modifier = Modifier.height(spaceFromBottom)) {} }

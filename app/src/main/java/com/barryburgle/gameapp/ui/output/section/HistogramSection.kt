@@ -1,11 +1,16 @@
 package com.barryburgle.gameapp.ui.output.section
 
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.ui.unit.Dp
 import com.barryburgle.gameapp.ui.output.OutputBarCard
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.github.mikephil.charting.data.BarEntry
 
-fun LazyListScope.HistogramSection(state: OutputState) {
+fun LazyListScope.HistogramSection(
+    state: OutputState,
+    height: Dp,
+    width: Dp
+) {
     item {
         state.setsHistogram.map { setsHistogram ->
             setsHistogram.metric?.let {
@@ -15,6 +20,8 @@ fun LazyListScope.HistogramSection(state: OutputState) {
             }
         }?.let { it ->
             OutputBarCard(
+                height = height,
+                width = width,
                 chartLabel = "Sets",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
@@ -31,6 +38,8 @@ fun LazyListScope.HistogramSection(state: OutputState) {
             }
         }?.let { it ->
             OutputBarCard(
+                height = height,
+                width = width,
                 chartLabel = "Conversations",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
@@ -47,6 +56,8 @@ fun LazyListScope.HistogramSection(state: OutputState) {
             }
         }?.let { it ->
             OutputBarCard(
+                height = height,
+                width = width,
                 chartLabel = "Contacts",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,

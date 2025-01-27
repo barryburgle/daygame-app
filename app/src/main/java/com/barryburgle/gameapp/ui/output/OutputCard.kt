@@ -11,16 +11,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.ui.output.chart.OutputLineChart
 import com.github.mikephil.charting.data.BarEntry
 
 @Composable
 fun OutputCard(
+    height: Dp,
+    width: Dp,
     chartLabel: String,
     modifier: Modifier = Modifier
-        .height(180.dp)
-        .width(300.dp)
+        .height(height)
+        .width(width)
         .shadow(
             elevation = 5.dp,
             shape = MaterialTheme.shapes.large
