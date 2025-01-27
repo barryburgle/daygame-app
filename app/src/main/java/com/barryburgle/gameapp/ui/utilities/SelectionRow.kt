@@ -20,25 +20,21 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.FieldEnum
-import com.barryburgle.gameapp.model.enums.SelectionType
 import com.barryburgle.gameapp.model.enums.SortType
 
 @Composable
 fun SelectionRow(
-    selectionType: SelectionType,
     currentSort: FieldEnum,
     sortType: FieldEnum,
     onEvent: (GenericEvent) -> Unit
 ) {
     Row(
         modifier = Modifier.clickable {
-            if (selectionType.equals(SelectionType.SESSIONS)) {
-                onEvent(
-                    AbstractSessionEvent.SortSessions(
-                        sortType as SortType
-                    )
+            onEvent(
+                AbstractSessionEvent.SortSessions(
+                    sortType as SortType
                 )
-            }
+            )
         },
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -58,13 +54,11 @@ fun SelectionRow(
         ) {
             ClickableText(
                 onClick = {
-                    if (selectionType.equals(SelectionType.SESSIONS)) {
-                        onEvent(
-                            AbstractSessionEvent.SortSessions(
-                                sortType as SortType
-                            )
+                    onEvent(
+                        AbstractSessionEvent.SortSessions(
+                            sortType as SortType
                         )
-                    }
+                    )
                 },
                 modifier = Modifier.background(color = textBackgroundColor),
                 style = TextStyle(color = textButtonColor),
