@@ -1,16 +1,17 @@
 package com.barryburgle.gameapp.ui.output
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,15 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ChartTypeEvent
-import com.barryburgle.gameapp.event.GenericEvent
-import com.barryburgle.gameapp.model.enums.ChartType
-import com.barryburgle.gameapp.model.enums.SelectionType
 import com.barryburgle.gameapp.ui.output.section.HistogramSection
 import com.barryburgle.gameapp.ui.output.section.MonthSection
 import com.barryburgle.gameapp.ui.output.section.SessionSection
 import com.barryburgle.gameapp.ui.output.section.WeekSection
 import com.barryburgle.gameapp.ui.output.state.OutputState
-import com.barryburgle.gameapp.ui.utilities.SelectionRow
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -46,39 +43,66 @@ fun OutputScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "Leads:",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(15.dp))
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .offset(y = 10.dp)
-                            .horizontalScroll(rememberScrollState()),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        ChartType.values().forEach { chartType ->
-                            SelectionRow(
-                                SelectionType.CHARTS,
-                                state.chartType,
-                                chartType,
-                                onEvent as (GenericEvent) -> Unit
-                            )
-                        }
+                    Column {
+
                     }
                 }
             }
             if (state.abstractSessions.isNotEmpty()) {
-                // TODO: refactor all the following labdas inside items to be called passing the abstract session attribute + description
-                if (ChartType.SESSION.equals(state.chartType)) {
-                    SessionSection(state)
+                item {
+                    Text(
+                        text = "Sessions:",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.height(15.dp))
+                    LazyRow {
+                        SessionSection(state)
+                    }
                 }
-                if (ChartType.WEEK.equals(state.chartType)) {
-                    WeekSection(state)
+                item {
+                    Text(
+                        text = "Weeks:",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.height(15.dp))
+                    LazyRow {
+                        WeekSection(state)
+                    }
                 }
-                if (ChartType.MONTH.equals(state.chartType)) {
-                    MonthSection(state)
+                item {
+                    Text(
+                        text = "Months:",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.height(15.dp))
+                    LazyRow {
+                        MonthSection(state)
+                    }
                 }
-                if (ChartType.HISTOGRAM.equals(state.chartType)) {
-                    HistogramSection(state)
+                item {
+                    Text(
+                        text = "Histograms:",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.height(15.dp))
+                    LazyRow {
+                        HistogramSection(state)
+                    }
                 }
                 item { Row(modifier = Modifier.height(spaceFromBottom)) {} }
             } else {
