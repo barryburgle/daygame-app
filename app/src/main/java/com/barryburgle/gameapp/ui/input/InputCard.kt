@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -45,19 +46,15 @@ fun InputCard(
     val perfFontSize = 15.sp
     val descriptionFontSize = 10.sp
     Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(
+        modifier = modifier, colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
-        ),
-        shape = MaterialTheme.shapes.large
+        ), shape = MaterialTheme.shapes.large
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
-                modifier = Modifier
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.SpaceEvenly
+                modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Column(
                     modifier = Modifier
@@ -74,26 +71,23 @@ fun InputCard(
                             style = MaterialTheme.typography.titleLarge
                         )
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth(0.75f),
+                            modifier = Modifier.fillMaxWidth(0.75f),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Column(
-                                modifier = Modifier
-                                    .background(
-                                        MaterialTheme.colorScheme.primaryContainer,
-                                        shape = RoundedCornerShape(50.dp)
-                                    )
+                                modifier = Modifier.background(
+                                    MaterialTheme.colorScheme.primaryContainer,
+                                    shape = RoundedCornerShape(50.dp)
+                                )
                             ) {
-                                IconButton(
-                                    onClick = {
-                                        onEvent(
-                                            AbstractSessionEvent.DeleteSession(
-                                                abstractSession
-                                            )
+                                IconButton(onClick = {
+                                    onEvent(
+                                        AbstractSessionEvent.DeleteSession(
+                                            abstractSession
                                         )
-                                    }) {
+                                    )
+                                }) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,
                                         contentDescription = "Delete Session",
@@ -102,23 +96,21 @@ fun InputCard(
                                 }
                             }
                             Column(
-                                modifier = Modifier
-                                    .background(
-                                        MaterialTheme.colorScheme.primaryContainer,
-                                        shape = RoundedCornerShape(30.dp)
-                                    )
+                                modifier = Modifier.background(
+                                    MaterialTheme.colorScheme.primaryContainer,
+                                    shape = RoundedCornerShape(30.dp)
+                                )
                             ) {
-                                IconButton(
-                                    onClick = {
-                                        onEvent(
-                                            AbstractSessionEvent.EditSession(
-                                                abstractSession
-                                            )
+                                IconButton(onClick = {
+                                    onEvent(
+                                        AbstractSessionEvent.EditSession(
+                                            abstractSession
                                         )
-                                        onEvent(
-                                            AbstractSessionEvent.ShowDialog(false, true)
-                                        )
-                                    }) {
+                                    )
+                                    onEvent(
+                                        AbstractSessionEvent.ShowDialog(false, true)
+                                    )
+                                }) {
                                     Icon(
                                         imageVector = Icons.Default.Edit,
                                         contentDescription = "Edit Session",
@@ -147,8 +139,7 @@ fun InputCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
+                        modifier = Modifier.fillMaxHeight()
                     ) {
                         Row(
                             modifier = Modifier
@@ -216,22 +207,39 @@ fun InputCard(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .fillMaxHeight()
-                                    .background(
-                                        MaterialTheme.colorScheme.inversePrimary,
-                                        shape = RoundedCornerShape(10.dp)
-                                    )
                                     .padding(7.dp)
                             ) {
                                 Text(
-                                    text = "Sticking Points:",
-                                    style = MaterialTheme.typography.bodySmall
+                                    text = "Leads:", style = MaterialTheme.typography.bodySmall
                                 )
-                                val stickingPoints =
-                                    if (abstractSession.stickingPoints.isBlank()) "No sticking points" else abstractSession.stickingPoints
-                                Text(
-                                    text = stickingPoints,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                                Spacer(modifier = Modifier.height(5.dp))
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                    modifier = Modifier.fillMaxHeight()
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .fillMaxHeight()
+                                            .background(
+                                                color = MaterialTheme.colorScheme.inversePrimary,
+                                                shape = RoundedCornerShape(10.dp)
+                                            )
+                                            .padding(7.dp)
+                                    ) {
+                                        Text(
+                                            text = "Sticking Points:",
+                                            style = MaterialTheme.typography.bodySmall
+                                        )
+                                        Spacer(modifier = Modifier.height(5.dp))
+                                        val stickingPoints =
+                                            if (abstractSession.stickingPoints.isBlank()) "No sticking points" else abstractSession.stickingPoints
+                                        Text(
+                                            text = stickingPoints,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -244,10 +252,7 @@ fun InputCard(
 
 @Composable
 fun describedQuantifier(
-    quantity: String,
-    quantityFontSize: TextUnit,
-    description: String,
-    descriptionFontSize: TextUnit
+    quantity: String, quantityFontSize: TextUnit, description: String, descriptionFontSize: TextUnit
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -255,16 +260,14 @@ fun describedQuantifier(
         modifier = Modifier.fillMaxHeight()
     ) {
         Box(
-            modifier = Modifier
-                .padding(5.dp)
+            modifier = Modifier.padding(5.dp)
         ) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = quantity,
-                    fontSize = quantityFontSize
+                    text = quantity, fontSize = quantityFontSize
                 )
                 Text(
                     text = description,
@@ -275,4 +278,24 @@ fun describedQuantifier(
             }
         }
     }
+}
+
+@Composable
+fun leadName(
+    name: String, contactType: String, nationality: String, backgroundColor: Color
+) {
+    Text(
+        text = "${name} ${contactType} ${nationality}",
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier
+            .background(
+                color = backgroundColor, shape = RoundedCornerShape(5.dp)
+            )
+            .padding(8.dp)
+    )
+    Spacer(
+        modifier = Modifier
+            .width(5.dp)
+            .height(5.dp)
+    )
 }
