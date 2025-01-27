@@ -17,7 +17,7 @@ fun LazyListScope.MonthSection(state: OutputState) {
             }
         }?.let { it ->
             OutputCard(
-                chartLabel = "Monthly Sets",
+                chartLabel = "Sets",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
                 ratio = false,
@@ -35,7 +35,7 @@ fun LazyListScope.MonthSection(state: OutputState) {
             }
         }?.let { it ->
             OutputCard(
-                chartLabel = "Monthly Conversations",
+                chartLabel = "Conversations",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
                 ratio = false,
@@ -53,7 +53,7 @@ fun LazyListScope.MonthSection(state: OutputState) {
             }
         }?.let { it ->
             OutputCard(
-                chartLabel = "Monthly Contacts",
+                chartLabel = "Contacts",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
                 ratio = false,
@@ -71,7 +71,7 @@ fun LazyListScope.MonthSection(state: OutputState) {
             }
         }?.let { it ->
             OutputCard(
-                chartLabel = "Monthly Average Index",
+                chartLabel = "Average Index",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
                 ratio = false,
@@ -89,7 +89,7 @@ fun LazyListScope.MonthSection(state: OutputState) {
             }
         }?.let { it ->
             OutputCard(
-                chartLabel = "Monthly Average Conversation Ratio",
+                chartLabel = "Average Conv. Ratio",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
                 ratio = true,
@@ -107,7 +107,7 @@ fun LazyListScope.MonthSection(state: OutputState) {
             }
         }?.let { it ->
             OutputCard(
-                chartLabel = "Monthly Average Contact Ratio",
+                chartLabel = "Average Contact Ratio",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
                 ratio = true,
@@ -125,7 +125,7 @@ fun LazyListScope.MonthSection(state: OutputState) {
             }
         }?.let { it ->
             OutputCard(
-                chartLabel = "Monthly Time Spent [Hours]",
+                chartLabel = "Time Spent [Hours]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
                 ratio = false,

@@ -15,7 +15,7 @@ fun LazyListScope.HistogramSection(state: OutputState) {
             }
         }?.let { it ->
             OutputBarCard(
-                chartLabel = "Sets Histogram",
+                chartLabel = "Sets",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
                 ratio = false
@@ -31,7 +31,7 @@ fun LazyListScope.HistogramSection(state: OutputState) {
             }
         }?.let { it ->
             OutputBarCard(
-                chartLabel = "Conversations Histogram",
+                chartLabel = "Conversations",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
                 ratio = false
@@ -47,7 +47,7 @@ fun LazyListScope.HistogramSection(state: OutputState) {
             }
         }?.let { it ->
             OutputBarCard(
-                chartLabel = "Contacts Histogram",
+                chartLabel = "Contacts",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
                 ratio = false
