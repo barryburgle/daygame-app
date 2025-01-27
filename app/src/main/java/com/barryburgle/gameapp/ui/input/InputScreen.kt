@@ -41,7 +41,9 @@ fun InputScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { onEvent(AbstractSessionEvent.ShowDialog(true, false)) },
-                modifier = Modifier.offset(y = -spaceFromNavBar)
+                modifier = Modifier.offset(y = -spaceFromNavBar),
+                contentColor = MaterialTheme.colorScheme.inversePrimary,
+                containerColor = MaterialTheme.colorScheme.onTertiary
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
