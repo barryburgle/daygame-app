@@ -14,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -24,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -57,8 +55,8 @@ fun AddInputDialog(
     val startHourDialogState = rememberMaterialDialogState()
     val endHourDialogState = rememberMaterialDialogState()
     val descriptionFontSize = 13.sp
-    val sessionTimeColumnWidth = 120.dp
-    val sessionLeadColumnWidth = 140.dp
+    val sessionTimeColumnWidth = 130.dp
+    val sessionLeadColumnWidth = 130.dp
     val addLeadColumnWidth = 40.dp
     if (state.isUpdatingSession) {
         setState(state)
@@ -220,9 +218,21 @@ fun AddInputDialog(
                     modifier = Modifier
                         .width(sessionTimeColumnWidth)
                 ) {
-                    timeInputButton("Date", dateDialogState)
-                    timeInputButton("Start hour", startHourDialogState)
-                    timeInputButton("End hour", endHourDialogState)
+                    timeInputButton(
+                        getButtonTitle(
+                            state.date, "",
+                            "Date"
+                        ),
+                        dateDialogState
+                    )
+                    timeInputButton(
+                        getButtonTitle(state.startHour, "Start ", "Start Hour"),
+                        startHourDialogState
+                    )
+                    timeInputButton(
+                        getButtonTitle(state.endHour, "End ", "End Hour"),
+                        endHourDialogState
+                    )
                 }
                 Column(
                     modifier = Modifier.width(sessionLeadColumnWidth)
@@ -296,6 +306,9 @@ fun AddInputDialog(
     })
 }
 
+fun getButtonTitle(stateString: String, addToState: String, buttonDescription: String) =
+    if (stateString == null || stateString.isBlank()) buttonDescription else addToState + stateString
+
 fun setState(
     state: InputState
 ) {
@@ -316,12 +329,15 @@ fun setState(
 fun timeInputButton(
     text: String, dialogState: MaterialDialogState
 ) {
-    Button(onClick = { dialogState.show() }) {
+    Button(
+        onClick = { dialogState.show() }
+    ) {
         Text(
             text = text,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
         )
     }
 }
