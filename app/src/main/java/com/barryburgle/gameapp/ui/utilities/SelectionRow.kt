@@ -18,9 +18,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
-import com.barryburgle.gameapp.event.ChartTypeEvent
 import com.barryburgle.gameapp.event.GenericEvent
-import com.barryburgle.gameapp.model.enums.ChartType
 import com.barryburgle.gameapp.model.enums.FieldEnum
 import com.barryburgle.gameapp.model.enums.SelectionType
 import com.barryburgle.gameapp.model.enums.SortType
@@ -38,12 +36,6 @@ fun SelectionRow(
                 onEvent(
                     AbstractSessionEvent.SortSessions(
                         sortType as SortType
-                    )
-                )
-            } else if (selectionType.equals(SelectionType.CHARTS)) {
-                onEvent(
-                    ChartTypeEvent.SortCharts(
-                        sortType as ChartType
                     )
                 )
             }
@@ -70,12 +62,6 @@ fun SelectionRow(
                         onEvent(
                             AbstractSessionEvent.SortSessions(
                                 sortType as SortType
-                            )
-                        )
-                    } else if (selectionType.equals(SelectionType.CHARTS)) {
-                        onEvent(
-                            ChartTypeEvent.SortCharts(
-                                sortType as ChartType
                             )
                         )
                     }

@@ -5,10 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedStatDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
-import com.barryburgle.gameapp.event.ChartTypeEvent
 import com.barryburgle.gameapp.manager.SessionManager
-import com.barryburgle.gameapp.model.enums.ChartType
-import com.barryburgle.gameapp.ui.CombineNine
+import com.barryburgle.gameapp.ui.CombineEight
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,7 +18,6 @@ class OutputViewModel(
     private val settingDao: SettingDao
 ) : ViewModel() {
     private val _state = MutableStateFlow(OutputState())
-    private val _chartType = MutableStateFlow(ChartType.SESSION)
     private val _setsHistogram = abstractSessionDao.getSetsHistogram()
     private val _convosHistogram = abstractSessionDao.getConvosHistogram()
     private val _contactsHistogram = abstractSessionDao.getContactsHistogram()
@@ -33,7 +30,7 @@ class OutputViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _averageLast = settingDao.getAverageLast()
 
-    val state = CombineNine(
+    val state = CombineEight(
         _state,
         _setsHistogram,
         _convosHistogram,
@@ -41,10 +38,9 @@ class OutputViewModel(
         _abstractSessions,
         _weekStats,
         _monthStats,
-        _chartType,
         _averageLast
     )
-    { state, setsHistogram, convosHistogram, contactsHistogram, abstractSessions, weekStats, monthStats, chartType, averageLast ->
+    { state, setsHistogram, convosHistogram, contactsHistogram, abstractSessions, weekStats, monthStats, averageLast ->
         state.copy(
             setsHistogram = setsHistogram,
             convosHistogram = convosHistogram,
@@ -52,17 +48,7 @@ class OutputViewModel(
             abstractSessions = SessionManager.normalizeSessionsIds(abstractSessions),
             weekStats = SessionManager.normalizeIds(weekStats),
             monthStats = SessionManager.normalizeIds(monthStats),
-            chartType = chartType,
             movingAverageWindow = averageLast
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), OutputState())
-
-
-    fun onEvent(event: ChartTypeEvent) {
-        when (event) {
-            is ChartTypeEvent.SortCharts -> {
-                _chartType.value = event.chartType
-            }
-        }
-    }
 }
