@@ -54,7 +54,7 @@ fun OutputLineChart(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(16.dp),
+                    .padding(5.dp),
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Column(
@@ -69,7 +69,7 @@ fun OutputLineChart(
                     ) {
                         Text(
                             text = description,
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.titleSmall,
                             modifier = Modifier
                                 .background(
                                     MaterialTheme.colorScheme.surface,
