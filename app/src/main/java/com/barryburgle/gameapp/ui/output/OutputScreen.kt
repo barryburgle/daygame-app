@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.ui.output
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,8 +10,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,8 +32,7 @@ import com.barryburgle.gameapp.ui.output.state.OutputState
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun OutputScreen(
-    state: OutputState,
-    onEvent: (ChartTypeEvent) -> Unit
+    state: OutputState
 ) {
     val spaceFromBottom = 60.dp // TODO: centralize across screens
     // TODO: make cards with injectable type of charts
@@ -64,45 +66,37 @@ fun OutputScreen(
             val width: Dp = 320.dp
             if (state.abstractSessions.isNotEmpty()) {
                 item {
-                    Text(
-                        text = "Sessions:",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                    sectionTitleAndDescription(
+                        "Sessions",
+                        "Observe your progress through sessions:"
                     )
-                    Spacer(modifier = Modifier.height(15.dp))
                     LazyRow {
                         SessionSection(state, heigh, width)
                     }
                 }
                 item {
-                    Text(
-                        text = "Weeks:",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                    sectionTitleAndDescription(
+                        "Weeks",
+                        "Observe your progress through weeks:"
                     )
-                    Spacer(modifier = Modifier.height(15.dp))
                     LazyRow {
                         WeekSection(state, heigh, width)
                     }
                 }
                 item {
-                    Text(
-                        text = "Months:",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                    sectionTitleAndDescription(
+                        "Months",
+                        "Observe your progress through months:"
                     )
-                    Spacer(modifier = Modifier.height(15.dp))
                     LazyRow {
                         MonthSection(state, heigh, width)
                     }
                 }
                 item {
-                    Text(
-                        text = "Histograms:",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                    sectionTitleAndDescription(
+                        "Histograms",
+                        "Number of sessions in which you reached a certain amount of:"
                     )
-                    Spacer(modifier = Modifier.height(15.dp))
                     LazyRow {
                         HistogramSection(state, heigh, width)
                     }
@@ -126,4 +120,23 @@ fun OutputScreen(
             }
         }
     }
+}
+
+@Composable
+fun sectionTitleAndDescription(
+    title: String,
+    description: String
+) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onSurface
+    )
+    Spacer(modifier = Modifier.height(5.dp))
+    Text(
+        text = description,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurface
+    )
+    Spacer(modifier = Modifier.height(10.dp))
 }
