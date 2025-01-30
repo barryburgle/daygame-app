@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "6191f8c3f1a053f2f13b867a7ade5cf0",
+    "identityHash": "5b17fcd477406da85b1b67bb22e30449",
     "entities": [
       {
         "tableName": "abstract_session",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `insert_time` TEXT NOT NULL, `session_date` TEXT NOT NULL, `start_hour` TEXT NOT NULL, `end_hour` TEXT NOT NULL, `sets` INTEGER NOT NULL, `convos` INTEGER NOT NULL, `contacts` INTEGER NOT NULL, `sticking_points` TEXT NOT NULL, `session_time` INTEGER NOT NULL, `approach_time` INTEGER NOT NULL, `convo_ratio` REAL NOT NULL, `rejection_ratio` REAL NOT NULL, `contact_ratio` REAL NOT NULL, `index` REAL NOT NULL, `day_of_week` INTEGER NOT NULL, `week_number` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `insert_time` TEXT NOT NULL, `session_date` TEXT NOT NULL, `start_hour` TEXT NOT NULL, `end_hour` TEXT NOT NULL, `sets` INTEGER NOT NULL, `convos` INTEGER NOT NULL, `contacts` INTEGER NOT NULL, `sticking_points` TEXT NOT NULL, `session_time` INTEGER NOT NULL, `approach_time` INTEGER NOT NULL, `convo_ratio` REAL NOT NULL, `rejection_ratio` REAL NOT NULL, `contact_ratio` REAL NOT NULL, `index` REAL NOT NULL, `day_of_week` INTEGER NOT NULL, `week_number` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -112,7 +112,7 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": true,
+          "autoGenerate": false,
           "columnNames": [
             "id"
           ]
@@ -148,7 +148,7 @@
       },
       {
         "tableName": "lead",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `insert_time` TEXT NOT NULL, `session_id` INTEGER, `contact` TEXT NOT NULL, `nationality` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `insert_time` TEXT NOT NULL, `session_id` INTEGER, `name` TEXT NOT NULL, `contact` TEXT NOT NULL, `nationality` TEXT NOT NULL, `age` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -169,6 +169,12 @@
             "notNull": false
           },
           {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "contact",
             "columnName": "contact",
             "affinity": "TEXT",
@@ -178,6 +184,12 @@
             "fieldPath": "nationality",
             "columnName": "nationality",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "age",
+            "columnName": "age",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -194,7 +206,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6191f8c3f1a053f2f13b867a7ade5cf0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5b17fcd477406da85b1b67bb22e30449')"
     ]
   }
 }
