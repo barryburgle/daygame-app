@@ -112,7 +112,14 @@ class InputViewModel(
                         stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
                     )
                     if (state.value.isAddingSession) {
-                        viewModelScope.launch { abstractSessionDao.insert(abstractSession) }
+                        viewModelScope.launch {
+                            var sessionId: Long? = abstractSessionDao.insert(abstractSession)
+                            for (lead in state.value.leads) {
+                                lead.insertTime = abstractSession.insertTime
+                                lead.sessionId = sessionId
+                                leadDao.insert(lead)
+                            }
+                        }
                         notificationState = NotificationService.createNotificationState(
                             state.value.notificationTime,
                             abstractSession.date,
@@ -134,7 +141,15 @@ class InputViewModel(
                             contacts = "",
                             stickingPoints = "",
                             sortType = SortType.DATE,
-                            isAddingSession = false
+                            isAddingSession = false,
+                            isUpdatingSession = false,
+                            isAddingLead = false,
+                            leads = emptyList(),
+                            name = "",
+                            contact = "",
+                            nationality = "",
+                            countryName = "",
+                            age = 20
                         )
                     }
                 }
