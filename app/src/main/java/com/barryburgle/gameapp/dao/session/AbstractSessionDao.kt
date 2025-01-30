@@ -17,7 +17,7 @@ interface AbstractSessionDao {
     suspend fun batchInsert(abstractSessions: List<AbstractSession>)
 
     @Insert(onConflict = REPLACE)
-    suspend fun insert(abstractSession: AbstractSession)
+    suspend fun insert(abstractSession: AbstractSession): Long
 
     @Delete
     suspend fun delete(abstractSession: AbstractSession)
