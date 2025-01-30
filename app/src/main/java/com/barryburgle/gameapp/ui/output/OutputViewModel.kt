@@ -7,7 +7,7 @@ import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedStatDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.manager.SessionManager
-import com.barryburgle.gameapp.ui.CombineEight
+import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,28 +26,31 @@ class OutputViewModel(
 
     // TODO: let user set n for following query from tools screen with a writing query on db
     private val _abstractSessions = abstractSessionDao.getAllLimit(14)
+    private val _leads = leadDao.getAll()
     private val _weekStats = aggregatedStatDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _monthStats = aggregatedStatDao.groupStatsByMonth()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _averageLast = settingDao.getAverageLast()
 
-    val state = CombineEight(
+    val state = CombineNine(
         _state,
         _setsHistogram,
         _convosHistogram,
         _contactsHistogram,
         _abstractSessions,
+        _leads,
         _weekStats,
         _monthStats,
         _averageLast
     )
-    { state, setsHistogram, convosHistogram, contactsHistogram, abstractSessions, weekStats, monthStats, averageLast ->
+    { state, setsHistogram, convosHistogram, contactsHistogram, abstractSessions, leads, weekStats, monthStats, averageLast ->
         state.copy(
             setsHistogram = setsHistogram,
             convosHistogram = convosHistogram,
             contactsHistogram = contactsHistogram,
             abstractSessions = SessionManager.normalizeSessionsIds(abstractSessions),
+            leads = leads,
             weekStats = SessionManager.normalizeIds(weekStats),
             monthStats = SessionManager.normalizeIds(monthStats),
             movingAverageWindow = averageLast
