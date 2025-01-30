@@ -6,21 +6,24 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedStatDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
+import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.setting.Setting
 
 
 @Database(
-    entities = [AbstractSession::class, Setting::class],
-    version = 2
+    entities = [AbstractSession::class, Setting::class, Lead::class],
+    version = 3
 )
 abstract class GameAppDatabase : RoomDatabase() {
     abstract val abstractSessionDao: AbstractSessionDao
     abstract val aggregatedStatDao: AggregatedStatDao
     abstract val settingDao: SettingDao
+    abstract val leadDao: LeadDao
 
     companion object {
         private const val DATABASE_NAME = "game_app_db"
@@ -42,7 +45,7 @@ abstract class GameAppDatabase : RoomDatabase() {
         val MIGRATION_2_3: Migration = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
-                    "INSERT INTO setting(id,value) VALUES ('${SettingDao.IMPORT_FOLDER_ID}','Download')"
+                    "CREATE TABLE IF NOT EXISTS lead (id INTEGER NOT NULL PRIMARY KEY, insert_time TEXT NOT NULL, session_id INTEGER NULL, name TEXT NULL, contact TEXT NULL, nationality TEXT NULL, age INTEGER NOT NULL);"
                 )
             }
         }
