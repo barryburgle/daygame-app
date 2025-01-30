@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.ui.stats
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.ui.stats.state.StatsState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,7 +11,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
 class StatsViewModel(
-    private val abstractSessionDao: AbstractSessionDao
+    private val abstractSessionDao: AbstractSessionDao,
+    private val leadDao: LeadDao
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(StatsState())

@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.ui.input
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.AbstractSessionEvent
@@ -25,7 +26,8 @@ import kotlinx.coroutines.launch
 class InputViewModel(
     private val context: Context,
     private val abstractSessionDao: AbstractSessionDao,
-    private val settingDao: SettingDao
+    private val settingDao: SettingDao,
+    private val leadDao: LeadDao
 ) : ViewModel() {
 
     val notificationScheduler = AndroidNotificationScheduler(context)
@@ -90,6 +92,14 @@ class InputViewModel(
                 }
             }
 
+            is AbstractSessionEvent.HideLeadDialog -> {
+                _state.update {
+                    it.copy(
+                        isAddingLead = false
+                    )
+                }
+            }
+
             AbstractSessionEvent.SaveAbstractSession ->
                 viewModelScope.launch {
                     val abstractSession = _batchSessionService.init(
@@ -108,7 +118,7 @@ class InputViewModel(
                             abstractSession.date,
                             abstractSession.stickingPoints
                         )
-                        notificationScheduler.schedule(notificationState!!)
+                        //notificationScheduler.schedule(notificationState!!)
                     } else if (state.value.isUpdatingSession) {
                         abstractSession.id = state.value.editAbstractSession!!.id
                         abstractSession.insertTime = state.value.editAbstractSession!!.insertTime
@@ -194,8 +204,64 @@ class InputViewModel(
                 }
             }
 
+            is AbstractSessionEvent.ShowLeadDialog -> {
+                _state.update {
+                    it.copy(
+                        isAddingLead = true
+                    )
+                }
+            }
+
             is AbstractSessionEvent.SortSessions -> {
                 _sortType.value = event.sortType
+            }
+
+            is AbstractSessionEvent.SetLead -> {
+                _state.update {
+                    it.copy(
+                        leads = it.leads + event.lead
+                    )
+                }
+            }
+
+            is AbstractSessionEvent.SetLeadName -> {
+                _state.update {
+                    it.copy(
+                        name = event.name
+                    )
+                }
+            }
+
+            is AbstractSessionEvent.SetLeadContact -> {
+                _state.update {
+                    it.copy(
+                        contact = event.contact
+                    )
+                }
+            }
+
+            is AbstractSessionEvent.SetLeadCountryName -> {
+                _state.update {
+                    it.copy(
+                        countryName = event.countryName
+                    )
+                }
+            }
+
+            is AbstractSessionEvent.SetLeadNationality -> {
+                _state.update {
+                    it.copy(
+                        nationality = event.nationality
+                    )
+                }
+            }
+
+            is AbstractSessionEvent.SetLeadAge -> {
+                _state.update {
+                    it.copy(
+                        age = event.age.toLong()
+                    )
+                }
             }
         }
     }

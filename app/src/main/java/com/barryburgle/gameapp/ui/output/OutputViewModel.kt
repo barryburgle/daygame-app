@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.ui.output
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedStatDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
@@ -15,7 +16,8 @@ import kotlinx.coroutines.flow.stateIn
 class OutputViewModel(
     private val abstractSessionDao: AbstractSessionDao,
     private val aggregatedStatDao: AggregatedStatDao,
-    private val settingDao: SettingDao
+    private val settingDao: SettingDao,
+    private val leadDao: LeadDao
 ) : ViewModel() {
     private val _state = MutableStateFlow(OutputState())
     private val _setsHistogram = abstractSessionDao.getSetsHistogram()
