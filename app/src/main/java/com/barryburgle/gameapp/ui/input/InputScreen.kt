@@ -57,6 +57,9 @@ fun InputScreen(
         if (state.isUpdatingSession) {
             AddInputDialog(state = state, onEvent = onEvent, "Edit a Session")
         }
+        if (state.isAddingLead) {
+            AddLeadDialog(state = state, onEvent = onEvent, "Add a lead")
+        }
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
             modifier = Modifier
