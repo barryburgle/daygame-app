@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
@@ -23,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +34,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.model.enums.ContactTypeEnum
+import com.barryburgle.gameapp.model.enums.CountryEnum
+import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -184,14 +190,7 @@ fun AddInputDialog(
                         ) {
                             IconButton(
                                 onClick = {
-                                    /*onEvent(
-                                        AbstractSessionEvent.EditSession(
-                                            abstractSession
-                                        )
-                                    )
-                                    onEvent(
-                                        AbstractSessionEvent.ShowDialog(false, true)
-                                    )*/
+                                    onEvent(AbstractSessionEvent.ShowLeadDialog)
                                 }) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
@@ -238,6 +237,12 @@ fun AddInputDialog(
                     modifier = Modifier.width(sessionLeadColumnWidth)
                 ) {
                     Spacer(modifier = Modifier.height(5.dp))
+                    for (lead in state.leads) {
+                        leadName(
+                            lead = lead,
+                            backgroundColor = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    }
                 }
             }
             Row(
@@ -351,5 +356,43 @@ fun formSectionDescription(
         fontSize = descriptionFontSize,
         fontWeight = FontWeight.W600,
         textAlign = TextAlign.Center
+    )
+}
+
+@Composable
+fun leadName(
+    lead: Lead, backgroundColor: Color
+) {
+    var displayName = lead.name
+    if (displayName != null && !displayName.isBlank() && displayName.length > 7) {
+        displayName = displayName.substring(0, 6) + "... "
+    }
+    // TODO: implement touch to edit (with delete button inside the lead dialog once you edit)
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .background(
+                color = backgroundColor, shape = RoundedCornerShape(5.dp)
+            )
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Text(
+            text = "${displayName}",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        Text(
+            text = "${if (lead.contact == ContactTypeEnum.NUMBER.getField()) "\uD83D\uDCDE" else "\uD83D\uDCF7"} ${
+                CountryEnum.getFlagByAlpha3(
+                    lead.nationality
+                )
+            }",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+    }
+    Spacer(
+        modifier = Modifier
+            .width(5.dp)
+            .height(5.dp)
     )
 }
