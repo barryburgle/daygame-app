@@ -84,7 +84,9 @@ fun AddLeadDialog(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = if (state.nationality.isBlank()) "Touch to choose a country" else CountryEnum.getCountryNameByAlpha3(
+                    text = if (state.nationality.isBlank()) "Touch to choose a country" else CountryEnum.getFlagByAlpha3(
+                        state.nationality
+                    ) + "   " + CountryEnum.getCountryNameByAlpha3(
                         state.nationality
                     ),
                     modifier = Modifier
