@@ -112,13 +112,11 @@ class InputViewModel(
                         stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
                     )
                     if (state.value.isAddingSession) {
-                        viewModelScope.launch {
-                            var sessionId: Long? = abstractSessionDao.insert(abstractSession)
-                            for (lead in state.value.leads) {
-                                lead.insertTime = abstractSession.insertTime
-                                lead.sessionId = sessionId
-                                leadDao.insert(lead)
-                            }
+                        var sessionId: Long? = abstractSessionDao.insert(abstractSession)
+                        for (lead in state.value.leads) {
+                            lead.insertTime = abstractSession.insertTime
+                            lead.sessionId = sessionId
+                            leadDao.insert(lead)
                         }
                         notificationState = NotificationService.createNotificationState(
                             state.value.notificationTime,
@@ -129,7 +127,7 @@ class InputViewModel(
                     } else if (state.value.isUpdatingSession) {
                         abstractSession.id = state.value.editAbstractSession!!.id
                         abstractSession.insertTime = state.value.editAbstractSession!!.insertTime
-                        viewModelScope.launch { abstractSessionDao.insert(abstractSession) }
+                        abstractSessionDao.insert(abstractSession)
                     }
                     _state.update {
                         it.copy(
