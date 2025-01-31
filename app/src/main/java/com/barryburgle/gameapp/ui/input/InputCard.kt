@@ -207,10 +207,6 @@ fun InputCard(
                                     .fillMaxHeight()
                                     .padding(7.dp)
                             ) {
-                                Text(
-                                    text = "Leads:", style = MaterialTheme.typography.bodySmall
-                                )
-                                Spacer(modifier = Modifier.height(5.dp))
                                 Row(
                                     horizontalArrangement = Arrangement.SpaceEvenly,
                                     modifier = Modifier.fillMaxHeight()
