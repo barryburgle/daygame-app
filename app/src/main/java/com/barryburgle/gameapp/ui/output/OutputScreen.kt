@@ -48,16 +48,18 @@ fun OutputScreen(
                     "Leads",
                     "Remember about your last fruitful meetings:"
                 )
-                Spacer(modifier = Modifier.height(15.dp))
                 LazyRow(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     for (lead in state.leads) {
                         item {
-                            leadName(
-                                lead = lead,
-                                backgroundColor = MaterialTheme.colorScheme.surface
-                            )
+                            Row {
+                                leadName(
+                                    lead = lead,
+                                    backgroundColor = MaterialTheme.colorScheme.surface,
+                                    outputShow = true
+                                )
+                            }
                         }
                     }
                 }

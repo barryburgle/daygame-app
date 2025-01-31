@@ -238,9 +238,11 @@ fun AddInputDialog(
                 ) {
                     Spacer(modifier = Modifier.height(5.dp))
                     for (lead in state.leads) {
+                        // TODO: make the lead name clickable with edit functionalities on leads
                         leadName(
                             lead = lead,
-                            backgroundColor = MaterialTheme.colorScheme.primaryContainer
+                            backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                            outputShow = false
                         )
                     }
                 }
@@ -361,34 +363,61 @@ fun formSectionDescription(
 
 @Composable
 fun leadName(
-    lead: Lead, backgroundColor: Color
+    lead: Lead, backgroundColor: Color, outputShow: Boolean
 ) {
     var displayName = lead.name
-    if (displayName != null && !displayName.isBlank() && displayName.length > 7) {
-        displayName = displayName.substring(0, 6) + "... "
+    if (!outputShow) {
+        if (displayName != null && !displayName.isBlank() && displayName.length > 7) {
+            displayName = displayName.substring(0, 6) + "... "
+        }
     }
     // TODO: implement touch to edit (with delete button inside the lead dialog once you edit)
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+    Column(
         modifier = Modifier
             .background(
                 color = backgroundColor, shape = RoundedCornerShape(5.dp)
             )
+            .shadow(
+                elevation = 5.dp,
+                shape = MaterialTheme.shapes.large
+            )
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp),
     ) {
-        Text(
-            text = "${displayName}",
-            style = MaterialTheme.typography.bodyMedium,
-        )
-        Text(
-            text = "${if (lead.contact == ContactTypeEnum.NUMBER.getField()) "\uD83D\uDCDE" else "\uD83D\uDCF7"} ${
-                CountryEnum.getFlagByAlpha3(
-                    lead.nationality
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "${displayName}",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            if (outputShow) {
+                Spacer(modifier = Modifier.width(10.dp))
+            }
+            Text(
+                text = "${if (lead.contact == ContactTypeEnum.NUMBER.getField()) "\uD83D\uDCDE" else "\uD83D\uDCF7"} ${
+                    CountryEnum.getFlagByAlpha3(
+                        lead.nationality
+                    )
+                }",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+        if (outputShow && lead.insertTime.isNotBlank()) {
+            Spacer(modifier = Modifier.height(5.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    style = MaterialTheme.typography.bodySmall,
+                    text = "on ${lead.insertTime.substring(8, 10)}/${
+                        lead.insertTime.substring(5, 7)
+                    }"
                 )
-            }",
-            style = MaterialTheme.typography.bodyMedium,
-        )
+            }
+        }
     }
     Spacer(
         modifier = Modifier
