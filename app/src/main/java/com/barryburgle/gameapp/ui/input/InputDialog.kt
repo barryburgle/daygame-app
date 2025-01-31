@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -239,10 +240,24 @@ fun AddInputDialog(
                     Spacer(modifier = Modifier.height(5.dp))
                     for (lead in state.leads) {
                         // TODO: make the lead name clickable with edit functionalities on leads
-                        leadName(
-                            lead = lead,
-                            backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                            outputShow = false
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            leadName(
+                                lead = lead,
+                                backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                                outputShow = false
+                            )
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete Session",
+                                tint = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                        }
+                        Spacer(
+                            modifier = Modifier
+                                .height(5.dp)
                         )
                     }
                 }
@@ -377,23 +392,16 @@ fun leadName(
             .background(
                 color = backgroundColor, shape = RoundedCornerShape(5.dp)
             )
-            .shadow(
-                elevation = 5.dp,
-                shape = MaterialTheme.shapes.large
-            )
-            .fillMaxWidth()
+            .width(80.dp)
             .padding(8.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "${displayName}",
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            if (outputShow) {
-                Spacer(modifier = Modifier.width(10.dp))
-            }
+        Text(
+            text = "${displayName}",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        if (outputShow) {
             Text(
                 text = "${if (lead.contact == ContactTypeEnum.NUMBER.getField()) "\uD83D\uDCDE" else "\uD83D\uDCF7"} ${
                     CountryEnum.getFlagByAlpha3(
@@ -402,17 +410,10 @@ fun leadName(
                 }",
                 style = MaterialTheme.typography.bodyMedium,
             )
-        }
-        if (outputShow && lead.insertTime.isNotBlank()) {
-            Spacer(modifier = Modifier.height(5.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
+            if (lead.insertTime.isNotBlank()) {
                 Text(
                     style = MaterialTheme.typography.bodySmall,
-                    text = "on ${lead.insertTime.substring(8, 10)}/${
+                    text = "${lead.insertTime.substring(8, 10)}/${
                         lead.insertTime.substring(5, 7)
                     }"
                 )
@@ -422,6 +423,5 @@ fun leadName(
     Spacer(
         modifier = Modifier
             .width(5.dp)
-            .height(5.dp)
     )
 }
