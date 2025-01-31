@@ -21,6 +21,10 @@ interface LeadDao {
     @Query("SELECT * from lead")
     fun getAll(): Flow<List<Lead>>
 
+    // TODO: use the following function in future to fetch leads on session cards
+    @Query("SELECT * from lead WHERE session_id = :sessionId")
+    fun getBySessionId(sessionId: Long): Flow<List<Lead>>
+
     @Query("SELECT * from lead ORDER BY insert_time DESC")
     fun getByInsertTime(): Flow<List<Lead>>
 
