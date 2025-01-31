@@ -29,7 +29,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
@@ -82,13 +84,16 @@ fun AddLeadDialog(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = if (state.nationality.isBlank()) "Press to choose a country" else CountryEnum.getCountryNameByAlpha3(
+                    text = if (state.nationality.isBlank()) "Touch to choose a country" else CountryEnum.getCountryNameByAlpha3(
                         state.nationality
                     ),
                     modifier = Modifier
-                        .width(150.dp)
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
-                Text(text = CountryEnum.getFlagByAlpha3(state.nationality))
+                if (!state.nationality.isBlank()) {
+                    Text(text = CountryEnum.getFlagByAlpha3(state.nationality))
+                }
             }
             DropdownMenu(
                 modifier = Modifier
