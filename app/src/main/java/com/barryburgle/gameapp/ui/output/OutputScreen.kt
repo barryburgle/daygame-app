@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +32,7 @@ import com.barryburgle.gameapp.ui.output.state.OutputState
 fun OutputScreen(
     state: OutputState
 ) {
+    val spaceFromTop = 20.dp
     val spaceFromBottom = 60.dp // TODO: centralize across screens
     // TODO: make cards with injectable type of charts
     // TODO: make different types of charts injectable with arrays
@@ -39,11 +41,11 @@ fun OutputScreen(
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .offset(y = spaceFromTop),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                Spacer(modifier = Modifier.height(10.dp))
                 sectionTitleAndDescription(
                     "Leads",
                     "Remember about your last fruitful meetings:"

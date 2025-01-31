@@ -34,6 +34,7 @@ import com.barryburgle.gameapp.ui.utilities.SelectionRow
 fun InputScreen(
     state: InputState, onEvent: (AbstractSessionEvent) -> Unit
 ) {
+    val spaceFromTop = 20.dp
     val spaceFromBottom = 60.dp
     val spaceFromNavBar = 80.dp
     Scaffold(
@@ -63,27 +64,23 @@ fun InputScreen(
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .offset(y = spaceFromTop),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
                 Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .offset(y = 10.dp)
-                            .horizontalScroll(rememberScrollState()),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        SortType.values().forEach { sortType ->
-                            SelectionRow(
-                                state.sortType,
-                                sortType,
-                                onEvent as (GenericEvent) -> Unit
-                            )
-                        }
+                    SortType.values().forEach { sortType ->
+                        SelectionRow(
+                            state.sortType,
+                            sortType,
+                            onEvent as (GenericEvent) -> Unit
+                        )
                     }
                 }
             }

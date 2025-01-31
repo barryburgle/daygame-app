@@ -69,7 +69,7 @@ fun InputCard(
                             style = MaterialTheme.typography.titleLarge
                         )
                         Row(
-                            modifier = Modifier.fillMaxWidth(0.75f),
+                            modifier = Modifier.fillMaxWidth(0.85f),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {

@@ -41,7 +41,7 @@ fun SelectionRow(
         val textBackgroundColor =
             if (currentSort == sortType) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
         val borderColor =
-            if (currentSort == sortType) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
+            if (currentSort == sortType) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
         val textButtonColor =
             if (currentSort == sortType) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimary
         Column(
