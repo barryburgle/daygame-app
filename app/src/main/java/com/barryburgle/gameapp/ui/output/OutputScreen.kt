@@ -44,18 +44,16 @@ fun OutputScreen(
         ) {
             item {
                 Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = "Leads:",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                sectionTitleAndDescription(
+                    "Leads",
+                    "Remember about your last fruitful meetings:"
                 )
                 Spacer(modifier = Modifier.height(15.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column {
-                        for (lead in state.leads) {
+                    for (lead in state.leads) {
+                        item {
                             leadName(
                                 lead = lead,
                                 backgroundColor = MaterialTheme.colorScheme.surface
