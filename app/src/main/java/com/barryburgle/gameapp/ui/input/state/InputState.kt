@@ -17,6 +17,7 @@ data class InputState(
     val isAddingSession: Boolean = false,
     val isUpdatingSession: Boolean = false,
     val isAddingLead: Boolean = false,
+    val isUpdatingLead: Boolean = false,
     val leads: List<Lead> = emptyList(),
     val name: String = "",
     val contact: String = "",
