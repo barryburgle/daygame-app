@@ -1,6 +1,8 @@
 package com.barryburgle.gameapp.ui.input
 
 import android.widget.Toast
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,11 +17,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -50,6 +53,8 @@ fun AddLeadDialog(
     val lead = Lead()
     val localContext = LocalContext.current.applicationContext
     var expanded by remember { mutableStateOf(false) }
+    val numberFlag = state.contact == ContactTypeEnum.NUMBER.getField()
+    val socialFlag = state.contact == ContactTypeEnum.SOCIAL.getField()
     AlertDialog(modifier = modifier
         .shadow(elevation = 10.dp), onDismissRequest = {
         onEvent(AbstractSessionEvent.HideLeadDialog)
@@ -133,12 +138,7 @@ fun AddLeadDialog(
                         Text(
                             "Number"
                         )
-                        Checkbox(
-                            checked = state.contact == ContactTypeEnum.NUMBER.getField(),
-                            onCheckedChange = {
-                                onEvent(AbstractSessionEvent.SetLeadContact(ContactTypeEnum.NUMBER.getField()))
-                            }
-                        )
+                        getSwitch(numberFlag, onEvent, ContactTypeEnum.NUMBER)
                     }
                     Column(
                         verticalArrangement = Arrangement.SpaceAround,
@@ -148,12 +148,7 @@ fun AddLeadDialog(
                         Text(
                             "Social Media"
                         )
-                        Checkbox(
-                            checked = state.contact == ContactTypeEnum.SOCIAL.getField(),
-                            onCheckedChange = {
-                                onEvent(AbstractSessionEvent.SetLeadContact(ContactTypeEnum.SOCIAL.getField()))
-                            }
-                        )
+                        getSwitch(socialFlag, onEvent, ContactTypeEnum.SOCIAL)
                     }
                 }
                 Column(
@@ -190,6 +185,9 @@ fun AddLeadDialog(
                 Spacer(modifier = Modifier.width(10.dp))
                 Button(
                     onClick = {
+                        if (state.isUpdatingLead) {
+                            onEvent(AbstractSessionEvent.DeleteLead(lead))
+                        }
                         lead.name = state.name
                         lead.contact = state.contact
                         lead.nationality = state.nationality
@@ -204,4 +202,43 @@ fun AddLeadDialog(
             }
         }
     })
+}
+
+@Composable
+fun getSwitch(
+    flag: Boolean,
+    onEvent: (AbstractSessionEvent) -> Unit,
+    contactTypeEnum: ContactTypeEnum
+) {
+    Switch(
+        checked = flag,
+        onCheckedChange = {
+            onEvent(AbstractSessionEvent.SetLeadContact(contactTypeEnum.getField()))
+        },
+        colors = SwitchDefaults.colors(
+            checkedThumbColor = getThumbColor(flag),
+            checkedTrackColor = getTrackColor(flag),
+            uncheckedThumbColor = getThumbColor(flag),
+            uncheckedTrackColor = getTrackColor(flag)
+        )
+    )
+}
+
+// TODO: unify all switches colors (those and in tools card) color maangement
+@Composable
+fun getThumbColor(flag: Boolean): Color {
+    val thumbColor by animateColorAsState(
+        targetValue = if (flag) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface,
+        animationSpec = tween(durationMillis = 500)
+    )
+    return thumbColor
+}
+
+@Composable
+fun getTrackColor(flag: Boolean): Color {
+    val trackColor by animateColorAsState(
+        targetValue = if (flag) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surface,
+        animationSpec = tween(durationMillis = 500)
+    )
+    return trackColor
 }
