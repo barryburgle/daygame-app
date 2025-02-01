@@ -18,7 +18,7 @@ interface LeadDao {
     @Delete
     suspend fun delete(lead: Lead)
 
-    @Query("SELECT * from lead")
+    @Query("SELECT * from lead ORDER BY session_id DESC, insert_time DESC")
     fun getAll(): Flow<List<Lead>>
 
     // TODO: use the following function in future to fetch leads on session cards
