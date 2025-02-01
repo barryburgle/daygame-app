@@ -18,12 +18,15 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -51,6 +54,7 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalDate
 import java.time.LocalTime
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddInputDialog(
     state: InputState,
@@ -245,7 +249,7 @@ fun AddInputDialog(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Box (modifier = Modifier
+                            Box(modifier = Modifier
                                 .clickable {
                                     onEvent(AbstractSessionEvent.EditLead(lead))
                                     onEvent(
@@ -258,18 +262,22 @@ fun AddInputDialog(
                                     outputShow = false
                                 )
                             }
-                            IconButton(onClick = {
-                                onEvent(
-                                    AbstractSessionEvent.DeleteLead(
-                                        lead
+                            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+                                IconButton(
+                                    onClick = {
+                                        onEvent(
+                                            AbstractSessionEvent.DeleteLead(
+                                                lead
+                                            )
+                                        )
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Delete Lead",
+                                        tint = MaterialTheme.colorScheme.onErrorContainer
                                     )
-                                )
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = "Delete Lead",
-                                    tint = MaterialTheme.colorScheme.onErrorContainer
-                                )
+                                }
                             }
                         }
                         Spacer(
