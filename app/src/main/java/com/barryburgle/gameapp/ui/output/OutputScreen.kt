@@ -105,7 +105,7 @@ fun OutputScreen(
                         HistogramSection(state, heigh, width)
                     }
                 }
-                item { Row(modifier = Modifier.height(spaceFromBottom)) {} }
+                item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom)) {} }
             } else {
                 item {
                     Column(

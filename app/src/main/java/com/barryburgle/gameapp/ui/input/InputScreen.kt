@@ -99,7 +99,7 @@ fun InputScreen(
                         )
                 )
             }
-            item { Row(modifier = Modifier.height(spaceFromBottom)) {} }
+            item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom)) {} }
         }
     }
 }
