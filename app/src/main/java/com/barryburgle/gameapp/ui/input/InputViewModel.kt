@@ -77,9 +77,28 @@ class InputViewModel(
                 }
             }
 
+            is AbstractSessionEvent.EditLead -> {
+                _state.update {
+                    it.copy(
+                        name = event.lead.name,
+                        contact = event.lead.contact,
+                        nationality = event.lead.nationality,
+                        age = event.lead.age
+                    )
+                }
+            }
+
             is AbstractSessionEvent.DeleteSession -> {
                 viewModelScope.launch {
                     abstractSessionDao.delete(event.abstractSession)
+                }
+            }
+
+            is AbstractSessionEvent.DeleteLead -> {
+                _state.update {
+                    it.copy(
+                        leads = it.leads.filter { lead -> lead == event.lead }
+                    )
                 }
             }
 
@@ -95,7 +114,8 @@ class InputViewModel(
             is AbstractSessionEvent.HideLeadDialog -> {
                 _state.update {
                     it.copy(
-                        isAddingLead = false
+                        isAddingLead = false,
+                        isUpdatingLead = false
                     )
                 }
             }
@@ -220,7 +240,8 @@ class InputViewModel(
             is AbstractSessionEvent.ShowLeadDialog -> {
                 _state.update {
                     it.copy(
-                        isAddingLead = true
+                        isAddingLead = event.addLead,
+                        isUpdatingLead = event.updateLead
                     )
                 }
             }
