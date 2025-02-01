@@ -97,7 +97,7 @@ class InputViewModel(
             is AbstractSessionEvent.DeleteLead -> {
                 _state.update {
                     it.copy(
-                        leads = it.leads.filter { lead -> lead == event.lead }
+                        leads = it.leads.filter { lead -> lead.name != event.lead.name }
                     )
                 }
             }

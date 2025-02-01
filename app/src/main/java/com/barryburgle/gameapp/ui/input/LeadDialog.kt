@@ -68,6 +68,7 @@ fun AddLeadDialog(
                 .fillMaxHeight()
         ) {
             OutlinedTextField(
+                readOnly = state.isUpdatingLead,
                 value = state.name,
                 onValueChange = { onEvent(AbstractSessionEvent.SetLeadName(it)) },
                 placeholder = { Text(text = "Name") },
@@ -185,13 +186,17 @@ fun AddLeadDialog(
                 Spacer(modifier = Modifier.width(10.dp))
                 Button(
                     onClick = {
-                        if (state.isUpdatingLead) {
-                            onEvent(AbstractSessionEvent.DeleteLead(lead))
-                        }
                         lead.name = state.name
                         lead.contact = state.contact
                         lead.nationality = state.nationality
                         lead.age = state.age
+                        if (state.isUpdatingLead) {
+                            onEvent(
+                                AbstractSessionEvent.DeleteLead(
+                                    lead
+                                )
+                            )
+                        }
                         onEvent(AbstractSessionEvent.SetLead(lead))
                         onEvent(AbstractSessionEvent.HideLeadDialog)
                         Toast.makeText(localContext, "Lead on hold", Toast.LENGTH_SHORT).show()
