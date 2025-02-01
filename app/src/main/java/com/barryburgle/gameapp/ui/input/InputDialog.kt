@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.ui.input
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -191,7 +192,7 @@ fun AddInputDialog(
                         ) {
                             IconButton(
                                 onClick = {
-                                    onEvent(AbstractSessionEvent.ShowLeadDialog)
+                                    onEvent(AbstractSessionEvent.ShowLeadDialog(true, false))
                                 }) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
@@ -244,16 +245,32 @@ fun AddInputDialog(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            leadName(
-                                lead = lead,
-                                backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                                outputShow = false
-                            )
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete Session",
-                                tint = MaterialTheme.colorScheme.onErrorContainer
-                            )
+                            Box (modifier = Modifier
+                                .clickable {
+                                    onEvent(AbstractSessionEvent.EditLead(lead))
+                                    onEvent(
+                                        AbstractSessionEvent.ShowLeadDialog(false, true)
+                                    )
+                                }) {
+                                leadName(
+                                    lead = lead,
+                                    backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                                    outputShow = false
+                                )
+                            }
+                            IconButton(onClick = {
+                                onEvent(
+                                    AbstractSessionEvent.DeleteLead(
+                                        lead
+                                    )
+                                )
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Delete Lead",
+                                    tint = MaterialTheme.colorScheme.onErrorContainer
+                                )
+                            }
                         }
                         Spacer(
                             modifier = Modifier
@@ -378,7 +395,9 @@ fun formSectionDescription(
 
 @Composable
 fun leadName(
-    lead: Lead, backgroundColor: Color, outputShow: Boolean
+    lead: Lead,
+    backgroundColor: Color,
+    outputShow: Boolean
 ) {
     var displayName = lead.name
     if (!outputShow) {
@@ -386,7 +405,6 @@ fun leadName(
             displayName = displayName.substring(0, 6) + "... "
         }
     }
-    // TODO: implement touch to edit (with delete button inside the lead dialog once you edit)
     Column(
         modifier = Modifier
             .background(
@@ -395,7 +413,7 @@ fun leadName(
             .width(80.dp)
             .padding(8.dp),
         verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "${displayName}",
