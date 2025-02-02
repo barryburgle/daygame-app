@@ -39,9 +39,7 @@ fun SelectionRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         val textBackgroundColor =
-            if (currentSort == sortType) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
-        val borderColor =
-            if (currentSort == sortType) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
+            if (currentSort == sortType) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer
         val textButtonColor =
             if (currentSort == sortType) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimary
         Column(
@@ -49,7 +47,6 @@ fun SelectionRow(
                 .background(
                     color = textBackgroundColor, shape = RoundedCornerShape(5.dp)
                 )
-                .border(1.dp, borderColor, shape = RoundedCornerShape(5.dp))
                 .padding(8.dp)
         ) {
             ClickableText(
