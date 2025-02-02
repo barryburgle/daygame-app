@@ -90,6 +90,7 @@ fun InputScreen(
             items(state.abstractSessions) { abstractSession ->
                 InputCard(
                     abstractSession,
+                    state.allLeads.filter { lead -> lead.sessionId == abstractSession.id },
                     onEvent,
                     Modifier
                         .fillMaxWidth()

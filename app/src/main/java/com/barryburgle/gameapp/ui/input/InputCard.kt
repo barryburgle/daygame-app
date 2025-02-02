@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.FormatService
 import java.time.DayOfWeek
@@ -37,6 +39,7 @@ import java.time.DayOfWeek
 @Composable
 fun InputCard(
     abstractSession: AbstractSession,
+    leads: List<Lead>,
     onEvent: (AbstractSessionEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -197,6 +200,40 @@ fun InputCard(
                             )
                         }
                         Spacer(modifier = Modifier.height(13.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            modifier = Modifier.fillMaxHeight()
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
+                                    .padding(7.dp)
+                            ) {
+                                Text(
+                                    text = "Leads:",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                                Spacer(modifier = Modifier.height(5.dp))
+                                LazyRow(
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    for (lead in leads) {
+                                        item {
+                                            Row {
+                                                leadName(
+                                                    lead = lead,
+                                                    backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                                                    outputShow = false,
+                                                    cardShow = true
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
                         Row(
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             modifier = Modifier.fillMaxHeight()

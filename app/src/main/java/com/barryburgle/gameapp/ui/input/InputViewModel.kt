@@ -51,16 +51,19 @@ class InputViewModel(
             SortType.WEEK_NUMBER -> abstractSessionDao.getByWeekNumber()
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _allLeads = leadDao.getAll()
     private val _notificationTime = settingDao.getNotificationTime()
     private val _state = MutableStateFlow(InputState())
     val state = combine(
         _state,
         _sortType,
         _abstractSessions,
+        _allLeads,
         _notificationTime
-    ) { state, sortType, abstractSessions, notificationTime ->
+    ) { state, sortType, abstractSessions, allLeads, notificationTime ->
         state.copy(
             abstractSessions = abstractSessions,
+            allLeads = allLeads,
             sortType = sortType,
             notificationTime = notificationTime
         )

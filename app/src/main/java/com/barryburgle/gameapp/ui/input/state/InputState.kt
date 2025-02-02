@@ -6,6 +6,7 @@ import com.barryburgle.gameapp.model.session.AbstractSession
 
 data class InputState(
     val abstractSessions: List<AbstractSession> = emptyList(),
+    val allLeads: List<Lead> = emptyList(),
     var date: String = "",
     var startHour: String = "",
     var endHour: String = "",
