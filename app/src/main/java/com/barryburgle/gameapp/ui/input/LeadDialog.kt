@@ -110,7 +110,7 @@ fun AddLeadDialog(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                CountryEnum.values().forEach { country ->
+                CountryEnum.getCountriesOrderedByName().forEach { country ->
                     DropdownMenuItem(
                         text = { Text(text = country.flag + "  " + country.countryName) },
                         onClick = {
