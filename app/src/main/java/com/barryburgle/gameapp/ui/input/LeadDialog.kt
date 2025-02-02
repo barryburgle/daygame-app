@@ -82,7 +82,7 @@ fun AddLeadDialog(
                     .fillMaxWidth()
                     .height(60.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.inversePrimary,
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         shape = RoundedCornerShape(10.dp)
                     )
                     .clickable { expanded = true },

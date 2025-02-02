@@ -216,7 +216,7 @@ fun InputCard(
                                             .fillMaxWidth()
                                             .fillMaxHeight()
                                             .background(
-                                                color = MaterialTheme.colorScheme.inversePrimary,
+                                                color = MaterialTheme.colorScheme.background,
                                                 shape = RoundedCornerShape(10.dp)
                                             )
                                             .padding(7.dp)
