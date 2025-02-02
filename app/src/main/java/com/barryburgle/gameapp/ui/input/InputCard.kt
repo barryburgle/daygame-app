@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.ui.input
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.FormatService
 import java.time.DayOfWeek
+import java.util.Locale
 
 @ExperimentalMaterial3Api
 @Composable
@@ -47,9 +49,11 @@ fun InputCard(
     val perfFontSize = 15.sp
     val descriptionFontSize = 10.sp
     Card(
-        modifier = modifier, colors = CardDefaults.cardColors(
+        modifier = modifier,
+        colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
-        ), shape = MaterialTheme.shapes.large
+        ),
+        shape = MaterialTheme.shapes.large
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -68,7 +72,14 @@ fun InputCard(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "Session ${FormatService.getDate(abstractSession.date)}",
+                            text = "${
+                                DayOfWeek.of(abstractSession.dayOfWeek).toString().lowercase()
+                                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                            } ${
+                                FormatService.getDate(
+                                    abstractSession.date
+                                )
+                            }",
                             style = MaterialTheme.typography.titleLarge
                         )
                         Row(
@@ -77,10 +88,11 @@ fun InputCard(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Column(
-                                modifier = Modifier.background(
-                                    MaterialTheme.colorScheme.primaryContainer,
-                                    shape = RoundedCornerShape(50.dp)
-                                )
+                                modifier = Modifier
+                                    .background(
+                                        MaterialTheme.colorScheme.primaryContainer,
+                                        shape = RoundedCornerShape(50.dp)
+                                    )
                             ) {
                                 IconButton(onClick = {
                                     onEvent(
@@ -97,10 +109,11 @@ fun InputCard(
                                 }
                             }
                             Column(
-                                modifier = Modifier.background(
-                                    MaterialTheme.colorScheme.primaryContainer,
-                                    shape = RoundedCornerShape(30.dp)
-                                )
+                                modifier = Modifier
+                                    .background(
+                                        MaterialTheme.colorScheme.primaryContainer,
+                                        shape = RoundedCornerShape(30.dp)
+                                    )
                             ) {
                                 IconButton(onClick = {
                                     onEvent(
@@ -116,20 +129,23 @@ fun InputCard(
                                         imageVector = Icons.Default.Edit,
                                         contentDescription = "Edit Session",
                                         tint = MaterialTheme.colorScheme.inversePrimary,
-                                        modifier = Modifier.height(20.dp)
+                                        modifier = Modifier
+                                            .height(20.dp)
                                     )
                                 }
                             }
                         }
                     }
                     Text(
-                        text = "${FormatService.getTime(abstractSession.startHour)} - ${
+                        text = "${abstractSession.sessionTime} minutes since ${
+                            FormatService.getTime(
+                                abstractSession.startHour
+                            )
+                        } to ${
                             FormatService.getTime(
                                 abstractSession.endHour
                             )
-                        } on ${
-                            DayOfWeek.of(abstractSession.dayOfWeek).toString().lowercase()
-                        } (${abstractSession.sessionTime} minutes)",
+                        }",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -223,7 +239,7 @@ fun InputCard(
                                             Row {
                                                 leadName(
                                                     lead = lead,
-                                                    backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                                                    backgroundColor = MaterialTheme.colorScheme.background,
                                                     outputShow = false,
                                                     cardShow = true
                                                 )
