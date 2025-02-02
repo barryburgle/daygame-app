@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -144,31 +145,35 @@ fun DataExchangeCard(
                         verticalArrangement = Arrangement.SpaceAround
                     ) {
                         Spacer(modifier = Modifier.height(0.dp))
-                        Button(onClick = {
-                            if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                CsvService.exportRows(
-                                    state.exportFolder,
-                                    state.exportFileName,
-                                    state.abstractSessions,
-                                    state.exportHeader
-                                )
-                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                onEvent(
-                                    ToolEvent.SetAbstractSessions(
-                                        CsvService.importRows(
-                                            state.importFolder,
-                                            state.importFileName,
-                                            state.importHeader
+                        Button(
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer
+                            ),
+                            onClick = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    CsvService.exportRows(
+                                        state.exportFolder,
+                                        state.exportFileName,
+                                        state.abstractSessions,
+                                        state.exportHeader
+                                    )
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(
+                                        ToolEvent.SetAbstractSessions(
+                                            CsvService.importRows(
+                                                state.importFolder,
+                                                state.importFileName,
+                                                state.importHeader
+                                            )
                                         )
                                     )
-                                )
-                            }
-                            Toast.makeText(
-                                localContext,
-                                "Successfully ${cardTitle.lowercase()}ed",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }) {
+                                }
+                                Toast.makeText(
+                                    localContext,
+                                    "Successfully ${cardTitle.lowercase()}ed",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }) {
                             Text(text = cardTitle)
                         }
                         Column(

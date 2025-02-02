@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.ui.tool
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +34,9 @@ fun ToolCountComponent(
     ) {
         Text(text = inputTitle, textAlign = TextAlign.Center)
         Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ),
             onClick = {
                 --count
                 if (count < 1) {
@@ -45,6 +49,9 @@ fun ToolCountComponent(
         }
         InputCounter(count = count, style = style, modifier = modifier)
         Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ),
             onClick = {
                 ++count
                 if (count > 10) {
