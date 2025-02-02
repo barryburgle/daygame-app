@@ -195,10 +195,9 @@ fun AddInputDialog(
                         Column(
                             modifier = Modifier.width(addLeadColumnWidth)
                         ) {
-                            IconButton(
-                                onClick = {
-                                    onEvent(AbstractSessionEvent.ShowLeadDialog(true, false))
-                                }) {
+                            IconButton(onClick = {
+                                onEvent(AbstractSessionEvent.ShowLeadDialog(true, false))
+                            }) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
                                     contentDescription = "Add a lead",
@@ -216,28 +215,22 @@ fun AddInputDialog(
                 }
             }
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
-                    modifier = Modifier
-                        .width(sessionTimeColumnWidth)
+                    modifier = Modifier.width(sessionTimeColumnWidth)
                 ) {
                     timeInputButton(
                         getButtonTitle(
-                            state.date, "",
-                            "Date"
-                        ),
-                        dateDialogState
+                            state.date, "", "Date"
+                        ), dateDialogState
                     )
                     timeInputButton(
                         getButtonTitle(state.startHour, "Start ", "Start Hour"),
                         startHourDialogState
                     )
                     timeInputButton(
-                        getButtonTitle(state.endHour, "End ", "End Hour"),
-                        endHourDialogState
+                        getButtonTitle(state.endHour, "End ", "End Hour"), endHourDialogState
                     )
                 }
                 Column(
@@ -250,29 +243,27 @@ fun AddInputDialog(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Box(modifier = Modifier
-                                .clickable {
-                                    onEvent(AbstractSessionEvent.EditLead(lead))
-                                    onEvent(
-                                        AbstractSessionEvent.ShowLeadDialog(false, true)
-                                    )
-                                }) {
+                            Box(modifier = Modifier.clickable {
+                                onEvent(AbstractSessionEvent.EditLead(lead))
+                                onEvent(
+                                    AbstractSessionEvent.ShowLeadDialog(false, true)
+                                )
+                            }) {
                                 leadName(
                                     lead = lead,
                                     backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                                    outputShow = false
+                                    outputShow = false,
+                                    cardShow = false
                                 )
                             }
                             CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
-                                IconButton(
-                                    onClick = {
-                                        onEvent(
-                                            AbstractSessionEvent.DeleteLead(
-                                                lead
-                                            )
+                                IconButton(onClick = {
+                                    onEvent(
+                                        AbstractSessionEvent.DeleteLead(
+                                            lead
                                         )
-                                    }
-                                ) {
+                                    )
+                                }) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,
                                         contentDescription = "Delete Lead",
@@ -282,8 +273,7 @@ fun AddInputDialog(
                             }
                         }
                         Spacer(
-                            modifier = Modifier
-                                .height(5.dp)
+                            modifier = Modifier.height(5.dp)
                         )
                     }
                 }
@@ -329,24 +319,19 @@ fun AddInputDialog(
             modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd
         ) {
             Row(
-                modifier = Modifier.width(250.dp),
-                horizontalArrangement = Arrangement.End
+                modifier = Modifier.width(250.dp), horizontalArrangement = Arrangement.End
             ) {
-                Button(
-                    onClick = {
-                        onEvent(AbstractSessionEvent.HideDialog)
-                    }
-                ) {
+                Button(onClick = {
+                    onEvent(AbstractSessionEvent.HideDialog)
+                }) {
                     Text(text = "Cancel")
                 }
                 Spacer(modifier = Modifier.width(10.dp))
-                Button(
-                    onClick = {
-                        onEvent(AbstractSessionEvent.SaveAbstractSession)
-                        onEvent(AbstractSessionEvent.HideDialog)
-                        Toast.makeText(localContext, "Session saved", Toast.LENGTH_SHORT).show()
-                    }
-                ) {
+                Button(onClick = {
+                    onEvent(AbstractSessionEvent.SaveAbstractSession)
+                    onEvent(AbstractSessionEvent.HideDialog)
+                    Toast.makeText(localContext, "Session saved", Toast.LENGTH_SHORT).show()
+                }) {
                     Text(text = "Save")
                 }
             }
@@ -377,18 +362,14 @@ fun setState(
 fun timeInputButton(
     text: String, dialogState: MaterialDialogState
 ) {
-    Button(
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-        onClick = { dialogState.show() }
-    ) {
+    Button(colors = ButtonDefaults.buttonColors(
+        containerColor = MaterialTheme.colorScheme.primaryContainer
+    ), onClick = { dialogState.show() }) {
         Text(
             text = text,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
@@ -407,9 +388,7 @@ fun formSectionDescription(
 
 @Composable
 fun leadName(
-    lead: Lead,
-    backgroundColor: Color,
-    outputShow: Boolean
+    lead: Lead, backgroundColor: Color, outputShow: Boolean, cardShow: Boolean
 ) {
     var displayName = lead.name
     if (!outputShow) {
@@ -427,11 +406,16 @@ fun leadName(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "${displayName}",
-            style = MaterialTheme.typography.bodyMedium,
-        )
-        if (outputShow) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "${displayName}",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+        if (outputShow || cardShow) {
             Text(
                 text = "${if (lead.contact == ContactTypeEnum.NUMBER.getField()) "\uD83D\uDCDE" else "\uD83D\uDCF7"} ${
                     CountryEnum.getFlagByAlpha3(
@@ -440,18 +424,19 @@ fun leadName(
                 }",
                 style = MaterialTheme.typography.bodyMedium,
             )
-            if (lead.insertTime.isNotBlank()) {
-                Text(
-                    style = MaterialTheme.typography.bodySmall,
-                    text = "${lead.insertTime.substring(8, 10)}/${
-                        lead.insertTime.substring(5, 7)
-                    }"
-                )
+            if (!cardShow) {
+                if (lead.insertTime.isNotBlank()) {
+                    Text(
+                        style = MaterialTheme.typography.bodySmall,
+                        text = "${lead.insertTime.substring(8, 10)}/${
+                            lead.insertTime.substring(5, 7)
+                        }"
+                    )
+                }
             }
         }
     }
     Spacer(
-        modifier = Modifier
-            .width(5.dp)
+        modifier = Modifier.width(5.dp)
     )
 }

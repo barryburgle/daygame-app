@@ -59,7 +59,8 @@ fun OutputScreen(
                                 leadName(
                                     lead = lead,
                                     backgroundColor = MaterialTheme.colorScheme.surface,
-                                    outputShow = true
+                                    outputShow = true,
+                                    cardShow = false
                                 )
                             }
                         }
