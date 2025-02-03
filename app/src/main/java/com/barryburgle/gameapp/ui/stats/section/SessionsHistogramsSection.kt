@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.ui.output.section
+package com.barryburgle.gameapp.ui.stats.section
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.ui.unit.Dp
