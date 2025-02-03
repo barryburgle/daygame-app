@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -59,7 +60,7 @@ fun InputCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
-                modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.SpaceEvenly
+                modifier = Modifier.padding(10.dp), verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Column(
                     modifier = Modifier
@@ -83,7 +84,7 @@ fun InputCard(
                             style = MaterialTheme.typography.titleLarge
                         )
                         Row(
-                            modifier = Modifier.fillMaxWidth(0.85f),
+                            modifier = Modifier.width(100.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {

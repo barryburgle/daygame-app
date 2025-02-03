@@ -170,26 +170,25 @@ fun AddLeadDialog(
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .width(60.dp)
+                    modifier = Modifier.fillMaxWidth(0.5f)
                 ) {
-                    Column(
-                        verticalArrangement = Arrangement.SpaceAround,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.width(60.dp)
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
                             "Number"
                         )
                         getSwitch(numberFlag, onEvent, ContactTypeEnum.NUMBER)
                     }
-                    Column(
-                        verticalArrangement = Arrangement.SpaceAround,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.width(50.dp)
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            "Social Media"
+                            "Social"
                         )
                         getSwitch(socialFlag, onEvent, ContactTypeEnum.SOCIAL)
                     }
@@ -253,7 +252,11 @@ fun AddLeadDialog(
                             onEvent(AbstractSessionEvent.SetLead(lead))
                         }
                         onEvent(AbstractSessionEvent.HideLeadDialog)
-                        Toast.makeText(localContext, "Lead on hold", Toast.LENGTH_SHORT).show()
+                        if (state.isUpdatingLead) {
+                            Toast.makeText(localContext, "Lead saved", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(localContext, "Lead on hold", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 ) {
                     Text(text = "Save")
