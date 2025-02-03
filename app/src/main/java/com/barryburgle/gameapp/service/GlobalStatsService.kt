@@ -119,5 +119,12 @@ class GlobalStatsService {
             var avgLeadTime = sessionTime / leadsNumber
             return avgLeadTime
         }
+
+        fun computeGenericRatio(
+            whole: Int,
+            portion: Int
+        ): Int {
+            return portion * 100 / whole
+        }
     }
 }
