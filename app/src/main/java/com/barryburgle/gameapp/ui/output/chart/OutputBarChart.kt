@@ -27,7 +27,11 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 
 @Composable
 fun OutputBarChart(
-    barEntryList: List<BarEntry>, description: String, integerValues: Boolean, ratio: Boolean
+    barEntryList: List<BarEntry>,
+    description: String,
+    integerValues: Boolean,
+    ratio: Boolean,
+    categories: List<String>? = null
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface.toArgb()
@@ -72,7 +76,8 @@ fun OutputBarChart(
                         BarChart(context),
                         surfaceColor,
                         barEntryList,
-                        ratio
+                        ratio,
+                        categories
                     )
                     val formatter: ValueFormatter = object : ValueFormatter() {
                         override fun getFormattedValue(value: Float): String {
@@ -110,7 +115,8 @@ fun styleBarChart(
     barChart: BarChart,
     surfaceColor: Int,
     barEntryList: List<BarEntry>,
-    ratio: Boolean
+    ratio: Boolean,
+    categories: List<String>? = null
 ): BarChart {
     barChart.apply {
         setBackgroundColor(surfaceColor)

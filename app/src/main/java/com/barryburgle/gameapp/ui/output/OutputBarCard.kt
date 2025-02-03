@@ -30,7 +30,8 @@ fun OutputBarCard(
         ),
     barEntryList: List<BarEntry>,
     integerValues: Boolean,
-    ratio: Boolean
+    ratio: Boolean,
+    categories: List<String>? = null
 ) {
     Card(
         modifier = modifier,
@@ -44,7 +45,8 @@ fun OutputBarCard(
                 barEntryList = barEntryList,
                 description = chartLabel,
                 integerValues = integerValues,
-                ratio = ratio
+                ratio = ratio,
+                categories = categories
             )
         }
     }
