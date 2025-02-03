@@ -6,7 +6,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import com.barryburgle.gameapp.model.lead.Lead
-import com.barryburgle.gameapp.model.stat.CountLead
+import com.barryburgle.gameapp.model.stat.CategoryHistogram
+import com.barryburgle.gameapp.model.stat.Histogram
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -21,16 +22,9 @@ interface LeadDao {
     @Query("SELECT * from lead ORDER BY session_id DESC, insert_time DESC")
     fun getAll(): Flow<List<Lead>>
 
-    // TODO: use the following function in future to fetch leads on session cards
-    @Query("SELECT * from lead WHERE session_id = :sessionId")
-    fun getBySessionId(sessionId: Long): Flow<List<Lead>>
+    @Query("SELECT nationality as category, COUNT(*) as frequency from lead GROUP By nationality ORDER BY nationality")
+    fun getNationalityHistogram(): Flow<List<CategoryHistogram>>
 
-    @Query("SELECT * from lead ORDER BY insert_time DESC")
-    fun getByInsertTime(): Flow<List<Lead>>
-
-    @Query("SELECT COUNT(*) as count from lead GROUP BY contact")
-    fun groupByContact(): Flow<List<CountLead>>
-
-    @Query("SELECT COUNT(*) as count from lead GROUP BY nationality")
-    fun groupByNationality(): Flow<List<CountLead>>
+    @Query("SELECT age as metric, COUNT(*) as frequency from lead GROUP By age ORDER BY age")
+    fun getAgeHistogram(): Flow<List<Histogram>>
 }
