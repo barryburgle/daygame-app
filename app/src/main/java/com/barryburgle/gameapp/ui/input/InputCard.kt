@@ -236,7 +236,12 @@ fun InputCard(
                                 ) {
                                     for (lead in leads) {
                                         item {
-                                            Row {
+                                            Row(modifier = Modifier.clickable {
+                                                onEvent(AbstractSessionEvent.EditLead(lead, true))
+                                                onEvent(
+                                                    AbstractSessionEvent.ShowLeadDialog(false, false, true)
+                                                )
+                                            }) {
                                                 leadName(
                                                     lead = lead,
                                                     backgroundColor = MaterialTheme.colorScheme.background,

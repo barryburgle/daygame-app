@@ -15,10 +15,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
@@ -53,8 +57,8 @@ fun AddLeadDialog(
     val lead = Lead()
     val localContext = LocalContext.current.applicationContext
     var expanded by remember { mutableStateOf(false) }
-    val numberFlag = state.contact == ContactTypeEnum.NUMBER.getField()
-    val socialFlag = state.contact == ContactTypeEnum.SOCIAL.getField()
+    val numberFlag = state.leadContact == ContactTypeEnum.NUMBER.getField()
+    val socialFlag = state.leadContact == ContactTypeEnum.SOCIAL.getField()
     AlertDialog(modifier = modifier
         .shadow(elevation = 10.dp), onDismissRequest = {
         onEvent(AbstractSessionEvent.HideLeadDialog)
@@ -67,16 +71,54 @@ fun AddLeadDialog(
             modifier = Modifier
                 .fillMaxHeight()
         ) {
-            OutlinedTextField(
-                readOnly = state.isUpdatingLead,
-                value = state.name,
-                onValueChange = { onEvent(AbstractSessionEvent.SetLeadName(it)) },
-                placeholder = { Text(text = "Name") },
-                shape = MaterialTheme.shapes.large,
+            Row(
                 modifier = Modifier
-                    .height(60.dp)
-                    .fillMaxWidth()
-            )
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val textModifier = if (state.isUpdatingLead) {
+                    Modifier
+                        .height(60.dp)
+                        .width(200.dp)
+                } else {
+                    Modifier
+                        .height(60.dp)
+                        .fillMaxWidth()
+                }
+                OutlinedTextField(
+                    readOnly = state.isModifyingLead,
+                    value = state.leadName,
+                    onValueChange = { onEvent(AbstractSessionEvent.SetLeadName(it)) },
+                    placeholder = { Text(text = "Name") },
+                    shape = MaterialTheme.shapes.large,
+                    modifier = textModifier
+                )
+                if (state.isUpdatingLead) {
+                    IconButton(onClick = {
+                        lead.id = state.leadId
+                        lead.name = state.leadName
+                        lead.contact = state.leadContact
+                        lead.nationality = state.leadNationality
+                        lead.age = state.leadAge
+                        onEvent(
+                            AbstractSessionEvent.DeleteLead(
+                                lead
+                            )
+                        )
+                        onEvent(
+                            AbstractSessionEvent.HideLeadDialog
+                        )
+                        Toast.makeText(localContext, "Lead deleted", Toast.LENGTH_SHORT).show()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Lead",
+                            tint = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                    }
+                }
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -90,17 +132,17 @@ fun AddLeadDialog(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = if (state.nationality.isBlank()) "Touch to choose a country" else CountryEnum.getFlagByAlpha3(
-                        state.nationality
+                    text = if (state.leadNationality.isBlank()) "Touch to choose a country" else CountryEnum.getFlagByAlpha3(
+                        state.leadNationality
                     ) + "   " + CountryEnum.getCountryNameByAlpha3(
-                        state.nationality
+                        state.leadNationality
                     ),
                     modifier = Modifier
                         .fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
-                if (!state.nationality.isBlank()) {
-                    Text(text = CountryEnum.getFlagByAlpha3(state.nationality))
+                if (!state.leadNationality.isBlank()) {
+                    Text(text = CountryEnum.getFlagByAlpha3(state.leadNationality))
                 }
             }
             DropdownMenu(
@@ -162,7 +204,7 @@ fun AddLeadDialog(
                         modifier = Modifier,
                         style = MaterialTheme.typography.titleSmall,
                         onEvent = onEvent,
-                        countStart = state.age.toInt(),
+                        countStart = state.leadAge.toInt(),
                         saveEvent = AbstractSessionEvent::SetLeadAge
                     )
                 }
@@ -173,7 +215,8 @@ fun AddLeadDialog(
             modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd
         ) {
             Row(
-                modifier = Modifier.width(250.dp),
+                modifier = Modifier
+                    .width(250.dp),
                 horizontalArrangement = Arrangement.End
             ) {
                 Button(
@@ -186,18 +229,29 @@ fun AddLeadDialog(
                 Spacer(modifier = Modifier.width(10.dp))
                 Button(
                     onClick = {
-                        lead.name = state.name
-                        lead.contact = state.contact
-                        lead.nationality = state.nationality
-                        lead.age = state.age
                         if (state.isUpdatingLead) {
+                            lead.id = state.leadId
+                            lead.insertTime = state.leadInsertTime
+                            lead.sessionId = state.leadSessionId
+                        }
+                        if (!state.isModifyingLead) {
+                            lead.name = state.leadName
+                        }
+                        lead.contact = state.leadContact
+                        lead.nationality = state.leadNationality
+                        lead.age = state.leadAge
+                        if (state.isModifyingLead) {
                             onEvent(
                                 AbstractSessionEvent.DeleteLead(
                                     lead
                                 )
                             )
                         }
-                        onEvent(AbstractSessionEvent.SetLead(lead))
+                        if (state.isUpdatingLead) {
+                            onEvent(AbstractSessionEvent.SaveLead(lead))
+                        } else {
+                            onEvent(AbstractSessionEvent.SetLead(lead))
+                        }
                         onEvent(AbstractSessionEvent.HideLeadDialog)
                         Toast.makeText(localContext, "Lead on hold", Toast.LENGTH_SHORT).show()
                     }

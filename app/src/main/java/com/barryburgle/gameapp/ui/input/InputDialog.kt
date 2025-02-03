@@ -196,7 +196,7 @@ fun AddInputDialog(
                             modifier = Modifier.width(addLeadColumnWidth)
                         ) {
                             IconButton(onClick = {
-                                onEvent(AbstractSessionEvent.ShowLeadDialog(true, false))
+                                onEvent(AbstractSessionEvent.ShowLeadDialog(true, false, false))
                             }) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
@@ -244,9 +244,9 @@ fun AddInputDialog(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Box(modifier = Modifier.clickable {
-                                onEvent(AbstractSessionEvent.EditLead(lead))
+                                onEvent(AbstractSessionEvent.EditLead(lead, true))
                                 onEvent(
-                                    AbstractSessionEvent.ShowLeadDialog(false, true)
+                                    AbstractSessionEvent.ShowLeadDialog(false, true, false)
                                 )
                             }) {
                                 leadName(
@@ -416,6 +416,10 @@ fun leadName(
             )
         }
         if (outputShow || cardShow) {
+            Text(
+                text = "${lead.age}",
+                style = MaterialTheme.typography.bodyMedium,
+            )
             Text(
                 text = "${if (lead.contact == ContactTypeEnum.NUMBER.getField()) "\uD83D\uDCDE" else "\uD83D\uDCF7"} ${
                     CountryEnum.getFlagByAlpha3(
