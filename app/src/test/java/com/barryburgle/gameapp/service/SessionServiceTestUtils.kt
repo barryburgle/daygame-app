@@ -47,6 +47,7 @@ open class SessionServiceTestUtils {
     val AVG_REJECTION_RATIO = 24
     val AVG_CONTACT_RATIO = 46
     val AVG_INDEX = 5.69
+    val AVG_LEAD_TIME = 75L
 
     val abstractSessionList: List<AbstractSession> = listOf(
         AbstractSession(

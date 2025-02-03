@@ -76,4 +76,12 @@ class GlobalStatsServiceTest : SessionServiceTestUtils() {
             GlobalStatsService.computeAvgIndex(abstractSessionList)
         )
     }
+
+    @Test
+    fun computeAvgLeadTime() {
+        TestCase.assertEquals(
+            AVG_LEAD_TIME,
+            GlobalStatsService.computeAvgLeadTime(TOTAL_CONTACTS, abstractSessionList)
+        )
+    }
 }

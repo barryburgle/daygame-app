@@ -109,5 +109,15 @@ class GlobalStatsService {
             var avgIndex = truncate(index / abstractSessionList.size * 100) / 100
             return avgIndex
         }
+
+        fun computeAvgLeadTime(
+            leadsNumber: Int,
+            abstractSessionList: List<AbstractSession>
+        ): Long {
+            var sessionTime = computeSessionTime(abstractSessionList)
+            var leadsNumber = leadsNumber.toLong()
+            var avgLeadTime = sessionTime / leadsNumber
+            return avgLeadTime
+        }
     }
 }
