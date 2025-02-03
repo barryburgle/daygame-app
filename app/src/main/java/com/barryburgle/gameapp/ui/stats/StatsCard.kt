@@ -19,19 +19,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.barryburgle.gameapp.service.GlobalStatsService
 import com.barryburgle.gameapp.ui.input.describedQuantifier
-import com.barryburgle.gameapp.ui.stats.state.StatsState
 
 @ExperimentalMaterial3Api
 @Composable
 fun StatsCard(
-    state: StatsState,
     modifier: Modifier = Modifier
         .shadow(
             elevation = 5.dp,
             shape = MaterialTheme.shapes.large
-        )
+        ),
+    title: String,
+    description: String,
+    firstQuantifierQuantity: String,
+    firstQuantifierDescription: String,
+    secondQuantifierQuantity: String,
+    secondQuantifierDescription: String,
+    thirdQuantifierQuantity: String,
+    thirdQuantifierDescription: String,
+    firstPerformanceQuantity: String,
+    firstPerformanceDescription: String,
+    secondPerformanceQuantity: String,
+    secondPerformanceDescription: String,
+    thirdPerformanceQuantity: String? = null,
+    thirdPerformanceDescription: String? = null,
+    fourthPerformanceQuantity: String? = null,
+    fourthPerformanceDescription: String? = null
 ) {
     val countFontSize = 50.sp
     val perfFontSize = 15.sp
@@ -62,16 +75,12 @@ fun StatsCard(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "Overall",
+                            text = title,
                             style = MaterialTheme.typography.titleLarge
                         )
                     }
                     Text(
-                        text = "${GlobalStatsService.computeSpentHours(state.abstractSessions)} hours spent, on average a set each ${
-                            GlobalStatsService.computeAvgApproachTime(
-                                state.abstractSessions
-                            )
-                        } minutes",
+                        text = description,
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -92,21 +101,21 @@ fun StatsCard(
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             describedQuantifier(
-                                quantity = "${GlobalStatsService.computeSets(state.abstractSessions)}",
+                                quantity = firstQuantifierQuantity,
                                 quantityFontSize = countFontSize,
-                                description = "Sets",
+                                description = firstQuantifierDescription,
                                 descriptionFontSize = descriptionFontSize
                             )
                             describedQuantifier(
-                                quantity = "${GlobalStatsService.computeConvos(state.abstractSessions)}",
+                                quantity = secondQuantifierQuantity,
                                 quantityFontSize = countFontSize,
-                                description = "Conversations",
+                                description = secondQuantifierDescription,
                                 descriptionFontSize = descriptionFontSize
                             )
                             describedQuantifier(
-                                quantity = "${GlobalStatsService.computeContacts(state.abstractSessions)}",
+                                quantity = thirdQuantifierQuantity,
                                 quantityFontSize = countFontSize,
-                                description = "Contacts",
+                                description = thirdQuantifierDescription,
                                 descriptionFontSize = descriptionFontSize
                             )
                         }
@@ -118,29 +127,33 @@ fun StatsCard(
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             describedQuantifier(
-                                quantity = "${GlobalStatsService.computeAvgConvoRatio(state.abstractSessions)} %",
+                                quantity = firstPerformanceQuantity,
                                 quantityFontSize = perfFontSize,
-                                description = "Conversation\nRatio",
+                                description = firstPerformanceDescription,
                                 descriptionFontSize = descriptionFontSize
                             )
                             describedQuantifier(
-                                quantity = "${GlobalStatsService.computeAvgRejectionRatio(state.abstractSessions)} %",
+                                quantity = secondPerformanceQuantity,
                                 quantityFontSize = perfFontSize,
-                                description = "Rejection\nRatio",
+                                description = secondPerformanceDescription,
                                 descriptionFontSize = descriptionFontSize
                             )
-                            describedQuantifier(
-                                quantity = "${GlobalStatsService.computeAvgContactRatio(state.abstractSessions)} %",
-                                quantityFontSize = perfFontSize,
-                                description = "Contact\nRatio",
-                                descriptionFontSize = descriptionFontSize
-                            )
-                            describedQuantifier(
-                                quantity = "${GlobalStatsService.computeAvgIndex(state.abstractSessions)}",
-                                quantityFontSize = perfFontSize,
-                                description = "Average\nIndex",
-                                descriptionFontSize = descriptionFontSize
-                            )
+                            if (thirdPerformanceQuantity != null && thirdPerformanceDescription != null) {
+                                describedQuantifier(
+                                    quantity = thirdPerformanceQuantity,
+                                    quantityFontSize = perfFontSize,
+                                    description = thirdPerformanceDescription,
+                                    descriptionFontSize = descriptionFontSize
+                                )
+                            }
+                            if (fourthPerformanceQuantity != null && fourthPerformanceDescription != null) {
+                                describedQuantifier(
+                                    quantity = fourthPerformanceQuantity,
+                                    quantityFontSize = perfFontSize,
+                                    description = fourthPerformanceDescription,
+                                    descriptionFontSize = descriptionFontSize
+                                )
+                            }
                         }
                     }
                 }
