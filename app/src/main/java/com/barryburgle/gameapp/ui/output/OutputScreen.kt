@@ -97,15 +97,6 @@ fun OutputScreen(
                         MonthSection(state, heigh, width)
                     }
                 }
-                item {
-                    sectionTitleAndDescription(
-                        "Histograms",
-                        "Number of sessions in which you reached a certain amount of:"
-                    )
-                    LazyRow {
-                        HistogramSection(state, heigh, width)
-                    }
-                }
                 item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom)) {} }
             } else {
                 item {
