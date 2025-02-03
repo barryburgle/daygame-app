@@ -6,7 +6,7 @@ import com.barryburgle.gameapp.ui.output.OutputBarCard
 import com.barryburgle.gameapp.ui.stats.state.StatsState
 import com.github.mikephil.charting.data.BarEntry
 
-fun LazyListScope.HistogramSection(
+fun LazyListScope.SessionsHistogramsSection(
     state: StatsState,
     height: Dp,
     width: Dp
