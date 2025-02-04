@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.database.interoperability.CsvService
 import com.barryburgle.gameapp.event.ToolEvent
@@ -77,7 +78,7 @@ fun DataExchangeCard(
                         .padding(5.dp)
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxWidth(0.7f),
+                        modifier = Modifier.fillMaxWidth(0.65f),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalAlignment = Alignment.Start
                     ) {
@@ -115,7 +116,7 @@ fun DataExchangeCard(
                             horizontalArrangement = Arrangement.Start
                         ) {
                             Text(
-                                text = "${cardTitle} file name:",
+                                text = "${cardTitle} sessions file name:",
                                 style = MaterialTheme.typography.bodySmall
                             )
                         }
@@ -141,41 +142,10 @@ fun DataExchangeCard(
                     }
                     Column(
                         modifier = Modifier.fillMaxHeight(),
-                        horizontalAlignment = Alignment.End,
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.SpaceAround
                     ) {
                         Spacer(modifier = Modifier.height(0.dp))
-                        Button(
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer
-                            ),
-                            onClick = {
-                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    CsvService.exportRows(
-                                        state.exportFolder,
-                                        state.exportFileName,
-                                        state.abstractSessions,
-                                        state.exportHeader
-                                    )
-                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    onEvent(
-                                        ToolEvent.SetAbstractSessions(
-                                            CsvService.importRows(
-                                                state.importFolder,
-                                                state.importFileName,
-                                                state.importHeader
-                                            )
-                                        )
-                                    )
-                                }
-                                Toast.makeText(
-                                    localContext,
-                                    "Successfully ${cardTitle.lowercase()}ed",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }) {
-                            Text(text = cardTitle)
-                        }
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -192,6 +162,7 @@ fun DataExchangeCard(
                                 } else ""
                             Text(
                                 text = buttonText,
+                                textAlign = TextAlign.Center,
                                 modifier = Modifier
                                     .height(15.dp)
                                     .width(90.dp),
@@ -222,6 +193,38 @@ fun DataExchangeCard(
                                     uncheckedTrackColor = trackColor
                                 ),
                             )
+                        }
+                        Button(
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer
+                            ),
+                            onClick = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    CsvService.exportRows(
+                                        state.exportFolder,
+                                        state.exportFileName,
+                                        state.abstractSessions,
+                                        state.exportHeader
+                                    )
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(
+                                        ToolEvent.SetAbstractSessions(
+                                            CsvService.importRows(
+                                                state.importFolder,
+                                                state.importFileName,
+                                                state.importHeader
+                                            )
+                                        )
+                                    )
+                                }
+                                Toast.makeText(
+                                    localContext,
+                                    "Successfully ${cardTitle.lowercase()}ed",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }) {
+                            Text(text = cardTitle + "\nSessions",
+                                textAlign = TextAlign.Center)
                         }
                     }
                 }
