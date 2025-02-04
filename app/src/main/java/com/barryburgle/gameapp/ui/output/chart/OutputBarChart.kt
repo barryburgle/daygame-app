@@ -23,6 +23,7 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 
 @Composable
@@ -97,7 +98,7 @@ fun OutputBarChart(
                             }
                             isHighlightEnabled = true
                             setGradientColor(surfaceColor, onSurfaceColor)
-                            styleXAxis(barChart, onSurfaceColor, description)
+                            styleXAxis(barChart, onSurfaceColor, categories)
                         }
                     val barData = BarData(dataset)
                     barChart.data = barData
@@ -148,15 +149,20 @@ fun styleBarChart(
 }
 
 fun styleXAxis(
-    barChart: BarChart, textColor: Int, label: String
+    barChart: BarChart, textColor: Int, categories: List<String>? = null
 ) {
     // TODO: specify on x axis label as Sets/converstaions/contacts
     // TODO: specify on y axis label as "Sessions" (vertically written)
     val xAxisFormatter = IntegerValueFormatter()
-    xAxisFormatter.label = "" //styleLabel(label)
+    xAxisFormatter.label = ""
     val xAxis: XAxis = barChart.getXAxis()
     xAxis.position = XAxis.XAxisPosition.BOTTOM
-    xAxis.valueFormatter = xAxisFormatter
+    if (categories != null) {
+        xAxis.valueFormatter = IndexAxisValueFormatter(categories)
+    } else {
+        xAxis.valueFormatter = xAxisFormatter
+    }
+    xAxis.textSize = 15f
     xAxis.textColor = textColor
     xAxis.setDrawGridLines(false)
     xAxis.setDrawAxisLine(false)
