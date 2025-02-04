@@ -238,7 +238,6 @@ fun AddInputDialog(
                 ) {
                     Spacer(modifier = Modifier.height(5.dp))
                     for (lead in state.leads) {
-                        // TODO: make the lead name clickable with edit functionalities on leads
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.fillMaxWidth()

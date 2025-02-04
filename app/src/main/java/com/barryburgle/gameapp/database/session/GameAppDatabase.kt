@@ -50,8 +50,6 @@ abstract class GameAppDatabase : RoomDatabase() {
             }
         }
 
-        // TODO: check if database migration queries are executed
-
         fun getInstance(context: Context): GameAppDatabase? {
             if (INSTANCE == null) {
                 synchronized(GameAppDatabase::class) {
