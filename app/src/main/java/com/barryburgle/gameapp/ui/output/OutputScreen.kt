@@ -18,13 +18,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.leadName
 import com.barryburgle.gameapp.ui.output.section.MonthSection
 import com.barryburgle.gameapp.ui.output.section.SessionSection
 import com.barryburgle.gameapp.ui.output.section.WeekSection
 import com.barryburgle.gameapp.ui.output.state.OutputState
+import com.barryburgle.gameapp.ui.theme.AlertHigh
+import com.barryburgle.gameapp.ui.theme.AlertLow
+import com.barryburgle.gameapp.ui.theme.AlertMid
+import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -46,8 +54,7 @@ fun OutputScreen(
         ) {
             item {
                 sectionTitleAndDescription(
-                    "Leads",
-                    "Remember about your last fruitful meetings:"
+                    "Leads", "Remember about your last fruitful meetings:"
                 )
                 LazyRow(
                     modifier = Modifier.fillMaxWidth()
@@ -58,6 +65,7 @@ fun OutputScreen(
                                 leadName(
                                     lead = lead,
                                     backgroundColor = MaterialTheme.colorScheme.surface,
+                                    alertColor = getLeadAlertColor(lead),
                                     outputShow = true,
                                     cardShow = false
                                 )
@@ -71,8 +79,7 @@ fun OutputScreen(
             if (state.abstractSessions.isNotEmpty()) {
                 item {
                     sectionTitleAndDescription(
-                        "Sessions",
-                        "Observe your progress through sessions:"
+                        "Sessions", "Observe your progress through sessions:"
                     )
                     LazyRow {
                         SessionSection(state, heigh, width)
@@ -80,8 +87,7 @@ fun OutputScreen(
                 }
                 item {
                     sectionTitleAndDescription(
-                        "Weeks",
-                        "Observe your progress through weeks:"
+                        "Weeks", "Observe your progress through weeks:"
                     )
                     LazyRow {
                         WeekSection(state, heigh, width)
@@ -89,8 +95,7 @@ fun OutputScreen(
                 }
                 item {
                     sectionTitleAndDescription(
-                        "Months",
-                        "Observe your progress through months:"
+                        "Months", "Observe your progress through months:"
                     )
                     LazyRow {
                         MonthSection(state, heigh, width)
@@ -100,8 +105,7 @@ fun OutputScreen(
             } else {
                 item {
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize(),
+                        modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -119,8 +123,7 @@ fun OutputScreen(
 
 @Composable
 fun sectionTitleAndDescription(
-    title: String,
-    description: String
+    title: String, description: String
 ) {
     Text(
         text = title,
@@ -134,4 +137,18 @@ fun sectionTitleAndDescription(
         color = MaterialTheme.colorScheme.onSurface
     )
     Spacer(modifier = Modifier.height(10.dp))
+}
+
+@Composable
+fun getLeadAlertColor(lead: Lead): Color {
+    val now = OffsetDateTime.now()
+    val leadInsertTime = FormatService.parseDate(lead.insertTime.substring(0, 16) + "Z")
+    val daysDifference = ChronoUnit.DAYS.between(leadInsertTime, now)
+    if (daysDifference > 7) {
+        return AlertHigh
+    }
+    if (daysDifference > 4) {
+        return AlertMid
+    }
+    return AlertLow
 }
