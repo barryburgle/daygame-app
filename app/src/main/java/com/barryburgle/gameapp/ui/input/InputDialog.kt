@@ -388,7 +388,11 @@ fun formSectionDescription(
 
 @Composable
 fun leadName(
-    lead: Lead, backgroundColor: Color, outputShow: Boolean, cardShow: Boolean
+    lead: Lead,
+    backgroundColor: Color,
+    alertColor: Color? = null,
+    outputShow: Boolean,
+    cardShow: Boolean
 ) {
     var displayName = lead.name
     if (!outputShow) {
@@ -406,6 +410,15 @@ fun leadName(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        if (outputShow && alertColor != null) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(3.dp)
+                    .background(alertColor, shape = RoundedCornerShape(5.dp))
+            ) {}
+            Spacer(Modifier.height(3.dp))
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
