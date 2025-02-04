@@ -26,7 +26,6 @@ fun LazyListScope.SessionSection(
                 chartLabel = "Sets",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -46,7 +45,6 @@ fun LazyListScope.SessionSection(
                 chartLabel = "Conversations",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -66,7 +64,6 @@ fun LazyListScope.SessionSection(
                 chartLabel = "Contacts",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -86,7 +83,6 @@ fun LazyListScope.SessionSection(
                 chartLabel = "Index",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
-                ratio = false,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -103,10 +99,9 @@ fun LazyListScope.SessionSection(
             OutputCard(
                 height = height,
                 width = width,
-                chartLabel = "Approach Time",
+                chartLabel = "Approach Time [minutes]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -116,17 +111,16 @@ fun LazyListScope.SessionSection(
             abstractSession.id?.toInt()?.let {
                 BarEntry(
                     it.toFloat(),
-                    abstractSession.convoRatio.toFloat()
+                    abstractSession.convoRatio.toFloat() * 100
                 )
             }
         }?.let { it ->
             OutputCard(
                 height = height,
                 width = width,
-                chartLabel = "Conversation Ratio",
+                chartLabel = "Conversation Ratio [%]",
                 barEntryList = it as List<BarEntry>,
-                integerValues = false,
-                ratio = true,
+                integerValues = true,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -136,17 +130,16 @@ fun LazyListScope.SessionSection(
             abstractSession.id?.toInt()?.let {
                 BarEntry(
                     it.toFloat(),
-                    abstractSession.contactRatio.toFloat()
+                    abstractSession.contactRatio.toFloat() * 100
                 )
             }
         }?.let { it ->
             OutputCard(
                 height = height,
                 width = width,
-                chartLabel = "Contact Ratio",
+                chartLabel = "Contact Ratio [%]",
                 barEntryList = it as List<BarEntry>,
-                integerValues = false,
-                ratio = true,
+                integerValues = true,
                 movingAverageWindow = state.movingAverageWindow
             )
         }

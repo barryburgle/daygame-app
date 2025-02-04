@@ -34,7 +34,6 @@ fun OutputLineChart(
     barEntryList: List<BarEntry>,
     description: String,
     integerValues: Boolean,
-    ratio: Boolean,
     movingAverageWindow: Int
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
@@ -87,8 +86,6 @@ fun OutputLineChart(
                             styleLineChart(
                                 LineChart(context),
                                 surfaceColor,
-                                barEntryList,
-                                ratio,
                                 onSurfaceColor,
                                 inChartTextSize
                             )
@@ -170,8 +167,6 @@ fun OutputLineChart(
 fun styleLineChart(
     lineChart: LineChart,
     surfaceColor: Int,
-    barEntryList: List<BarEntry>,
-    ratio: Boolean,
     onSurfacecolor: Int,
     inChartTextSize: Float
 ): LineChart {
@@ -180,14 +175,6 @@ fun styleLineChart(
         axisRight.isEnabled = false
         axisLeft.apply {
             isEnabled = false
-            if (!ratio) {
-                axisMinimum = -1f
-                val max = barEntryList.maxOf { barEntry -> barEntry.y }.toInt()
-                axisMaximum = max.toFloat() + 1
-            } else {
-                axisMinimum = -.05f
-                axisMaximum = 1.05f
-            }
         }
         xAxis.apply {
             isEnabled = false

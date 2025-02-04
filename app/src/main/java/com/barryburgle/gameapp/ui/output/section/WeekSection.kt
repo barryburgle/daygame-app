@@ -26,7 +26,6 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Sets",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -46,7 +45,6 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Conversations",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -66,7 +64,6 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Contacts",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -86,7 +83,6 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Average Index",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
-                ratio = false,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -96,17 +92,16 @@ fun LazyListScope.WeekSection(
             weekStat.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
-                    weekStat.avgConvoRatio
+                    weekStat.avgConvoRatio * 100
                 )
             }
         }?.let { it ->
             OutputCard(
                 height = height,
                 width = width,
-                chartLabel = "Average Conv. Ratio",
+                chartLabel = "Average Conv. Ratio [%]",
                 barEntryList = it as List<BarEntry>,
-                integerValues = false,
-                ratio = true,
+                integerValues = true,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -116,17 +111,16 @@ fun LazyListScope.WeekSection(
             weekStat.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
-                    weekStat.avgContactRatio
+                    weekStat.avgContactRatio * 100
                 )
             }
         }?.let { it ->
             OutputCard(
                 height = height,
                 width = width,
-                chartLabel = "Average Contact Ratio",
+                chartLabel = "Average Contact Ratio [%]",
                 barEntryList = it as List<BarEntry>,
-                integerValues = false,
-                ratio = true,
+                integerValues = true,
                 movingAverageWindow = state.movingAverageWindow
             )
         }

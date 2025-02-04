@@ -30,7 +30,6 @@ fun OutputCard(
         ),
     barEntryList: List<BarEntry>,
     integerValues: Boolean,
-    ratio: Boolean,
     movingAverageWindow: Int
 ) {
     Card(
@@ -45,7 +44,6 @@ fun OutputCard(
                 barEntryList = barEntryList,
                 description = chartLabel,
                 integerValues = integerValues,
-                ratio = ratio,
                 movingAverageWindow = movingAverageWindow
             )
         }

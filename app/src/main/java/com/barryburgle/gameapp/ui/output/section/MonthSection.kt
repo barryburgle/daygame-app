@@ -27,7 +27,6 @@ fun LazyListScope.MonthSection(
                 chartLabel = "Sets",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -47,7 +46,6 @@ fun LazyListScope.MonthSection(
                 chartLabel = "Conversations",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -67,7 +65,6 @@ fun LazyListScope.MonthSection(
                 chartLabel = "Contacts",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -87,7 +84,6 @@ fun LazyListScope.MonthSection(
                 chartLabel = "Average Index",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
-                ratio = false,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -97,17 +93,16 @@ fun LazyListScope.MonthSection(
             monthStat.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
-                    monthStat.avgConvoRatio
+                    monthStat.avgConvoRatio * 100
                 )
             }
         }?.let { it ->
             OutputCard(
                 height = height,
                 width = width,
-                chartLabel = "Average Conv. Ratio",
+                chartLabel = "Average Conv. Ratio [%]",
                 barEntryList = it as List<BarEntry>,
-                integerValues = false,
-                ratio = true,
+                integerValues = true,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
@@ -117,17 +112,16 @@ fun LazyListScope.MonthSection(
             monthStat.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
-                    monthStat.avgContactRatio
+                    monthStat.avgContactRatio * 100
                 )
             }
         }?.let { it ->
             OutputCard(
                 height = height,
                 width = width,
-                chartLabel = "Average Contact Ratio",
+                chartLabel = "Average Contact Ratio [%]",
                 barEntryList = it as List<BarEntry>,
-                integerValues = false,
-                ratio = true,
+                integerValues = true,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
