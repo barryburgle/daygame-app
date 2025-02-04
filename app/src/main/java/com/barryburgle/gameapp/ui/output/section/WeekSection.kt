@@ -92,6 +92,25 @@ fun LazyListScope.WeekSection(
             weekStat.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
+                    weekStat.timeSpent
+                )
+            }
+        }?.let { it ->
+            OutputCard(
+                height = height,
+                width = width,
+                chartLabel = "Time Spent [Hours]",
+                barEntryList = it as List<BarEntry>,
+                integerValues = true,
+                movingAverageWindow = state.movingAverageWindow
+            )
+        }
+    }
+    item {
+        state.weekStats.map { weekStat ->
+            weekStat.periodNumber?.let {
+                BarEntry(
+                    it.toFloat(),
                     weekStat.avgConvoRatio * 100
                 )
             }
@@ -121,26 +140,6 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Average Contact Ratio [%]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
-            )
-        }
-    }
-    item {
-        state.weekStats.map { weekStat ->
-            weekStat.periodNumber?.let {
-                BarEntry(
-                    it.toFloat(),
-                    weekStat.timeSpent
-                )
-            }
-        }?.let { it ->
-            OutputCard(
-                height = height,
-                width = width,
-                chartLabel = "Time Spent [Hours]",
-                barEntryList = it as List<BarEntry>,
-                integerValues = false,
-                ratio = false,
                 movingAverageWindow = state.movingAverageWindow
             )
         }
