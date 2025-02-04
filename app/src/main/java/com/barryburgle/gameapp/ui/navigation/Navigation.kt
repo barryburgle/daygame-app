@@ -30,7 +30,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.barryburgle.gameapp.event.AbstractSessionEvent
-import com.barryburgle.gameapp.event.ChartTypeEvent
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.ui.input.InputScreen
 import com.barryburgle.gameapp.ui.input.state.InputState
@@ -50,7 +49,6 @@ fun Navigation(
     statsState: StatsState,
     toolState: ToolsState,
     inputOnEvent: (AbstractSessionEvent) -> Unit,
-    outputOnEvent: (ChartTypeEvent) -> Unit,
     toolOnEvent: (ToolEvent) -> Unit
 ) {
     val navController = rememberNavController()
