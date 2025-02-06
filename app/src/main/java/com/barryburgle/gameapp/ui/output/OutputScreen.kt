@@ -133,9 +133,69 @@ fun OutputScreen(
                 val heigh: Dp = 200.dp
                 val width: Dp = 320.dp
                 item {
-                    sectionTitleAndDescription(
-                        "Sessions", "Observe your progress through sessions:"
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        sectionTitleAndDescription(
+                            "Sessions", "Observe your progress through sessions:"
+                        )
+                        Row(
+                            modifier = Modifier.width(110.dp),
+                            horizontalArrangement = Arrangement.SpaceAround,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Index Formula",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            IconButton(onClick = {
+                                onEvent(OutputEvent.SwitchShowIndexFormula)
+                            }) {
+                                Icon(
+                                    imageVector = if (state.showIndexFormula) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                                    contentDescription = "Index Formula",
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier
+                                        .height(50.dp)
+                                )
+                            }
+                        }
+                    }
+                    BasicAnimatedVisibility(
+                        visibilityFlag = state.showIndexFormula,
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Sets * (12 * Sets + 20 * Conversations + 30 * Contacts)",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.85f)
+                                        .height(1.dp)
+                                        .background(color = MaterialTheme.colorScheme.onSurface)
+                                ) {}
+                                Text(
+                                    text = "Session Time [minutes]",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
                     LazyRow {
                         SessionSection(state, heigh, width)
                     }

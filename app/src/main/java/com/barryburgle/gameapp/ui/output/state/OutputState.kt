@@ -10,5 +10,6 @@ data class OutputState(
     val weekStats: List<AggregatedStat> = emptyList(),
     val monthStats: List<AggregatedStat> = emptyList(),
     val movingAverageWindow: Int = 4,
-    val showLeadsLegend: Boolean = false
+    val showLeadsLegend: Boolean = false,
+    val showIndexFormula: Boolean = false
 )

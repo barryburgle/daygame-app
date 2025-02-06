@@ -22,6 +22,7 @@ class OutputViewModel(
     private val leadDao: LeadDao
 ) : ViewModel() {
     private val _state = MutableStateFlow(OutputState())
+
     // TODO: let user set n for following query from tools screen with a writing query on db
     private val _abstractSessions = abstractSessionDao.getAllLimit(14)
     private val _leads = leadDao.getAll()
@@ -57,6 +58,14 @@ class OutputViewModel(
                 _state.update {
                     it.copy(
                         showLeadsLegend = _state.value.showLeadsLegend.not()
+                    )
+                }
+            }
+
+            is OutputEvent.SwitchShowIndexFormula -> {
+                _state.update {
+                    it.copy(
+                        showIndexFormula = _state.value.showIndexFormula.not()
                     )
                 }
             }
