@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
+import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 
 @Composable
@@ -255,6 +256,40 @@ fun DataExchangeCard(
                             }) {
                             Text(
                                 text = cardTitle + "\nSessions",
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                        Button(
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer
+                            ),
+                            onClick = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    leadCsvService.setExportObjects(state.leads)
+                                    leadCsvService.exportRows(
+                                        state.exportFolder,
+                                        state.exportLeadsFileName,
+                                        state.exportHeader
+                                    )
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(
+                                        ToolEvent.SetLeads(
+                                            leadCsvService.importRows(
+                                                state.importFolder,
+                                                state.importLeadsFileName,
+                                                state.importHeader
+                                            )
+                                        )
+                                    )
+                                }
+                                Toast.makeText(
+                                    localContext,
+                                    "Successfully ${cardTitle.lowercase()}ed",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }) {
+                            Text(
+                                text = cardTitle + "\nLeads",
                                 textAlign = TextAlign.Center
                             )
                         }
