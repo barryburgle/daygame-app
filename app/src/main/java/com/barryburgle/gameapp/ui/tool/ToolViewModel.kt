@@ -2,11 +2,12 @@ package com.barryburgle.gameapp.ui.tool
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
-import com.barryburgle.gameapp.ui.CombineNine
+import com.barryburgle.gameapp.ui.CombineTwelve
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,36 +17,46 @@ import kotlinx.coroutines.launch
 
 class ToolViewModel(
     private val abstractSessionDao: AbstractSessionDao,
+    private val leadDao: LeadDao,
     private val settingDao: SettingDao
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(ToolsState())
     private val _abstractSessions = abstractSessionDao.getAll()
-    private val _exportFilename = settingDao.getExportFilename()
-    private val _importFilename = settingDao.getImportFilename()
+    private val _leads = leadDao.getAll()
+    private val _exportSessionsFilename = settingDao.getExportSessionsFilename()
+    private val _importSessionsFilename = settingDao.getImportSessionsFilename()
+    private val _exportLeadsFilename = settingDao.getExportLeadsFilename()
+    private val _importLeadsFilename = settingDao.getImportLeadsFilename()
     private val _exportFolder = settingDao.getExportFolder()
     private val _exportHeader = settingDao.getExportHeaderFlag()
     private val _importHeader = settingDao.getImportHeaderFlag()
     private val _notificationTime = settingDao.getNotificationTime()
     private val _averageLast = settingDao.getAverageLast()
     val state =
-        CombineNine(
+        CombineTwelve(
             _state,
             _abstractSessions,
-            _exportFilename,
-            _importFilename,
+            _leads,
+            _exportSessionsFilename,
+            _importSessionsFilename,
+            _exportLeadsFilename,
+            _importLeadsFilename,
             _exportFolder,
             _notificationTime,
             _averageLast,
             _exportHeader,
             _importHeader
-        ) { state, abstractSessions, exportFilename, importFilename, exportFolder, notificationTime, averageLast, exportHeader, importHeader ->
+        ) { state, abstractSessions, leads, exportSessionsFilename, importSessionsFilename, exportLeadsFilename, importLeadsFilename, exportFolder, notificationTime, averageLast, exportHeader, importHeader ->
             state.copy(
-                exportFileName = exportFilename,
-                importFileName = importFilename,
+                exportSessionsFileName = exportSessionsFilename,
+                importSessionsFileName = importSessionsFilename,
+                exportLeadsFileName = exportLeadsFilename,
+                importLeadsFileName = importLeadsFilename,
                 exportFolder = exportFolder,
                 notificationTime = notificationTime,
                 abstractSessions = abstractSessions,
+                leads = leads,
                 lastSessionAverageQuantity = averageLast,
                 exportHeader = exportHeader.toBoolean(),
                 importHeader = importHeader.toBoolean()
