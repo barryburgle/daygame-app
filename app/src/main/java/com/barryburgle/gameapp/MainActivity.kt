@@ -90,7 +90,13 @@ class MainActivity : ComponentActivity() {
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return db?.let { ToolViewModel(it.abstractSessionDao, it.settingDao) } as T
+                    return db?.let {
+                        ToolViewModel(
+                            it.abstractSessionDao,
+                            it.leadDao,
+                            it.settingDao
+                        )
+                    } as T
                 }
             }
         }
