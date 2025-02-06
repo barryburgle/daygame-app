@@ -36,7 +36,7 @@ fun OutputBarCard(
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            MaterialTheme.colorScheme.surface
         ),
         shape = MaterialTheme.shapes.large
     ) {
