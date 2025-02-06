@@ -65,25 +65,49 @@ class ToolViewModel(
 
     fun onEvent(event: ToolEvent) {
         when (event) {
-            is ToolEvent.SetExportFileName -> {
+            is ToolEvent.SetExportSessionsFileName -> {
                 _state.update {
                     it.copy(
-                        exportFileName = event.exportFileName
+                        exportSessionsFileName = event.exportSessionsFileName
                     )
                 }
-                val exportFileName = _state.value.exportFileName
-                val setting = Setting(SettingDao.EXPORT_FILE_NAME_ID, exportFileName)
+                val exportSessionsFileName = _state.value.exportSessionsFileName
+                val setting =
+                    Setting(SettingDao.EXPORT_SESSIONS_FILE_NAME_ID, exportSessionsFileName)
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
-            is ToolEvent.SetImportFileName -> {
+            is ToolEvent.SetImportSessionsFileName -> {
                 _state.update {
                     it.copy(
-                        importFileName = event.importFileName
+                        importSessionsFileName = event.importSessionsFileName
                     )
                 }
-                val importFileName = _state.value.importFileName
-                val setting = Setting(SettingDao.IMPORT_FILE_NAME_ID, importFileName)
+                val importSessionsFileName = _state.value.importSessionsFileName
+                val setting =
+                    Setting(SettingDao.IMPORT_SESSIONS_FILE_NAME_ID, importSessionsFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetExportLeadsFileName -> {
+                _state.update {
+                    it.copy(
+                        exportLeadsFileName = event.exportLeadsFileName
+                    )
+                }
+                val exportLeadsFileName = _state.value.exportLeadsFileName
+                val setting = Setting(SettingDao.EXPORT_LEADS_FILE_NAME_ID, exportLeadsFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetImportLeadsFileName -> {
+                _state.update {
+                    it.copy(
+                        importLeadsFileName = event.importLeadsFileName
+                    )
+                }
+                val importLeadsFileName = _state.value.importLeadsFileName
+                val setting = Setting(SettingDao.IMPORT_LEADS_FILE_NAME_ID, importLeadsFileName)
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
@@ -117,6 +141,16 @@ class ToolViewModel(
                 }
                 val abstractSessions = _state.value.abstractSessions
                 viewModelScope.launch { abstractSessionDao.batchInsert(abstractSessions) }
+            }
+
+            is ToolEvent.SetLeads -> {
+                _state.update {
+                    it.copy(
+                        leads = event.leads
+                    )
+                }
+                val leads = _state.value.leads
+                viewModelScope.launch { leadDao.batchInsert(leads) }
             }
 
             is ToolEvent.SetLastSessionAverageQuantity -> {
