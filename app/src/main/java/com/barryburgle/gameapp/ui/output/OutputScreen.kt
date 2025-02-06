@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
@@ -41,6 +40,7 @@ import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.barryburgle.gameapp.ui.theme.AlertHigh
 import com.barryburgle.gameapp.ui.theme.AlertLow
 import com.barryburgle.gameapp.ui.theme.AlertMid
+import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
@@ -74,19 +74,32 @@ fun OutputScreen(
                         sectionTitleAndDescription(
                             "Leads", "Remember about your last fruitful meetings:"
                         )
-                        IconButton(onClick = {
-                            onEvent(OutputEvent.SwitchShowLeadLegend)
-                        }) {
-                            Icon(
-                                imageVector = if (state.showLeadsLegend) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
-                                contentDescription = "Leads legend",
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier
-                                    .height(50.dp)
+                        Row(
+                            modifier = Modifier.width(75.dp),
+                            horizontalArrangement = Arrangement.SpaceAround,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Legend",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
+                            IconButton(onClick = {
+                                onEvent(OutputEvent.SwitchShowLeadLegend)
+                            }) {
+                                Icon(
+                                    imageVector = if (state.showLeadsLegend) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                                    contentDescription = "Leads legend",
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier
+                                        .height(50.dp)
+                                )
+                            }
                         }
                     }
-                    if (state.showLeadsLegend) {
+                    BasicAnimatedVisibility(
+                        visibilityFlag = state.showLeadsLegend,
+                    ) {
                         Row(
                             horizontalArrangement = Arrangement.Start,
                             verticalAlignment = Alignment.CenterVertically
@@ -97,8 +110,8 @@ fun OutputScreen(
                             Spacer(modifier = Modifier.width(18.dp))
                             legendLead("8 + days ago", AlertHigh)
                         }
-                        Spacer(modifier = Modifier.height(10.dp))
                     }
+                    Spacer(modifier = Modifier.height(10.dp))
                     LazyRow(
                         modifier = Modifier.fillMaxWidth()
                     ) {
