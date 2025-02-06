@@ -29,7 +29,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.barryburgle.gameapp.database.interoperability.CsvService
+import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
@@ -37,11 +37,12 @@ import com.barryburgle.gameapp.ui.tool.state.ToolsState
 @Composable
 fun DataExchangeCard(
     cardTitle: String, state: ToolsState, modifier: Modifier = Modifier
-        .height(280.dp)
+        .height(370.dp)
         .shadow(
             elevation = 5.dp, shape = MaterialTheme.shapes.large
         ), onEvent: (ToolEvent) -> Unit
 ) {
+    val sessionCsvService: SessionCsvService = SessionCsvService()
     Card(
         modifier = modifier, colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
@@ -122,15 +123,43 @@ fun DataExchangeCard(
                         }
                         OutlinedTextField(
                             value = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                state.exportFileName
+                                state.exportSessionsFileName
                             } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                state.importFileName
+                                state.importSessionsFileName
                             } else "",
                             onValueChange = {
                                 if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    onEvent(ToolEvent.SetExportFileName(it))
+                                    onEvent(ToolEvent.SetExportSessionsFileName(it))
                                 } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    onEvent(ToolEvent.SetImportFileName(it))
+                                    onEvent(ToolEvent.SetImportSessionsFileName(it))
+                                }
+                            },
+                            placeholder = { Text(text = "Insert here the ${cardTitle.lowercase()} file name") },
+                            shape = MaterialTheme.shapes.large,
+                            modifier = Modifier
+                                .height(textFieldHeight)
+                                .width(textFieldWidth)
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Text(
+                                text = "${cardTitle} leads file name:",
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                        OutlinedTextField(
+                            value = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                state.exportLeadsFileName
+                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                state.importLeadsFileName
+                            } else "",
+                            onValueChange = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetExportLeadsFileName(it))
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetImportLeadsFileName(it))
                                 }
                             },
                             placeholder = { Text(text = "Insert here the ${cardTitle.lowercase()} file name") },
@@ -200,18 +229,18 @@ fun DataExchangeCard(
                             ),
                             onClick = {
                                 if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    CsvService.exportRows(
+                                    sessionCsvService.setExportObjects(state.abstractSessions)
+                                    sessionCsvService.exportRows(
                                         state.exportFolder,
-                                        state.exportFileName,
-                                        state.abstractSessions,
+                                        state.exportSessionsFileName,
                                         state.exportHeader
                                     )
                                 } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
                                     onEvent(
                                         ToolEvent.SetAbstractSessions(
-                                            CsvService.importRows(
+                                            sessionCsvService.importRows(
                                                 state.importFolder,
-                                                state.importFileName,
+                                                state.importSessionsFileName,
                                                 state.importHeader
                                             )
                                         )
@@ -223,8 +252,10 @@ fun DataExchangeCard(
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }) {
-                            Text(text = cardTitle + "\nSessions",
-                                textAlign = TextAlign.Center)
+                            Text(
+                                text = cardTitle + "\nSessions",
+                                textAlign = TextAlign.Center
+                            )
                         }
                     }
                 }
