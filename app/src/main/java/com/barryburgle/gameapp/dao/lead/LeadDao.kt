@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.Flow
 interface LeadDao {
 
     @Insert(onConflict = REPLACE)
+    suspend fun batchInsert(leads: List<Lead>)
+
+    @Insert(onConflict = REPLACE)
     suspend fun insert(lead: Lead)
 
     @Delete
