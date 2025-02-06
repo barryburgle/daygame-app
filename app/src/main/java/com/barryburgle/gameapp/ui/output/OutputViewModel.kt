@@ -6,12 +6,14 @@ import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedStatDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
+import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.ui.CombineSix
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 
 class OutputViewModel(
     private val abstractSessionDao: AbstractSessionDao,
@@ -46,4 +48,18 @@ class OutputViewModel(
             movingAverageWindow = averageLast
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), OutputState())
+
+
+    fun onEvent(event: OutputEvent) {
+        when (event) {
+
+            is OutputEvent.SwitchShowLeadLegend -> {
+                _state.update {
+                    it.copy(
+                        showLeadsLegend = _state.value.showLeadsLegend.not()
+                    )
+                }
+            }
+        }
+    }
 }

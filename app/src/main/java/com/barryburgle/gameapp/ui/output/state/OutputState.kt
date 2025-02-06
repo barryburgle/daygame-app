@@ -9,5 +9,6 @@ data class OutputState(
     val leads: List<Lead> = emptyList(),
     val weekStats: List<AggregatedStat> = emptyList(),
     val monthStats: List<AggregatedStat> = emptyList(),
-    val movingAverageWindow: Int = 4
+    val movingAverageWindow: Int = 4,
+    val showLeadsLegend: Boolean = false
 )

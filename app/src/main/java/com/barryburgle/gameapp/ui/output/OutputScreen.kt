@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.ui.output
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,8 +11,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.leadName
@@ -38,7 +48,7 @@ import java.time.temporal.ChronoUnit
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun OutputScreen(
-    state: OutputState
+    state: OutputState, onEvent: (OutputEvent) -> Unit
 ) {
     val spaceFromTop = 20.dp
     val spaceFromBottom = 60.dp // TODO: centralize across screens
@@ -56,9 +66,39 @@ fun OutputScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
-                    sectionTitleAndDescription(
-                        "Leads", "Remember about your last fruitful meetings:"
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        sectionTitleAndDescription(
+                            "Leads", "Remember about your last fruitful meetings:"
+                        )
+                        IconButton(onClick = {
+                            onEvent(OutputEvent.SwitchShowLeadLegend)
+                        }) {
+                            Icon(
+                                imageVector = if (state.showLeadsLegend) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                                contentDescription = "Leads legend",
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier
+                                    .height(50.dp)
+                            )
+                        }
+                    }
+                    if (state.showLeadsLegend) {
+                        Row(
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            legendLead("0 - 4 days ago", AlertLow)
+                            Spacer(modifier = Modifier.width(18.dp))
+                            legendLead("5 - 7 days ago", AlertMid)
+                            Spacer(modifier = Modifier.width(18.dp))
+                            legendLead("8 + days ago", AlertHigh)
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
                     LazyRow(
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -113,18 +153,20 @@ fun OutputScreen(
 fun sectionTitleAndDescription(
     title: String, description: String
 ) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.onSurface
-    )
-    Spacer(modifier = Modifier.height(5.dp))
-    Text(
-        text = description,
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurface
-    )
-    Spacer(modifier = Modifier.height(10.dp))
+    Column {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        Text(
+            text = description,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+    }
 }
 
 @Composable
@@ -139,4 +181,22 @@ fun getLeadAlertColor(lead: Lead): Color {
         return AlertMid
     }
     return AlertLow
+}
+
+@Composable
+fun legendLead(legend: String, legendColor: Color) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .width(10.dp)
+                .height(10.dp)
+                .background(legendColor, shape = RoundedCornerShape(10.dp))
+        ) {}
+        Spacer(modifier = Modifier.width(7.dp))
+        Text(
+            text = legend,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
 }
