@@ -33,8 +33,8 @@ abstract class GameAppDatabase : RoomDatabase() {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     "CREATE TABLE IF NOT EXISTS setting (id TEXT NOT NULL PRIMARY KEY, value TEXT NOT NULL);"
-                            + "INSERT INTO setting(id,value) VALUES ('${SettingDao.EXPORT_FILE_NAME_ID}','daygame_export')"
-                            + "INSERT INTO setting(id,value) VALUES ('${SettingDao.IMPORT_FILE_NAME_ID}','daygame_export_yyyy_mm_dd_hh_mm.csv')"
+                            + "INSERT INTO setting(id,value) VALUES ('${SettingDao.EXPORT_SESSIONS_FILE_NAME_ID}','daygame_export')"
+                            + "INSERT INTO setting(id,value) VALUES ('${SettingDao.IMPORT_SESSIONS_FILE_NAME_ID}','daygame_export_yyyy_mm_dd_hh_mm.csv')"
                             + "INSERT INTO setting(id,value) VALUES ('${SettingDao.EXPORT_FOLDER_ID}','Download')"
                             + "INSERT INTO setting(id,value) VALUES ('${SettingDao.LAST_SESSION_AVERAGE_QUANTITY_ID}','4')"
                             + "INSERT INTO setting(id,value) VALUES ('${SettingDao.NOTIFICATION_TIME_ID}','18:00')"
