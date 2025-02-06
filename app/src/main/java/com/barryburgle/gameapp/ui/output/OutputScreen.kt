@@ -31,6 +31,7 @@ import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.barryburgle.gameapp.ui.theme.AlertHigh
 import com.barryburgle.gameapp.ui.theme.AlertLow
 import com.barryburgle.gameapp.ui.theme.AlertMid
+import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 
@@ -45,38 +46,39 @@ fun OutputScreen(
     // TODO: make different types of charts injectable with arrays
     // TODO: substitute the following with table fetch
     Scaffold { padding ->
-        LazyColumn(
-            contentPadding = PaddingValues(16.dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .offset(y = spaceFromTop),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                sectionTitleAndDescription(
-                    "Leads", "Remember about your last fruitful meetings:"
-                )
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    for (lead in state.leads) {
-                        item {
-                            Row {
-                                leadName(
-                                    lead = lead,
-                                    backgroundColor = MaterialTheme.colorScheme.surface,
-                                    alertColor = getLeadAlertColor(lead),
-                                    outputShow = true,
-                                    cardShow = false
-                                )
+        InsertInvite(state.abstractSessions, "Session")
+        if (state.abstractSessions.isNotEmpty()) {
+            LazyColumn(
+                contentPadding = PaddingValues(16.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .offset(y = spaceFromTop),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item {
+                    sectionTitleAndDescription(
+                        "Leads", "Remember about your last fruitful meetings:"
+                    )
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        for (lead in state.leads) {
+                            item {
+                                Row {
+                                    leadName(
+                                        lead = lead,
+                                        backgroundColor = MaterialTheme.colorScheme.surface,
+                                        alertColor = getLeadAlertColor(lead),
+                                        outputShow = true,
+                                        cardShow = false
+                                    )
+                                }
                             }
                         }
                     }
                 }
-            }
-            val heigh: Dp = 200.dp
-            val width: Dp = 320.dp
-            if (state.abstractSessions.isNotEmpty()) {
+                val heigh: Dp = 200.dp
+                val width: Dp = 320.dp
                 item {
                     sectionTitleAndDescription(
                         "Sessions", "Observe your progress through sessions:"
@@ -102,20 +104,6 @@ fun OutputScreen(
                     }
                 }
                 item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom)) {} }
-            } else {
-                item {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Text(text = "Insert a new session")
-                        }
-                    }
-                }
             }
         }
     }

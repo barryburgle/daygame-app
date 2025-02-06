@@ -30,6 +30,7 @@ import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.SelectionRow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,6 +71,7 @@ fun InputScreen(
         if (state.isUpdatingLead) {
             AddLeadDialog(state = state, onEvent = onEvent, "Update the lead")
         }
+        InsertInvite(state.abstractSessions, "Session")
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
             modifier = Modifier
