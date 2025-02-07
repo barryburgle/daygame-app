@@ -1,8 +1,8 @@
 package com.barryburgle.gameapp.ui.input
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,11 +20,12 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.event.GenericEvent
@@ -36,10 +37,12 @@ import com.barryburgle.gameapp.ui.utilities.SelectionRow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputScreen(
-    state: InputState, onEvent: (AbstractSessionEvent) -> Unit
+    state: InputState,
+    onEvent: (AbstractSessionEvent) -> Unit,
+    spaceFromLeft: Dp,
+    spaceFromTop: Dp,
+    spaceFromBottom: Dp
 ) {
-    val spaceFromTop = 20.dp
-    val spaceFromBottom = 60.dp
     val spaceFromNavBar = 80.dp
     Scaffold(
         floatingActionButton = {
@@ -73,24 +76,25 @@ fun InputScreen(
         }
         InsertInvite(state.abstractSessions, "Session")
         LazyColumn(
-            contentPadding = PaddingValues(16.dp),
             modifier = Modifier
                 .fillMaxSize()
-                .offset(y = spaceFromTop),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .offset(
+                    y = spaceFromTop + spaceFromLeft
+                ),
+            verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
         ) {
             item {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(rememberScrollState()),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(
-                        text = "Sort by:",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Spacer(modifier = Modifier.width(7.dp))
+                    Row(
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.background)
+                            .width(spaceFromLeft)
+                    ) {}
                     SortType.values().forEach { sortType ->
                         SelectionRow(
                             state.sortType,
@@ -98,22 +102,30 @@ fun InputScreen(
                             onEvent as (GenericEvent) -> Unit
                         )
                     }
+                    Row(
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.background)
+                            .width(spaceFromLeft - 7.dp)
+                    ) {}
                 }
             }
             items(state.abstractSessions) { abstractSession ->
-                InputCard(
-                    abstractSession,
-                    state.allLeads.filter { lead -> lead.sessionId == abstractSession.id },
-                    onEvent,
-                    Modifier
-                        .fillMaxWidth()
-                        .shadow(
-                            elevation = 5.dp,
-                            shape = MaterialTheme.shapes.large
-                        )
-                )
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    InputCard(
+                        abstractSession,
+                        state.allLeads.filter { lead -> lead.sessionId == abstractSession.id },
+                        onEvent,
+                        Modifier
+                            .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
+                            .shadow(
+                                elevation = 5.dp,
+                                shape = MaterialTheme.shapes.large
+                            )
+                    )
+                }
             }
-            item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom)) {} }
+            item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom + spaceFromLeft * 2)) {} }
         }
     }
 }
