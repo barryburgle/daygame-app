@@ -452,7 +452,4 @@ fun leadName(
             }
         }
     }
-    Spacer(
-        modifier = Modifier.width(5.dp)
-    )
 }
