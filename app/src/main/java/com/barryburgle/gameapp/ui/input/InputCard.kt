@@ -237,12 +237,24 @@ fun InputCard(
                                 ) {
                                     for (lead in leads) {
                                         item {
-                                            Row(modifier = Modifier.clickable {
-                                                onEvent(AbstractSessionEvent.EditLead(lead, true))
-                                                onEvent(
-                                                    AbstractSessionEvent.ShowLeadDialog(false, false, true)
-                                                )
-                                            }) {
+                                            Row(
+                                                modifier = Modifier.clickable {
+                                                    onEvent(
+                                                        AbstractSessionEvent.EditLead(
+                                                            lead,
+                                                            true
+                                                        )
+                                                    )
+                                                    onEvent(
+                                                        AbstractSessionEvent.ShowLeadDialog(
+                                                            false,
+                                                            false,
+                                                            true
+                                                        )
+                                                    )
+                                                },
+                                                horizontalArrangement = Arrangement.spacedBy(7.dp)
+                                            ) {
                                                 leadName(
                                                     lead = lead,
                                                     backgroundColor = MaterialTheme.colorScheme.background,
