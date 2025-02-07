@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,73 +47,95 @@ import java.time.temporal.ChronoUnit
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun OutputScreen(
-    state: OutputState, onEvent: (OutputEvent) -> Unit
+    state: OutputState,
+    onEvent: (OutputEvent) -> Unit,
+    spaceFromLeft: Dp,
+    spaceFromTop: Dp,
+    spaceFromBottom: Dp
 ) {
-    val spaceFromTop = 20.dp
-    val spaceFromBottom = 60.dp // TODO: centralize across screens
     // TODO: make cards with injectable type of charts
     // TODO: make different types of charts injectable with arrays
-    // TODO: substitute the following with table fetch
     Scaffold { padding ->
         InsertInvite(state.abstractSessions, "Session")
         if (state.abstractSessions.isNotEmpty()) {
             LazyColumn(
-                contentPadding = PaddingValues(16.dp),
                 modifier = Modifier
                     .fillMaxSize()
-                    .offset(y = spaceFromTop),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .offset(
+                        y = spaceFromTop + spaceFromLeft
+                    ),
+                verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
             ) {
                 item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        sectionTitleAndDescription(
-                            "Leads", "Remember about your last fruitful meetings:"
+                    Row {
+                        Spacer(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.background)
+                                .width(spaceFromLeft)
                         )
                         Row(
-                            modifier = Modifier.width(75.dp),
-                            horizontalArrangement = Arrangement.SpaceAround,
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = "Legend",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurface
+                            sectionTitleAndDescription(
+                                "Leads", "Remember about your last fruitful meetings:"
                             )
-                            IconButton(onClick = {
-                                onEvent(OutputEvent.SwitchShowLeadLegend)
-                            }) {
-                                Icon(
-                                    imageVector = if (state.showLeadsLegend) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
-                                    contentDescription = "Leads legend",
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier
-                                        .height(50.dp)
+                            Row(
+                                modifier = Modifier.width(75.dp),
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = "Legend",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
+                                IconButton(onClick = {
+                                    onEvent(OutputEvent.SwitchShowLeadLegend)
+                                }) {
+                                    Icon(
+                                        imageVector = if (state.showLeadsLegend) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                                        contentDescription = "Leads legend",
+                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                        modifier = Modifier
+                                            .height(50.dp)
+                                    )
+                                }
                             }
                         }
                     }
                     BasicAnimatedVisibility(
                         visibilityFlag = state.showLeadsLegend,
                     ) {
-                        Row(
-                            horizontalArrangement = Arrangement.Start,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            legendLead("0 - 4 days ago", AlertLow)
-                            Spacer(modifier = Modifier.width(18.dp))
-                            legendLead("5 - 7 days ago", AlertMid)
-                            Spacer(modifier = Modifier.width(18.dp))
-                            legendLead("8 + days ago", AlertHigh)
+                        Row {
+                            Spacer(
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.background)
+                                    .width(spaceFromLeft)
+                            )
+                            Row(
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                legendLead("0 - 4 days ago", AlertLow)
+                                Spacer(modifier = Modifier.width(18.dp))
+                                legendLead("5 - 7 days ago", AlertMid)
+                                Spacer(modifier = Modifier.width(18.dp))
+                                legendLead("8 + days ago", AlertHigh)
+                            }
                         }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
                     LazyRow(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(7.dp)
                     ) {
+                        item {
+                            Spacer(
+                                modifier = Modifier.width(spaceFromLeft - 7.dp)
+                            )
+                        }
                         for (lead in state.leads) {
                             item {
                                 Row {
@@ -128,95 +149,176 @@ fun OutputScreen(
                                 }
                             }
                         }
+                        item {
+                            Spacer(
+                                modifier = Modifier.width(spaceFromLeft - 7.dp)
+                            )
+                        }
                     }
                 }
                 val heigh: Dp = 200.dp
                 val width: Dp = 320.dp
                 item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        sectionTitleAndDescription(
-                            "Sessions", "Observe your progress through sessions:"
+                    Row {
+                        Spacer(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.background)
+                                .width(spaceFromLeft)
                         )
                         Row(
-                            modifier = Modifier.width(110.dp),
-                            horizontalArrangement = Arrangement.SpaceAround,
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = "Index Formula",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurface
+                            sectionTitleAndDescription(
+                                "Sessions", "Observe your progress through sessions:"
                             )
-                            IconButton(onClick = {
-                                onEvent(OutputEvent.SwitchShowIndexFormula)
-                            }) {
-                                Icon(
-                                    imageVector = if (state.showIndexFormula) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
-                                    contentDescription = "Index Formula",
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier
-                                        .height(50.dp)
+                            Row(
+                                modifier = Modifier.width(110.dp),
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Index Formula",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
+                                IconButton(onClick = {
+                                    onEvent(OutputEvent.SwitchShowIndexFormula)
+                                }) {
+                                    Icon(
+                                        imageVector = if (state.showIndexFormula) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                                        contentDescription = "Index Formula",
+                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                        modifier = Modifier
+                                            .height(50.dp)
+                                    )
+                                }
                             }
                         }
                     }
                     BasicAnimatedVisibility(
                         visibilityFlag = state.showIndexFormula,
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
+                        Row {
+                            Spacer(
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.background)
+                                    .width(spaceFromLeft)
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(
-                                    text = "Sets * (12 * Sets + 20 * Conversations + 30 * Contacts)",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.85f)
-                                        .height(1.dp)
-                                        .background(color = MaterialTheme.colorScheme.onSurface)
-                                ) {}
-                                Text(
-                                    text = "Session Time [minutes]",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "Sets * (12 * Sets + 20 * Conversations + 30 * Contacts)",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth(0.85f)
+                                            .height(1.dp)
+                                            .background(color = MaterialTheme.colorScheme.onSurface)
+                                    ) {}
+                                    Text(
+                                        text = "Session Time [minutes]",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
                             }
                         }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
-                    LazyRow {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(7.dp)
+                    ) {
+                        item {
+                            Spacer(
+                                modifier = Modifier
+                                    .width(spaceFromLeft - 7.dp)
+                            )
+                        }
                         SessionSection(state, heigh, width)
+                        item {
+                            Spacer(
+                                modifier = Modifier
+                                    .width(spaceFromLeft - 7.dp)
+                            )
+                        }
                     }
                 }
                 item {
-                    sectionTitleAndDescription(
-                        "Weeks", "Observe your progress through weeks:"
-                    )
-                    LazyRow {
+                    Row {
+                        Spacer(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.background)
+                                .width(spaceFromLeft)
+                        )
+                        sectionTitleAndDescription(
+                            "Weeks", "Observe your progress through weeks:"
+                        )
+                    }
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(7.dp)
+                    ) {
+                        item {
+                            Spacer(
+                                modifier = Modifier
+                                    .width(spaceFromLeft - 7.dp)
+                            )
+                        }
                         WeekSection(state, heigh, width)
+                        item {
+                            Spacer(
+                                modifier = Modifier
+                                    .width(spaceFromLeft - 7.dp)
+                            )
+                        }
                     }
                 }
                 item {
-                    sectionTitleAndDescription(
-                        "Months", "Observe your progress through months:"
-                    )
-                    LazyRow {
+                    Row {
+                        Spacer(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.background)
+                                .width(spaceFromLeft)
+                        )
+                        sectionTitleAndDescription(
+                            "Months", "Observe your progress through months:"
+                        )
+                    }
+                    // TODO: create one composable that does with injectable section what the lazy column just after this todo does
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(7.dp)
+                    ) {
+                        item {
+                            Spacer(
+                                modifier = Modifier
+                                    .width(spaceFromLeft - 7.dp)
+                            )
+                        }
                         MonthSection(state, heigh, width)
+                        item {
+                            Spacer(
+                                modifier = Modifier
+                                    .width(spaceFromLeft - 7.dp)
+                            )
+                        }
                     }
                 }
-                item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom)) {} }
+                item {
+                    Spacer(
+                        modifier = Modifier
+                            .height(spaceFromTop + spaceFromBottom + spaceFromLeft * 2)
+                    )
+                }
             }
         }
     }
