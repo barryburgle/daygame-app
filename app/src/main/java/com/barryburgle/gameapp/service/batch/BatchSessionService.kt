@@ -12,6 +12,7 @@ import java.time.ZoneOffset
 class BatchSessionService : BatchSessionInitializer, AbstractSessionService() {
 
     override fun init(
+        id: String?,
         date: String,
         startHour: String,
         endHour: String,
@@ -20,6 +21,7 @@ class BatchSessionService : BatchSessionInitializer, AbstractSessionService() {
         contacts: String,
         stickingPoints: String
     ): AbstractSession {
+        val id: Long? = if (id.isNullOrBlank()) null else id.toLong()
         val parsedDate = if (date.isBlank()) getLocalDateTimeNow(15, "00:00:00.000Z") else
             LocalDateTime.parse(date + DATE_SUFFIX, savingFormatter)
         val parsedStartHour =
@@ -61,7 +63,8 @@ class BatchSessionService : BatchSessionInitializer, AbstractSessionService() {
             parsedDate.toLocalDate()
         )
         val weekOfYear: Int = computeWeekOfYear(parsedDate.toLocalDate())
-        return BatchSession(
+        return AbstractSession(
+            id,
             OffsetDateTime.now().toString(),
             OffsetDateTime.of(parsedDate, ZoneOffset.UTC).toString(),
             OffsetDateTime.of(parsedStartHour, ZoneOffset.UTC).toString(),

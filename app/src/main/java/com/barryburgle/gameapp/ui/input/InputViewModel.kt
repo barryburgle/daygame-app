@@ -146,6 +146,7 @@ class InputViewModel(
             AbstractSessionEvent.SaveAbstractSession ->
                 viewModelScope.launch {
                     val abstractSession = _batchSessionService.init(
+                        id = null,
                         date = if (_state.value.date.isBlank()) state.value.date else _state.value.date,
                         startHour = if (_state.value.startHour.isBlank()) state.value.startHour else _state.value.startHour,
                         endHour = if (_state.value.endHour.isBlank()) state.value.endHour else _state.value.endHour,

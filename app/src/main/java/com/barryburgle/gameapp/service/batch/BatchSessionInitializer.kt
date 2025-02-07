@@ -4,6 +4,7 @@ import com.barryburgle.gameapp.model.session.AbstractSession
 
 interface BatchSessionInitializer {
     fun init(
+        id: String?,
         date: String,
         startHour: String,
         endHour: String,

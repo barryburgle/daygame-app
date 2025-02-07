@@ -53,6 +53,7 @@ class SessionCsvService : AbstractCsvService<AbstractSession>() {
 
     override fun mapImportRow(fields: Array<String>): AbstractSession {
         return batchSessionService.init(
+            fields[0],
             fields[2].substring(0, 10),
             fields[3].substring(11, 16),
             fields[4].substring(11, 16),
