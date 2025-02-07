@@ -4,6 +4,7 @@ import android.content.pm.PackageInfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -15,6 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,7 +32,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
@@ -105,28 +107,34 @@ fun ToolsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(20.dp),
+                        .height(50.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
+                    Button(
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                        ),
+                        onClick = { uriHandler.openUri("https://github.com/barryburgle/daygame-app") }) {
+                        Box(
                             modifier = Modifier
-                                .clickable { uriHandler.openUri("https://github.com/barryburgle/daygame-app") },
-                            text = "Daygame App v$versionName",
-                            style = MaterialTheme.typography.titleSmall,
-                            textDecoration = TextDecoration.Underline
+                                .size(25.dp)
+                                .clip(CircleShape)
+                                .aspectRatio(1f)
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_launcher_round),
+                                contentDescription = "Daygame App Icon",
+                                alignment = Alignment.Center,
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Spacer(
+                            modifier = Modifier.width(5.dp)
                         )
                         Text(
-                            modifier = Modifier
-                                .clickable { uriHandler.openUri("https://github.com/barryburgle/daygame-app/releases") },
-                            text = "Check latest version",
-                            style = MaterialTheme.typography.titleSmall,
-                            textDecoration = TextDecoration.Underline
+                            text = "Daygame App v$versionName",
+                            style = MaterialTheme.typography.titleSmall
                         )
                     }
                 }
@@ -139,10 +147,33 @@ fun ToolsScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                        ),
+                        onClick = { uriHandler.openUri("https://github.com/barryburgle/daygame-app/releases") }) {
+                        Text(
+                            modifier = Modifier
+                                .clickable { uriHandler.openUri("https://github.com/barryburgle/daygame-app/releases") },
+                            text = "Check latest version",
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                    }
+                }
+            }
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                        ),
+                        onClick = { uriHandler.openUri("https://barryburgle.wordpress.com/") }) {
                         Image(
                             painter = painterResource(R.drawable.bb),
                             contentDescription = "Barry Burgle",
@@ -157,11 +188,8 @@ fun ToolsScreen(
                             modifier = Modifier.width(5.dp)
                         )
                         Text(
-                            modifier = Modifier
-                                .clickable { uriHandler.openUri("https://barryburgle.wordpress.com/") },
                             text = "Barry Burgle",
-                            style = MaterialTheme.typography.titleSmall,
-                            textDecoration = TextDecoration.Underline
+                            style = MaterialTheme.typography.titleSmall
                         )
                     }
                 }
