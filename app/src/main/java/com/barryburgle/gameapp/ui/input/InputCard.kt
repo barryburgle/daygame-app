@@ -237,6 +237,9 @@ fun InputCard(
                                 ) {
                                     for (lead in leads) {
                                         item {
+                                            Spacer(modifier = Modifier.width(5.dp))
+                                        }
+                                        item {
                                             Row(
                                                 modifier = Modifier.clickable {
                                                     onEvent(

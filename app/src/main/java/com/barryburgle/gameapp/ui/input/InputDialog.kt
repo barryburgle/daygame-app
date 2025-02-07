@@ -401,53 +401,61 @@ fun leadName(
     }
     Column(
         modifier = Modifier
-            .background(
-                color = backgroundColor, shape = RoundedCornerShape(5.dp)
-            )
-            .width(80.dp)
-            .padding(8.dp),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .shadow(
+                elevation = 5.dp,
+                shape = MaterialTheme.shapes.large
+            ),
     ) {
-        if (outputShow && alertColor != null) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(3.dp)
-                    .background(alertColor, shape = RoundedCornerShape(5.dp))
-            ) {}
-            Spacer(Modifier.height(3.dp))
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+        Column(
+            modifier = Modifier
+                .background(
+                    color = backgroundColor, shape = RoundedCornerShape(5.dp)
+                )
+                .width(80.dp)
+                .padding(8.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "${displayName}",
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
-        if (outputShow || cardShow) {
-            Text(
-                text = "${lead.age}",
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Text(
-                text = "${if (lead.contact == ContactTypeEnum.NUMBER.getField()) "\uD83D\uDCDE" else "\uD83D\uDCF7"} ${
-                    CountryEnum.getFlagByAlpha3(
-                        lead.nationality
-                    )
-                }",
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            if (!cardShow) {
-                if (lead.insertTime.isNotBlank()) {
-                    Text(
-                        style = MaterialTheme.typography.bodySmall,
-                        text = "${lead.insertTime.substring(8, 10)}/${
-                            lead.insertTime.substring(5, 7)
-                        }"
-                    )
+            if (outputShow && alertColor != null) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(3.dp)
+                        .background(alertColor, shape = RoundedCornerShape(5.dp))
+                ) {}
+                Spacer(Modifier.height(3.dp))
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "${displayName}",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+            if (outputShow || cardShow) {
+                Text(
+                    text = "${lead.age}",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    text = "${if (lead.contact == ContactTypeEnum.NUMBER.getField()) "\uD83D\uDCDE" else "\uD83D\uDCF7"} ${
+                        CountryEnum.getFlagByAlpha3(
+                            lead.nationality
+                        )
+                    }",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                if (!cardShow) {
+                    if (lead.insertTime.isNotBlank()) {
+                        Text(
+                            style = MaterialTheme.typography.bodySmall,
+                            text = "${lead.insertTime.substring(8, 10)}/${
+                                lead.insertTime.substring(5, 7)
+                            }"
+                        )
+                    }
                 }
             }
         }
