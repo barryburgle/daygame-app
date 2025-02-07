@@ -294,7 +294,6 @@ fun OutputScreen(
                             "Months", "Observe your progress through months:"
                         )
                     }
-                    // TODO: create one composable that does with injectable section what the lazy column just after this todo does
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(7.dp)
                     ) {
