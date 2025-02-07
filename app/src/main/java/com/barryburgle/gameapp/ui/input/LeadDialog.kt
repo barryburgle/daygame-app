@@ -3,16 +3,20 @@ package com.barryburgle.gameapp.ui.input
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -37,9 +41,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
@@ -168,27 +175,52 @@ fun AddLeadDialog(
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val isDarkTheme = isSystemInDarkTheme()
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth(0.5f)
+                    modifier = Modifier.fillMaxWidth(0.7f)
                 ) {
-                    Row (
+                    Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
+                        Box(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .aspectRatio(1f)
+                        ) {
+                            Image(
+                                painter = painterResource(if (isDarkTheme) R.drawable.whatsapp_w else R.drawable.whatsapp_b),
+                                contentDescription = "Whatsapp Icon",
+                                alignment = Alignment.Center,
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                         Text(
-                            "Number"
+                            "Whatsapp"
                         )
                         getSwitch(numberFlag, onEvent, ContactTypeEnum.NUMBER)
                     }
-                    Row (
+                    Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
+                        Box(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .aspectRatio(1f)
+                        ) {
+                            Image(
+                                painter = painterResource(if (isDarkTheme) R.drawable.instagram_w else R.drawable.instagram_b),
+                                contentDescription = "Instagram Icon",
+                                alignment = Alignment.Center,
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                         Text(
-                            "Social"
+                            "Instagram"
                         )
                         getSwitch(socialFlag, onEvent, ContactTypeEnum.SOCIAL)
                     }
