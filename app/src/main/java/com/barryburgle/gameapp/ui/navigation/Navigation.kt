@@ -26,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -69,6 +70,14 @@ fun Navigation(
             hasNews = false,
             destinationScreen = Screen.OutputScreen.route
         ),
+        // TODO: implement dates screen and functionalities
+        /*BottomNavigationItem(
+            title = "Dates",
+            selectedIcon = Icons.Filled.Favorite,
+            unselectedIcon = Icons.Outlined.Favorite,
+            hasNews = false,
+            destinationScreen = Screen.OutputScreen.route
+        ),*/
         BottomNavigationItem(
             title = "Results",
             selectedIcon = Icons.Filled.Check,
@@ -134,18 +143,44 @@ fun Navigation(
             }
         }
     ) { padding ->
+        val spaceFromLeft = 16.dp
+        val spaceFromTop = 20.dp
+        val spaceFromBottom = 60.dp
         NavHost(navController = navController, startDestination = Screen.InputScreen.route) {
             composable(Screen.InputScreen.route) {
-                InputScreen(state = inputState, onEvent = inputOnEvent)
+                InputScreen(
+                    state = inputState,
+                    onEvent = inputOnEvent,
+                    spaceFromLeft = spaceFromLeft,
+                    spaceFromTop = spaceFromTop,
+                    spaceFromBottom = spaceFromBottom
+                )
             }
             composable(Screen.OutputScreen.route) {
-                OutputScreen(state = outputState, onEvent = outputOnEvent)
+                OutputScreen(
+                    state = outputState,
+                    onEvent = outputOnEvent,
+                    spaceFromLeft = spaceFromLeft,
+                    spaceFromTop = spaceFromTop,
+                    spaceFromBottom = spaceFromBottom
+                )
             }
             composable(Screen.StatsScreen.route) {
-                StatsScreen(state = statsState)
+                StatsScreen(
+                    state = statsState,
+                    spaceFromLeft = spaceFromLeft,
+                    spaceFromTop = spaceFromTop,
+                    spaceFromBottom = spaceFromBottom
+                )
             }
             composable(Screen.ToolScreen.route) {
-                ToolsScreen(state = toolState, onEvent = toolOnEvent)
+                ToolsScreen(
+                    state = toolState,
+                    onEvent = toolOnEvent,
+                    spaceFromLeft = spaceFromLeft,
+                    spaceFromTop = spaceFromTop,
+                    spaceFromBottom = spaceFromBottom
+                )
             }
         }
     }
