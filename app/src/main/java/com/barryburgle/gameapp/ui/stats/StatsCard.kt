@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.ui.input.describedQuantifier
@@ -24,11 +23,7 @@ import com.barryburgle.gameapp.ui.input.describedQuantifier
 @ExperimentalMaterial3Api
 @Composable
 fun StatsCard(
-    modifier: Modifier = Modifier
-        .shadow(
-            elevation = 5.dp,
-            shape = MaterialTheme.shapes.large
-        ),
+    modifier: Modifier,
     title: String,
     description: String,
     firstQuantifierQuantity: String,

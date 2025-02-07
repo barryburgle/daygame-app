@@ -35,11 +35,7 @@ import java.time.LocalTime
 @Composable
 fun SettingsCard(
     state: ToolsState,
-    modifier: Modifier = Modifier
-        .shadow(
-            elevation = 5.dp,
-            shape = MaterialTheme.shapes.large
-        ),
+    modifier: Modifier,
     onEvent: (ToolEvent) -> Unit
 ) {
     val notificationHourDialogState = rememberMaterialDialogState()

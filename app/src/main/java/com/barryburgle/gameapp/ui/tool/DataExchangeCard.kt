@@ -37,11 +37,10 @@ import com.barryburgle.gameapp.ui.tool.state.ToolsState
 
 @Composable
 fun DataExchangeCard(
-    cardTitle: String, state: ToolsState, modifier: Modifier = Modifier
-        .height(370.dp)
-        .shadow(
-            elevation = 5.dp, shape = MaterialTheme.shapes.large
-        ), onEvent: (ToolEvent) -> Unit
+    cardTitle: String,
+    state: ToolsState,
+    modifier: Modifier,
+    onEvent: (ToolEvent) -> Unit
 ) {
     val sessionCsvService: SessionCsvService = SessionCsvService()
     val leadCsvService: LeadCsvService = LeadCsvService()
