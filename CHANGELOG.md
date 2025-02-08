@@ -1,3 +1,25 @@
+# Version 1.5.0-beta (2025-02-08)
+
+***WARNING*** ⚠️
+
+__If you already have installed version 1.4.0-beta I advice you to export your sessions first, uninstall the app, install version 1.5.0-beta and import the sessions again.
+If you will not follow this procedure you may lose your data and it won't be possible to get them back.__
+
+**Features**
+- Import leads on session insert and see them leads on session card 👯‍♀️
+- Leads details and color alert on Dashboard Tab 📡     
+- Dashboard Tab charts redesign 📈
+- Session sorting selectors restyled ⬇️
+- Edit/delete session buttons restyled 🗑️
+- Import/export cards restyled 💾
+- UI colors redesign ⚫⚪
+- Overall and leads results and histograms in Result Tab 📊
+- Leads CSV import & export 💾
+- New icon 🖤
+
+**Bugs**
+- Notification setting on app first run
+
 # Version 1.4.0-beta (2025-01-25)
 
 **Features**

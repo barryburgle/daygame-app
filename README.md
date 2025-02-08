@@ -1,6 +1,6 @@
 <div align="center">
 <br />
-<img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" />
+<img src="app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp" />
 </div>
 
 <h1 align="center">Daygame</h1>
@@ -36,9 +36,11 @@ Everything is stored locally on your device. The app provides four tabs:
 
 You can download the app .apk installer on the release page clicking on the following badge: 
 
+<div align="center">
 <a href="https://github.com/barryburgle/daygame-app/releases/latest">
   <img src="https://i.ibb.co/q0mdc4Z/get-it-on-github.png" alt="Get it on Github" height="80">
 </a>
+</div>
 
 ## Updates
 
@@ -58,7 +60,13 @@ You can get notified when a new update is available simply installing [Obtainium
   - index
   - day of week
   - week number
+- [x] `Sessions Tab` Add, edit and delete a new lead specifying:
+  - name
+  - country
+  - Whatsapp/Instagram
+  - age
 - [x] `Dashboard Tab` Visualize session charts for:
+  - leads details with alert
   - sets
   - conversations
   - contacts
@@ -68,17 +76,22 @@ You can get notified when a new update is available simply installing [Obtainium
   - contact ratio
   - time spent
   grouped by sessions, weeks, months plus histograms on all sessions
-- [x] `Settings Tab` It is possible to set:
-  - data import/export in .csv with or without header ([file example](https://github.com/barryburgle/game-app/blob/main/resources/files/daygame_export_2025_01_17_18_09.csv))
+- [x] `Results Tab` Get a glance at your cumulative statistics about:
+  - overall results in absolutes and ratios
+  - leads 
+  - sessions distribution with sessions histograms
+  - leads distribution with leads histograms
+- [x] `Settings Tab` In it you can find:
+  - data import/export in .csv files with or without header ([file examples](https://github.com/barryburgle/game-app/blob/main/resources/files))
   - settable chart average moving window
-  - last session sticking points notification reminder
+  - last session sticking points reminder time setter
+  - project page and credits
  
 ## What's next
 
-- [ ] `Sessions Tab` Live session insert red card
-- [ ] `Sessions Tab` Lead names on input card
 - [ ] `Date Tab` Dates insert on input screen + dates table
-- [ ] `Dashboard Tab` Lead tracker with get-back-in-touch reminder ("Flight Control")
+- [ ] `Sessions Tab` Odd set insert outside of a proper session
+- [ ] `Sessions Tab` Live session insert red card
 - [ ] `Dashboard Tab` Custom chart generation from extended tables
 - [ ] `Settings Tab` Schema extendable database
 - [ ] `Sessions Tab` Live session stealth set recording (mic access, AI-based set detection, AI-based set record trim, settable record folder)
