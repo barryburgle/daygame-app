@@ -96,46 +96,48 @@ fun StatsScreen(
                         )
                     }
                 }
-                item {
-                    Row {
-                        Spacer(
-                            modifier = Modifier
-                                .width(spaceFromLeft)
-                        )
-                        val numbers: Int =
-                            state.leads.filter { lead -> lead.contact == ContactTypeEnum.NUMBER.getField() }.size
-                        val socials: Int =
-                            state.leads.filter { lead -> lead.contact == ContactTypeEnum.SOCIAL.getField() }.size
-                        StatsCard(
-                            modifier = cardModifier,
-                            title = "Leads",
-                            description = "On average a new lead each ${
-                                GlobalStatsService.computeAvgLeadTime(
-                                    state.leads.size,
-                                    state.abstractSessions
-                                )
-                            } minutes",
-                            firstQuantifierQuantity = "${state.leads.size}",
-                            firstQuantifierDescription = "Leads",
-                            secondQuantifierQuantity = "${numbers}",
-                            secondQuantifierDescription = "Numbers",
-                            thirdQuantifierQuantity = "${socials}",
-                            thirdQuantifierDescription = "Social Medias",
-                            firstPerformanceQuantity = "${
-                                GlobalStatsService.computeGenericRatio(
-                                    state.leads.size,
-                                    numbers
-                                )
-                            } %",
-                            firstPerformanceDescription = "Number\nRatio",
-                            secondPerformanceQuantity = "${
-                                GlobalStatsService.computeGenericRatio(
-                                    state.leads.size,
-                                    socials
-                                )
-                            } %",
-                            secondPerformanceDescription = "Social\nRatio"
-                        )
+                if (state.leads.isNotEmpty()) {
+                    item {
+                        Row {
+                            Spacer(
+                                modifier = Modifier
+                                    .width(spaceFromLeft)
+                            )
+                            val numbers: Int =
+                                state.leads.filter { lead -> lead.contact == ContactTypeEnum.NUMBER.getField() }.size
+                            val socials: Int =
+                                state.leads.filter { lead -> lead.contact == ContactTypeEnum.SOCIAL.getField() }.size
+                            StatsCard(
+                                modifier = cardModifier,
+                                title = "Leads",
+                                description = "On average a new lead each ${
+                                    GlobalStatsService.computeAvgLeadTime(
+                                        state.leads.size,
+                                        state.abstractSessions
+                                    )
+                                } minutes",
+                                firstQuantifierQuantity = "${state.leads.size}",
+                                firstQuantifierDescription = "Leads",
+                                secondQuantifierQuantity = "${numbers}",
+                                secondQuantifierDescription = "Numbers",
+                                thirdQuantifierQuantity = "${socials}",
+                                thirdQuantifierDescription = "Social Medias",
+                                firstPerformanceQuantity = "${
+                                    GlobalStatsService.computeGenericRatio(
+                                        state.leads.size,
+                                        numbers
+                                    )
+                                } %",
+                                firstPerformanceDescription = "Number\nRatio",
+                                secondPerformanceQuantity = "${
+                                    GlobalStatsService.computeGenericRatio(
+                                        state.leads.size,
+                                        socials
+                                    )
+                                } %",
+                                secondPerformanceDescription = "Social\nRatio"
+                            )
+                        }
                     }
                 }
                 item {
