@@ -75,7 +75,7 @@ class InputViewModel(
             is AbstractSessionEvent.EditSession -> {
                 _state.update {
                     it.copy(
-                        editAbstractSession = event.abstractSession
+                        editAbstractSession = event.abstractSession,
                     )
                 }
             }
@@ -155,22 +155,30 @@ class InputViewModel(
                         contacts = if (_state.value.contacts.isBlank()) state.value.contacts else _state.value.contacts,
                         stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
                     )
+                    var sessionId: Long?
                     if (state.value.isAddingSession) {
-                        var sessionId: Long? = abstractSessionDao.insert(abstractSession)
-                        for (lead in state.value.leads) {
-                            lead.insertTime = abstractSession.insertTime
-                            lead.sessionId = sessionId
-                            leadDao.insert(lead)
-                        }
+                        sessionId = abstractSessionDao.insert(abstractSession)
                         notificationState = NotificationService.createNotificationState(
                             state.value.notificationTime,
                             abstractSession.date,
                             abstractSession.stickingPoints
                         )
                         //notificationScheduler.schedule(notificationState!!)
+                        // TODO: find a way to refactor the following lines and the same cycle below in update: doesn't work if put out of the if bodies
+                        for (lead in state.value.leads) {
+                            lead.insertTime = abstractSession.insertTime
+                            lead.sessionId = sessionId
+                            leadDao.insert(lead)
+                        }
                     } else if (state.value.isUpdatingSession) {
                         abstractSession.id = state.value.editAbstractSession!!.id
+                        sessionId = abstractSession.id
                         abstractSession.insertTime = state.value.editAbstractSession!!.insertTime
+                        for (lead in state.value.leads) {
+                            lead.insertTime = abstractSession.insertTime
+                            lead.sessionId = sessionId
+                            leadDao.insert(lead)
+                        }
                         abstractSessionDao.insert(abstractSession)
                     }
                     _state.update {
@@ -284,6 +292,14 @@ class InputViewModel(
                 _state.update {
                     it.copy(
                         leads = it.leads + event.lead
+                    )
+                }
+            }
+
+            is AbstractSessionEvent.EmptyLeads -> {
+                _state.update {
+                    it.copy(
+                        leads = emptyList()
                     )
                 }
             }

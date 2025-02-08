@@ -25,6 +25,7 @@ sealed interface AbstractSessionEvent: GenericEvent {
     data class EditLead(val lead: Lead, val isUpdatingLead: Boolean) : AbstractSessionEvent
     data class SaveLead(val lead: Lead) : AbstractSessionEvent
     data class SetLead(val lead: Lead) : AbstractSessionEvent
+    object EmptyLeads: AbstractSessionEvent
     data class SetLeadName(val name: String) : AbstractSessionEvent
     data class SetLeadContact(val contact: String) : AbstractSessionEvent
     data class SetLeadCountryName(val countryName: String) : AbstractSessionEvent

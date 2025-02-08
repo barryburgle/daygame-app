@@ -345,6 +345,7 @@ fun sectionTitleAndDescription(
 
 @Composable
 fun getLeadAlertColor(lead: Lead): Color {
+    // TODO: color and leadName date should not come from insert time but from session date
     val now = OffsetDateTime.now()
     val leadInsertTime = FormatService.parseDate(lead.insertTime.substring(0, 16) + "Z")
     val daysDifference = ChronoUnit.DAYS.between(leadInsertTime, now)
