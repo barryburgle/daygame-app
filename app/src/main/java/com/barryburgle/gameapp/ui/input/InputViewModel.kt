@@ -163,13 +163,13 @@ class InputViewModel(
                             abstractSession.date,
                             abstractSession.stickingPoints
                         )
-                        //notificationScheduler.schedule(notificationState!!)
                         // TODO: find a way to refactor the following lines and the same cycle below in update: doesn't work if put out of the if bodies
                         for (lead in state.value.leads) {
                             lead.insertTime = abstractSession.insertTime
                             lead.sessionId = sessionId
                             leadDao.insert(lead)
                         }
+                        notificationScheduler.schedule(notificationState!!)
                     } else if (state.value.isUpdatingSession) {
                         abstractSession.id = state.value.editAbstractSession!!.id
                         sessionId = abstractSession.id
