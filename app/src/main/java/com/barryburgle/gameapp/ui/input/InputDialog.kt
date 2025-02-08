@@ -329,7 +329,6 @@ fun AddInputDialog(
             ) {
                 Button(onClick = {
                     onEvent(AbstractSessionEvent.HideDialog)
-                    onEvent(AbstractSessionEvent.EmptyLeads)
                 }) {
                     Text(text = "Cancel")
                 }
@@ -337,7 +336,6 @@ fun AddInputDialog(
                 Button(onClick = {
                     onEvent(AbstractSessionEvent.SaveAbstractSession)
                     onEvent(AbstractSessionEvent.HideDialog)
-                    onEvent(AbstractSessionEvent.EmptyLeads)
                     Toast.makeText(localContext, "Session saved", Toast.LENGTH_SHORT).show()
                 }) {
                     Text(text = "Save")

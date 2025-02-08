@@ -155,7 +155,7 @@ class InputViewModel(
                         contacts = if (_state.value.contacts.isBlank()) state.value.contacts else _state.value.contacts,
                         stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
                     )
-                    var sessionId: Long?
+                    var sessionId: Long? = 0L
                     if (state.value.isAddingSession) {
                         sessionId = abstractSessionDao.insert(abstractSession)
                         notificationState = NotificationService.createNotificationState(
@@ -163,23 +163,17 @@ class InputViewModel(
                             abstractSession.date,
                             abstractSession.stickingPoints
                         )
-                        // TODO: find a way to refactor the following lines and the same cycle below in update: doesn't work if put out of the if bodies
-                        for (lead in state.value.leads) {
-                            lead.insertTime = abstractSession.insertTime
-                            lead.sessionId = sessionId
-                            leadDao.insert(lead)
-                        }
                         notificationScheduler.schedule(notificationState!!)
                     } else if (state.value.isUpdatingSession) {
                         abstractSession.id = state.value.editAbstractSession!!.id
                         sessionId = abstractSession.id
                         abstractSession.insertTime = state.value.editAbstractSession!!.insertTime
-                        for (lead in state.value.leads) {
-                            lead.insertTime = abstractSession.insertTime
-                            lead.sessionId = sessionId
-                            leadDao.insert(lead)
-                        }
                         abstractSessionDao.insert(abstractSession)
+                    }
+                    for (lead in state.value.leads) {
+                        lead.insertTime = abstractSession.insertTime
+                        lead.sessionId = sessionId
+                        leadDao.insert(lead)
                     }
                     _state.update {
                         it.copy(
@@ -266,6 +260,9 @@ class InputViewModel(
                         isAddingSession = event.addSession,
                         isUpdatingSession = event.updateSession
                     )
+                }
+                if (_state.value.isAddingSession) {
+                    onEvent(AbstractSessionEvent.EmptyLeads)
                 }
             }
 
