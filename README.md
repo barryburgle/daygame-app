@@ -15,6 +15,7 @@
   <br />
   <img src="https://img.shields.io/github/license/barryburgle/daygame-app?style=for-the-badge" alt="License GPL-3.0" />
   <img src="https://img.shields.io/github/languages/code-size/barryburgle/daygame-app?style=for-the-badge" alt="GitHub code size in bytes" />
+  <img src="https://img.shields.io/github/downloads/barryburgle/daygame-app/total?style=for-the-badge" alt="GitHub release downloads" />
   <br /><br />
   <a href="https://github.com/barryburgle/daygame-app/releases/latest">
     <img src="https://img.shields.io/github/v/release/barryburgle/daygame-app?color=purple&include_prereleases&logo=github&style=for-the-badge" alt="Download from GitHub" />
@@ -89,12 +90,19 @@ You can get notified when a new update is available simply installing [Obtainium
  
 ## What's next
 
-- [ ] `Date Tab` Dates insert on input screen + dates table
-- [ ] `Sessions Tab` Odd set insert outside of a proper session
-- [ ] `Sessions Tab` Live session insert red card
-- [ ] `Dashboard Tab` Custom chart generation from extended tables
-- [ ] `Settings Tab` Schema extendable database
-- [ ] `Sessions Tab` Live session stealth set recording (mic access, AI-based set detection, AI-based set record trim, settable record folder)
+The following are the features I thought could be useful in future, divided in 🟢 easy, 🟡 complex and 🔴 hard to implement,
+
+- [ ] 🟢 `Date Tab` Dates insert on input screen + dates table
+- [ ] 🟢 `Sessions Tab` Odd set insert outside of a proper session: overall statistics should be affected from this also
+- [ ] 🟢 `Results Tab` Funnel conversion ratios plot both for standard `set -> contact -> date -> lay` and SDL `set -> date -> lay` pipelines
+- [ ] 🟢 `Dashboard Tab` Leads last-contact tracker and "get back in touch" old leads list
+- [ ] 🟡 `Sessions Tab` Live session insert red card with single sets' timestamp & geo tracking for future space-time windows analysis (when and where to go out on a statistical basis)
+- [ ] 🟢 `Sessions Tab` Insert a past date-delimited period providing overall sets, conversations, contacts, dates and lays achieved (allow jaunts tracking and destinations comparison): overall statistics should be affected from this also
+- [ ] 🟡 `Results Tab` Radar/Spider player chart (establish which measurable characteristics to plot and how to measure/assess them)
+- [ ] 🟡 `Dashboard Tab` Possibility to insert your own custom (session/week/month performance) index formula
+- [ ] 🔴 `Settings Tab` Schema extendable database: new columns on existing tables, should be both insertable data or computable ones
+- [ ] 🔴 `Dashboard Tab` Custom chart generation from extended tables
+- [ ] 🔴 `Sessions Tab` Live session stealth set recording (mic access, AI-based set detection, AI-based set record trim, settable record folder)
 
 ## Bugs
 To file a bug or report and issue please log in to Github and open an issue on this repository, alternatively send an email to barryburgle@gmail.com .
