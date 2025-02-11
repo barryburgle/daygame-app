@@ -93,7 +93,8 @@ You can get notified when a new update is available simply installing [Obtainium
 The following are the features I thought could be useful in future, divided in 🟢 easy, 🟡 complex and 🔴 hard to implement,
 
 - [ ] 🟢 `Date Tab` Dates insert on input screen + dates table
-- [ ] 🟢 `Sessions Tab` Odd set insert outside of a proper session: overall statistics should be affected from this also
+- [ ] 🟢 `Sessions Tab` Odd set/lead insert outside of a proper session: overall statistics should be affected from this also
+- [ ] 🟢 `Dashboard Tab` Session/week/month-wise customizable challenges (5-5, 10-10...) and medals
 - [ ] 🟢 `Results Tab` Funnel conversion ratios plot both for standard `set -> contact -> date -> lay` and SDL `set -> date -> lay` pipelines
 - [ ] 🟢 `Dashboard Tab` Leads last-contact tracker and "get back in touch" old leads list
 - [ ] 🟡 `Sessions Tab` Live session insert red card with single sets' timestamp & geo tracking for future space-time windows analysis (when and where to go out on a statistical basis)
@@ -114,3 +115,6 @@ Follow these steps:
 ## Contribute
 If you want to contribute please look at TODOs in code and open a Pull Request (guide [here](https://www.youtube.com/watch?v=jRLGobWwA3Y)).
 Same if you would like to implement new features. Last, if you want to fork the code and create your own version of Daygame you're welcome to do it. 
+
+## Credits
+This project is developed and maintained by [Barry Burgle](https://linktr.ee/barryburgle).
