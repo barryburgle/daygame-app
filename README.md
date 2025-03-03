@@ -103,6 +103,8 @@ The following are the features I thought could be useful in future, divided in:
 
 - [ ] 🟢 `Settings Tab` Once-a-date update checker with notification dot if app update found + clickable link to download.
 
+- [ ] 🟢 `Dashboard Tab` Integrate some charts that plot the sum of sets/dates/contacts/lays from the start of the month/year comparing curves of the last n (settable from settings) months or years: the higher the curve the faster proceeds the "accumulation" of results on your behalf
+
 - [ ] 🟢 `Date Tab` Dates insert on input screen + dates table. Date Data Model:
 
 | Column name | Details |
