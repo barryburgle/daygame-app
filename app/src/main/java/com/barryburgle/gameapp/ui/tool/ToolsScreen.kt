@@ -32,6 +32,12 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
@@ -143,55 +149,42 @@ fun ToolsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp),
+                        .height(35.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Button(
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                    Image(
+                        painter = if (!isSystemInDarkTheme()) painterResource(R.drawable.bb_v3w) else painterResource(
+                            R.drawable.bb_v3b
                         ),
-                        onClick = { uriHandler.openUri("https://github.com/barryburgle/daygame-app/releases") }) {
-                        Text(
-                            modifier = Modifier
-                                .clickable { uriHandler.openUri("https://github.com/barryburgle/daygame-app/releases") },
-                            text = "Check latest version",
-                            style = MaterialTheme.typography.titleSmall
-                        )
-                    }
-                }
-            }
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Button(
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer
-                        ),
-                        onClick = { uriHandler.openUri("https://barryburgle.wordpress.com/") }) {
-                        Image(
-                            painter = painterResource(R.drawable.bb),
-                            contentDescription = "Barry Burgle",
-                            modifier = Modifier
-                                .size(25.dp)
-                                .clip(CircleShape)
-                                .aspectRatio(1f),
-                            alignment = Alignment.Center,
-                            contentScale = ContentScale.Crop
-                        )
-                        Spacer(
-                            modifier = Modifier.width(5.dp)
-                        )
-                        Text(
-                            text = "Barry Burgle",
-                            style = MaterialTheme.typography.titleSmall
-                        )
-                    }
+                        contentDescription = "Barry Burgle",
+                        modifier = Modifier
+                            .size(25.dp)
+                            .clip(CircleShape)
+                            .aspectRatio(1f),
+                        alignment = Alignment.Center,
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(
+                        modifier = Modifier.width(5.dp)
+                    )
+                    Text(
+                        text =
+                        buildAnnotatedString {
+                            withLink(
+                                LinkAnnotation.Url(
+                                    url = "https://barryburgle.wordpress.com/",
+                                    styles = TextLinkStyles(
+                                        style = SpanStyle(
+                                            textDecoration = TextDecoration.Underline
+                                        )
+                                    )
+                                )
+                            ) {
+                                append("Barry Burgle")
+                            }
+                        }
+                    )
                 }
             }
             item {
