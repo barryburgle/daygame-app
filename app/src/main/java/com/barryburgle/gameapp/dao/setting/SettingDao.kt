@@ -10,6 +10,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SettingDao {
     companion object {
+        const val LATEST_AVAILABLE_ID: String = "latest_available"
+        const val LATEST_PUBLISH_DATE_ID: String = "latest_publish_date"
+        const val LATEST_CHANGELOG_ID: String = "latest_changelog"
+        const val LATEST_DOWNLOAD_URL_ID: String = "latest_download_url"
         const val EXPORT_FOLDER_ID: String = "export_folder"
         const val IMPORT_FOLDER_ID: String = "import_folder"
         const val EXPORT_HEADER_ID: String = "export_header"
@@ -25,6 +29,10 @@ interface SettingDao {
         const val IMPORT_LEADS_FILE_NAME_ID: String = "import_leads_file_name"
         const val DEFAULT_LEADS_EXPORT_FILE_NAME: String = "leads_export"
         const val DEFAULT_LEADS_IMPORT_FILE_NAME: String = "leads_export_yyyy_mm_dd_hh_mm.csv"
+        const val DEFAULT_LATEST_AVAILABLE: String = ""
+        const val DEFAULT_LATEST_PUBLISH_DATE: String = ""
+        const val DEFAULT_LATEST_CHANGELOG: String = ""
+        const val DEFAULT_LATEST_DOWNLOAD_URL: String = ""
         const val DEFAULT_EXPORT_FOLDER: String = "Download"
         const val DEFAULT_IMPORT_FOLDER: String = "Download"
         const val DEFAULT_EXPORT_HEADER_FLAG: String = "false"
@@ -67,4 +75,16 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_NOTIFICATION_TIME}' ELSE value END FROM setting WHERE id = '${NOTIFICATION_TIME_ID}'")
     fun getNotificationTime(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LATEST_AVAILABLE}' ELSE value END FROM setting WHERE id = '${LATEST_AVAILABLE_ID}'")
+    fun getLatestAvailable(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LATEST_PUBLISH_DATE}' ELSE value END FROM setting WHERE id = '${LATEST_PUBLISH_DATE_ID}'")
+    fun getLatestPublishDate(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LATEST_CHANGELOG}' ELSE value END FROM setting WHERE id = '${LATEST_CHANGELOG_ID}'")
+    fun getLatestChangelog(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LATEST_DOWNLOAD_URL}' ELSE value END FROM setting WHERE id = '${LATEST_DOWNLOAD_URL_ID}'")
+    fun getLatestDownloadUrl(): Flow<String>
 }
