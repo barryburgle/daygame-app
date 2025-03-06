@@ -2,9 +2,8 @@ package com.barryburgle.gameapp.ui.tool
 
 import android.content.pm.PackageInfo
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -16,8 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -105,7 +102,8 @@ fun ToolsScreen(
                     SettingsCard(
                         state = state,
                         onEvent = onEvent,
-                        modifier = settingsCardModifier
+                        modifier = settingsCardModifier,
+                        currentVersion = versionName
                     )
                 }
             }
@@ -117,32 +115,34 @@ fun ToolsScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Button(
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer
-                        ),
-                        onClick = { uriHandler.openUri("https://github.com/barryburgle/daygame-app") }) {
-                        Box(
-                            modifier = Modifier
-                                .size(25.dp)
-                                .clip(CircleShape)
-                                .aspectRatio(1f)
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_launcher_round),
-                                contentDescription = "Daygame App Icon",
-                                alignment = Alignment.Center,
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-                        Spacer(
-                            modifier = Modifier.width(5.dp)
-                        )
-                        Text(
-                            text = "Daygame App v$versionName",
-                            style = MaterialTheme.typography.titleSmall
-                        )
-                    }
+                    Image(
+                        painter = painterResource(R.drawable.ic_launcher_round),
+                        contentDescription = "Daygame App Icon",
+                        alignment = Alignment.Center,
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(
+                        modifier = Modifier.width(5.dp)
+                    )
+                    Text(
+                        text =
+                        buildAnnotatedString {
+                            append("Daygame App ")
+                            withLink(
+                                LinkAnnotation.Url(
+                                    url = "https://github.com/barryburgle/daygame-app",
+                                    styles = TextLinkStyles(
+                                        style = SpanStyle(
+                                            textDecoration = TextDecoration.Underline
+                                        )
+                                    )
+                                )
+                            ) {
+                                append("v$versionName")
+                            }
+                        },
+                        style = MaterialTheme.typography.bodySmall
+                    )
                 }
             }
             item {
@@ -183,7 +183,8 @@ fun ToolsScreen(
                             ) {
                                 append("Barry Burgle")
                             }
-                        }
+                        },
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }
