@@ -89,7 +89,7 @@ fun Navigation(
             title = "Settings",
             selectedIcon = Icons.Filled.Settings,
             unselectedIcon = Icons.Outlined.Settings,
-            hasNews = false,
+            hasNews = toolState.latestAvailable != null && toolState.latestAvailable.isNotEmpty(),
             destinationScreen = Screen.ToolScreen.route
         )
     )
