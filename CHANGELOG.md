@@ -1,3 +1,8 @@
+# Version 1.6.0 (2025-03-06)
+
+**Features**
+- Update checker and new version download button
+
 # Version 1.5.0-beta (2025-02-08)
 
 ***WARNING*** ⚠️

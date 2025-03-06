@@ -84,6 +84,7 @@ You can get notified when a new update is available simply installing [Obtainium
   - leads distribution with leads histograms
 - [x] `Settings Tab` In it you can find:
   - data import/export in .csv files with or without header ([file examples](https://github.com/barryburgle/game-app/blob/main/resources/files))
+  - update checker & download button
   - settable chart average moving window
   - last session sticking points reminder time setter
   - project page and credits
@@ -100,8 +101,6 @@ The following are the features I thought could be useful in future, divided in:
 | ⚫ | Pro | Data acquisition delegation |
 
 ### Next features
-
-- [ ] 🟢 `Settings Tab` Once-a-date update checker with notification dot if app update found + clickable link to download.
 
 - [ ] 🟢 `Dashboard Tab` Integrate some charts that plot the sum of sets/dates/contacts/lays from the start of the month/year comparing curves of the last n (settable from settings) months or years: the higher the curve the faster proceeds the "accumulation" of results on your behalf
 
