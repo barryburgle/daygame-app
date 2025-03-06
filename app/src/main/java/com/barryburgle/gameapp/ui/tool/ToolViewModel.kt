@@ -211,6 +211,14 @@ class ToolViewModel(
                 val setting = Setting(SettingDao.IMPORT_HEADER_ID, importHeader.toString())
                 viewModelScope.launch { settingDao.insert(setting) }
             }
+
+            is ToolEvent.SwitchShowChangelog -> {
+                _state.update {
+                    it.copy(
+                        showChangelog = _state.value.showChangelog.not()
+                    )
+                }
+            }
         }
     }
 }

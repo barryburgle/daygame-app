@@ -16,4 +16,5 @@ sealed interface ToolEvent {
     data class SetNotificationTime(val notificationTime: String) : ToolEvent
     data class SetExportHeader(val exportHeader: Boolean) : ToolEvent
     data class SetImportHeader(val importHeader: Boolean) : ToolEvent
+    object SwitchShowChangelog : ToolEvent
 }
