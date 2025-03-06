@@ -19,3 +19,36 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Retrofit
+-keep class retrofit2.** { *; }
+-dontwarn retrofit2.**
+-keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+-keepattributes Exceptions
+-keepattributes Signature
+
+# OkHttp
+-keep class okhttp3.** { *; }
+-dontwarn okhttp3.**
+
+# Gson
+-keep class com.google.gson.** { *; }
+-dontwarn com.google.gson.**
+
+# Model classes
+-keepclassmembers class ** {
+    @retrofit2.http.* <methods>;
+}
+
+# Additional rules for coroutines
+-keepclassmembers class kotlinx.coroutines.** {
+    <fields>;
+    <methods>;
+}
+-dontwarn kotlinx.coroutines.**
+
+# Keep MainActivity
+-keep class com.barryburgle.gameapp.MainActivity {
+    <fields>;
+    <methods>;
+}
