@@ -15,5 +15,10 @@ data class ToolsState(
     val lastSessionAverageQuantity: Int = 4,
     val notificationTime: String = "",
     var exportHeader: Boolean = true,
-    var importHeader: Boolean = true
+    var importHeader: Boolean = true,
+    val latestAvailable: String = "",
+    val latestPublishDate: String = "",
+    val latestChangelog: String = "",
+    val latestDownloadUrl: String = "",
+    val showChangelog: Boolean = false
 )
