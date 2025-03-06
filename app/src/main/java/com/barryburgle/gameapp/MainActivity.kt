@@ -139,7 +139,13 @@ class MainActivity : ComponentActivity() {
                     context.packageManager.getPackageInfo(context.packageName, 0)
                 val githubLatestResponse: GithubLatestResponse = response.body()!!
                 db?.let {
-                    if (!packageInfo.versionName.equals(githubLatestResponse.tag_name)) {
+                    it.settingDao.insert(
+                        Setting(
+                            SettingDao.LATEST_CHANGELOG_ID,
+                            if (githubLatestResponse.body != null) githubLatestResponse.body else SettingDao.DEFAULT_LATEST_CHANGELOG
+                        )
+                    )
+                    if (!packageInfo.versionName.equals(githubLatestResponse.tag_name.drop(1))) {
                         it.settingDao.insert(
                             Setting(
                                 SettingDao.LATEST_AVAILABLE_ID,
@@ -150,12 +156,6 @@ class MainActivity : ComponentActivity() {
                             Setting(
                                 SettingDao.LATEST_PUBLISH_DATE_ID,
                                 githubLatestResponse.published_at
-                            )
-                        )
-                        it.settingDao.insert(
-                            Setting(
-                                SettingDao.LATEST_CHANGELOG_ID,
-                                if (githubLatestResponse.body != null) githubLatestResponse.body!! else SettingDao.DEFAULT_LATEST_CHANGELOG
                             )
                         )
                         val latestDownloadUrl =
@@ -177,12 +177,6 @@ class MainActivity : ComponentActivity() {
                             Setting(
                                 SettingDao.LATEST_PUBLISH_DATE_ID,
                                 SettingDao.DEFAULT_LATEST_PUBLISH_DATE
-                            )
-                        )
-                        it.settingDao.insert(
-                            Setting(
-                                SettingDao.LATEST_CHANGELOG_ID,
-                                SettingDao.DEFAULT_LATEST_CHANGELOG
                             )
                         )
                         it.settingDao.insert(
