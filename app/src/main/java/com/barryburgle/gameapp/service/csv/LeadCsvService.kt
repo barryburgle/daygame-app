@@ -33,7 +33,7 @@ class LeadCsvService : AbstractCsvService<Lead>() {
         return Lead(
             fields[0].toLong(),
             fields[1],
-            fields[2].toLong(),
+            importLong(fields[2]),
             fields[3],
             fields[4],
             fields[5],

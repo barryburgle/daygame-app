@@ -78,4 +78,12 @@ abstract class AbstractCsvService<T : Any> {
         }
         return exportObjects
     }
+
+    protected fun importLong(longAsString: String): Long? {
+        try {
+            return longAsString.toLong()
+        } catch (e: NumberFormatException) {
+            return null
+        }
+    }
 }
