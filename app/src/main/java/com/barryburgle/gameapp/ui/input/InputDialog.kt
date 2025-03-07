@@ -401,91 +401,91 @@ fun leadName(
     cardShow: Boolean
 ) {
     var displayName = lead.name
-    if (!outputShow) {
-        if (displayName != null && !displayName.isBlank() && displayName.length > 7) {
+    if (displayName != null && !displayName.isBlank() && lead.sessionId != null) {
+        if (displayName.length > 7) {
             displayName = displayName.substring(0, 6) + "... "
         }
-    }
-    Column(
-        modifier = Modifier
-            .shadow(
-                elevation = 5.dp,
-                shape = MaterialTheme.shapes.large
-            ),
-    ) {
         Column(
             modifier = Modifier
-                .background(
-                    color = backgroundColor, shape = RoundedCornerShape(5.dp)
-                )
-                .width(80.dp)
-                .padding(8.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .shadow(
+                    elevation = 5.dp,
+                    shape = MaterialTheme.shapes.large
+                ),
         ) {
-            if (outputShow && alertColor != null) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(3.dp)
-                        .background(alertColor, shape = RoundedCornerShape(5.dp))
-                ) {}
-                Spacer(Modifier.height(3.dp))
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+            Column(
+                modifier = Modifier
+                    .background(
+                        color = backgroundColor, shape = RoundedCornerShape(5.dp)
+                    )
+                    .width(80.dp)
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "${displayName}",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-            if (outputShow || cardShow) {
-                Text(
-                    text = "${lead.age} ${
-                        CountryEnum.getFlagByAlpha3(
-                            lead.nationality
-                        )
-                    }",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                val isDarkTheme = isSystemInDarkTheme()
-                if (lead.contact == ContactTypeEnum.NUMBER.getField()) {
-                    Box(
+                if (outputShow && alertColor != null) {
+                    Row(
                         modifier = Modifier
-                            .size(20.dp)
-                            .aspectRatio(1f)
-                    ) {
-                        Image(
-                            painter = painterResource(if (isDarkTheme) R.drawable.whatsapp_w else R.drawable.whatsapp_b),
-                            contentDescription = "Whatsapp Icon",
-                            alignment = Alignment.Center,
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .size(20.dp)
-                            .aspectRatio(1f)
-                    ) {
-                        Image(
-                            painter = painterResource(if (isDarkTheme) R.drawable.instagram_w else R.drawable.instagram_b),
-                            contentDescription = "Instagram Icon",
-                            alignment = Alignment.Center,
-                            contentScale = ContentScale.Crop
-                        )
-                    }
+                            .fillMaxWidth()
+                            .height(3.dp)
+                            .background(alertColor, shape = RoundedCornerShape(5.dp))
+                    ) {}
+                    Spacer(Modifier.height(3.dp))
                 }
-                if (!cardShow) {
-                    if (lead.insertTime.isNotBlank()) {
-                        Text(
-                            style = MaterialTheme.typography.bodySmall,
-                            text = "${lead.insertTime.substring(8, 10)}/${
-                                lead.insertTime.substring(5, 7)
-                            }"
-                        )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "${displayName}",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+                if (outputShow || cardShow) {
+                    Text(
+                        text = "${lead.age} ${
+                            CountryEnum.getFlagByAlpha3(
+                                lead.nationality
+                            )
+                        }",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    val isDarkTheme = isSystemInDarkTheme()
+                    if (lead.contact == ContactTypeEnum.NUMBER.getField()) {
+                        Box(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .aspectRatio(1f)
+                        ) {
+                            Image(
+                                painter = painterResource(if (isDarkTheme) R.drawable.whatsapp_w else R.drawable.whatsapp_b),
+                                contentDescription = "Whatsapp Icon",
+                                alignment = Alignment.Center,
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .aspectRatio(1f)
+                        ) {
+                            Image(
+                                painter = painterResource(if (isDarkTheme) R.drawable.instagram_w else R.drawable.instagram_b),
+                                contentDescription = "Instagram Icon",
+                                alignment = Alignment.Center,
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    }
+                    if (!cardShow) {
+                        if (lead.insertTime.isNotBlank()) {
+                            Text(
+                                style = MaterialTheme.typography.bodySmall,
+                                text = "${lead.insertTime.substring(8, 10)}/${
+                                    lead.insertTime.substring(5, 7)
+                                }"
+                            )
+                        }
                     }
                 }
             }
