@@ -7,7 +7,7 @@ import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
-import com.barryburgle.gameapp.ui.CombineSixteen
+import com.barryburgle.gameapp.ui.CombineSeventeen
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,6 +29,7 @@ class ToolViewModel(
     private val _exportLeadsFilename = settingDao.getExportLeadsFilename()
     private val _importLeadsFilename = settingDao.getImportLeadsFilename()
     private val _exportFolder = settingDao.getExportFolder()
+    private val _importFolder = settingDao.getImportFolder()
     private val _exportHeader = settingDao.getExportHeaderFlag()
     private val _importHeader = settingDao.getImportHeaderFlag()
     private val _notificationTime = settingDao.getNotificationTime()
@@ -38,7 +39,7 @@ class ToolViewModel(
     private val _latestChangelog = settingDao.getLatestChangelog()
     private val _latestDownloadUrl = settingDao.getLatestDownloadUrl()
     val state =
-        CombineSixteen(
+        CombineSeventeen(
             _state,
             _abstractSessions,
             _leads,
@@ -47,6 +48,7 @@ class ToolViewModel(
             _exportLeadsFilename,
             _importLeadsFilename,
             _exportFolder,
+            _importFolder,
             _notificationTime,
             _averageLast,
             _exportHeader,
@@ -55,13 +57,14 @@ class ToolViewModel(
             _latestPublishDate,
             _latestChangelog,
             _latestDownloadUrl
-        ) { state, abstractSessions, leads, exportSessionsFilename, importSessionsFilename, exportLeadsFilename, importLeadsFilename, exportFolder, notificationTime, averageLast, exportHeader, importHeader, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl ->
+        ) { state, abstractSessions, leads, exportSessionsFilename, importSessionsFilename, exportLeadsFilename, importLeadsFilename, exportFolder, importFolder, notificationTime, averageLast, exportHeader, importHeader, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl ->
             state.copy(
                 exportSessionsFileName = exportSessionsFilename,
                 importSessionsFileName = importSessionsFilename,
                 exportLeadsFileName = exportLeadsFilename,
                 importLeadsFileName = importLeadsFilename,
                 exportFolder = exportFolder,
+                importFolder = importFolder,
                 notificationTime = notificationTime,
                 abstractSessions = abstractSessions,
                 leads = leads,
