@@ -33,6 +33,7 @@ import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import java.io.FileNotFoundException
 
 @Composable
 fun DataExchangeCard(
@@ -236,15 +237,23 @@ fun DataExchangeCard(
                                         state.exportHeader
                                     )
                                 } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    onEvent(
-                                        ToolEvent.SetAbstractSessions(
-                                            sessionCsvService.importRows(
-                                                state.importFolder,
-                                                state.importSessionsFileName,
-                                                state.importHeader
+                                    try {
+                                        onEvent(
+                                            ToolEvent.SetAbstractSessions(
+                                                sessionCsvService.importRows(
+                                                    state.importFolder,
+                                                    state.importSessionsFileName,
+                                                    state.importHeader
+                                                )
                                             )
                                         )
-                                    )
+                                    } catch (fileNotFoundException: FileNotFoundException) {
+                                        Toast.makeText(
+                                            localContext,
+                                            fileNotFoundException.message,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
                                 Toast.makeText(
                                     localContext,
@@ -270,15 +279,23 @@ fun DataExchangeCard(
                                         state.exportHeader
                                     )
                                 } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    onEvent(
-                                        ToolEvent.SetLeads(
-                                            leadCsvService.importRows(
-                                                state.importFolder,
-                                                state.importLeadsFileName,
-                                                state.importHeader
+                                    try {
+                                        onEvent(
+                                            ToolEvent.SetLeads(
+                                                leadCsvService.importRows(
+                                                    state.importFolder,
+                                                    state.importLeadsFileName,
+                                                    state.importHeader
+                                                )
                                             )
                                         )
-                                    )
+                                    } catch (fileNotFoundException: FileNotFoundException) {
+                                        Toast.makeText(
+                                            localContext,
+                                            fileNotFoundException.message,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
                                 Toast.makeText(
                                     localContext,

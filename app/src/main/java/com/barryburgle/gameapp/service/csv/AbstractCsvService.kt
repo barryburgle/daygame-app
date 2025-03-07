@@ -5,6 +5,7 @@ import android.util.Log
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.FileReader
 import java.io.FileWriter
 import java.text.SimpleDateFormat
@@ -62,11 +63,11 @@ abstract class AbstractCsvService<T : Any> {
         filename: String,
         importHeader: Boolean
     ): List<T> {
-        val csvReader = CSVReader(
-            FileReader(
-                "$localPath/$importFolder/$filename"
-            )
-        )
+        val fullPath = "$localPath/$importFolder/$filename"
+        if (!File(fullPath).exists()) {
+            throw FileNotFoundException("File '$importFolder/$filename' not found")
+        }
+        val csvReader = CSVReader(FileReader(fullPath))
         var listOfStrings: List<Array<String>> = emptyList()
         listOfStrings = csvReader.readAll().map {
             it
