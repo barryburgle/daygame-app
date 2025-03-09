@@ -17,4 +17,5 @@ sealed interface ToolEvent {
     data class SetExportHeader(val exportHeader: Boolean) : ToolEvent
     data class SetImportHeader(val importHeader: Boolean) : ToolEvent
     object SwitchShowChangelog : ToolEvent
+    object SwitchExportAll : ToolEvent
 }

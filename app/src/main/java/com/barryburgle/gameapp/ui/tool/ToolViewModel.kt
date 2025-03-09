@@ -222,6 +222,14 @@ class ToolViewModel(
                     )
                 }
             }
+
+            is ToolEvent.SwitchExportAll -> {
+                _state.update {
+                    it.copy(
+                        exportAll = _state.value.exportAll.not()
+                    )
+                }
+            }
         }
     }
 }

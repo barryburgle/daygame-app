@@ -20,5 +20,6 @@ data class ToolsState(
     val latestPublishDate: String = "",
     val latestChangelog: String = "",
     val latestDownloadUrl: String = "",
-    val showChangelog: Boolean = false
+    val showChangelog: Boolean = false,
+    val exportAll: Boolean = true
 )
