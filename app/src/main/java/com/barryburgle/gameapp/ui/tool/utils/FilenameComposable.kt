@@ -32,8 +32,8 @@ fun FilenameComposable(
     filenameOnEvent: (String) -> Unit
 ) {
     RowTitle(
-        "${cardTitle} ${tableTitle} file name:",
-        "${tableTitle.replaceFirstChar { it.uppercase() }}:",
+        "${cardTitle} ${tableTitle}s file name:",
+        "${tableTitle.replaceFirstChar { it.uppercase() }}s:",
         textFieldColumnWidth
     )
     Row(
