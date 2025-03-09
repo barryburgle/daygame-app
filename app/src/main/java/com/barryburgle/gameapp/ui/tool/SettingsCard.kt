@@ -193,14 +193,14 @@ fun versionInfo(
     ) {
         val latestVersion = state.latestAvailable
         var info = "Daygame App $currentVersion"
-        if (state.latestAvailable != null && !state.latestAvailable.isEmpty()) {
-            Row(
-                modifier = Modifier.fillMaxWidth(0.2f),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                updateRedDot()
-                Spacer(modifier = Modifier.width(7.dp))
-                val uriHandler = LocalUriHandler.current
+        val uriHandler = LocalUriHandler.current
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (state.latestAvailable != null && !state.latestAvailable.isEmpty()) {
+                changelog(latestVersion, state, onEvent)
                 Column(
                     modifier = Modifier
                         .background(
@@ -219,22 +219,14 @@ fun versionInfo(
                         )
                     }
                 }
+            } else {
+                Text(
+                    text = info,
+                    textAlign = TextAlign.Left,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.fillMaxWidth(0.65f)
+                )
             }
-            Spacer(modifier = Modifier.width(5.dp))
-            info = "Update to $latestVersion"
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = info,
-                textAlign = TextAlign.Left,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.fillMaxWidth(0.65f)
-            )
-            changelog(state, onEvent)
         }
     }
     if (state.showChangelog) {
@@ -266,16 +258,18 @@ fun versionInfo(
 
 @Composable
 fun changelog(
+    newVersion: String,
     state: ToolsState,
     onEvent: (ToolEvent) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        updateRedDot()
+        Spacer(modifier = Modifier.width(5.dp))
         Text(
-            text = "Changelog",
+            text = "Update to $newVersion. Changelog:",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurface
         )
