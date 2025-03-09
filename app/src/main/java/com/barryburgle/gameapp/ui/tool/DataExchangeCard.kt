@@ -7,13 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -26,31 +23,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import com.barryburgle.gameapp.ui.tool.utils.FilenameComposable
+import com.barryburgle.gameapp.ui.tool.utils.RowTitle
 import java.io.FileNotFoundException
 
 @Composable
 fun DataExchangeCard(
-    cardTitle: String,
-    state: ToolsState,
-    modifier: Modifier,
-    onEvent: (ToolEvent) -> Unit
+    cardTitle: String, state: ToolsState, modifier: Modifier, onEvent: (ToolEvent) -> Unit
 ) {
-    val sessionCsvService: SessionCsvService = SessionCsvService()
-    val leadCsvService: LeadCsvService = LeadCsvService()
+    val sessionCsvService = SessionCsvService()
+    val leadCsvService = LeadCsvService()
     Card(
         modifier = modifier, colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ), shape = MaterialTheme.shapes.large
     ) {
         val textFieldHeight = 55.dp
-        val textFieldWidth = 230.dp
+        val textFieldColumnWidth = 200.dp
         val localContext = LocalContext.current.applicationContext
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -80,155 +75,105 @@ fun DataExchangeCard(
                         .padding(5.dp)
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxWidth(0.65f),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalAlignment = Alignment.Start
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            Text(
-                                text = "${cardTitle} folder:",
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-                        OutlinedTextField(
-                            value = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                state.exportFolder
-                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                state.importFolder
-                            } else "",
-                            onValueChange = {
-                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    onEvent(ToolEvent.SetExportFolder(it))
-                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    onEvent(ToolEvent.SetImportFolder(it))
-                                }
-                            },
-                            placeholder = { Text(text = "Insert here the ${cardTitle.lowercase()} folder") },
-                            shape = MaterialTheme.shapes.large,
-                            modifier = Modifier
-                                .height(textFieldHeight)
-                                .width(textFieldWidth)
+                        var subtitle = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                            // TODO: in Export card add infos of how many rows in each currently table are
+                            "Currently holding 100 sessions and 43 leads"
+                        } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                            // TODO: in Import card add infos about the .csv files found in the selected folder
+                            "Found 3 csv files in \"Download\" folder"
+                        } else ""
+                        Text(
+                            text = subtitle, style = MaterialTheme.typography.bodySmall
+                        )
+                        RowTitle(
+                            "${cardTitle} folder:", "Header:", textFieldColumnWidth
                         )
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Start
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(textFieldHeight),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = "${cardTitle} sessions file name:",
-                                style = MaterialTheme.typography.bodySmall
-                            )
+                            Column(
+                                modifier = Modifier.width(textFieldColumnWidth),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                OutlinedTextField(
+                                    value = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                        state.exportFolder
+                                    } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                        state.importFolder
+                                    } else "",
+                                    onValueChange = {
+                                        if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                            onEvent(ToolEvent.SetExportFolder(it))
+                                        } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                            onEvent(ToolEvent.SetImportFolder(it))
+                                        }
+                                    },
+                                    placeholder = { Text(text = "Insert here the ${cardTitle.lowercase()} folder") },
+                                    shape = MaterialTheme.shapes.large,
+                                    modifier = Modifier.height(textFieldHeight)
+                                )
+                            }
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                var checked = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    state.exportHeader
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    state.importHeader
+                                } else false
+                                val thumbColor by animateColorAsState(
+                                    targetValue = if (checked) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface,
+                                    animationSpec = tween(durationMillis = 500)
+                                )
+                                val trackColor by animateColorAsState(
+                                    targetValue = if (checked) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surface,
+                                    animationSpec = tween(durationMillis = 500)
+                                )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceAround
+                                ) {
+                                    Spacer(modifier = Modifier.width(0.dp))
+                                    Switch(
+                                        checked = checked,
+                                        onCheckedChange = {
+                                            checked = it
+                                            if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                                onEvent(ToolEvent.SetExportHeader(it))
+                                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                                onEvent(ToolEvent.SetImportHeader(it))
+                                            }
+                                        },
+                                        colors = SwitchDefaults.colors(
+                                            checkedThumbColor = thumbColor,
+                                            checkedTrackColor = trackColor,
+                                            uncheckedThumbColor = thumbColor,
+                                            uncheckedTrackColor = trackColor
+                                        ),
+                                    )
+                                }
+                            }
                         }
-                        OutlinedTextField(
-                            value = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                        FilenameComposable(cardTitle = cardTitle,
+                            "session",
+                            textFieldColumnWidth,
+                            textFieldHeight,
+                            localContext,
+                            if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                 state.exportSessionsFileName
                             } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
                                 state.importSessionsFileName
                             } else "",
-                            onValueChange = {
-                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    onEvent(ToolEvent.SetExportSessionsFileName(it))
-                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    onEvent(ToolEvent.SetImportSessionsFileName(it))
-                                }
-                            },
-                            placeholder = { Text(text = "Insert here the ${cardTitle.lowercase()} file name") },
-                            shape = MaterialTheme.shapes.large,
-                            modifier = Modifier
-                                .height(textFieldHeight)
-                                .width(textFieldWidth)
-                        )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            Text(
-                                text = "${cardTitle} leads file name:",
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-                        OutlinedTextField(
-                            value = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                state.exportLeadsFileName
-                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                state.importLeadsFileName
-                            } else "",
-                            onValueChange = {
-                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    onEvent(ToolEvent.SetExportLeadsFileName(it))
-                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    onEvent(ToolEvent.SetImportLeadsFileName(it))
-                                }
-                            },
-                            placeholder = { Text(text = "Insert here the ${cardTitle.lowercase()} file name") },
-                            shape = MaterialTheme.shapes.large,
-                            modifier = Modifier
-                                .height(textFieldHeight)
-                                .width(textFieldWidth)
-                        )
-                    }
-                    Column(
-                        modifier = Modifier.fillMaxHeight(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceAround
-                    ) {
-                        Spacer(modifier = Modifier.height(0.dp))
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            var checked = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                state.exportHeader
-                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                state.importHeader
-                            } else false
-                            val buttonText: String =
-                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    "${cardTitle} Header"
-                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    "Header in file"
-                                } else ""
-                            Text(
-                                text = buttonText,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier
-                                    .height(15.dp)
-                                    .width(90.dp),
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                            val thumbColor by animateColorAsState(
-                                targetValue = if (checked) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface,
-                                animationSpec = tween(durationMillis = 500)
-                            )
-                            val trackColor by animateColorAsState(
-                                targetValue = if (checked) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surface,
-                                animationSpec = tween(durationMillis = 500)
-                            )
-                            Switch(
-                                checked = checked,
-                                onCheckedChange = {
-                                    checked = it
-                                    if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                        onEvent(ToolEvent.SetExportHeader(it))
-                                    } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                        onEvent(ToolEvent.SetImportHeader(it))
-                                    }
-                                },
-                                colors = SwitchDefaults.colors(
-                                    checkedThumbColor = thumbColor,
-                                    checkedTrackColor = trackColor,
-                                    uncheckedThumbColor = thumbColor,
-                                    uncheckedTrackColor = trackColor
-                                ),
-                            )
-                        }
-                        Button(
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer
-                            ),
-                            onClick = {
+                            buttonFunction = {
                                 if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                     sessionCsvService.setExportObjects(state.abstractSessions)
                                     sessionCsvService.exportRows(
@@ -255,22 +200,25 @@ fun DataExchangeCard(
                                         ).show()
                                     }
                                 }
-                                Toast.makeText(
-                                    localContext,
-                                    "Successfully ${cardTitle.lowercase()}ed",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }) {
-                            Text(
-                                text = cardTitle + "\nSessions",
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                        Button(
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer
-                            ),
-                            onClick = {
+                            },
+                            filenameOnEvent = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetExportSessionsFileName(it))
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetImportSessionsFileName(it))
+                                }
+                            })
+                        FilenameComposable(cardTitle = cardTitle,
+                            "lead",
+                            textFieldColumnWidth,
+                            textFieldHeight,
+                            localContext,
+                            if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                state.exportLeadsFileName
+                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                state.importLeadsFileName
+                            } else "",
+                            buttonFunction = {
                                 if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                     leadCsvService.setExportObjects(state.leads)
                                     leadCsvService.exportRows(
@@ -297,17 +245,14 @@ fun DataExchangeCard(
                                         ).show()
                                     }
                                 }
-                                Toast.makeText(
-                                    localContext,
-                                    "Successfully ${cardTitle.lowercase()}ed",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }) {
-                            Text(
-                                text = cardTitle + "\nLeads",
-                                textAlign = TextAlign.Center
-                            )
-                        }
+                            },
+                            filenameOnEvent = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetExportLeadsFileName(it))
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetImportLeadsFileName(it))
+                                }
+                            })
                     }
                 }
             }
