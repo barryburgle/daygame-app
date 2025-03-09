@@ -39,10 +39,10 @@ fun DataExchangeCard(
     cardSubtitle: String,
     state: ToolsState,
     modifier: Modifier,
+    sessionCsvService: SessionCsvService,
+    leadCsvService: LeadCsvService,
     onEvent: (ToolEvent) -> Unit
 ) {
-    val sessionCsvService = SessionCsvService()
-    val leadCsvService = LeadCsvService()
     Card(
         modifier = modifier, colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
