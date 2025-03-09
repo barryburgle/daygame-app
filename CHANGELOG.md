@@ -1,7 +1,12 @@
-# Version 1.6.0 (2025-03-06)
+# Version 1.6.0 (2025-03-dd)
 
 **Features**
-- Update checker and new version download button
+- Update checker and new version download button ⬇️
+- Import and export cards interface improvements 🗂️
+
+**Bugs**
+- Leads bugfix
+- Import bugfix
 
 # Version 1.5.0-beta (2025-02-08)
 
