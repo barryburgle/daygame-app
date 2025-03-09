@@ -1,8 +1,6 @@
 package com.barryburgle.gameapp.ui.input
 
 import android.widget.Toast
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,8 +27,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -52,6 +47,7 @@ import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.tool.utils.Switch
 
 @Composable
 fun AddLeadDialog(
@@ -200,7 +196,9 @@ fun AddLeadDialog(
                         Text(
                             "Whatsapp"
                         )
-                        getSwitch(numberFlag, onEvent, ContactTypeEnum.NUMBER)
+                        Switch(numberFlag){
+                            onEvent(AbstractSessionEvent.SetLeadContact(ContactTypeEnum.NUMBER.getField()))
+                        }
                     }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -222,7 +220,9 @@ fun AddLeadDialog(
                         Text(
                             "Instagram"
                         )
-                        getSwitch(socialFlag, onEvent, ContactTypeEnum.SOCIAL)
+                        Switch(socialFlag){
+                            onEvent(AbstractSessionEvent.SetLeadContact(ContactTypeEnum.SOCIAL.getField()))
+                        }
                     }
                 }
                 Column(
@@ -296,43 +296,4 @@ fun AddLeadDialog(
             }
         }
     })
-}
-
-@Composable
-fun getSwitch(
-    flag: Boolean,
-    onEvent: (AbstractSessionEvent) -> Unit,
-    contactTypeEnum: ContactTypeEnum
-) {
-    Switch(
-        checked = flag,
-        onCheckedChange = {
-            onEvent(AbstractSessionEvent.SetLeadContact(contactTypeEnum.getField()))
-        },
-        colors = SwitchDefaults.colors(
-            checkedThumbColor = getThumbColor(flag),
-            checkedTrackColor = getTrackColor(flag),
-            uncheckedThumbColor = getThumbColor(flag),
-            uncheckedTrackColor = getTrackColor(flag)
-        )
-    )
-}
-
-// TODO: unify all switches colors (those and in tools card) color maangement
-@Composable
-fun getThumbColor(flag: Boolean): Color {
-    val thumbColor by animateColorAsState(
-        targetValue = if (flag) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface,
-        animationSpec = tween(durationMillis = 500)
-    )
-    return thumbColor
-}
-
-@Composable
-fun getTrackColor(flag: Boolean): Color {
-    val trackColor by animateColorAsState(
-        targetValue = if (flag) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surface,
-        animationSpec = tween(durationMillis = 500)
-    )
-    return trackColor
 }
