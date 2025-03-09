@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
@@ -72,17 +73,27 @@ fun InputCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = "${
-                                DayOfWeek.of(abstractSession.dayOfWeek).toString().lowercase()
-                                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-                            } ${
-                                FormatService.getDate(
-                                    abstractSession.date
-                                )
-                            }",
-                            style = MaterialTheme.typography.titleLarge
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.CalendarMonth,
+                                contentDescription = "Session date",
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier
+                                    .height(25.dp)
+                            )
+                            Spacer(modifier = Modifier.width(7.dp))
+                            Text(
+                                text = "${
+                                    FormatService.getDate(
+                                        abstractSession.date
+                                    )
+                                }",
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
                         Row(
                             modifier = Modifier.width(100.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -145,15 +156,18 @@ fun InputCard(
                         }
                     }
                     Text(
-                        text = "${abstractSession.sessionTime} minutes since ${
+                        text = "${
+                            DayOfWeek.of(abstractSession.dayOfWeek).toString().lowercase()
+                                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                        } ${
                             FormatService.getTime(
                                 abstractSession.startHour
                             )
-                        } to ${
+                        } - ${
                             FormatService.getTime(
                                 abstractSession.endHour
                             )
-                        }",
+                        } : ${abstractSession.sessionTime} minutes",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
