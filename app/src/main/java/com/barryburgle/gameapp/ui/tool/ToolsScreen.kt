@@ -113,7 +113,10 @@ fun ToolsScreen(
                         state = state,
                         onEvent = onEvent,
                         modifier = settingsCardModifier,
-                        currentVersion = versionName
+                        currentVersion = versionName,
+                        sessionCsvService = sessionCsvService,
+                        leadCsvService = leadCsvService,
+                        context = context
                     )
                 }
             }

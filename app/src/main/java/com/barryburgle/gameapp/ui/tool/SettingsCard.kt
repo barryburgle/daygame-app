@@ -1,5 +1,7 @@
 package com.barryburgle.gameapp.ui.tool
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,7 +35,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
+import com.barryburgle.gameapp.service.csv.LeadCsvService
+import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import com.barryburgle.gameapp.ui.tool.utils.Switch
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
@@ -48,7 +53,10 @@ fun SettingsCard(
     state: ToolsState,
     modifier: Modifier,
     onEvent: (ToolEvent) -> Unit,
-    currentVersion: String
+    currentVersion: String,
+    sessionCsvService: SessionCsvService,
+    leadCsvService: LeadCsvService,
+    context: Context
 ) {
     val notificationHourDialogState = rememberMaterialDialogState()
     MaterialDialog(
@@ -115,7 +123,14 @@ fun SettingsCard(
                             style = MaterialTheme.typography.titleLarge
                         )
                     }
-                    versionInfo(state, currentVersion, onEvent)
+                    versionInfo(
+                        state,
+                        currentVersion,
+                        onEvent,
+                        sessionCsvService,
+                        leadCsvService,
+                        context
+                    )
                 }
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
@@ -134,14 +149,27 @@ fun SettingsCard(
                         initialCount = state.lastSessionAverageQuantity
                     )
                     Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Column(
-                            modifier = Modifier.width(150.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Export all tables\nbefore download",
+                                    style = MaterialTheme.typography.titleSmall
+                                )
+                                Spacer(modifier = Modifier.width(5.dp))
+                                Switch(state.exportAll) {
+                                    onEvent(ToolEvent.SwitchExportAll)
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(20.dp))
                             Button(
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -156,7 +184,7 @@ fun SettingsCard(
                                 )
                                 Spacer(modifier = Modifier.width(7.dp))
                                 Text(
-                                    text = "Sticking points",
+                                    text = "Sticking Points",
                                     textAlign = TextAlign.Center
                                 )
                             }
@@ -185,7 +213,10 @@ fun updateRedDot() {
 fun versionInfo(
     state: ToolsState,
     currentVersion: String,
-    onEvent: (ToolEvent) -> Unit
+    onEvent: (ToolEvent) -> Unit,
+    sessionCsvService: SessionCsvService,
+    leadCsvService: LeadCsvService,
+    context: Context
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -210,6 +241,26 @@ fun versionInfo(
                 ) {
                     IconButton(
                         onClick = {
+                            if (state.exportAll) {
+                                sessionCsvService.setExportObjects(state.abstractSessions)
+                                sessionCsvService.exportRows(
+                                    state.exportFolder,
+                                    state.exportSessionsFileName,
+                                    state.exportHeader
+                                )
+                                leadCsvService.setExportObjects(state.leads)
+                                leadCsvService.exportRows(
+                                    state.exportFolder,
+                                    state.exportLeadsFileName,
+                                    state.exportHeader
+                                )
+                                Toast.makeText(
+                                    context,
+                                    "Successfully exported tables",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                            }
                             uriHandler.openUri(state.latestDownloadUrl)
                         }) {
                         Icon(
