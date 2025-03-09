@@ -27,7 +27,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -53,7 +52,6 @@ fun ToolsScreen(
     val context = LocalContext.current
     val packageInfo: PackageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
     val versionName = packageInfo.versionName
-    val uriHandler = LocalUriHandler.current
     Scaffold { padding ->
         val dataExchangeCardModifier = Modifier
             .height(370.dp)
