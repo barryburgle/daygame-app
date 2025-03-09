@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.ToolEvent
+import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +53,7 @@ fun ToolsScreen(
     val context = LocalContext.current
     val packageInfo: PackageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
     val versionName = packageInfo.versionName
+    val csvFindService = CSVFindService()
     Scaffold { padding ->
         val dataExchangeCardModifier = Modifier
             .height(370.dp)
@@ -77,6 +79,7 @@ fun ToolsScreen(
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     DataExchangeCard(
                         cardTitle = "Export",
+                        cardSubtitle = "Holding ${state.abstractSessions.size} sessions and ${state.leads.size} leads",
                         state = state,
                         onEvent = onEvent,
                         modifier = dataExchangeCardModifier
@@ -88,6 +91,7 @@ fun ToolsScreen(
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     DataExchangeCard(
                         cardTitle = "Import",
+                        cardSubtitle = "Found ${csvFindService.findCsvFiles(state.importFolder).size} csv files in your ${state.importFolder} folder",
                         state = state,
                         onEvent = onEvent,
                         modifier = dataExchangeCardModifier

@@ -35,7 +35,11 @@ import java.io.FileNotFoundException
 
 @Composable
 fun DataExchangeCard(
-    cardTitle: String, state: ToolsState, modifier: Modifier, onEvent: (ToolEvent) -> Unit
+    cardTitle: String,
+    cardSubtitle: String,
+    state: ToolsState,
+    modifier: Modifier,
+    onEvent: (ToolEvent) -> Unit
 ) {
     val sessionCsvService = SessionCsvService()
     val leadCsvService = LeadCsvService()
@@ -78,15 +82,8 @@ fun DataExchangeCard(
                         horizontalAlignment = Alignment.Start,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        var subtitle = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                            // TODO: in Export card add infos of how many rows in each currently table are
-                            "Currently holding 100 sessions and 43 leads"
-                        } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                            // TODO: in Import card add infos about the .csv files found in the selected folder
-                            "Found 3 csv files in \"Download\" folder"
-                        } else ""
                         Text(
-                            text = subtitle, style = MaterialTheme.typography.bodySmall
+                            text = cardSubtitle, style = MaterialTheme.typography.bodySmall
                         )
                         RowTitle(
                             "${cardTitle} folder:", "Header:", textFieldColumnWidth
