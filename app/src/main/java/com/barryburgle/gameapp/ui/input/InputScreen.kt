@@ -1,7 +1,5 @@
 package com.barryburgle.gameapp.ui.input
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +10,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
@@ -61,10 +57,10 @@ fun InputScreen(
         }
     ) { padding ->
         if (state.isAddingSession) {
-            AddInputDialog(state = state, onEvent = onEvent, "Add a Session")
+            SessionDialog(state = state, onEvent = onEvent, "Add a Session")
         }
         if (state.isUpdatingSession) {
-            AddInputDialog(state = state, onEvent = onEvent, "Edit a Session")
+            SessionDialog(state = state, onEvent = onEvent, "Edit a Session")
         }
         if (state.isAddingLead) {
             AddLeadDialog(state = state, onEvent = onEvent, "Add a lead")

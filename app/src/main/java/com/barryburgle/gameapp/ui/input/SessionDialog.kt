@@ -64,7 +64,7 @@ import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddInputDialog(
+fun SessionDialog(
     state: InputState,
     onEvent: (AbstractSessionEvent) -> Unit,
     description: String,
