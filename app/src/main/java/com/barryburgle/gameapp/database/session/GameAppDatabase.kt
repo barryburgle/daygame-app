@@ -6,24 +6,27 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedStatDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
+import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.setting.Setting
 
 
 @Database(
-    entities = [AbstractSession::class, Setting::class, Lead::class],
-    version = 3
+    entities = [AbstractSession::class, Setting::class, Lead::class, Date::class],
+    version = 4
 )
 abstract class GameAppDatabase : RoomDatabase() {
     abstract val abstractSessionDao: AbstractSessionDao
     abstract val aggregatedStatDao: AggregatedStatDao
     abstract val settingDao: SettingDao
     abstract val leadDao: LeadDao
+    abstract val dateDao: DateDao
 
     companion object {
         private const val DATABASE_NAME = "game_app_db"
@@ -50,13 +53,22 @@ abstract class GameAppDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_3_4: Migration = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS meeting (id INTEGER NOT NULL PRIMARY KEY, lead_id INTEGER NULL, location TEXT NULL, meeting_date TEXT NULL, start_time TEXT NULL, end_time TEXT NULL, cost REAL NULL, date_number INTEGER NOT NULL, pull INTEGER NOT NULL, bounce INTEGER NOT NULL, kiss INTEGER NOT NULL, lay INTEGER NOT NULL, recorded INTEGER NOT NULL, sticking_points TEXT NULL, tweet_url TEXT NULL);"
+                )
+            }
+        }
+
         fun getInstance(context: Context): GameAppDatabase? {
             if (INSTANCE == null) {
                 synchronized(GameAppDatabase::class) {
                     INSTANCE = Room.databaseBuilder(
                         context.applicationContext,
                         GameAppDatabase::class.java, DATABASE_NAME
-                    ).addMigrations(MIGRATION_1_2).addMigrations(MIGRATION_2_3).build()
+                    ).addMigrations(MIGRATION_1_2).addMigrations(MIGRATION_2_3)
+                        .addMigrations(MIGRATION_3_4).build()
                 }
             }
             return INSTANCE
