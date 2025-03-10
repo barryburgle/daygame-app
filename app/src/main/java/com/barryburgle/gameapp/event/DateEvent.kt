@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.event
 
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
+import com.barryburgle.gameapp.model.lead.Lead
 
 sealed interface DateEvent : GenericEvent {
     object SaveDate : DateEvent
@@ -24,4 +25,5 @@ sealed interface DateEvent : GenericEvent {
     data class SortDates(val sortType: DateSortType) : DateEvent
     data class DeleteDate(val date: Date) : DateEvent
     data class EditDate(val date: Date) : DateEvent
+    data class EditLead(val lead: Lead, val isUpdatingLead: Boolean) : DateEvent
 }
