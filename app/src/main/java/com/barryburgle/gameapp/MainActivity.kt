@@ -134,6 +134,7 @@ class MainActivity : ComponentActivity() {
                     toolState = toolsState,
                     inputOnEvent = inputViewModel::onEvent,
                     outputOnEvent = outputViewModel::onEvent,
+                    dateOnEvent = dateViewModel::onEvent,
                     toolOnEvent = toolViewModel::onEvent
                 )
             }

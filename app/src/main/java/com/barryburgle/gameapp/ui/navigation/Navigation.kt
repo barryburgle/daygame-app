@@ -33,6 +33,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.event.DateEvent
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.ui.date.DateScreen
@@ -57,6 +58,7 @@ fun Navigation(
     toolState: ToolsState,
     inputOnEvent: (AbstractSessionEvent) -> Unit,
     outputOnEvent: (OutputEvent) -> Unit,
+    dateOnEvent: (DateEvent) -> Unit,
     toolOnEvent: (ToolEvent) -> Unit
 ) {
     val navController = rememberNavController()
@@ -80,7 +82,7 @@ fun Navigation(
             selectedIcon = Icons.Filled.Favorite,
             unselectedIcon = Icons.Outlined.FavoriteBorder,
             hasNews = false,
-            destinationScreen = Screen.OutputScreen.route
+            destinationScreen = Screen.DateScreen.route
         ),
         BottomNavigationItem(
             title = "Results",
@@ -171,6 +173,7 @@ fun Navigation(
             composable(Screen.DateScreen.route) {
                 DateScreen(
                     state = dateState,
+                    onEvent = dateOnEvent,
                     spaceFromLeft = spaceFromLeft,
                     spaceFromTop = spaceFromTop,
                     spaceFromBottom = spaceFromBottom
