@@ -71,18 +71,18 @@ fun Navigation(
             destinationScreen = Screen.InputScreen.route
         ),
         BottomNavigationItem(
-            title = "Dashboard",
-            selectedIcon = Icons.AutoMirrored.Filled.TrendingUp,
-            unselectedIcon = Icons.AutoMirrored.Outlined.TrendingUp,
-            hasNews = false,
-            destinationScreen = Screen.OutputScreen.route
-        ),
-        BottomNavigationItem(
             title = "Dates",
             selectedIcon = Icons.Filled.Favorite,
             unselectedIcon = Icons.Outlined.FavoriteBorder,
             hasNews = false,
             destinationScreen = Screen.DateScreen.route
+        ),
+        BottomNavigationItem(
+            title = "Dashboard",
+            selectedIcon = Icons.AutoMirrored.Filled.TrendingUp,
+            unselectedIcon = Icons.AutoMirrored.Outlined.TrendingUp,
+            hasNews = false,
+            destinationScreen = Screen.OutputScreen.route
         ),
         BottomNavigationItem(
             title = "Results",
