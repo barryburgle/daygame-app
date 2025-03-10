@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.ui.input.state
 import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.ui.state.OrderState
 
 data class InputState(
     val abstractSessions: List<AbstractSession> = emptyList(),
@@ -14,7 +15,7 @@ data class InputState(
     var convos: String = "",
     var contacts: String = "",
     var stickingPoints: String = "",
-    val sortType: SortType = SortType.DATE,
+    override val sortType: SortType = SortType.DATE,
     val isAddingSession: Boolean = false,
     val isUpdatingSession: Boolean = false,
     val isAddingLead: Boolean = false,
@@ -31,4 +32,6 @@ data class InputState(
     val countryName: String = "",
     val notificationTime: String = "",
     val editAbstractSession: AbstractSession? = null
+) : OrderState(
+    sortType
 )
