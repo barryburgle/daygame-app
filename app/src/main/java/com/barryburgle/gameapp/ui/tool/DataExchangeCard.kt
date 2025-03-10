@@ -11,8 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Upload
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
@@ -22,7 +28,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
@@ -43,13 +51,19 @@ fun DataExchangeCard(
     leadCsvService: LeadCsvService,
     onEvent: (ToolEvent) -> Unit
 ) {
+    var icon: ImageVector? = null
+    if (DataExchangeTypeEnum.EXPORT.type.equals(cardTitle)) {
+        icon = Icons.Default.Upload
+    } else if (DataExchangeTypeEnum.IMPORT.type.equals(cardTitle)) {
+        icon = Icons.Default.Download
+    }
     Card(
         modifier = modifier, colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ), shape = MaterialTheme.shapes.large
     ) {
         val textFieldHeight = 55.dp
-        val textFieldColumnWidth = 200.dp
+        val textFieldColumnWidth = 250.dp
         val localContext = LocalContext.current.applicationContext
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -70,6 +84,29 @@ fun DataExchangeCard(
                         Text(
                             text = cardTitle, style = MaterialTheme.typography.titleLarge
                         )
+                        Button(colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                        ), onClick = {
+                            // TODO: import or export all depending on card type
+                            Toast.makeText(
+                                localContext,
+                                "Successfully ${cardTitle.lowercase()}ed all tables",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }) {
+                            if (icon != null) {
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = cardTitle,
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier.height(25.dp)
+                                )
+                                Spacer(modifier = Modifier.width(7.dp))
+                            }
+                            Text(
+                                text = cardTitle + " all", textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
                 Row(
@@ -99,12 +136,11 @@ fun DataExchangeCard(
                                 modifier = Modifier.width(textFieldColumnWidth),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                OutlinedTextField(
-                                    value = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                        state.exportFolder
-                                    } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                        state.importFolder
-                                    } else "",
+                                OutlinedTextField(value = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    state.exportFolder
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    state.importFolder
+                                } else "",
                                     onValueChange = {
                                         if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                             onEvent(ToolEvent.SetExportFolder(it))
@@ -161,6 +197,7 @@ fun DataExchangeCard(
                             }
                         }
                         FilenameComposable(cardTitle = cardTitle,
+                            icon,
                             "session",
                             textFieldColumnWidth,
                             textFieldHeight,
@@ -206,6 +243,7 @@ fun DataExchangeCard(
                                 }
                             })
                         FilenameComposable(cardTitle = cardTitle,
+                            icon,
                             "lead",
                             textFieldColumnWidth,
                             textFieldHeight,

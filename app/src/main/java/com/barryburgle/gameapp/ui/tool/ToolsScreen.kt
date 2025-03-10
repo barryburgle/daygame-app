@@ -60,7 +60,7 @@ fun ToolsScreen(
     val csvFindService = CSVFindService()
     Scaffold { padding ->
         val dataExchangeCardModifier = Modifier
-            .height(370.dp)
+            .height(400.dp)
             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
             .shadow(
                 elevation = 5.dp, shape = MaterialTheme.shapes.large

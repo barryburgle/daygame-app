@@ -10,19 +10,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun FilenameComposable(
     cardTitle: String,
+    icon: ImageVector?,
     tableTitle: String,
     textFieldColumnWidth: Dp,
     textFieldHeight: Dp,
@@ -72,10 +74,15 @@ fun FilenameComposable(
                         Toast.LENGTH_SHORT
                     ).show()
                 }) {
-                Text(
-                    text = cardTitle,
-                    textAlign = TextAlign.Center
-                )
+                if (icon != null) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = cardTitle,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier
+                            .height(25.dp)
+                    )
+                }
             }
         }
     }
