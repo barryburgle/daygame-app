@@ -3,9 +3,10 @@ package com.barryburgle.gameapp.ui.date
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.date.DateDao
+import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.event.DateEvent
 import com.barryburgle.gameapp.model.enums.DateSortType
-import com.barryburgle.gameapp.ui.CombineTwo
+import com.barryburgle.gameapp.ui.CombineThree
 import com.barryburgle.gameapp.ui.date.state.DateState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,7 +14,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 
 class DateViewModel(
-    private val dateDao: DateDao
+    private val dateDao: DateDao,
+    private val leadDao: LeadDao
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(DateState())
@@ -41,14 +43,84 @@ class DateViewModel(
             DateSortType.DAY_OF_WEEK -> dateDao.getByDate()/*TODO: COMPUTE ON THE FLY AND SORT IN LIST*/
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _allLeads = leadDao.getAll()
 
     val state =
-        CombineTwo(
+        CombineThree(
             _state,
-            _dates
-        ) { state, dates ->
+            _dates,
+            _allLeads
+        ) { state, dates, allLeads ->
             state.copy(
-                dates = dates
+                dates = dates,
+                allLeads = allLeads
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DateState())
+
+    fun onEvent(event: DateEvent) {
+        when (event) {
+            is DateEvent.SaveDate -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.ShowDialog -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.HideDialog -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SetLeadId -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SetLocation -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SetMeetingDate -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SetStartTime -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SetEndTime -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SetCost -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SetDateNumber -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SetPull -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SetBounce -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SetKiss -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SetLay -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SetRecorded -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SetStickingPoints -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SetTweetUrl -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.SortDates -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.DeleteDate -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.EditDate -> { /*TODO: write implementation*/
+            }
+
+            is DateEvent.EditLead -> { /*TODO: write implementation*/
+            }
+        }
+    }
 }
