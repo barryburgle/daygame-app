@@ -34,6 +34,7 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.database.session.GameAppDatabase
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.service.notification.NotificationService
+import com.barryburgle.gameapp.ui.date.DateViewModel
 import com.barryburgle.gameapp.ui.input.InputViewModel
 import com.barryburgle.gameapp.ui.navigation.Navigation
 import com.barryburgle.gameapp.ui.output.OutputViewModel
@@ -76,6 +77,16 @@ class MainActivity : ComponentActivity() {
         }
     })
 
+    private val dateViewModel by viewModels<DateViewModel>(factoryProducer = {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return db?.let {
+                    DateViewModel(it.dateDao)
+                } as T
+            }
+        }
+    })
+
     private val statsViewModel by viewModels<StatsViewModel>(factoryProducer = {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -112,11 +123,13 @@ class MainActivity : ComponentActivity() {
             GameAppOriginalTheme {
                 val inputState by inputViewModel.state.collectAsState()
                 val outputState by outputViewModel.state.collectAsState()
+                val dateState by dateViewModel.state.collectAsState()
                 val statsState by statsViewModel.state.collectAsState()
                 val toolsState by toolViewModel.state.collectAsState()
                 Navigation(
                     inputState = inputState,
                     outputState = outputState,
+                    dateState = dateState,
                     statsState = statsState,
                     toolState = toolsState,
                     inputOnEvent = inputViewModel::onEvent,
