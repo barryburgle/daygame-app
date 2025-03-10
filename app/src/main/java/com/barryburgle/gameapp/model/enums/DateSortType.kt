@@ -1,21 +1,24 @@
 package com.barryburgle.gameapp.model.enums
 
 enum class DateSortType(private val field: String) : FieldEnum {
+    DATE("Date"),
     LEAD("Lead"),
     LOCATION("Location"),
-    DATE("Date"),
     START_TIME("Start Time"),
     END_TIME("End Time"),
     DATE_TIME("Date Time"),
     COST("Cost"),
     DATE_NUMBER("Date Number"),
-
-    /*TODO: FOR THE FOLLOWING 5 BOOLEAN FIELD VALUES SHOW ONLY EITHER DATES FILTERED BY FIELD TO TRUE OR FALSE - NO ORDERING BUT FILTERING: PUT LABEL IN THE SELECTOR ie "Pull" - "Pulled" - "Not pulled"*/
-    PULL("Pull"),
-    BOUNCE("Bounce"),
-    KISS("Kiss"),
-    LAY("Lay"),
+    PULL("Pulled"),
+    NOT_PULL("Not Pulled"),
+    BOUNCE("Not Bounced"),
+    NOT_BOUNCE("Not Bounced"),
+    KISS("Kissed"),
+    NOT_KISS("Not Kissed"),
+    LAY("Laid"),
+    NOT_LAY("Lay"),
     RECORDED("Recorded"),
+    NOT_RECORDED("Recorded"),
     DAY_OF_WEEK("Day of Week");
 
     override fun getField(): String {
