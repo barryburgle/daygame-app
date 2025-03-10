@@ -7,9 +7,11 @@ import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.automirrored.outlined.TrendingUp
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.EditNote
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -33,6 +35,8 @@ import androidx.navigation.compose.rememberNavController
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.event.ToolEvent
+import com.barryburgle.gameapp.ui.date.DateScreen
+import com.barryburgle.gameapp.ui.date.state.DateState
 import com.barryburgle.gameapp.ui.input.InputScreen
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.output.OutputScreen
@@ -48,6 +52,7 @@ import com.barryburgle.gameapp.ui.tool.state.ToolsState
 fun Navigation(
     inputState: InputState,
     outputState: OutputState,
+    dateState: DateState,
     statsState: StatsState,
     toolState: ToolsState,
     inputOnEvent: (AbstractSessionEvent) -> Unit,
@@ -70,14 +75,13 @@ fun Navigation(
             hasNews = false,
             destinationScreen = Screen.OutputScreen.route
         ),
-        // TODO: implement dates screen and functionalities
-        /*BottomNavigationItem(
+        BottomNavigationItem(
             title = "Dates",
             selectedIcon = Icons.Filled.Favorite,
-            unselectedIcon = Icons.Outlined.Favorite,
+            unselectedIcon = Icons.Outlined.FavoriteBorder,
             hasNews = false,
             destinationScreen = Screen.OutputScreen.route
-        ),*/
+        ),
         BottomNavigationItem(
             title = "Results",
             selectedIcon = Icons.Filled.Check,
@@ -139,7 +143,6 @@ fun Navigation(
                             }
                         })
                 }
-                val pippo = false
             }
         }
     ) { padding ->
@@ -160,6 +163,14 @@ fun Navigation(
                 OutputScreen(
                     state = outputState,
                     onEvent = outputOnEvent,
+                    spaceFromLeft = spaceFromLeft,
+                    spaceFromTop = spaceFromTop,
+                    spaceFromBottom = spaceFromBottom
+                )
+            }
+            composable(Screen.DateScreen.route) {
+                DateScreen(
+                    state = dateState,
                     spaceFromLeft = spaceFromLeft,
                     spaceFromTop = spaceFromTop,
                     spaceFromBottom = spaceFromBottom
