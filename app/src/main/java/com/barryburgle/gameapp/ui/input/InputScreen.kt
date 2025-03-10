@@ -32,6 +32,7 @@ import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
+import com.barryburgle.gameapp.ui.utilities.ScrollableSorter
 import com.barryburgle.gameapp.ui.utilities.SelectionRow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,29 +85,16 @@ fun InputScreen(
             verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
         ) {
             item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState()),
-                    verticalAlignment = Alignment.CenterVertically,
+                ScrollableSorter(
+                    spaceFromLeft
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.background)
-                            .width(spaceFromLeft)
-                    ) {}
                     SortType.values().forEach { sortType ->
-                        SelectionRow(
-                            state.sortType,
-                            sortType,
-                            onEvent as (GenericEvent) -> Unit
-                        )
+                        state.sortType?.let {
+                            SelectionRow(
+                                it, sortType, onEvent as (GenericEvent) -> Unit
+                            )
+                        }
                     }
-                    Row(
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.background)
-                            .width(spaceFromLeft - 7.dp)
-                    ) {}
                 }
             }
             items(state.abstractSessions) { abstractSession ->
