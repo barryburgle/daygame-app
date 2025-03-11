@@ -1,5 +1,7 @@
 package com.barryburgle.gameapp.ui.date
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +17,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.WineBar
+import androidx.compose.material.icons.filled.Euro
+import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,12 +29,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.DateEvent
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.DateType
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.leadName
+import com.barryburgle.gameapp.ui.theme.AlertHigh
+import com.barryburgle.gameapp.ui.theme.AlertLow
+import java.util.Locale
 
 @ExperimentalMaterial3Api
 @Composable
@@ -41,7 +54,6 @@ fun DateCard(
     onEvent: (DateEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val descriptionFontSize = 10.sp
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
@@ -65,102 +77,172 @@ fun DateCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth(0.71f)
+                                .padding(7.dp)
                         ) {
-                            // TODO: date entity should possess also date type enum field to track wine/drink/coffee/walk/restaurant/experience types
-                            Icon(
-                                imageVector = Icons.Default.WineBar,
-                                contentDescription = "Date",
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier
-                                    .height(25.dp)
-                            )
-                            Spacer(modifier = Modifier.width(7.dp))
-                            val title =
-                                if (date.dateNumber == 0L) "iDate" else "Date ${date.dateNumber}"
-                            Text(
-                                text = "$title with ${lead.name}",
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        }
-                        Row(
-                            modifier = Modifier.width(100.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .background(
-                                        MaterialTheme.colorScheme.primaryContainer,
-                                        shape = RoundedCornerShape(50.dp)
-                                    )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                IconButton(onClick = {
-                                    onEvent(
-                                        DateEvent.DeleteDate(
-                                            date
+                                Icon(
+                                    imageVector = DateType.getIcon(date.dateType),
+                                    contentDescription = date.dateType,
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier
+                                        .height(25.dp)
+                                )
+                                Spacer(modifier = Modifier.width(7.dp))
+                                Text(
+                                    text = "${FormatService.getDate(date.date!!)} ${date.dateType.replaceFirstChar { it.uppercase() }}",
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                            }
+                            // TODO: integrate in the following subtitle day of week from date and minutes
+                            var subtitle =
+                                "${
+                                    FormatService.parseDate(date.date!!).dayOfWeek.toString()
+                                        .lowercase()
+                                        .replaceFirstChar {
+                                            if (it.isLowerCase()) it.titlecase(
+                                                Locale.getDefault()
+                                            ) else it.toString()
+                                        }
+                                } ${
+                                    FormatService.getTime(
+                                        date.startTime!!
+                                    )
+                                } to ${
+                                    FormatService.getTime(
+                                        date.endTime!!
+                                    )
+                                }"
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Text(
+                                // TODO: convert date to integer inside week and then day of week
+                                // TODO: compute minutes before filling date list
+                                text = subtitle,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                            Spacer(modifier = Modifier.height(15.dp))
+                            Row {
+                                Icon(
+                                    imageVector = Icons.Default.PinDrop,
+                                    contentDescription = "Location",
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier
+                                        .height(18.dp)
+                                )
+                                Text(
+                                    text = date.location!!,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(15.dp))
+                            Row {
+                                Icon(
+                                    imageVector = Icons.Default.Euro,
+                                    contentDescription = "Cost",
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier
+                                        .height(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(5.dp))
+                                Text(
+                                    text = date.cost.toString(),
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .background(
+                                            MaterialTheme.colorScheme.primaryContainer,
+                                            shape = RoundedCornerShape(50.dp)
                                         )
-                                    )
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Delete,
-                                        contentDescription = "Delete Date",
-                                        tint = MaterialTheme.colorScheme.onErrorContainer
-                                    )
+                                ) {
+                                    IconButton(onClick = {
+                                        onEvent(
+                                            DateEvent.DeleteDate(
+                                                date
+                                            )
+                                        )
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.Default.Delete,
+                                            contentDescription = "Delete Date",
+                                            tint = MaterialTheme.colorScheme.onErrorContainer
+                                        )
+                                    }
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .background(
+                                            MaterialTheme.colorScheme.primaryContainer,
+                                            shape = RoundedCornerShape(30.dp)
+                                        )
+                                ) {
+                                    IconButton(onClick = {
+                                        onEvent(
+                                            DateEvent.EditDate(
+                                                date
+                                            )
+                                        )
+                                        onEvent(
+                                            DateEvent.ShowDialog(false, true)
+                                        )
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.Default.Edit,
+                                            contentDescription = "Edit Date",
+                                            tint = MaterialTheme.colorScheme.inversePrimary,
+                                            modifier = Modifier
+                                                .height(20.dp)
+                                        )
+                                    }
                                 }
                             }
-                            Column(
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(
                                 modifier = Modifier
-                                    .background(
-                                        MaterialTheme.colorScheme.primaryContainer,
-                                        shape = RoundedCornerShape(30.dp)
-                                    )
-                            ) {
-                                IconButton(onClick = {
-                                    onEvent(
-                                        DateEvent.EditDate(
-                                            date
+                                    .clickable {
+                                        // TODO: call edit lead dialog
+                                        onEvent(
+                                            DateEvent.EditLead(
+                                                lead,
+                                                true
+                                            )
                                         )
-                                    )
-                                    onEvent(
-                                        DateEvent.ShowDialog(false, true)
-                                    )
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Edit,
-                                        contentDescription = "Edit Date",
-                                        tint = MaterialTheme.colorScheme.inversePrimary,
-                                        modifier = Modifier
-                                            .height(20.dp)
-                                    )
-                                }
+                                        /*onEvent(
+                                        DateEvent.ShowLeadDialog(
+                                            false,
+                                            false,
+                                            true
+                                        )
+                                    )*/
+                                    }
+                            ) {
+                                leadName(
+                                    lead = lead,
+                                    backgroundColor = MaterialTheme.colorScheme.background,
+                                    outputShow = false,
+                                    cardShow = true
+                                )
                             }
                         }
                     }
-                    val weekday =
-                        "Monday"/*DayOfWeek.of(date.date/*)*/.toString().lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() */
-                    val subtitle =
-                        "On Monday ${date.date} from ${date.startTime} to ${date.endTime}"/*"On $weekday ${
-    FormatService.getDate(
-        date.date!!
-    )
-} from ${
-    if (date.startTime.isNullOrBlank()) "00:00" else FormatService.getTime(
-        date.startTime!!
-    )
-} to ${
-    if (date.endTime.isNullOrBlank()) "00:00" else FormatService.getTime(
-        date.endTime!!
-    )
-} : [compute minutes] minutes"*/
-                    Text(
-                        // TODO: convert date to integer inside week and then day of week
-                        // TODO: compute minutes before filling date list
-                        text = subtitle,
-                        style = MaterialTheme.typography.bodySmall
-                    )
                 }
                 Row(
                     modifier = Modifier
@@ -179,58 +261,17 @@ fun DateCard(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .fillMaxHeight()
-                                    .padding(7.dp)
-                            ) {
-                                Text(
-                                    text = "Lead:",
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                                Spacer(modifier = Modifier.height(5.dp))
-                                Row(
-                                    modifier = Modifier.clickable {
-                                        onEvent(
-                                            DateEvent.EditLead(
-                                                lead,
-                                                true
-                                            )
-                                        )
-                                        /*onEvent(
-                                            DateEvent.ShowLeadDialog(
-                                                false,
-                                                false,
-                                                true
-                                            )
-                                        )*/
-                                    },
-                                    horizontalArrangement = Arrangement.spacedBy(7.dp)
-                                ) {
-                                    leadName(
-                                        lead = lead,
-                                        backgroundColor = MaterialTheme.colorScheme.background,
-                                        outputShow = false,
-                                        cardShow = true
-                                    )
-                                }
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(5.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            modifier = Modifier.fillMaxHeight()
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight()
-                                    .padding(7.dp)
                             ) {
                                 Row(
+                                    verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.SpaceEvenly,
-                                    modifier = Modifier.fillMaxHeight()
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .fillMaxWidth()
                                 ) {
                                     Column(
                                         modifier = Modifier
-                                            .fillMaxWidth()
+                                            .fillMaxWidth(0.8f)
                                             .fillMaxHeight()
                                             .background(
                                                 color = MaterialTheme.colorScheme.background,
@@ -252,6 +293,43 @@ fun DateCard(
                                             )
                                         }
                                     }
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .padding(7.dp)
+                                    ) {
+                                        var largeDateNumberText = date.dateNumber.toString()
+                                        var largeDateNumberTextStyle: TextStyle =
+                                            MaterialTheme.typography.titleLarge
+                                        if (date.dateNumber != 0L) {
+                                            Text(
+                                                text = "Date:",
+                                                style = MaterialTheme.typography.bodySmall
+                                            )
+                                            Spacer(modifier = Modifier.height(5.dp))
+                                        } else {
+                                            largeDateNumberText = "iDate"
+                                            largeDateNumberTextStyle =
+                                                MaterialTheme.typography.titleMedium
+                                        }
+                                        Text(
+                                            text = largeDateNumberText,
+                                            style = largeDateNumberTextStyle
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(15.dp))
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceAround
+                                ) {
+                                    describedIcon("Pull", R.drawable.pull_w, date.pull)
+                                    describedIcon("Bounce", R.drawable.bounce_w, date.bounce)
+                                    describedIcon("Kiss", R.drawable.kiss_w, date.kiss)
+                                    describedIcon("Lay", R.drawable.bed_w, date.lay)
+                                    describedIcon("Record", R.drawable.microphone_w, date.recorded)
                                 }
                             }
                         }
@@ -259,5 +337,28 @@ fun DateCard(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun describedIcon(flagDescription: String, @DrawableRes icon: Int, happened: Boolean) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        var color: Color = AlertLow
+        if (!happened) {
+            color = AlertHigh
+        }
+        Image(
+            painter = painterResource(icon),
+            contentDescription = flagDescription,
+            alignment = Alignment.Center,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .height(20.dp),
+            colorFilter = ColorFilter.tint(color)
+        )
+        Text(
+            text = flagDescription,
+            style = MaterialTheme.typography.bodySmall
+        )
     }
 }
