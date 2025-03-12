@@ -1,32 +1,7 @@
 package com.barryburgle.gameapp.service
 
-import java.math.BigDecimal
-import java.math.RoundingMode
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.Month
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
-import java.time.temporal.WeekFields
-import java.util.Locale
-
-open class AbstractSessionService {
+open class AbstractSessionService : EntityService() {
     companion object {
-        val DATE_SUFFIX = "T00:00:00.000+00"
-        val TIME_SUFFIX = ":00.000+00"
-        val SEPARATOR = "T"
-        val savingFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
-        val roundingMode: RoundingMode = RoundingMode.HALF_UP
-        val scale: Int = 3
-
-        fun computeSessionTime(
-            startHour: LocalTime,
-            endHour: LocalTime
-        ): Long {
-            return startHour.until(endHour, ChronoUnit.MINUTES)
-        }
-
         fun computeApproachTime(
             sessionTime: Long,
             sets: Int
@@ -70,30 +45,11 @@ open class AbstractSessionService {
             return round(contactRatio)
         }
 
-        fun computeDayOfWeek(
-            date: LocalDate
-        ): DayOfWeek {
-            return date.dayOfWeek
-        }
-
         fun computeIndex(sets: Int, convos: Int, contacts: Int, sessionTime: Long): Double {
             // TODO: create method for formula change
             val index = if (sessionTime == 0L) 0.0 else
                 (sets.toDouble() * (12 * sets + 20 * convos + 30 * contacts).toDouble() / sessionTime.toDouble())
             return round(index)
-        }
-
-        fun computeWeekOfYear(date: LocalDate): Int {
-            val weekFields: WeekFields = WeekFields.of(Locale.getDefault())
-            return date.get(weekFields.weekOfWeekBasedYear())
-        }
-
-        fun computeMonthOfYear(date: LocalDate): Month {
-            return date.month
-        }
-
-        private fun round(toRound: Double): Double {
-            return BigDecimal(toRound).setScale(scale, roundingMode).toDouble()
         }
     }
 }
