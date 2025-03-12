@@ -20,9 +20,4 @@ class EntityServiceTest : SessionServiceTestUtils() {
     fun computeWeekOfYearTest() {
         assertEquals(WEEK_NUMBER, EntityService.computeWeekOfYear(DATE))
     }
-
-    @Test
-    fun computeMonthOfYearTest() {
-        assertEquals(Month.SEPTEMBER, EntityService.computeMonthOfYear(DATE))
-    }
 }

@@ -42,12 +42,6 @@ open class EntityService {
         }
 
         @JvmStatic
-        fun computeMonthOfYear(date: LocalDate): Month {
-            // TODO: keep (and use it) or remove?
-            return date.month
-        }
-
-        @JvmStatic
         protected fun round(toRound: Double): Double {
             return BigDecimal(toRound).setScale(scale, roundingMode).toDouble()
         }
