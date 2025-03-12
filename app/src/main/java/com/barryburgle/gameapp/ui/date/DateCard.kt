@@ -79,167 +79,186 @@ fun DateCard(
                     ) {
                         Column(
                             modifier = Modifier
-                                .fillMaxWidth(0.71f)
-                                .padding(7.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Icon(
-                                    imageVector = DateType.getIcon(date.dateType),
-                                    contentDescription = date.dateType,
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier
-                                        .height(25.dp)
-                                )
-                                Spacer(modifier = Modifier.width(7.dp))
-                                Text(
-                                    text = "${FormatService.getDate(date.date!!)} ${date.dateType.replaceFirstChar { it.uppercase() }}",
-                                    style = MaterialTheme.typography.titleLarge
-                                )
-                            }
-                            // TODO: integrate in the following subtitle day of week from date and minutes
-                            var subtitle =
-                                "${
-                                    FormatService.parseDate(date.date!!).dayOfWeek.toString()
-                                        .lowercase()
-                                        .replaceFirstChar {
-                                            if (it.isLowerCase()) it.titlecase(
-                                                Locale.getDefault()
-                                            ) else it.toString()
-                                        }
-                                } ${
-                                    FormatService.getTime(
-                                        date.startTime!!
-                                    )
-                                } to ${
-                                    FormatService.getTime(
-                                        date.endTime!!
-                                    )
-                                }"
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Text(
-                                // TODO: convert date to integer inside week and then day of week
-                                // TODO: compute minutes before filling date list
-                                text = subtitle,
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                            Spacer(modifier = Modifier.height(15.dp))
-                            Row {
-                                Icon(
-                                    imageVector = Icons.Default.PinDrop,
-                                    contentDescription = "Location",
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier
-                                        .height(18.dp)
-                                )
-                                Text(
-                                    text = date.location!!,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(15.dp))
-                            Row {
-                                Icon(
-                                    imageVector = Icons.Default.Euro,
-                                    contentDescription = "Cost",
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier
-                                        .height(18.dp)
-                                )
-                                Spacer(modifier = Modifier.width(5.dp))
-                                Text(
-                                    text = date.cost.toString(),
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
                                 .fillMaxWidth()
+                                .padding(7.dp)
                         ) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Column(
+                                Row(
                                     modifier = Modifier
-                                        .background(
-                                            MaterialTheme.colorScheme.primaryContainer,
-                                            shape = RoundedCornerShape(50.dp)
-                                        )
+                                        .fillMaxWidth(0.6f),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    IconButton(onClick = {
-                                        onEvent(
-                                            DateEvent.DeleteDate(
-                                                date
-                                            )
-                                        )
-                                    }) {
-                                        Icon(
-                                            imageVector = Icons.Default.Delete,
-                                            contentDescription = "Delete Date",
-                                            tint = MaterialTheme.colorScheme.onErrorContainer
-                                        )
-                                    }
+                                    Icon(
+                                        imageVector = DateType.getIcon(date.dateType),
+                                        contentDescription = date.dateType,
+                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                        modifier = Modifier
+                                            .height(25.dp)
+                                    )
+                                    Text(
+                                        text = "${FormatService.getDate(date.date!!)} ${date.dateType.replaceFirstChar { it.uppercase() }}",
+                                        style = MaterialTheme.typography.titleLarge
+                                    )
                                 }
-                                Column(
-                                    modifier = Modifier
-                                        .background(
-                                            MaterialTheme.colorScheme.primaryContainer,
-                                            shape = RoundedCornerShape(30.dp)
-                                        )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    IconButton(onClick = {
-                                        onEvent(
-                                            DateEvent.EditDate(
-                                                date
+                                    Column(
+                                        modifier = Modifier
+                                            .background(
+                                                MaterialTheme.colorScheme.primaryContainer,
+                                                shape = RoundedCornerShape(50.dp)
                                             )
-                                        )
-                                        onEvent(
-                                            DateEvent.ShowDialog(false, true)
-                                        )
-                                    }) {
-                                        Icon(
-                                            imageVector = Icons.Default.Edit,
-                                            contentDescription = "Edit Date",
-                                            tint = MaterialTheme.colorScheme.inversePrimary,
-                                            modifier = Modifier
-                                                .height(20.dp)
-                                        )
+                                    ) {
+                                        IconButton(onClick = {
+                                            onEvent(
+                                                DateEvent.DeleteDate(
+                                                    date
+                                                )
+                                            )
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Delete,
+                                                contentDescription = "Delete Date",
+                                                tint = MaterialTheme.colorScheme.onErrorContainer
+                                            )
+                                        }
+                                    }
+                                    Column(
+                                        modifier = Modifier
+                                            .background(
+                                                MaterialTheme.colorScheme.primaryContainer,
+                                                shape = RoundedCornerShape(30.dp)
+                                            )
+                                    ) {
+                                        IconButton(onClick = {
+                                            onEvent(
+                                                DateEvent.EditDate(
+                                                    date
+                                                )
+                                            )
+                                            onEvent(
+                                                DateEvent.ShowDialog(false, true)
+                                            )
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Edit,
+                                                contentDescription = "Edit Date",
+                                                tint = MaterialTheme.colorScheme.inversePrimary,
+                                                modifier = Modifier
+                                                    .height(20.dp)
+                                            )
+                                        }
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
                             Row(
                                 modifier = Modifier
-                                    .clickable {
-                                        // TODO: call edit lead dialog
-                                        onEvent(
-                                            DateEvent.EditLead(
-                                                lead,
-                                                true
-                                            )
-                                        )
-                                        /*onEvent(
-                                        DateEvent.ShowLeadDialog(
-                                            false,
-                                            false,
-                                            true
-                                        )
-                                    )*/
-                                    }
+                                    .fillMaxWidth(0.7f),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                leadName(
-                                    lead = lead,
-                                    backgroundColor = MaterialTheme.colorScheme.background,
-                                    outputShow = false,
-                                    cardShow = true
-                                )
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.7f)
+                                ) {
+                                    // TODO: integrate in the following subtitle minutes
+                                    var subtitle =
+                                        "${
+                                            FormatService.parseDate(date.date!!).dayOfWeek.toString()
+                                                .lowercase()
+                                                .replaceFirstChar {
+                                                    if (it.isLowerCase()) it.titlecase(
+                                                        Locale.getDefault()
+                                                    ) else it.toString()
+                                                }
+                                        } ${
+                                            FormatService.getTime(
+                                                date.startTime!!
+                                            )
+                                        } to ${
+                                            FormatService.getTime(
+                                                date.endTime!!
+                                            )
+                                        }"
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    Row {
+                                        Text(
+                                            // TODO: convert date to integer inside week and then day of week
+                                            // TODO: compute minutes before filling date list
+                                            text = subtitle,
+                                            style = MaterialTheme.typography.bodySmall
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(15.dp))
+                                    Row {
+                                        Icon(
+                                            imageVector = Icons.Default.PinDrop,
+                                            contentDescription = "Location",
+                                            tint = MaterialTheme.colorScheme.onPrimary,
+                                            modifier = Modifier
+                                                .height(18.dp)
+                                        )
+                                        Text(
+                                            text = date.location!!,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(15.dp))
+                                    Row {
+                                        Icon(
+                                            imageVector = Icons.Default.Euro,
+                                            contentDescription = "Cost",
+                                            tint = MaterialTheme.colorScheme.onPrimary,
+                                            modifier = Modifier
+                                                .height(18.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(5.dp))
+                                        Text(
+                                            text = date.cost.toString(),
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
+                                }
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    verticalArrangement = Arrangement.SpaceAround,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .clickable {
+                                                // TODO: call edit lead dialog
+                                                onEvent(
+                                                    DateEvent.EditLead(
+                                                        lead,
+                                                        true
+                                                    )
+                                                )
+                                                /*onEvent(
+                                                DateEvent.ShowLeadDialog(
+                                                    false,
+                                                    false,
+                                                    true
+                                                )
+                                            )*/
+                                            }
+                                    ) {
+                                        leadName(
+                                            lead = lead,
+                                            backgroundColor = MaterialTheme.colorScheme.background,
+                                            outputShow = false,
+                                            cardShow = true
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
