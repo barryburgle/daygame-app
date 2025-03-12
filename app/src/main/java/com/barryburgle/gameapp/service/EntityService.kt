@@ -4,8 +4,8 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.Month
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.time.temporal.WeekFields
@@ -44,6 +44,15 @@ open class EntityService {
         @JvmStatic
         protected fun round(toRound: Double): Double {
             return BigDecimal(toRound).setScale(scale, roundingMode).toDouble()
+        }
+
+        @JvmStatic
+        protected fun getLocalDateTimeNow(last: Int, suffix: String): LocalDateTime {
+            val localDateTime = LocalDateTime.now()
+            return LocalDateTime.parse(
+                localDateTime.toString().dropLast(last) + suffix,
+                savingFormatter
+            )
         }
     }
 }

@@ -82,12 +82,4 @@ class BatchSessionService : BatchSessionInitializer, AbstractSessionService() {
             weekOfYear
         )
     }
-
-    private fun getLocalDateTimeNow(last: Int, suffix: String): LocalDateTime {
-        val localDateTime = LocalDateTime.now()
-        return LocalDateTime.parse(
-            localDateTime.toString().dropLast(last) + suffix,
-            savingFormatter
-        )
-    }
 }
