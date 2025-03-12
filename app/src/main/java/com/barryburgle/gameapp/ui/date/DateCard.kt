@@ -180,11 +180,11 @@ fun DateCard(
                                                 }
                                         } ${
                                             FormatService.getTime(
-                                                date.startTime!!
+                                                date.startHour!!
                                             )
                                         } to ${
                                             FormatService.getTime(
-                                                date.endTime!!
+                                                date.endHour!!
                                             )
                                         }"
                                     Spacer(modifier = Modifier.height(10.dp))
@@ -321,7 +321,7 @@ fun DateCard(
                                         var largeDateNumberText = date.dateNumber.toString()
                                         var largeDateNumberTextStyle: TextStyle =
                                             MaterialTheme.typography.titleLarge
-                                        if (date.dateNumber != 0L) {
+                                        if (date.dateNumber != 0) {
                                             Text(
                                                 text = "Date:",
                                                 style = MaterialTheme.typography.bodySmall
