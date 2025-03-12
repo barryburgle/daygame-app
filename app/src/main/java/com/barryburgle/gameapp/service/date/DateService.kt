@@ -12,7 +12,7 @@ class DateService : DateInitializer, EntityService() {
     // TODO: unit test the following method
     override fun init(
         id: String?,
-        leadId: String?,
+        leadId: Long,
         location: String,
         date: String,
         startHour: String,
@@ -29,7 +29,6 @@ class DateService : DateInitializer, EntityService() {
         tweetUrl: String
     ): Date {
         val id: Long? = if (id.isNullOrBlank()) null else id.toLong()
-        val leadId: Long? = if (leadId.isNullOrBlank()) null else leadId.toLong()
         val parsedDate = if (date.isBlank()) getLocalDateTimeNow(15, "00:00:00.000Z") else
             LocalDateTime.parse(date + DATE_SUFFIX, savingFormatter)
         val parsedStartHour =

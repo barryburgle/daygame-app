@@ -5,7 +5,7 @@ import com.barryburgle.gameapp.model.date.Date
 interface DateInitializer {
     fun init(
         id: String?,
-        leadId: String?,
+        leadId: Long,
         location: String,
         date: String,
         startHour: String,
