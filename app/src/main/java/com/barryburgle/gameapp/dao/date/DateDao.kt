@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface DateDao {
 
     @Insert(onConflict = REPLACE)
-    suspend fun insert(date: Date)
+    suspend fun insert(date: Date): Long
 
     @Delete
     suspend fun delete(date: Date)
@@ -26,11 +26,11 @@ interface DateDao {
     @Query("SELECT * from meeting ORDER BY location DESC, meeting_date DESC")
     fun getByLocation(): Flow<List<Date>>
 
-    @Query("SELECT * from meeting ORDER BY start_time DESC, meeting_date DESC")
-    fun getByStartTime(): Flow<List<Date>>
+    @Query("SELECT * from meeting ORDER BY start_hour DESC, meeting_date DESC")
+    fun getByStartHour(): Flow<List<Date>>
 
-    @Query("SELECT * from meeting ORDER BY end_time DESC, meeting_date DESC")
-    fun getByEndTime(): Flow<List<Date>>
+    @Query("SELECT * from meeting ORDER BY end_hour DESC, meeting_date DESC")
+    fun getByEndHour(): Flow<List<Date>>
 
     @Query("SELECT * from meeting ORDER BY cost DESC, meeting_date DESC")
     fun getByCost(): Flow<List<Date>>
