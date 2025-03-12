@@ -1,7 +1,6 @@
 package com.barryburgle.gameapp.service.batch
 
 import com.barryburgle.gameapp.model.session.AbstractSession
-import com.barryburgle.gameapp.model.session.BatchSession
 import com.barryburgle.gameapp.service.AbstractSessionService
 import java.time.DayOfWeek
 import java.time.LocalDateTime
@@ -33,7 +32,7 @@ class BatchSessionService : BatchSessionInitializer, AbstractSessionService() {
         val parsedSets: Int = if (sets.isBlank()) 0 else sets.toInt()
         val parsedConvos: Int = if (convos.isBlank()) 0 else convos.toInt()
         val parsedContacts: Int = if (contacts.isBlank()) 0 else contacts.toInt()
-        val sessionTime: Long = computeSessionTime(
+        val sessionTime: Long = computeTime(
             parsedStartHour.toLocalTime(),
             parsedEndHour.toLocalTime()
         )

@@ -90,8 +90,7 @@ class SessionManagerTest {
     }
 
     private fun doComputeMovingAverageLastNTest(
-        window: Int,
-        expectedMovingAverage: List<BarEntry>
+        window: Int, expectedMovingAverage: List<BarEntry>
     ) {
         val movingAverageBarEntryList: List<BarEntry> =
             SessionManager.computeMovingAverage(createBarEntryList(), window)
@@ -113,6 +112,7 @@ class SessionManagerTest {
     private fun createSessions(): Array<AbstractSession> {
         return arrayOf(
             batchSessionService.init(
+                null,
                 DATE.toString(),
                 START_HOUR.toString(),
                 END_HOUR.toString(),
@@ -120,8 +120,8 @@ class SessionManagerTest {
                 CONVOS_1.toString(),
                 CONTACTS_1.toString(),
                 STICKING_POINTS
-            ),
-            batchSessionService.init(
+            ), batchSessionService.init(
+                null,
                 DATE.toString(),
                 START_HOUR.toString(),
                 END_HOUR.toString(),
@@ -129,8 +129,8 @@ class SessionManagerTest {
                 CONVOS_2.toString(),
                 CONTACTS_2.toString(),
                 STICKING_POINTS
-            ),
-            batchSessionService.init(
+            ), batchSessionService.init(
+                null,
                 DATE.toString(),
                 START_HOUR.toString(),
                 END_HOUR.toString(),
@@ -138,8 +138,8 @@ class SessionManagerTest {
                 CONVOS_3.toString(),
                 CONTACTS_3.toString(),
                 STICKING_POINTS
-            ),
-            batchSessionService.init(
+            ), batchSessionService.init(
+                null,
                 DATE.toString(),
                 START_HOUR.toString(),
                 END_HOUR.toString(),
@@ -154,6 +154,7 @@ class SessionManagerTest {
     private fun createSessionList(): List<AbstractSession> {
         return listOf(
             batchSessionService.init(
+                null,
                 DATE.toString(),
                 START_HOUR.toString(),
                 END_HOUR.toString(),
@@ -161,8 +162,8 @@ class SessionManagerTest {
                 CONVOS_1.toString(),
                 CONTACTS_1.toString(),
                 STICKING_POINTS
-            ),
-            batchSessionService.init(
+            ), batchSessionService.init(
+                null,
                 DATE.toString(),
                 START_HOUR.toString(),
                 END_HOUR.toString(),

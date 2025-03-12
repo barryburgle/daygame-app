@@ -13,6 +13,7 @@ class BatchSessionServiceTest : SessionServiceTestUtils() {
     @Test
     fun initTest() {
         val batchSession: AbstractSession = batchSessionService.init(
+            null,
             DATE.toString(),
             START_HOUR.toString(),
             END_HOUR.toString(),
