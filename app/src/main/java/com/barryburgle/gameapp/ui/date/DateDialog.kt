@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.DateEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
+import com.barryburgle.gameapp.model.enums.DateType
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.date.state.DateState
 import com.barryburgle.gameapp.ui.input.InputCounter
@@ -68,7 +70,8 @@ fun DateDialog(
     val dateDialogState = rememberMaterialDialogState()
     val startHourDialogState = rememberMaterialDialogState()
     val endHourDialogState = rememberMaterialDialogState()
-    var expanded by remember { mutableStateOf(false) }
+    var leadsExpanded by remember { mutableStateOf(false) }
+    var dateTypesExpanded by remember { mutableStateOf(false) }
     // TODO: unify across all dialogs
     val descriptionFontSize = 13.sp
     val sessionTimeColumnWidth = 130.dp
@@ -212,7 +215,7 @@ fun DateDialog(
                             modifier = Modifier.width(addLeadColumnWidth)
                         ) {
                             IconButton(onClick = {
-                                expanded = true
+                                leadsExpanded = true
                             }) {
                                 Icon(
                                     imageVector = leadIcon,
@@ -231,15 +234,15 @@ fun DateDialog(
                             modifier = Modifier
                                 .width(200.dp)
                                 .height(450.dp),
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
+                            expanded = leadsExpanded,
+                            onDismissRequest = { leadsExpanded = false }
                         ) {
                             state.allLeads.forEach { lead ->
                                 DropdownMenuItem(
                                     text = { Text(text = CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age) },
                                     onClick = {
                                         onEvent(DateEvent.SetLeadId(lead.id))
-                                        expanded = false
+                                        leadsExpanded = false
                                     }
                                 )
                             }
@@ -266,75 +269,103 @@ fun DateDialog(
                         getButtonTitle(state.endHour, "End ", "End Hour"), endHourDialogState
                     )
                 }
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Spacer(modifier = Modifier.height(7.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        ToggleIcon(
-                            "pull",
-                            state.pull,
-                            R.drawable.pull_b
+                Spacer(modifier = Modifier.width(5.dp))
+                Column {
+                    Button(colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    ), onClick = { dateTypesExpanded = true }) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceAround,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            onEvent(DateEvent.SwitchPull)
-                        }
-                        ToggleIcon(
-                            "bounce",
-                            state.bounce,
-                            R.drawable.bounce_b
-                        ) {
-                            onEvent(DateEvent.SwitchBounce)
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(7.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        ToggleIcon(
-                            "kiss",
-                            state.kiss,
-                            R.drawable.kiss_b
-                        ) {
-                            onEvent(DateEvent.SwitchKiss)
-                        }
-                        ToggleIcon(
-                            "lay",
-                            state.lay,
-                            R.drawable.bed_b
-                        ) {
-                            onEvent(DateEvent.SwitchLay)
+                            if (!state.dateType.isBlank()) {
+                                Icon(
+                                    imageVector = DateType.getIcon(state.dateType),
+                                    contentDescription = state.dateType,
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier
+                                        .height(15.dp)
+                                )
+                            }
+                            Text(
+                                text = if (state.dateType.isBlank()) "Date type" else state.dateType.replaceFirstChar { it.uppercase() },
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.fillMaxWidth()
+                            )
                         }
                     }
-                    Spacer(modifier = Modifier.height(7.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround
+                    DropdownMenu(
+                        modifier = Modifier
+                            .width(175.dp)
+                            .height(280.dp),
+                        expanded = dateTypesExpanded,
+                        onDismissRequest = { dateTypesExpanded = false }
                     ) {
-                        ToggleIcon(
-                            "record",
-                            state.recorded,
-                            R.drawable.microphone_b
-                        ) {
-                            onEvent(DateEvent.SwitchRecorded)
+                        DateType.values().forEach { dateType ->
+                            DropdownMenuItem(
+                                text = {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceAround,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Icon(
+                                            imageVector = DateType.getIcon(dateType.getType()),
+                                            contentDescription = state.dateType,
+                                            tint = MaterialTheme.colorScheme.onPrimary,
+                                            modifier = Modifier
+                                                .height(15.dp)
+                                        )
+                                        Text(
+                                            text = dateType.getType()
+                                                .replaceFirstChar { it.uppercase() })
+                                    }
+                                },
+                                onClick = {
+                                    onEvent(DateEvent.SetDateType(dateType.getType()))
+                                    dateTypesExpanded = false
+                                }
+                            )
                         }
-                        //TODO: set the following to copy and import the following the tweet link (validating it, verifying it starts by https...)
-                        ToggleIcon(
-                            "lay",
-                            state.lay,
-                            R.drawable.bed_b
+                    }
+                    Button(colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    ), onClick = { /*TODO: show enum values*/ }) {
+                        Text(
+                            text = "Location",
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    Button(colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    ), onClick = { /*TODO: copy the url in clipboard*/ }) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            onEvent(DateEvent.SwitchLay)
+                            Icon(
+                                imageVector = Icons.Default.ContentPaste,
+                                contentDescription = state.dateType,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier
+                                    .height(15.dp)
+                            )
+                            Text(
+                                text = "Tweet Url",
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.fillMaxWidth()
+                            )
                         }
                     }
                 }
             }
             Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround
             ) {
                 InputDateCountComponent(
                     inputTitle = "Date Number",
@@ -352,6 +383,53 @@ fun DateDialog(
                     countStart = if (state.isAddingDate) 0 else state.editDate?.cost,
                     saveEvent = DateEvent::SetCost
                 )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                ToggleIcon(
+                    "pull",
+                    state.pull,
+                    R.drawable.pull_b
+                ) {
+                    onEvent(DateEvent.SwitchPull)
+                }
+                ToggleIcon(
+                    "bounce",
+                    state.bounce,
+                    R.drawable.bounce_b
+                ) {
+                    onEvent(DateEvent.SwitchBounce)
+                }
+                ToggleIcon(
+                    "kiss",
+                    state.kiss,
+                    R.drawable.kiss_b
+                ) {
+                    onEvent(DateEvent.SwitchKiss)
+                }
+                ToggleIcon(
+                    "lay",
+                    state.lay,
+                    R.drawable.bed_b
+                ) {
+                    onEvent(DateEvent.SwitchLay)
+                }
+                ToggleIcon(
+                    "record",
+                    state.recorded,
+                    R.drawable.microphone_b
+                ) {
+                    onEvent(DateEvent.SwitchRecorded)
+                }
+                //TODO: set the following to copy and import the following the tweet link (validating it, verifying it starts by https...)
+                /*ToggleIcon(
+                    "lay",
+                    state.lay,
+                    R.drawable.bed_b
+                ) {
+                    onEvent(DateEvent.SwitchLay)
+                }*/
             }
             OutlinedTextField(
                 value = state.stickingPoints,
