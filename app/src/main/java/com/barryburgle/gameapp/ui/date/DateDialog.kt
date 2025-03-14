@@ -1,21 +1,15 @@
 package com.barryburgle.gameapp.ui.date
 
 import android.widget.Toast
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
@@ -37,11 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,6 +44,7 @@ import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.date.state.DateState
 import com.barryburgle.gameapp.ui.input.InputCounter
+import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
@@ -270,21 +261,20 @@ fun DateDialog(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.Green),
-                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
+                    Spacer(modifier = Modifier.height(7.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        toggleIcon(
+                        ToggleIcon(
                             "pull",
                             state.pull,
                             R.drawable.pull_b
                         ) {
                             onEvent(DateEvent.SwitchPull)
                         }
-                        toggleIcon(
+                        ToggleIcon(
                             "bounce",
                             state.bounce,
                             R.drawable.bounce_b
@@ -292,18 +282,19 @@ fun DateDialog(
                             onEvent(DateEvent.SwitchBounce)
                         }
                     }
+                    Spacer(modifier = Modifier.height(7.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        toggleIcon(
+                        ToggleIcon(
                             "kiss",
                             state.kiss,
                             R.drawable.kiss_b
                         ) {
                             onEvent(DateEvent.SwitchKiss)
                         }
-                        toggleIcon(
+                        ToggleIcon(
                             "lay",
                             state.lay,
                             R.drawable.bed_b
@@ -311,11 +302,12 @@ fun DateDialog(
                             onEvent(DateEvent.SwitchLay)
                         }
                     }
+                    Spacer(modifier = Modifier.height(7.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        toggleIcon(
+                        ToggleIcon(
                             "record",
                             state.recorded,
                             R.drawable.microphone_b
@@ -323,7 +315,7 @@ fun DateDialog(
                             onEvent(DateEvent.SwitchRecorded)
                         }
                         //TODO: set the following to copy and import the following the tweet link (validating it, verifying it starts by https...)
-                        toggleIcon(
+                        ToggleIcon(
                             "lay",
                             state.lay,
                             R.drawable.bed_b
@@ -478,41 +470,5 @@ fun InputDateCountComponent(
         ) {
             Text(text = "+")
         }
-    }
-}
-
-@Composable
-fun toggleIcon(
-    description: String,
-    flag: Boolean,
-    @DrawableRes icon: Int,
-    onCheckedChange: () -> Unit
-) {
-    // TODO: refactor method in a separate file
-    IconButton(
-        onClick = {
-            onCheckedChange()
-        },
-        modifier = Modifier
-            .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = RoundedCornerShape(20.dp)
-            )
-            .size(40.dp)
-    ) {
-        var color: Color = MaterialTheme.colorScheme.onPrimary
-        if (!flag) {
-            color = MaterialTheme.colorScheme.primaryContainer
-        }
-        Image(
-            painter = painterResource(icon),
-            contentDescription = description,
-            alignment = Alignment.Center,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(7.dp),
-            colorFilter = ColorFilter.tint(color)
-        )
     }
 }
