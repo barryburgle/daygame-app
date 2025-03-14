@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ContentPaste
+import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -47,6 +48,7 @@ import com.barryburgle.gameapp.model.enums.DateType
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.date.state.DateState
 import com.barryburgle.gameapp.ui.input.InputCounter
+import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -72,6 +74,7 @@ fun DateDialog(
     val endHourDialogState = rememberMaterialDialogState()
     var leadsExpanded by remember { mutableStateOf(false) }
     var dateTypesExpanded by remember { mutableStateOf(false) }
+    var locationTextFieldExpanded by remember { mutableStateOf(false) }
     // TODO: unify across all dialogs
     val descriptionFontSize = 13.sp
     val sessionTimeColumnWidth = 130.dp
@@ -332,13 +335,26 @@ fun DateDialog(
                     }
                     Button(colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer
-                    ), onClick = { /*TODO: show enum values*/ }) {
-                        Text(
-                            text = "Location",
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurface,
+                    ), onClick = { locationTextFieldExpanded = !locationTextFieldExpanded }) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceAround,
                             modifier = Modifier.fillMaxWidth()
-                        )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.PinDrop,
+                                contentDescription = state.dateType,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier
+                                    .height(15.dp)
+                            )
+                            Text(
+                                text = "Location",
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
                     Button(colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -363,6 +379,32 @@ fun DateDialog(
                         }
                     }
                 }
+            }
+            BasicAnimatedVisibility(
+                visibilityFlag = locationTextFieldExpanded,
+            ) {
+                Spacer(modifier = Modifier.height(7.dp))
+                OutlinedTextField(
+                    value = state.location,
+                    onValueChange = { onEvent(DateEvent.SetLocation(it)) },
+                    placeholder = { Text(text = "Location") },
+                    shape = MaterialTheme.shapes.large,
+                    modifier = Modifier.height(80.dp)
+                )
+                Spacer(modifier = Modifier.height(7.dp))
+            }
+            BasicAnimatedVisibility(
+                visibilityFlag = !locationTextFieldExpanded,
+            ) {
+                Spacer(modifier = Modifier.height(7.dp))
+                OutlinedTextField(
+                    value = state.stickingPoints,
+                    onValueChange = { onEvent(DateEvent.SetStickingPoints(it)) },
+                    placeholder = { Text(text = "Sticking Points") },
+                    shape = MaterialTheme.shapes.large,
+                    modifier = Modifier.height(80.dp)
+                )
+                Spacer(modifier = Modifier.height(7.dp))
             }
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround
@@ -431,13 +473,6 @@ fun DateDialog(
                     onEvent(DateEvent.SwitchLay)
                 }*/
             }
-            OutlinedTextField(
-                value = state.stickingPoints,
-                onValueChange = { onEvent(DateEvent.SetStickingPoints(it)) },
-                placeholder = { Text(text = "Sticking Points") },
-                shape = MaterialTheme.shapes.large,
-                modifier = Modifier.height(100.dp)
-            )
         }
     }, confirmButton = {
         Box(
