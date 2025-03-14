@@ -87,8 +87,8 @@ class DateViewModel(
                     if (state.value.isUpdatingDate) {
                         date.id = state.value.editDate!!.id
                         date.insertTime = state.value.editDate!!.insertTime
-                        dateDao.insert(date)
                     }
+                    dateDao.insert(date)
                     _state.update {
                         it.copy(
                             leadId = 0L,
@@ -187,6 +187,14 @@ class DateViewModel(
                 _state.update {
                     it.copy(
                         dateNumber = event.dateNumber
+                    )
+                }
+            }
+
+            is DateEvent.SetDateType -> {
+                _state.update {
+                    it.copy(
+                        dateType = event.dateType
                     )
                 }
             }
