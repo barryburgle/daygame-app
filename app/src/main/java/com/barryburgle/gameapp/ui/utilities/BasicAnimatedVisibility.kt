@@ -14,13 +14,13 @@ import androidx.compose.runtime.Composable
 fun BasicAnimatedVisibility(visibilityFlag: Boolean, content: @Composable () -> Unit) {
     AnimatedVisibility(
         visible = visibilityFlag, enter = fadeIn(
-            animationSpec = tween(durationMillis = 300)
+            animationSpec = tween(durationMillis = 150)
         ) + expandIn(
             animationSpec = spring(
                 dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessVeryLow
             )
         ), exit = fadeOut(
-            animationSpec = tween(durationMillis = 300)
+            animationSpec = tween(durationMillis = 150)
         ) + shrinkOut(
             animationSpec = spring(
                 dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessVeryLow
