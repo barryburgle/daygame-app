@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -188,53 +189,60 @@ fun DateDialog(
                             formSectionDescription("Set date's:", descriptionFontSize)
                         }
                         Spacer(modifier = Modifier.width(10.dp))
-                        if (state.leadId == 0L) {
-                            Column(
-                                modifier = Modifier.width(sessionLeadColumnWidth - addLeadColumnWidth)
-                            ) {
+                        var leadIcon = Icons.Default.Add
+                        Column(
+                            modifier = Modifier.width(sessionLeadColumnWidth - addLeadColumnWidth)
+                        ) {
+                            if (state.leadId == 0L) {
                                 com.barryburgle.gameapp.ui.input.formSectionDescription(
                                     "Add lead:",
                                     descriptionFontSize
                                 )
+                            } else {
+                                val lead =
+                                    state.allLeads.filter { lead -> lead.id == state.leadId }.get(0)
+                                com.barryburgle.gameapp.ui.input.formSectionDescription(
+                                    CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age,
+                                    descriptionFontSize
+                                )
+                                leadIcon = Icons.Default.SwapHoriz
                             }
-                            Column(
-                                modifier = Modifier.width(addLeadColumnWidth)
-                            ) {
-                                IconButton(onClick = {
-                                    expanded = true
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Add,
-                                        contentDescription = "Add lead",
-                                        tint = MaterialTheme.colorScheme.inversePrimary,
-                                        modifier = Modifier
-                                            .background(
-                                                MaterialTheme.colorScheme.secondaryContainer
-                                            )
-                                            .width(addLeadColumnWidth)
-                                            .height(addLeadColumnWidth)
-                                    )
-                                }
+                        }
+                        Column(
+                            modifier = Modifier.width(addLeadColumnWidth)
+                        ) {
+                            IconButton(onClick = {
+                                expanded = true
+                            }) {
+                                Icon(
+                                    imageVector = leadIcon,
+                                    contentDescription = "Add lead",
+                                    tint = MaterialTheme.colorScheme.inversePrimary,
+                                    modifier = Modifier
+                                        .background(
+                                            MaterialTheme.colorScheme.secondaryContainer
+                                        )
+                                        .width(addLeadColumnWidth)
+                                        .height(addLeadColumnWidth)
+                                )
                             }
-                            DropdownMenu(
-                                modifier = Modifier
-                                    .width(200.dp)
-                                    .height(450.dp),
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false }
-                            ) {
-                                state.allLeads.forEach { lead ->
-                                    DropdownMenuItem(
-                                        text = { Text(text = CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age) },
-                                        onClick = {
-                                            onEvent(DateEvent.SetLeadId(lead.id))
-                                            expanded = false
-                                        }
-                                    )
-                                }
+                        }
+                        DropdownMenu(
+                            modifier = Modifier
+                                .width(200.dp)
+                                .height(450.dp),
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            state.allLeads.forEach { lead ->
+                                DropdownMenuItem(
+                                    text = { Text(text = CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age) },
+                                    onClick = {
+                                        onEvent(DateEvent.SetLeadId(lead.id))
+                                        expanded = false
+                                    }
+                                )
                             }
-                        } else {
-                            // TODO: display a button with name flag and year of the lead that is clickable to evoke the dropdown menu
                         }
                     }
                 }
