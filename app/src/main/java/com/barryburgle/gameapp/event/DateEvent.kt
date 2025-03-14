@@ -15,6 +15,7 @@ sealed interface DateEvent : GenericEvent {
     data class SetEndHour(val endHour: String) : DateEvent
     data class SetCost(val cost: String) : DateEvent
     data class SetDateNumber(val dateNumber: String) : DateEvent
+    data class SetDateType(val dateType: String) : DateEvent
     object SwitchPull: DateEvent
     object SwitchBounce: DateEvent
     object SwitchKiss: DateEvent
