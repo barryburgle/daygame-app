@@ -16,8 +16,8 @@ enum class DateSortType(private val field: String) : FieldEnum {
     NOT_KISS("Not Kissed"),
     LAY("Laid"),
     NOT_LAY("Not Laid"),
-    RECORDED("Recorded"),
-    NOT_RECORDED("Not Recorded"),
+    RECORD("Recorded"),
+    NOT_RECORD("Not Recorded"),
     DAY_OF_WEEK("Day of Week"),
     WEEK_NUMBER("Week Number");
 
