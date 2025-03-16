@@ -40,6 +40,7 @@ fun InputScreen(
     spaceFromTop: Dp,
     spaceFromBottom: Dp
 ) {
+    // TODO: integrate on the right a scrollbar (mainly invisible) that allows to easily jump to a session around a certain date
     val spaceFromNavBar = 80.dp
     Scaffold(
         floatingActionButton = {

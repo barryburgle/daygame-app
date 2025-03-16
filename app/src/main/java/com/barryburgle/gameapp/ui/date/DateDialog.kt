@@ -493,6 +493,7 @@ fun DateDialog(
                     Toast.makeText(localContext, "Date saved", Toast.LENGTH_SHORT).show()
                 }) {
                     Text(text = "Save")
+                    // TODO: do not allow date insertion without lead insertion or link
                 }
             }
         }

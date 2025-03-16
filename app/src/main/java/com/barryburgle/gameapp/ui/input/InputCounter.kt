@@ -23,6 +23,7 @@ fun InputCounter(
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
+    // TODO: doesn't handle the numbers above 9, fix it
     var oldCount by remember {
         mutableStateOf(count)
     }

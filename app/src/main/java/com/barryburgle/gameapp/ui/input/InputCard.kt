@@ -68,7 +68,6 @@ fun InputCard(
                         .padding(5.dp)
                         .fillMaxWidth()
                 ) {
-                    // TODO: specify if session or set once single sets will be available in session screen
                     Text(
                         text = "${
                             FormatService.getDate(
@@ -95,6 +94,7 @@ fun InputCard(
                                     .height(25.dp)
                             )
                             Spacer(modifier = Modifier.width(7.dp))
+                            // TODO: specify if session or set once single sets will be available in session screen
                             Text(
                                 text = "Session",
                                 style = MaterialTheme.typography.titleLarge
