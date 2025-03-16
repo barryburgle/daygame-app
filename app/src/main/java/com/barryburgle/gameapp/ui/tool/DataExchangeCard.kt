@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
+import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
@@ -49,6 +50,7 @@ fun DataExchangeCard(
     modifier: Modifier,
     sessionCsvService: SessionCsvService,
     leadCsvService: LeadCsvService,
+    dateCsvService: DateCsvService,
     onEvent: (ToolEvent) -> Unit
 ) {
     var icon: ImageVector? = null
@@ -87,7 +89,7 @@ fun DataExchangeCard(
                         Button(colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer
                         ), onClick = {
-                            // TODO: import or export all depending on card type
+                            // TODO: implement import or export all depending on card type
                             Toast.makeText(
                                 localContext,
                                 "Successfully ${cardTitle.lowercase()}ed all tables",
@@ -286,6 +288,52 @@ fun DataExchangeCard(
                                     onEvent(ToolEvent.SetExportLeadsFileName(it))
                                 } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
                                     onEvent(ToolEvent.SetImportLeadsFileName(it))
+                                }
+                            })
+                        FilenameComposable(cardTitle = cardTitle,
+                            icon,
+                            "date",
+                            textFieldColumnWidth,
+                            textFieldHeight,
+                            localContext,
+                            if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                state.exportDatesFileName
+                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                state.importDatesFileName
+                            } else "",
+                            buttonFunction = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    dateCsvService.setExportObjects(state.dates)
+                                    dateCsvService.exportRows(
+                                        state.exportFolder,
+                                        state.exportDatesFileName,
+                                        state.exportHeader
+                                    )
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    try {
+                                        onEvent(
+                                            ToolEvent.SetDates(
+                                                dateCsvService.importRows(
+                                                    state.importFolder,
+                                                    state.importDatesFileName,
+                                                    state.importHeader
+                                                )
+                                            )
+                                        )
+                                    } catch (fileNotFoundException: FileNotFoundException) {
+                                        Toast.makeText(
+                                            localContext,
+                                            fileNotFoundException.message,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            },
+                            filenameOnEvent = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetExportDatesFileName(it))
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetImportDatesFileName(it))
                                 }
                             })
                     }

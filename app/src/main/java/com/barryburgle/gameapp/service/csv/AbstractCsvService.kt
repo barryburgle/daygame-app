@@ -81,10 +81,15 @@ abstract class AbstractCsvService<T : Any> {
     }
 
     protected fun importLong(longAsString: String): Long? {
+        // TODO: check to use in all the inportMapRow( methods
         try {
             return longAsString.toLong()
         } catch (e: NumberFormatException) {
             return null
         }
+    }
+
+    protected fun cleaEmptyField(field: String?): String {
+        return field ?: ""
     }
 }

@@ -12,10 +12,16 @@ import kotlinx.coroutines.flow.Flow
 interface DateDao {
 
     @Insert(onConflict = REPLACE)
+    suspend fun batchInsert(leads: List<Date>)
+
+    @Insert(onConflict = REPLACE)
     suspend fun insert(date: Date): Long
 
     @Delete
     suspend fun delete(date: Date)
+
+    @Query("SELECT * from meeting ORDER BY id DESC, meeting_date DESC, start_hour DESC")
+    fun getAll(): Flow<List<Date>>
 
     @Query("SELECT * from meeting ORDER BY id DESC, meeting_date DESC")
     fun getByDate(): Flow<List<Date>>

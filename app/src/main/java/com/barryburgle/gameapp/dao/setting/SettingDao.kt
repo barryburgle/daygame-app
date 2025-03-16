@@ -27,8 +27,12 @@ interface SettingDao {
         const val DEFAULT_SESSIONS_IMPORT_FILE_NAME: String = "sessions_export_yyyy_mm_dd_hh_mm.csv"
         const val EXPORT_LEADS_FILE_NAME_ID: String = "export_leads_file_name"
         const val IMPORT_LEADS_FILE_NAME_ID: String = "import_leads_file_name"
+        const val EXPORT_DATES_FILE_NAME_ID: String = "export_dates_file_name"
+        const val IMPORT_DATES_FILE_NAME_ID: String = "import_dates_file_name"
         const val DEFAULT_LEADS_EXPORT_FILE_NAME: String = "leads_export"
         const val DEFAULT_LEADS_IMPORT_FILE_NAME: String = "leads_export_yyyy_mm_dd_hh_mm.csv"
+        const val DEFAULT_DATES_EXPORT_FILE_NAME: String = "date_export"
+        const val DEFAULT_DATES_IMPORT_FILE_NAME: String = "date_export_yyyy_mm_dd_hh_mm.csv"
         const val DEFAULT_LATEST_AVAILABLE: String = ""
         const val DEFAULT_LATEST_PUBLISH_DATE: String = ""
         const val DEFAULT_LATEST_CHANGELOG: String = ""
@@ -57,6 +61,12 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LEADS_IMPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${IMPORT_LEADS_FILE_NAME_ID}'")
     fun getImportLeadsFilename(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_DATES_EXPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${EXPORT_DATES_FILE_NAME_ID}'")
+    fun getExportDatesFilename(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_DATES_IMPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${IMPORT_DATES_FILE_NAME_ID}'")
+    fun getImportDatesFilename(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_EXPORT_FOLDER}' ELSE value END FROM setting WHERE id = '${EXPORT_FOLDER_ID}'")
     fun getExportFolder(): Flow<String>

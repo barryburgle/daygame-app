@@ -2,12 +2,13 @@ package com.barryburgle.gameapp.ui.tool
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
-import com.barryburgle.gameapp.ui.CombineSeventeen
+import com.barryburgle.gameapp.ui.CombineTwenty
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,16 +19,20 @@ import kotlinx.coroutines.launch
 class ToolViewModel(
     private val abstractSessionDao: AbstractSessionDao,
     private val leadDao: LeadDao,
+    private val dateDao: DateDao,
     private val settingDao: SettingDao
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(ToolsState())
     private val _abstractSessions = abstractSessionDao.getAll()
     private val _leads = leadDao.getAll()
+    private val _dates = dateDao.getAll()
     private val _exportSessionsFilename = settingDao.getExportSessionsFilename()
     private val _importSessionsFilename = settingDao.getImportSessionsFilename()
     private val _exportLeadsFilename = settingDao.getExportLeadsFilename()
     private val _importLeadsFilename = settingDao.getImportLeadsFilename()
+    private val _exportDatesFilename = settingDao.getExportDatesFilename()
+    private val _importDatesFilename = settingDao.getImportDatesFilename()
     private val _exportFolder = settingDao.getExportFolder()
     private val _importFolder = settingDao.getImportFolder()
     private val _exportHeader = settingDao.getExportHeaderFlag()
@@ -39,14 +44,17 @@ class ToolViewModel(
     private val _latestChangelog = settingDao.getLatestChangelog()
     private val _latestDownloadUrl = settingDao.getLatestDownloadUrl()
     val state =
-        CombineSeventeen(
+        CombineTwenty(
             _state,
             _abstractSessions,
             _leads,
+            _dates,
             _exportSessionsFilename,
             _importSessionsFilename,
             _exportLeadsFilename,
             _importLeadsFilename,
+            _exportDatesFilename,
+            _importDatesFilename,
             _exportFolder,
             _importFolder,
             _notificationTime,
@@ -57,17 +65,20 @@ class ToolViewModel(
             _latestPublishDate,
             _latestChangelog,
             _latestDownloadUrl
-        ) { state, abstractSessions, leads, exportSessionsFilename, importSessionsFilename, exportLeadsFilename, importLeadsFilename, exportFolder, importFolder, notificationTime, averageLast, exportHeader, importHeader, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl ->
+        ) { state, abstractSessions, leads, dates, exportSessionsFilename, importSessionsFilename, exportLeadsFilename, importLeadsFilename, exportDatesFilename, importDatesFilename, exportFolder, importFolder, notificationTime, averageLast, exportHeader, importHeader, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl ->
             state.copy(
                 exportSessionsFileName = exportSessionsFilename,
                 importSessionsFileName = importSessionsFilename,
                 exportLeadsFileName = exportLeadsFilename,
                 importLeadsFileName = importLeadsFilename,
+                exportDatesFileName = exportDatesFilename,
+                importDatesFileName = importDatesFilename,
                 exportFolder = exportFolder,
                 importFolder = importFolder,
                 notificationTime = notificationTime,
                 abstractSessions = abstractSessions,
                 leads = leads,
+                dates = dates,
                 lastSessionAverageQuantity = averageLast,
                 exportHeader = exportHeader.toBoolean(),
                 importHeader = importHeader.toBoolean(),
@@ -126,6 +137,28 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SetExportDatesFileName -> {
+                _state.update {
+                    it.copy(
+                        exportDatesFileName = event.exportDatesFileName
+                    )
+                }
+                val exportDatesFileName = _state.value.exportDatesFileName
+                val setting = Setting(SettingDao.EXPORT_DATES_FILE_NAME_ID, exportDatesFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetImportDatesFileName -> {
+                _state.update {
+                    it.copy(
+                        importDatesFileName = event.importDatesFileName
+                    )
+                }
+                val importDatesFileName = _state.value.importDatesFileName
+                val setting = Setting(SettingDao.IMPORT_DATES_FILE_NAME_ID, importDatesFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetExportFolder -> {
                 _state.update {
                     it.copy(
@@ -166,6 +199,16 @@ class ToolViewModel(
                 }
                 val leads = _state.value.leads
                 viewModelScope.launch { leadDao.batchInsert(leads) }
+            }
+
+            is ToolEvent.SetDates -> {
+                _state.update {
+                    it.copy(
+                        dates = event.dates
+                    )
+                }
+                val dates = _state.value.dates
+                viewModelScope.launch { dateDao.batchInsert(dates) }
             }
 
             is ToolEvent.SetLastSessionAverageQuantity -> {

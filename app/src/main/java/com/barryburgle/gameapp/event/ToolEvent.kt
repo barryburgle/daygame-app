@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.event
 
+import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 
@@ -8,10 +9,13 @@ sealed interface ToolEvent {
     data class SetImportSessionsFileName(val importSessionsFileName: String) : ToolEvent
     data class SetExportLeadsFileName(val exportLeadsFileName: String) : ToolEvent
     data class SetImportLeadsFileName(val importLeadsFileName: String) : ToolEvent
+    data class SetExportDatesFileName(val exportDatesFileName: String) : ToolEvent
+    data class SetImportDatesFileName(val importDatesFileName: String) : ToolEvent
     data class SetExportFolder(val exportFolder: String) : ToolEvent
     data class SetImportFolder(val importFolder: String) : ToolEvent
     data class SetAbstractSessions(val abstractSessions: List<AbstractSession>) : ToolEvent
     data class SetLeads(val leads: List<Lead>) : ToolEvent
+    data class SetDates(val dates: List<Date>) : ToolEvent
     data class SetLastSessionAverageQuantity(val lastSessionAverageQuantity: String) : ToolEvent
     data class SetNotificationTime(val notificationTime: String) : ToolEvent
     data class SetExportHeader(val exportHeader: Boolean) : ToolEvent

@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.service.csv.CSVFindService
+import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
@@ -57,10 +58,11 @@ fun ToolsScreen(
     val versionName = packageInfo.versionName
     val sessionCsvService = SessionCsvService()
     val leadCsvService = LeadCsvService()
+    val dateCsvService = DateCsvService()
     val csvFindService = CSVFindService()
     Scaffold { padding ->
         val dataExchangeCardModifier = Modifier
-            .height(400.dp)
+            .height(480.dp)
             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
             .shadow(
                 elevation = 5.dp, shape = MaterialTheme.shapes.large
@@ -88,7 +90,8 @@ fun ToolsScreen(
                         onEvent = onEvent,
                         modifier = dataExchangeCardModifier,
                         sessionCsvService = sessionCsvService,
-                        leadCsvService = leadCsvService
+                        leadCsvService = leadCsvService,
+                        dateCsvService = dateCsvService
                     )
                 }
             }
@@ -102,7 +105,8 @@ fun ToolsScreen(
                         onEvent = onEvent,
                         modifier = dataExchangeCardModifier,
                         sessionCsvService = sessionCsvService,
-                        leadCsvService = leadCsvService
+                        leadCsvService = leadCsvService,
+                        dateCsvService = dateCsvService
                     )
                 }
             }
@@ -116,6 +120,7 @@ fun ToolsScreen(
                         currentVersion = versionName,
                         sessionCsvService = sessionCsvService,
                         leadCsvService = leadCsvService,
+                        dateCsvService = dateCsvService,
                         context = context
                     )
                 }
