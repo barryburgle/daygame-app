@@ -4,22 +4,22 @@ enum class DateSortType(private val field: String) : FieldEnum {
     DATE("Date"),
     LEAD("Lead"),
     LOCATION("Location"),
-    START_TIME("Start Time"),
-    END_TIME("End Time"),
     DATE_TIME("Date Time"),
     COST("Cost"),
     DATE_NUMBER("Date Number"),
+    DATE_TYPE("Date Type"),
     PULL("Pulled"),
     NOT_PULL("Not Pulled"),
-    BOUNCE("Not Bounced"),
+    BOUNCE("Bounced"),
     NOT_BOUNCE("Not Bounced"),
     KISS("Kissed"),
     NOT_KISS("Not Kissed"),
     LAY("Laid"),
-    NOT_LAY("Lay"),
+    NOT_LAY("Not Laid"),
     RECORDED("Recorded"),
-    NOT_RECORDED("Recorded"),
-    DAY_OF_WEEK("Day of Week");
+    NOT_RECORDED("Not Recorded"),
+    DAY_OF_WEEK("Day of Week"),
+    WEEK_NUMBER("Week Number");
 
     override fun getField(): String {
         return field
