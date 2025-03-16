@@ -75,11 +75,13 @@ fun DateScreen(
                 ScrollableSorter(
                     spaceFromLeft
                 ) {
-                    // TODO: check sorting works
                     DateSortType.values().forEach { sortType ->
-                        state.sortType?.let {
+                        state.sortType.let {
                             SelectionRow(
-                                it, sortType, onEvent as (GenericEvent) -> Unit
+                                it, sortType, onEvent as (GenericEvent) -> Unit,
+                                DateEvent.SortDates(
+                                    sortType
+                                )
                             )
                         }
                     }

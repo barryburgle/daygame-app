@@ -26,7 +26,8 @@ import com.barryburgle.gameapp.model.enums.SortType
 fun SelectionRow(
     currentSort: FieldEnum,
     sortType: FieldEnum,
-    onEvent: (GenericEvent) -> Unit
+    onEvent: (GenericEvent) -> Unit,
+    genericEvent: GenericEvent
 ) {
     Row(
         modifier = Modifier.clickable {
@@ -50,13 +51,7 @@ fun SelectionRow(
                 .padding(8.dp)
         ) {
             ClickableText(
-                onClick = {
-                    onEvent(
-                        AbstractSessionEvent.SortSessions(
-                            sortType as SortType
-                        )
-                    )
-                },
+                onClick = { onEvent(genericEvent) },
                 modifier = Modifier.background(color = textBackgroundColor),
                 style = TextStyle(color = textButtonColor),
                 text = AnnotatedString(sortType.getField())

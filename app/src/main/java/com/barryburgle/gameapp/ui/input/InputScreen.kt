@@ -88,7 +88,10 @@ fun InputScreen(
                     SortType.values().forEach { sortType ->
                         state.sortType?.let {
                             SelectionRow(
-                                it, sortType, onEvent as (GenericEvent) -> Unit
+                                it, sortType, onEvent as (GenericEvent) -> Unit,
+                                AbstractSessionEvent.SortSessions(
+                                    sortType
+                                )
                             )
                         }
                     }

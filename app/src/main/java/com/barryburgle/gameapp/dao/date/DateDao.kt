@@ -44,6 +44,9 @@ interface DateDao {
     @Query("SELECT * from meeting ORDER BY date_number DESC, meeting_date DESC")
     fun getByDateNumber(): Flow<List<Date>>
 
+    @Query("SELECT * from meeting ORDER BY date_type DESC, meeting_date DESC")
+    fun getByDateType(): Flow<List<Date>>
+
     @Query("SELECT * from meeting WHERE pull = 1 ORDER BY meeting_date DESC")
     fun getPulled(): Flow<List<Date>>
 
@@ -73,4 +76,13 @@ interface DateDao {
 
     @Query("SELECT * from meeting WHERE recorded = 0 ORDER BY meeting_date DESC")
     fun getNotRecorded(): Flow<List<Date>>
+
+    @Query("SELECT * from meeting ORDER BY date_time DESC, meeting_date DESC")
+    fun getByDateTime(): Flow<List<Date>>
+
+    @Query("SELECT * from meeting ORDER BY day_of_week DESC, meeting_date DESC")
+    fun getByDayOfWeek(): Flow<List<Date>>
+
+    @Query("SELECT * from meeting ORDER BY week_number DESC, meeting_date DESC")
+    fun getByWeekNumber(): Flow<List<Date>>
 }

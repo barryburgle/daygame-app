@@ -7,7 +7,7 @@ import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.event.DateEvent
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.service.date.DateService
-import com.barryburgle.gameapp.ui.CombineThree
+import com.barryburgle.gameapp.ui.CombineFour
 import com.barryburgle.gameapp.ui.date.state.DateState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,19 +22,16 @@ class DateViewModel(
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(DateState())
-    private val _dateSortType = MutableStateFlow(DateSortType.DATE)
     private val _dateService = DateService()
     private val _sortType = MutableStateFlow(DateSortType.DATE)
-    private val _dates = _dateSortType.flatMapLatest { sortType ->
+    private val _dates = _sortType.flatMapLatest { sortType ->
         when (sortType) {
-            DateSortType.DATE -> dateDao.getByDate()
             DateSortType.LEAD -> dateDao.getByLead()
             DateSortType.LOCATION -> dateDao.getByLocation()
-            DateSortType.START_TIME -> dateDao.getByStartHour()
-            DateSortType.END_TIME -> dateDao.getByEndHour()
-            DateSortType.DATE_TIME -> dateDao.getByDate() /*TODO: COMPUTE DATE TIME ON THE FLY AND SORT IN LIST*/
+            DateSortType.DATE -> dateDao.getByDate()
             DateSortType.COST -> dateDao.getByCost()
             DateSortType.DATE_NUMBER -> dateDao.getByDateNumber()
+            DateSortType.DATE_TYPE -> dateDao.getByDateType()
             DateSortType.PULL -> dateDao.getPulled()
             DateSortType.NOT_PULL -> dateDao.getNotPulled()
             DateSortType.BOUNCE -> dateDao.getBounced()
@@ -45,18 +42,22 @@ class DateViewModel(
             DateSortType.NOT_LAY -> dateDao.getNotLaid()
             DateSortType.RECORDED -> dateDao.getRecorded()
             DateSortType.NOT_RECORDED -> dateDao.getNotRecorded()
-            DateSortType.DAY_OF_WEEK -> dateDao.getByDate()/*TODO: COMPUTE ON THE FLY AND SORT IN LIST*/
+            DateSortType.DATE_TIME -> dateDao.getByDateTime()
+            DateSortType.DAY_OF_WEEK -> dateDao.getByDayOfWeek()
+            DateSortType.WEEK_NUMBER -> dateDao.getByWeekNumber()
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _allLeads = leadDao.getAll()
 
     val state =
-        CombineThree(
+        CombineFour(
+            _sortType,
             _state,
             _dates,
             _allLeads
-        ) { state, dates, allLeads ->
+        ) { sortType, state, dates, allLeads ->
             state.copy(
+                sortType = sortType,
                 dates = dates,
                 allLeads = allLeads
             )
