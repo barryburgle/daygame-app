@@ -25,6 +25,7 @@ fun InputCountComponent(
     countStart: Int? = 0,
     saveEvent: (input: String) -> AbstractSessionEvent
 ) {
+    // TODO: adapt to work both with AbstractSessionEvent and DateEvent onEvents
     var count by remember {
         mutableStateOf(if (countStart == null) 0 else countStart)
     }

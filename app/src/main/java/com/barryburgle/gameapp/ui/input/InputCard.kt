@@ -68,6 +68,12 @@ fun InputCard(
                         .padding(5.dp)
                         .fillMaxWidth()
                 ) {
+                    // TODO: specify if session or set once single sets will be available in session screen
+                    Text(
+                        text = "Session",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Spacer(modifier = Modifier.width(3.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,

@@ -22,7 +22,7 @@ open class Date(
     @ColumnInfo(name = "lay") var lay: Boolean,
     @ColumnInfo(name = "recorded") var recorded: Boolean,
     @ColumnInfo(name = "sticking_points") var stickingPoints: String?,
-    @ColumnInfo(name = "tweet_url") var tweetUrl: String?,
+    @ColumnInfo(name = "tweet_url") var tweetUrl: String?,// TODO: import from clipboard with button on date dialog
     @ColumnInfo(name = "date_time") var dateTime: Long,
     @ColumnInfo(name = "day_of_week") var dayOfWeek: Int,
     @ColumnInfo(name = "week_number") var weekNumber: Int

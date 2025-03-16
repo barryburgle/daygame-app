@@ -75,6 +75,7 @@ fun DateScreen(
                 ScrollableSorter(
                     spaceFromLeft
                 ) {
+                    // TODO: check sorting works
                     DateSortType.values().forEach { sortType ->
                         state.sortType?.let {
                             SelectionRow(

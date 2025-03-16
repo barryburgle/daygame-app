@@ -82,6 +82,10 @@ fun DateCard(
                                 .fillMaxWidth()
                                 .padding(7.dp)
                         ) {
+                            Text(
+                                text = "Date",
+                                style = MaterialTheme.typography.bodySmall
+                            )
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth(),
@@ -138,6 +142,9 @@ fun DateCard(
                                                 shape = RoundedCornerShape(30.dp)
                                             )
                                     ) {
+                                        // TODO: pass fields location, date type and tweet url to dialog before updating
+                                        // TODO: make date flags updatable
+                                        // TODO: test updateing a date and changing all vars about that
                                         IconButton(onClick = {
                                             onEvent(
                                                 DateEvent.EditDate(
@@ -160,8 +167,7 @@ fun DateCard(
                                 }
                             }
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.7f),
+                                modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Column(
@@ -227,8 +233,7 @@ fun DateCard(
                                     }
                                 }
                                 Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
+                                    modifier = Modifier.fillMaxWidth(),
                                     verticalArrangement = Arrangement.SpaceAround,
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
@@ -251,6 +256,7 @@ fun DateCard(
                                             )*/
                                             }
                                     ) {
+                                        // TODO: only once date, sets and sessions will be displayed in the same view (after refactor) allow lead edit from date card
                                         leadName(
                                             lead = lead,
                                             backgroundColor = MaterialTheme.colorScheme.background,
