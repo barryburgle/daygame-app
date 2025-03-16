@@ -83,7 +83,7 @@ fun DateCard(
                                 .padding(7.dp)
                         ) {
                             Text(
-                                text = "Date",
+                                text = "${FormatService.getDate(date.date!!)}",
                                 style = MaterialTheme.typography.bodySmall
                             )
                             Row(
@@ -93,8 +93,6 @@ fun DateCard(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.6f),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
@@ -105,8 +103,9 @@ fun DateCard(
                                         modifier = Modifier
                                             .height(25.dp)
                                     )
+                                    Spacer(modifier = Modifier.width(7.dp))
                                     Text(
-                                        text = "${FormatService.getDate(date.date!!)} ${date.dateType.replaceFirstChar { it.uppercase() }}",
+                                        text = "${date.dateType.replaceFirstChar { it.uppercase() }} Date",
                                         style = MaterialTheme.typography.titleLarge
                                     )
                                 }
@@ -188,12 +187,11 @@ fun DateCard(
                                             FormatService.getTime(
                                                 date.startHour!!
                                             )
-                                        } to ${
+                                        } - ${
                                             FormatService.getTime(
                                                 date.endHour!!
                                             )
-                                        }"
-                                    Spacer(modifier = Modifier.height(10.dp))
+                                        } : ${date.dateTime} minutes"
                                     Row {
                                         Text(
                                             // TODO: convert date to integer inside week and then day of week

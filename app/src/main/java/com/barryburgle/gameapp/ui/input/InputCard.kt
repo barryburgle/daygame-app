@@ -70,7 +70,11 @@ fun InputCard(
                 ) {
                     // TODO: specify if session or set once single sets will be available in session screen
                     Text(
-                        text = "Session",
+                        text = "${
+                            FormatService.getDate(
+                                abstractSession.date
+                            )
+                        }",
                         style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.width(3.dp))
@@ -92,11 +96,7 @@ fun InputCard(
                             )
                             Spacer(modifier = Modifier.width(7.dp))
                             Text(
-                                text = "${
-                                    FormatService.getDate(
-                                        abstractSession.date
-                                    )
-                                }",
+                                text = "Session",
                                 style = MaterialTheme.typography.titleLarge
                             )
                         }
