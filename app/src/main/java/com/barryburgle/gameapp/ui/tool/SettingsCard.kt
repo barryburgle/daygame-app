@@ -35,6 +35,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
+import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
@@ -56,6 +57,7 @@ fun SettingsCard(
     currentVersion: String,
     sessionCsvService: SessionCsvService,
     leadCsvService: LeadCsvService,
+    dateCsvService: DateCsvService,
     context: Context
 ) {
     val notificationHourDialogState = rememberMaterialDialogState()
@@ -129,6 +131,7 @@ fun SettingsCard(
                         onEvent,
                         sessionCsvService,
                         leadCsvService,
+                        dateCsvService,
                         context
                     )
                 }
@@ -216,6 +219,7 @@ fun versionInfo(
     onEvent: (ToolEvent) -> Unit,
     sessionCsvService: SessionCsvService,
     leadCsvService: LeadCsvService,
+    dateCsvService: DateCsvService,
     context: Context
 ) {
     Row(
@@ -252,6 +256,12 @@ fun versionInfo(
                                 leadCsvService.exportRows(
                                     state.exportFolder,
                                     state.exportLeadsFileName,
+                                    state.exportHeader
+                                )
+                                dateCsvService.setExportObjects(state.dates)
+                                dateCsvService.exportRows(
+                                    state.exportFolder,
+                                    state.exportDatesFileName,
                                     state.exportHeader
                                 )
                                 Toast.makeText(
