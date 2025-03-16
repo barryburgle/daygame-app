@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.tool
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -89,12 +90,26 @@ fun DataExchangeCard(
                         Button(colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer
                         ), onClick = {
-                            // TODO: implement import or export all depending on card type
-                            Toast.makeText(
-                                localContext,
-                                "Successfully ${cardTitle.lowercase()}ed all tables",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                exportAll(
+                                    cardTitle,
+                                    sessionCsvService,
+                                    state,
+                                    leadCsvService,
+                                    dateCsvService,
+                                    localContext
+                                )
+                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                importAll(
+                                    cardTitle,
+                                    sessionCsvService,
+                                    state,
+                                    leadCsvService,
+                                    dateCsvService,
+                                    localContext,
+                                    onEvent
+                                )
+                            }
                         }) {
                             if (icon != null) {
                                 Icon(
@@ -138,11 +153,12 @@ fun DataExchangeCard(
                                 modifier = Modifier.width(textFieldColumnWidth),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                OutlinedTextField(value = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    state.exportFolder
-                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    state.importFolder
-                                } else "",
+                                OutlinedTextField(
+                                    value = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                        state.exportFolder
+                                    } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                        state.importFolder
+                                    } else "",
                                     onValueChange = {
                                         if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                             onEvent(ToolEvent.SetExportFolder(it))
@@ -341,4 +357,88 @@ fun DataExchangeCard(
             }
         }
     }
+}
+
+private fun exportAll(
+    cardTitle: String,
+    sessionCsvService: SessionCsvService,
+    state: ToolsState,
+    leadCsvService: LeadCsvService,
+    dateCsvService: DateCsvService,
+    localContext: Context
+) {
+    sessionCsvService.setExportObjects(state.abstractSessions)
+    sessionCsvService.exportRows(
+        state.exportFolder,
+        state.exportSessionsFileName,
+        state.exportHeader
+    )
+    leadCsvService.setExportObjects(state.leads)
+    leadCsvService.exportRows(
+        state.exportFolder,
+        state.exportLeadsFileName,
+        state.exportHeader
+    )
+    dateCsvService.setExportObjects(state.dates)
+    dateCsvService.exportRows(
+        state.exportFolder,
+        state.exportDatesFileName,
+        state.exportHeader
+    )
+    Toast.makeText(
+        localContext,
+        "Successfully ${cardTitle.lowercase()}ed all tables",
+        Toast.LENGTH_SHORT
+    ).show()
+}
+
+private fun importAll(
+    cardTitle: String,
+    sessionCsvService: SessionCsvService,
+    state: ToolsState,
+    leadCsvService: LeadCsvService,
+    dateCsvService: DateCsvService,
+    localContext: Context,
+    onEvent: (ToolEvent) -> Unit
+) {
+    try {
+        onEvent(
+            ToolEvent.SetAbstractSessions(
+                sessionCsvService.importRows(
+                    state.importFolder,
+                    state.importSessionsFileName,
+                    state.importHeader
+                )
+            )
+        )
+        onEvent(
+            ToolEvent.SetLeads(
+                leadCsvService.importRows(
+                    state.importFolder,
+                    state.importLeadsFileName,
+                    state.importHeader
+                )
+            )
+        )
+        onEvent(
+            ToolEvent.SetDates(
+                dateCsvService.importRows(
+                    state.importFolder,
+                    state.importDatesFileName,
+                    state.importHeader
+                )
+            )
+        )
+    } catch (fileNotFoundException: FileNotFoundException) {
+        Toast.makeText(
+            localContext,
+            fileNotFoundException.message,
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+    Toast.makeText(
+        localContext,
+        "Successfully ${cardTitle.lowercase()}ed all tables",
+        Toast.LENGTH_SHORT
+    ).show()
 }

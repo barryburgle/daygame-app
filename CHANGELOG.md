@@ -2,7 +2,7 @@
 
 **Features**
 - Update checker and new version download button ⬇️
-- Import and export cards interface improvements 🗂️
+- Import and export cards interface improvements and bulk import-export 🗂️
 
 **Bugs**
 - Leads bugfix
