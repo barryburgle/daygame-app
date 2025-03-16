@@ -17,8 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Euro
-import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,17 +31,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.DateEvent
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.DateType
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.ui.input.describedQuantifier
 import com.barryburgle.gameapp.ui.input.leadName
-import com.barryburgle.gameapp.ui.theme.AlertHigh
-import com.barryburgle.gameapp.ui.theme.AlertLow
 import java.util.Locale
 
 @ExperimentalMaterial3Api
@@ -54,6 +54,8 @@ fun DateCard(
     onEvent: (DateEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val perfFontSize = 15.sp
+    val descriptionFontSize = 10.sp
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
@@ -165,94 +167,157 @@ fun DateCard(
                                     }
                                 }
                             }
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            var subtitle =
+                                "${
+                                    FormatService.parseDate(date.date!!).dayOfWeek.toString()
+                                        .lowercase()
+                                        .replaceFirstChar {
+                                            if (it.isLowerCase()) it.titlecase(
+                                                Locale.getDefault()
+                                            ) else it.toString()
+                                        }
+                                } ${
+                                    FormatService.getTime(
+                                        date.startHour!!
+                                    )
+                                } - ${
+                                    FormatService.getTime(
+                                        date.endHour!!
+                                    )
+                                } : ${date.dateTime} minutes"
+                            Row {
+                                Text(
+                                    // TODO: convert date to integer inside week and then day of week
+                                    // TODO: compute minutes before filling date list
+                                    text = subtitle,
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(15.dp))
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
+                                modifier = Modifier
+                                    .padding(5.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceAround
+                            ) {
+                                describedIcon(
+                                    DateSortType.PULL.getField(),
+                                    DateSortType.NOT_PULL.getField(),
+                                    descriptionFontSize,
+                                    R.drawable.pull_w,
+                                    date.pull
+                                )
+                                describedIcon(
+                                    DateSortType.BOUNCE.getField(),
+                                    DateSortType.NOT_BOUNCE.getField(),
+                                    descriptionFontSize,
+                                    R.drawable.bounce_w,
+                                    date.bounce
+                                )
+                                describedIcon(
+                                    DateSortType.KISS.getField(),
+                                    DateSortType.NOT_KISS.getField(),
+                                    descriptionFontSize,
+                                    R.drawable.kiss_w,
+                                    date.kiss
+                                )
+                                describedIcon(
+                                    DateSortType.LAY.getField(),
+                                    DateSortType.NOT_LAY.getField(),
+                                    descriptionFontSize,
+                                    R.drawable.bed_w,
+                                    date.lay
+                                )
+                                describedIcon(
+                                    DateSortType.RECORD.getField(),
+                                    DateSortType.NOT_RECORD.getField(),
+                                    descriptionFontSize,
+                                    R.drawable.microphone_w,
+                                    date.recorded
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                describedQuantifier(
+                                    quantity = "${date.location!!}",
+                                    quantityFontSize = perfFontSize,
+                                    description = "Location",
+                                    descriptionFontSize = descriptionFontSize
+                                )
+                                describedQuantifier(
+                                    quantity = "${date.cost!!} €",
+                                    quantityFontSize = perfFontSize,
+                                    description = "Cost",
+                                    descriptionFontSize = descriptionFontSize
+                                )
+                                var dateNumberSuffix = "th"
+                                var dateNumberCount = date.dateNumber.toString()
+                                if (date.dateNumber == 0) {
+                                    dateNumberCount = "Instant"
+                                    dateNumberSuffix = ""
+                                } else if (date.dateNumber == 1) {
+                                    dateNumberSuffix = "st"
+                                } else if (date.dateNumber == 2) {
+                                    dateNumberSuffix = "nd"
+                                } else if (date.dateNumber == 3) {
+                                    dateNumberSuffix = "rd"
+                                }
+                                describedQuantifier(
+                                    quantity = "${dateNumberCount}${dateNumberSuffix}",
+                                    quantityFontSize = perfFontSize,
+                                    description = "Date",
+                                    descriptionFontSize = descriptionFontSize
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(13.dp))
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                modifier = Modifier.fillMaxHeight()
                             ) {
                                 Column(
                                     modifier = Modifier
-                                        .fillMaxWidth(0.7f)
+                                        .fillMaxWidth()
+                                        .fillMaxHeight()
+                                        .padding(7.dp)
                                 ) {
-                                    // TODO: integrate in the following subtitle minutes
-                                    var subtitle =
-                                        "${
-                                            FormatService.parseDate(date.date!!).dayOfWeek.toString()
-                                                .lowercase()
-                                                .replaceFirstChar {
-                                                    if (it.isLowerCase()) it.titlecase(
-                                                        Locale.getDefault()
-                                                    ) else it.toString()
-                                                }
-                                        } ${
-                                            FormatService.getTime(
-                                                date.startHour!!
-                                            )
-                                        } - ${
-                                            FormatService.getTime(
-                                                date.endHour!!
-                                            )
-                                        } : ${date.dateTime} minutes"
-                                    Row {
-                                        Text(
-                                            // TODO: convert date to integer inside week and then day of week
-                                            // TODO: compute minutes before filling date list
-                                            text = subtitle,
-                                            style = MaterialTheme.typography.bodySmall
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.height(15.dp))
-                                    Row {
-                                        Icon(
-                                            imageVector = Icons.Default.PinDrop,
-                                            contentDescription = "Location",
-                                            tint = MaterialTheme.colorScheme.onPrimary,
-                                            modifier = Modifier
-                                                .height(18.dp)
-                                        )
-                                        Text(
-                                            text = date.location!!,
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.height(15.dp))
-                                    Row {
-                                        Icon(
-                                            imageVector = Icons.Default.Euro,
-                                            contentDescription = "Cost",
-                                            tint = MaterialTheme.colorScheme.onPrimary,
-                                            modifier = Modifier
-                                                .height(18.dp)
-                                        )
-                                        Spacer(modifier = Modifier.width(5.dp))
-                                        Text(
-                                            text = date.cost.toString(),
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                    }
-                                }
-                                Column(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalArrangement = Arrangement.SpaceAround,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
+                                    Text(
+                                        text = "Lead:",
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                    Spacer(modifier = Modifier.height(5.dp))
                                     Row(
-                                        modifier = Modifier
-                                            .clickable {
-                                                // TODO: call edit lead dialog
-                                                onEvent(
-                                                    DateEvent.EditLead(
-                                                        lead,
-                                                        true
-                                                    )
-                                                )
-                                                /*onEvent(
-                                                DateEvent.ShowLeadDialog(
-                                                    false,
-                                                    false,
+                                        modifier = Modifier.clickable {
+                                            // TODO: call edit lead dialog
+                                            onEvent(
+                                                DateEvent.EditLead(
+                                                    lead,
                                                     true
                                                 )
-                                            )*/
-                                            }
+                                            )
+                                            /*onEvent(
+                                            DateEvent.ShowLeadDialog(
+                                                false,
+                                                false,
+                                                true
+                                            )
+                                        )*/
+                                        },
+                                        horizontalArrangement = Arrangement.spacedBy(7.dp)
                                     ) {
                                         // TODO: only once date, sets and sessions will be displayed in the same view (after refactor) allow lead edit from date card
                                         leadName(
@@ -263,97 +328,40 @@ fun DateCard(
                                         )
                                     }
                                 }
+                                Spacer(modifier = Modifier.height(5.dp))
                             }
                         }
                     }
-                }
-                Row(
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxHeight()
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth()
                     ) {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            modifier = Modifier.fillMaxHeight()
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                .background(
+                                    color = MaterialTheme.colorScheme.background,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                                .padding(7.dp)
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight()
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceEvenly,
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .fillMaxWidth()
-                                ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth(0.8f)
-                                            .fillMaxHeight()
-                                            .background(
-                                                color = MaterialTheme.colorScheme.background,
-                                                shape = RoundedCornerShape(10.dp)
-                                            )
-                                            .padding(7.dp)
-                                    ) {
-                                        Text(
-                                            text = "Sticking Points:",
-                                            style = MaterialTheme.typography.bodySmall
-                                        )
-                                        Spacer(modifier = Modifier.height(5.dp))
-                                        val stickingPoints =
-                                            if (date.stickingPoints!!.isBlank()) "No sticking points" else date.stickingPoints
-                                        if (stickingPoints != null) {
-                                            Text(
-                                                text = stickingPoints,
-                                                style = MaterialTheme.typography.bodyMedium
-                                            )
-                                        }
-                                    }
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                            .padding(7.dp)
-                                    ) {
-                                        var largeDateNumberText = date.dateNumber.toString()
-                                        var largeDateNumberTextStyle: TextStyle =
-                                            MaterialTheme.typography.titleLarge
-                                        if (date.dateNumber != 0) {
-                                            Text(
-                                                text = "Date:",
-                                                style = MaterialTheme.typography.bodySmall
-                                            )
-                                            Spacer(modifier = Modifier.height(5.dp))
-                                        } else {
-                                            largeDateNumberText = "iDate"
-                                            largeDateNumberTextStyle =
-                                                MaterialTheme.typography.titleMedium
-                                        }
-                                        Text(
-                                            text = largeDateNumberText,
-                                            style = largeDateNumberTextStyle
-                                        )
-                                    }
-                                }
-                                Spacer(modifier = Modifier.height(15.dp))
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceAround
-                                ) {
-                                    describedIcon("Pull", R.drawable.pull_w, date.pull)
-                                    describedIcon("Bounce", R.drawable.bounce_w, date.bounce)
-                                    describedIcon("Kiss", R.drawable.kiss_w, date.kiss)
-                                    describedIcon("Lay", R.drawable.bed_w, date.lay)
-                                    describedIcon("Record", R.drawable.microphone_w, date.recorded)
-                                }
+                            Text(
+                                text = "Sticking Points:",
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                            Spacer(modifier = Modifier.height(5.dp))
+                            val stickingPoints =
+                                if (date.stickingPoints!!.isBlank()) "No sticking points" else date.stickingPoints
+                            if (stickingPoints != null) {
+                                Text(
+                                    text = stickingPoints,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
                             }
                         }
                     }
@@ -364,11 +372,22 @@ fun DateCard(
 }
 
 @Composable
-fun describedIcon(flagDescription: String, @DrawableRes icon: Int, happened: Boolean) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        var color: Color = AlertLow
+fun describedIcon(
+    trueFlagDescription: String,
+    falseFlagDescription: String,
+    descriptionFontSize: TextUnit,
+    @DrawableRes icon: Int,
+    happened: Boolean
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(5.dp)
+    ) {
+        var color: Color = MaterialTheme.colorScheme.onPrimary
+        var flagDescription = trueFlagDescription
         if (!happened) {
-            color = AlertHigh
+            color = MaterialTheme.colorScheme.tertiary
+            flagDescription = falseFlagDescription
         }
         Image(
             painter = painterResource(icon),
@@ -376,12 +395,15 @@ fun describedIcon(flagDescription: String, @DrawableRes icon: Int, happened: Boo
             alignment = Alignment.Center,
             contentScale = ContentScale.Fit,
             modifier = Modifier
-                .height(20.dp),
+                .height(30.dp),
             colorFilter = ColorFilter.tint(color)
         )
+        Spacer(modifier = Modifier.height(5.dp))
         Text(
             text = flagDescription,
-            style = MaterialTheme.typography.bodySmall
+            fontSize = descriptionFontSize,
+            lineHeight = 10.sp,
+            textAlign = TextAlign.Center
         )
     }
 }
