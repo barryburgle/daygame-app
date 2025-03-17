@@ -1,6 +1,7 @@
 # Version 1.6.0 (2025-03-dd)
 
 **Features**
+- Insert, edit, delete, view and manage your dates 🩷
 - Update checker and new version download button ⬇️
 - Import and export cards interface improvements and bulk import-export 🗂️
 
