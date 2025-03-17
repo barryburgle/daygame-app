@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
-import com.barryburgle.gameapp.ui.CombineNine
+import com.barryburgle.gameapp.ui.CombineTwelve
 import com.barryburgle.gameapp.ui.stats.state.StatsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,11 +24,14 @@ class StatsViewModel(
     private val _setsHistogram = abstractSessionDao.getSetsHistogram()
     private val _convosHistogram = abstractSessionDao.getConvosHistogram()
     private val _contactsHistogram = abstractSessionDao.getContactsHistogram()
-    private val _ageHistogram = leadDao.getAgeHistogram()
-    private val _nationalityHistogram = leadDao.getNationalityHistogram()
+    private val _leadsAgeHistogram = leadDao.getAgeHistogram()
+    private val _leadsNationalityHistogram = leadDao.getNationalityHistogram()
+    private val _datesAgeHistogram = dateDao.getAgeHistogram()
+    private val _datesNumberHistogram = dateDao.getNumberHistogram()
+    private val _datesNationalityHistogram = dateDao.getNationalityHistogram()
 
     val state =
-        CombineNine(
+        CombineTwelve(
             _state,
             _abstractSessions,
             _leads,
@@ -36,9 +39,12 @@ class StatsViewModel(
             _setsHistogram,
             _convosHistogram,
             _contactsHistogram,
-            _ageHistogram,
-            _nationalityHistogram
-        ) { state, abstractSessions, leads, dates, setsHistogram, convosHistogram, contactsHistogram, ageHistogram, nationalityHistogram ->
+            _leadsAgeHistogram,
+            _leadsNationalityHistogram,
+            _datesAgeHistogram,
+            _datesNumberHistogram,
+            _datesNationalityHistogram
+        ) { state, abstractSessions, leads, dates, setsHistogram, convosHistogram, contactsHistogram, leadsAgeHistogram, leadsNationalityHistogram, datesAgeHistogram, datesNumberHistogram, datesNationalityHistogram ->
             state.copy(
                 abstractSessions = abstractSessions,
                 leads = leads,
@@ -46,8 +52,11 @@ class StatsViewModel(
                 setsHistogram = setsHistogram,
                 convosHistogram = convosHistogram,
                 contactsHistogram = contactsHistogram,
-                ageHistogram = ageHistogram,
-                nationalityHistogram = nationalityHistogram
+                leadsAgeHistogram = leadsAgeHistogram,
+                leadsNationalityHistogram = leadsNationalityHistogram,
+                datesAgeHistogram = datesAgeHistogram,
+                datesNumberHistogram = datesNumberHistogram,
+                datesNationalityHistogram = datesNationalityHistogram
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), StatsState())
 }

@@ -13,6 +13,9 @@ data class StatsState(
     val setsHistogram: List<Histogram> = emptyList(),
     val convosHistogram: List<Histogram> = emptyList(),
     val contactsHistogram: List<Histogram> = emptyList(),
-    val nationalityHistogram: List<CategoryHistogram> = emptyList(),
-    val ageHistogram: List<Histogram> = emptyList(),
+    val leadsNationalityHistogram: List<CategoryHistogram> = emptyList(),
+    val leadsAgeHistogram: List<Histogram> = emptyList(),
+    val datesNationalityHistogram: List<CategoryHistogram> = emptyList(),
+    val datesAgeHistogram: List<Histogram> = emptyList(),
+    val datesNumberHistogram: List<Histogram> = emptyList()
 )

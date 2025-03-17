@@ -13,7 +13,7 @@ fun LazyListScope.LeadsHistogramsSection(
     width: Dp
 ) {
     item {
-        state.ageHistogram.map { ageHistogram ->
+        state.leadsAgeHistogram.map { ageHistogram ->
             ageHistogram.metric?.let {
                 BarEntry(
                     it.toFloat(), ageHistogram.frequency
@@ -31,9 +31,9 @@ fun LazyListScope.LeadsHistogramsSection(
         }
     }
     item {
-        state.nationalityHistogram.indices.map { index ->
+        state.leadsNationalityHistogram.indices.map { index ->
             BarEntry(
-                index.toFloat(), state.nationalityHistogram[index].frequency
+                index.toFloat(), state.leadsNationalityHistogram[index].frequency
             )
         }?.let { it ->
             OutputBarCard(
@@ -43,7 +43,7 @@ fun LazyListScope.LeadsHistogramsSection(
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
                 ratio = false,
-                categories = state.nationalityHistogram.map { CountryEnum.getFlagByAlpha3(it.category) }
+                categories = state.leadsNationalityHistogram.map { CountryEnum.getFlagByAlpha3(it.category) }
             )
         }
     }
