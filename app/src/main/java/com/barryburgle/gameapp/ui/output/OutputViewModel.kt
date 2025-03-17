@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
-import com.barryburgle.gameapp.dao.session.AggregatedStatDao
+import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.manager.SessionManager
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.update
 
 class OutputViewModel(
     private val abstractSessionDao: AbstractSessionDao,
-    private val aggregatedStatDao: AggregatedStatDao,
+    private val aggregatedSessionsDao: AggregatedSessionsDao,
     private val settingDao: SettingDao,
     private val leadDao: LeadDao
 ) : ViewModel() {
@@ -26,9 +26,9 @@ class OutputViewModel(
     // TODO: let user set n for following query from tools screen with a writing query on db
     private val _abstractSessions = abstractSessionDao.getAllLimit(14)
     private val _leads = leadDao.getAll()
-    private val _weekStats = aggregatedStatDao.groupStatsByWeekNumber()
+    private val _weekStats = aggregatedSessionsDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    private val _monthStats = aggregatedStatDao.groupStatsByMonth()
+    private val _monthStats = aggregatedSessionsDao.groupStatsByMonth()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _averageLast = settingDao.getAverageLast()
 

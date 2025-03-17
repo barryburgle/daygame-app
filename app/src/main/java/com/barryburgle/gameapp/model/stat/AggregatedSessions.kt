@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 
 @Entity
-class AggregatedStat(
+class AggregatedSessions(
     @ColumnInfo(name = "sets") var sets: Float,
     @ColumnInfo(name = "convos") var convos: Float,
     @ColumnInfo(name = "contacts") var contacts: Float,

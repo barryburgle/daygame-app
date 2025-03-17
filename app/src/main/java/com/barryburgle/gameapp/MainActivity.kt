@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return db?.let {
                     OutputViewModel(
-                        it.abstractSessionDao, it.aggregatedStatDao, it.settingDao, it.leadDao
+                        it.abstractSessionDao, it.aggregatedSessionsDao, it.settingDao, it.leadDao
                     )
                 } as T
             }

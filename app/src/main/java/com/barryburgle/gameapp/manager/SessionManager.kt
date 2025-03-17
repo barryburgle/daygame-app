@@ -1,7 +1,7 @@
 package com.barryburgle.gameapp.manager
 
 import com.barryburgle.gameapp.model.session.AbstractSession
-import com.barryburgle.gameapp.model.stat.AggregatedStat
+import com.barryburgle.gameapp.model.stat.AggregatedSessions
 import com.github.mikephil.charting.data.BarEntry
 
 class SessionManager {
@@ -16,12 +16,12 @@ class SessionManager {
         }
 
         fun normalizeIds(
-            aggregatedStats: List<AggregatedStat>
-        ): List<AggregatedStat> {
-            for (index in aggregatedStats.indices) {
-                aggregatedStats[index].periodNumber = index
+            aggregatedSessions: List<AggregatedSessions>
+        ): List<AggregatedSessions> {
+            for (index in aggregatedSessions.indices) {
+                aggregatedSessions[index].periodNumber = index
             }
-            return aggregatedStats
+            return aggregatedSessions
         }
 
         fun computeAverageBarEntryList(barEntryList: List<BarEntry>): List<BarEntry> {
