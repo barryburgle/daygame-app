@@ -69,19 +69,19 @@ class DateViewModel(
                 viewModelScope.launch {
                     val date = _dateService.init(
                         id = null,
-                        leadId = _state.value.leadId,
+                        leadId = if(_state.value.leadId==0L) state.value.leadId else _state.value.leadId,
                         location = if (_state.value.location.isBlank()) state.value.location else _state.value.location,
                         date = if (_state.value.date.isBlank()) state.value.date else _state.value.date,
                         startHour = if (_state.value.startHour.isBlank()) state.value.startHour else _state.value.startHour,
                         endHour = if (_state.value.endHour.isBlank()) state.value.endHour else _state.value.endHour,
                         cost = if (_state.value.cost.isBlank()) state.value.cost.toInt() else _state.value.cost.toInt(),
                         dateNumber = if (_state.value.dateNumber.isBlank()) state.value.dateNumber.toInt() else _state.value.dateNumber.toInt(),
-                        dateType = _state.value.dateType,
-                        pull = _state.value.pull,
-                        bounce = _state.value.bounce,
-                        kiss = _state.value.kiss,
-                        lay = _state.value.lay,
-                        recorded = _state.value.recorded,
+                        dateType =  if(_state.value.dateType.isBlank()) state.value.dateType else _state.value.dateType,
+                        pull = if(!_state.value.pull) state.value.pull else _state.value.pull,
+                        bounce = if(!_state.value.bounce) state.value.bounce else _state.value.bounce,
+                        kiss = if(!_state.value.kiss) state.value.kiss else _state.value.kiss,
+                        lay = if(!_state.value.lay) state.value.lay else _state.value.lay,
+                        recorded = if(!_state.value.recorded) state.value.recorded else _state.value.recorded,
                         stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
                         tweetUrl = if (_state.value.tweetUrl.isBlank()) state.value.tweetUrl else _state.value.tweetUrl
                     )
