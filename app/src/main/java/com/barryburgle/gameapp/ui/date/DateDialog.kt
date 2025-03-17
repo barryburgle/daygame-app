@@ -487,12 +487,16 @@ fun DateDialog(
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Button(onClick = {
-                    onEvent(DateEvent.SaveDate)
-                    onEvent(DateEvent.HideDialog)
-                    Toast.makeText(localContext, "Date saved", Toast.LENGTH_SHORT).show()
+                    if (state.leadId == 0L) {
+                        Toast.makeText(localContext, "Please choose a lead", Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        onEvent(DateEvent.SaveDate)
+                        onEvent(DateEvent.HideDialog)
+                        Toast.makeText(localContext, "Date saved", Toast.LENGTH_SHORT).show()
+                    }
                 }) {
                     Text(text = "Save")
-                    // TODO: do not allow date insertion without lead insertion or link
                 }
             }
         }
