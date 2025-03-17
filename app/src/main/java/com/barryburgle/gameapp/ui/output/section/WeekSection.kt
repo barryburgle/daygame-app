@@ -12,11 +12,11 @@ fun LazyListScope.WeekSection(
     width: Dp
 ) {
     item {
-        state.weekStats.map { weekStat ->
-            weekStat.periodNumber?.let {
+        state.sessionsByWeek.map { singleWeek ->
+            singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
-                    weekStat.sets
+                    singleWeek.sets
                 )
             }
         }?.let { it ->
@@ -31,11 +31,11 @@ fun LazyListScope.WeekSection(
         }
     }
     item {
-        state.weekStats.map { weekStat ->
-            weekStat.periodNumber?.let {
+        state.sessionsByWeek.map { singleWeek ->
+            singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
-                    weekStat.convos
+                    singleWeek.convos
                 )
             }
         }?.let { it ->
@@ -50,11 +50,11 @@ fun LazyListScope.WeekSection(
         }
     }
     item {
-        state.weekStats.map { weekStat ->
-            weekStat.periodNumber?.let {
+        state.sessionsByWeek.map { singleWeek ->
+            singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
-                    weekStat.contacts
+                    singleWeek.contacts
                 )
             }
         }?.let { it ->
@@ -69,11 +69,30 @@ fun LazyListScope.WeekSection(
         }
     }
     item {
-        state.weekStats.map { weekStat ->
-            weekStat.periodNumber?.let {
+        state.datesByWeek.map { singleWeek ->
+            singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
-                    weekStat.avgIndex
+                    singleWeek.dates
+                )
+            }
+        }?.let { it ->
+            OutputCard(
+                height = height,
+                width = width,
+                chartLabel = "Dates",
+                barEntryList = it as List<BarEntry>,
+                integerValues = true,
+                movingAverageWindow = state.movingAverageWindow
+            )
+        }
+    }
+    item {
+        state.sessionsByWeek.map { singleWeek ->
+            singleWeek.periodNumber?.let {
+                BarEntry(
+                    it.toFloat(),
+                    singleWeek.avgIndex
                 )
             }
         }?.let { it ->
@@ -88,18 +107,18 @@ fun LazyListScope.WeekSection(
         }
     }
     item {
-        state.weekStats.map { weekStat ->
-            weekStat.periodNumber?.let {
+        state.sessionsByWeek.map { singleWeek ->
+            singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
-                    weekStat.timeSpent
+                    singleWeek.timeSpent
                 )
             }
         }?.let { it ->
             OutputCard(
                 height = height,
                 width = width,
-                chartLabel = "Time Spent [Hours]",
+                chartLabel = "Session Time [Hours]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
                 movingAverageWindow = state.movingAverageWindow
@@ -107,11 +126,30 @@ fun LazyListScope.WeekSection(
         }
     }
     item {
-        state.weekStats.map { weekStat ->
-            weekStat.periodNumber?.let {
+        state.datesByWeek.map { singleWeek ->
+            singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
-                    weekStat.avgConvoRatio * 100
+                    singleWeek.dateTimeSpent
+                )
+            }
+        }?.let { it ->
+            OutputCard(
+                height = height,
+                width = width,
+                chartLabel = "Date Time [Hours]",
+                barEntryList = it as List<BarEntry>,
+                integerValues = true,
+                movingAverageWindow = state.movingAverageWindow
+            )
+        }
+    }
+    item {
+        state.sessionsByWeek.map { singleWeek ->
+            singleWeek.periodNumber?.let {
+                BarEntry(
+                    it.toFloat(),
+                    singleWeek.avgConvoRatio * 100
                 )
             }
         }?.let { it ->
@@ -126,11 +164,11 @@ fun LazyListScope.WeekSection(
         }
     }
     item {
-        state.weekStats.map { weekStat ->
-            weekStat.periodNumber?.let {
+        state.sessionsByWeek.map { singleWeek ->
+            singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
-                    weekStat.avgContactRatio * 100
+                    singleWeek.avgContactRatio * 100
                 )
             }
         }?.let { it ->
