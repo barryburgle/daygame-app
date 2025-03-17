@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return db?.let {
                     OutputViewModel(
-                        it.abstractSessionDao, it.aggregatedSessionsDao, it.settingDao, it.leadDao
+                        it.abstractSessionDao, it.aggregatedSessionsDao, it.aggregatedDatesDao, it.settingDao, it.leadDao
                     )
                 } as T
             }
@@ -90,7 +90,7 @@ class MainActivity : ComponentActivity() {
     private val statsViewModel by viewModels<StatsViewModel>(factoryProducer = {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return db?.let { StatsViewModel(it.abstractSessionDao, it.leadDao) } as T
+                return db?.let { StatsViewModel(it.abstractSessionDao, it.leadDao, it.dateDao) } as T
             }
         }
     })
