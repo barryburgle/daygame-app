@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -208,7 +209,7 @@ fun DateCard(
                                 modifier = Modifier
                                     .padding(5.dp)
                                     .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceAround
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 describedIcon(
                                     DateSortType.PULL.getField(),
@@ -385,18 +386,29 @@ fun describedIcon(
         var color: Color = MaterialTheme.colorScheme.onPrimary
         var flagDescription = trueFlagDescription
         if (!happened) {
-            color = MaterialTheme.colorScheme.tertiary
+            color = MaterialTheme.colorScheme.secondaryContainer
             flagDescription = falseFlagDescription
         }
-        Image(
-            painter = painterResource(icon),
-            contentDescription = flagDescription,
-            alignment = Alignment.Center,
-            contentScale = ContentScale.Fit,
+        Column(
             modifier = Modifier
-                .height(30.dp),
-            colorFilter = ColorFilter.tint(color)
-        )
+                .background(
+                    color = MaterialTheme.colorScheme.background,
+                    shape = RoundedCornerShape(25.dp)
+                )
+                .size(50.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(icon),
+                contentDescription = flagDescription,
+                alignment = Alignment.Center,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .height(30.dp),
+                colorFilter = ColorFilter.tint(color)
+            )
+        }
         Spacer(modifier = Modifier.height(5.dp))
         Text(
             text = flagDescription,
