@@ -9,6 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
+import com.barryburgle.gameapp.dao.session.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.model.date.Date
@@ -24,6 +25,7 @@ import com.barryburgle.gameapp.model.setting.Setting
 abstract class GameAppDatabase : RoomDatabase() {
     abstract val abstractSessionDao: AbstractSessionDao
     abstract val aggregatedSessionsDao: AggregatedSessionsDao
+    abstract val aggregatedDatesDao: AggregatedDatesDao
     abstract val settingDao: SettingDao
     abstract val leadDao: LeadDao
     abstract val dateDao: DateDao
