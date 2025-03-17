@@ -20,7 +20,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -60,7 +59,6 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalDate
 import java.time.LocalTime
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateDialog(
     state: DateState,
@@ -507,11 +505,14 @@ fun setState(
     state: DateState
 ) {
     if (state.editDate != null) {
+        state.leadId = state.editDate.leadId!!
+        state.location = state.editDate.location!!
         state.date = state.editDate.date!!.substring(0, 10)
         state.startHour = state.editDate.startHour.substring(11, 16)
         state.endHour = state.editDate.endHour.substring(11, 16)
-        state.dateNumber = state.editDate.dateNumber.toString()
         state.cost = state.editDate.cost.toString()
+        state.dateNumber = state.editDate.dateNumber.toString()
+        state.dateType = state.editDate.dateType
         state.pull = state.editDate.pull
         state.bounce = state.editDate.bounce
         state.kiss = state.editDate.kiss
@@ -520,6 +521,7 @@ fun setState(
         if (state.stickingPoints.isBlank()) {
             state.stickingPoints = state.editDate.stickingPoints!!
         }
+        state.tweetUrl = state.editDate.tweetUrl!!
     }
 }
 
