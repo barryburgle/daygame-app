@@ -34,6 +34,7 @@ fun StatsScreen(
     spaceFromTop: Dp,
     spaceFromBottom: Dp
 ) {
+    // TODO: for each one of the cards "Sessions", "Leads" and "Dates" the default version that should be displayed should be a contracted one with only absolute counts, leading to showing performances on a dropdown arrow touch
     val heigh: Dp = 200.dp
     val width: Dp = 320.dp
     Scaffold { padding ->
@@ -61,8 +62,8 @@ fun StatsScreen(
                         )
                         StatsCard(
                             modifier = cardModifier,
-                            title = "Overall",
-                            description = "${GlobalStatsService.computeSpentHours(state.abstractSessions)} hours spent, on average a set each ${
+                            title = "Sessions",
+                            description = "${GlobalStatsService.computeSessionSpentHours(state.abstractSessions)} hours spent on sessions, on average a set each ${
                                 GlobalStatsService.computeAvgApproachTime(
                                     state.abstractSessions
                                 )
@@ -135,7 +136,77 @@ fun StatsScreen(
                                         socials
                                     )
                                 } %",
-                                secondPerformanceDescription = "Social\nRatio"
+                                secondPerformanceDescription = "Social\nRatio",
+                                thirdPerformanceQuantity = "${
+                                    GlobalStatsService.computeGenericRatio(
+                                        state.leads.size,
+                                        state.dates.size
+                                    )
+                                } %",
+                                thirdPerformanceDescription = "Date to Lead\nRatio",
+                            )
+                        }
+                    }
+                }
+                if (state.dates.isNotEmpty()) {
+                    item {
+                        Row {
+                            Spacer(
+                                modifier = Modifier
+                                    .width(spaceFromLeft)
+                            )
+                            val pulls: Int = state.dates.filter { date -> date.pull }.size
+                            val bounces: Int = state.dates.filter { date -> date.bounce }.size
+                            val kisses: Int = state.dates.filter { date -> date.kiss }.size
+                            val lays: Int = state.dates.filter { date -> date.lay }.size
+                            val recorded: Int = state.dates.filter { date -> date.recorded }.size
+                            StatsCard(
+                                modifier = cardModifier,
+                                title = "Dates",
+                                description = "${GlobalStatsService.computeDateSpentHours(state.dates)} hours spent on dates, on average a lay each ${
+                                    GlobalStatsService.computeAvgLayTime(
+                                        state.dates,
+                                        lays
+                                    )
+                                } minutes",
+                                firstQuantifierQuantity = "${state.dates.size}",
+                                firstQuantifierDescription = "Dates",
+                                secondQuantifierQuantity = "${pulls}",
+                                secondQuantifierDescription = "Pulls",
+                                thirdQuantifierQuantity = "${bounces}",
+                                thirdQuantifierDescription = "Bounces",
+                                fourthQuantifierQuantity = "${kisses}",
+                                fourthQuantifierDescription = "Kisses",
+                                fifthQuantifierQuantity = "${lays}",
+                                fifthQuantifierDescription = "Lays",
+                                firstPerformanceQuantity = "${
+                                    GlobalStatsService.computeGenericRatio(
+                                        state.dates.size,
+                                        pulls
+                                    )
+                                } %",
+                                firstPerformanceDescription = "Pull to Date\nRatio",
+                                secondPerformanceQuantity = "${
+                                    GlobalStatsService.computeGenericRatio(
+                                        pulls,
+                                        bounces
+                                    )
+                                } %",
+                                secondPerformanceDescription = "Bounce to Pull\nRatio",
+                                thirdPerformanceQuantity = "${
+                                    GlobalStatsService.computeGenericRatio(
+                                        bounces,
+                                        kisses
+                                    )
+                                } %",
+                                thirdPerformanceDescription = "Kiss to Bounce\nRatio",
+                                fourthPerformanceQuantity = "${
+                                    GlobalStatsService.computeGenericRatio(
+                                        kisses,
+                                        lays
+                                    )
+                                } %",
+                                fourthPerformanceDescription = "Lay to Kiss\nRatio"
                             )
                         }
                     }
