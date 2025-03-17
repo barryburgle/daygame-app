@@ -6,6 +6,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.stat.CategoryHistogram
+import com.barryburgle.gameapp.model.stat.Histogram
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -85,4 +87,13 @@ interface DateDao {
 
     @Query("SELECT * from meeting ORDER BY week_number DESC, meeting_date DESC")
     fun getByWeekNumber(): Flow<List<Date>>
+
+    @Query("SELECT nationality as category, COUNT(*) as frequency FROM lead where lead.id IN (SELECT DISTINCT(lead_id) FROM meeting) GROUP BY nationality ORDER BY nationality")
+    fun getNationalityHistogram(): Flow<List<CategoryHistogram>>
+
+    @Query("SELECT age as metric, COUNT(*) as frequency FROM lead where lead.id IN (SELECT DISTINCT(lead_id) FROM meeting) GROUP BY age ORDER BY age")
+    fun getAgeHistogram(): Flow<List<Histogram>>
+
+    @Query("SELECT date_number as metric, COUNT(*) as frequency FROM meeting GROUP BY date_number ORDER BY date_number")
+    fun getNumberHistogram(): Flow<List<Histogram>>
 }
