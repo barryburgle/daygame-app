@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.service
 
+import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.session.AbstractSession
 import kotlin.math.truncate
 
@@ -37,6 +38,17 @@ class GlobalStatsService {
             return contacts
         }
 
+        private fun computeDateTime(
+            dateList: List<Date>
+        ): Long {
+            // TODO: unit test or refactor
+            var dateTime: Long = 0
+            for (date in dateList) {
+                dateTime = dateTime + date.dateTime
+            }
+            return dateTime
+        }
+
         private fun computeSessionTime(
             abstractSessionList: List<AbstractSession>
         ): Long {
@@ -47,12 +59,31 @@ class GlobalStatsService {
             return sessionTime
         }
 
-        fun computeSpentHours(
+        fun computeDateSpentHours(
+            dateList: List<Date>
+        ): Long {
+            // TODO: unit test or refactor
+            var dateTime = computeDateTime(dateList)
+            var spentHours = dateTime / 60L
+            return spentHours
+        }
+
+        fun computeSessionSpentHours(
             abstractSessionList: List<AbstractSession>
         ): Long {
             var sessionTime = computeSessionTime(abstractSessionList)
             var spentHours = sessionTime / 60L
             return spentHours
+        }
+
+        fun computeAvgLayTime(
+            dateList: List<Date>,
+            lays: Int
+        ): Long {
+            // TODO: unit test or refactor
+            var dateTime = computeDateTime(dateList)
+            var avgLayTime = dateTime / lays
+            return avgLayTime
         }
 
         fun computeAvgApproachTime(

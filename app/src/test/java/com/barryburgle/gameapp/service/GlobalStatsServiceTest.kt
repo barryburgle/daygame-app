@@ -33,7 +33,7 @@ class GlobalStatsServiceTest : SessionServiceTestUtils() {
     fun computeSpentHoursTest() {
         TestCase.assertEquals(
             TOTAL_HOURS,
-            GlobalStatsService.computeSpentHours(abstractSessionList)
+            GlobalStatsService.computeSessionSpentHours(abstractSessionList)
         )
     }
 
