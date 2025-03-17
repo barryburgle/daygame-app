@@ -32,6 +32,10 @@ fun StatsCard(
     secondQuantifierDescription: String,
     thirdQuantifierQuantity: String,
     thirdQuantifierDescription: String,
+    fourthQuantifierQuantity: String? = null,
+    fourthQuantifierDescription: String? = null,
+    fifthQuantifierQuantity: String? = null,
+    fifthQuantifierDescription: String? = null,
     firstPerformanceQuantity: String,
     firstPerformanceDescription: String,
     secondPerformanceQuantity: String,
@@ -39,7 +43,9 @@ fun StatsCard(
     thirdPerformanceQuantity: String? = null,
     thirdPerformanceDescription: String? = null,
     fourthPerformanceQuantity: String? = null,
-    fourthPerformanceDescription: String? = null
+    fourthPerformanceDescription: String? = null,
+    fifthPerformanceQuantity: String? = null,
+    fifthPerformanceDescription: String? = null
 ) {
     val countFontSize = 50.sp
     val perfFontSize = 15.sp
@@ -113,6 +119,22 @@ fun StatsCard(
                                 description = thirdQuantifierDescription,
                                 descriptionFontSize = descriptionFontSize
                             )
+                            if (fourthQuantifierQuantity != null && fourthQuantifierDescription != null) {
+                                describedQuantifier(
+                                    quantity = fourthQuantifierQuantity,
+                                    quantityFontSize = countFontSize,
+                                    description = fourthQuantifierDescription,
+                                    descriptionFontSize = descriptionFontSize
+                                )
+                            }
+                            if (fifthQuantifierQuantity != null && fifthQuantifierDescription != null) {
+                                describedQuantifier(
+                                    quantity = fifthQuantifierQuantity,
+                                    quantityFontSize = countFontSize,
+                                    description = fifthQuantifierDescription,
+                                    descriptionFontSize = descriptionFontSize
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.height(12.dp))
                         Row(
@@ -146,6 +168,14 @@ fun StatsCard(
                                     quantity = fourthPerformanceQuantity,
                                     quantityFontSize = perfFontSize,
                                     description = fourthPerformanceDescription,
+                                    descriptionFontSize = descriptionFontSize
+                                )
+                            }
+                            if (fifthPerformanceQuantity != null && fifthPerformanceDescription != null) {
+                                describedQuantifier(
+                                    quantity = fifthPerformanceQuantity,
+                                    quantityFontSize = perfFontSize,
+                                    description = fifthPerformanceDescription,
                                     descriptionFontSize = descriptionFontSize
                                 )
                             }
