@@ -243,7 +243,6 @@ fun InputCard(
                                 descriptionFontSize = descriptionFontSize
                             )
                         }
-                        Spacer(modifier = Modifier.height(13.dp))
                         Row(
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             modifier = Modifier.fillMaxHeight()
