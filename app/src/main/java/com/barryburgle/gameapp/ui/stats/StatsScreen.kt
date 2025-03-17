@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.service.GlobalStatsService
 import com.barryburgle.gameapp.ui.output.sectionTitleAndDescription
+import com.barryburgle.gameapp.ui.stats.section.DatesHistogramsSection
 import com.barryburgle.gameapp.ui.stats.section.LeadsHistogramsSection
 import com.barryburgle.gameapp.ui.stats.section.SessionsHistogramsSection
 import com.barryburgle.gameapp.ui.stats.state.StatsState
@@ -258,6 +259,37 @@ fun StatsScreen(
                             )
                         }
                         LeadsHistogramsSection(state, heigh, width)
+                        item {
+                            Spacer(
+                                modifier = Modifier.width(spaceFromLeft - 7.dp)
+                            )
+                        }
+                    }
+                }
+                item {
+                    Row {
+                        Spacer(
+                            modifier = Modifier
+                                .width(spaceFromLeft)
+                        )
+                        sectionTitleAndDescription(
+                            "Dates Histograms",
+                            "Number of dates with specific characteristics:"
+                        )
+                    }
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(7.dp)
+                    ) {
+                        item {
+                            Spacer(
+                                modifier = Modifier.width(spaceFromLeft - 7.dp)
+                            )
+                        }
+                        DatesHistogramsSection(
+                            state,
+                            heigh,
+                            width
+                        )
                         item {
                             Spacer(
                                 modifier = Modifier.width(spaceFromLeft - 7.dp)
