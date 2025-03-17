@@ -507,18 +507,30 @@ fun setState(
 ) {
     if (state.editDate != null) {
         state.leadId = state.editDate.leadId!!
-        state.location = state.editDate.location!!
+        if (state.location.isBlank()) {
+            state.location = state.editDate.location!!
+        }
         state.date = state.editDate.date!!.substring(0, 10)
         state.startHour = state.editDate.startHour.substring(11, 16)
         state.endHour = state.editDate.endHour.substring(11, 16)
         state.cost = state.editDate.cost.toString()
         state.dateNumber = state.editDate.dateNumber.toString()
         state.dateType = state.editDate.dateType
-        state.pull = state.editDate.pull
-        state.bounce = state.editDate.bounce
-        state.kiss = state.editDate.kiss
-        state.lay = state.editDate.lay
-        state.recorded = state.editDate.recorded
+        if (state.pull == state.editDate.pull) {
+            state.pull = state.editDate.pull
+        }
+        if (state.bounce == state.editDate.bounce) {
+            state.bounce = state.editDate.bounce
+        }
+        if (state.kiss == state.editDate.kiss) {
+            state.kiss = state.editDate.kiss
+        }
+        if (state.lay == state.editDate.lay) {
+            state.lay = state.editDate.lay
+        }
+        if (state.recorded == state.editDate.recorded) {
+            state.recorded = state.editDate.recorded
+        }
         if (state.stickingPoints.isBlank()) {
             state.stickingPoints = state.editDate.stickingPoints!!
         }
