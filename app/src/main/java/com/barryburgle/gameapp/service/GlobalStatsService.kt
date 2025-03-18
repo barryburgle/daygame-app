@@ -41,7 +41,6 @@ class GlobalStatsService {
         private fun computeDateTime(
             dateList: List<Date>
         ): Long {
-            // TODO: unit test or refactor
             var dateTime: Long = 0
             for (date in dateList) {
                 dateTime = dateTime + date.dateTime
@@ -62,7 +61,6 @@ class GlobalStatsService {
         fun computeDateSpentHours(
             dateList: List<Date>
         ): Long {
-            // TODO: unit test or refactor
             var dateTime = computeDateTime(dateList)
             var spentHours = dateTime / 60L
             return spentHours
@@ -80,7 +78,6 @@ class GlobalStatsService {
             dateList: List<Date>,
             lays: Int
         ): Long {
-            // TODO: unit test or refactor
             var dateTime = computeDateTime(dateList)
             var avgLayTime = dateTime / lays
             return avgLayTime

@@ -30,10 +30,26 @@ class GlobalStatsServiceTest : ServiceTestData() {
     }
 
     @Test
-    fun computeSpentHoursTest() {
+    fun computeDateSpentHoursTest() {
+        TestCase.assertEquals(
+            DATE_TOTAL_HOURS,
+            GlobalStatsService.computeDateSpentHours(datesList)
+        )
+    }
+
+    @Test
+    fun computeSessionSpentHoursTest() {
         TestCase.assertEquals(
             TOTAL_HOURS,
             GlobalStatsService.computeSessionSpentHours(abstractSessionList)
+        )
+    }
+
+    @Test
+    fun computeAvgLayTimeTest() {
+        TestCase.assertEquals(
+            AVG_LAY_TIME,
+            GlobalStatsService.computeAvgLayTime(datesList, LAYS)
         )
     }
 
@@ -78,10 +94,18 @@ class GlobalStatsServiceTest : ServiceTestData() {
     }
 
     @Test
-    fun computeAvgLeadTime() {
+    fun computeAvgLeadTimeTest() {
         TestCase.assertEquals(
             AVG_LEAD_TIME,
             GlobalStatsService.computeAvgLeadTime(TOTAL_CONTACTS, abstractSessionList)
+        )
+    }
+
+    @Test
+    fun computeGenericRatioTest() {
+        TestCase.assertEquals(
+            (CONTACT_RATIO * 100).toInt(),
+            GlobalStatsService.computeGenericRatio(SETS, CONTACTS)
         )
     }
 }
