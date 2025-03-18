@@ -1,11 +1,12 @@
 package com.barryburgle.gameapp.service
 
+import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.session.AbstractSession
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 
-open class SessionServiceTestUtils {
+open class ServiceTestData {
     val DATE = LocalDate.of(2023, 9, 13)
     val START_HOUR = LocalTime.of(16, 0, 0)
     val END_HOUR = LocalTime.of(18, 0, 0)
@@ -49,6 +50,21 @@ open class SessionServiceTestUtils {
     val AVG_INDEX = 5.69
     val AVG_LEAD_TIME = 75L
 
+    val LEAD_ID: Long = 1L
+    val LOCATION: String = "location"
+    val COST: Int = 20
+    val DATE_NUMBER: Int = 1
+    val DATE_TYPE: String = "date-type"
+    val PULL: Boolean = false
+    val BOUNCE: Boolean = false
+    val KISS: Boolean = false
+    val LAY: Boolean = true
+    val RECORDED: Boolean = false
+    val TWEET_URL: String = "https://..."
+    val AVG_LAY_TIME = 120L
+    val DATE_TOTAL_HOURS = 4L
+    val LAYS = 2
+
     val abstractSessionList: List<AbstractSession> = listOf(
         AbstractSession(
             null,
@@ -87,6 +103,53 @@ open class SessionServiceTestUtils {
             SECOND_INDEX,
             SECOND_DAY_OF_WEEK.value,
             SECOND_WEEK_NUMBER
+        )
+    )
+
+    val datesList: List<Date> = listOf(
+        Date(
+            null,
+            DATE.toString(),
+            LEAD_ID,
+            LOCATION,
+            DATE.toString(),
+            START_HOUR.toString(),
+            END_HOUR.toString(),
+            COST,
+            DATE_NUMBER,
+            DATE_TYPE,
+            PULL,
+            BOUNCE,
+            KISS,
+            LAY,
+            RECORDED,
+            STICKING_POINTS,
+            TWEET_URL,
+            SESSION_TIME,
+            DAY_OF_WEEK.value,
+            WEEK_NUMBER
+        ),
+        Date(
+            null,
+            DATE.toString(),
+            LEAD_ID,
+            LOCATION,
+            DATE.toString(),
+            START_HOUR.toString(),
+            END_HOUR.toString(),
+            COST,
+            DATE_NUMBER,
+            DATE_TYPE,
+            PULL,
+            BOUNCE,
+            KISS,
+            LAY,
+            RECORDED,
+            STICKING_POINTS,
+            TWEET_URL,
+            SESSION_TIME,
+            DAY_OF_WEEK.value,
+            WEEK_NUMBER
         )
     )
 }

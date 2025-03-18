@@ -1,23 +1,12 @@
 package com.barryburgle.gameapp.service.date
 
 import com.barryburgle.gameapp.model.date.Date
-import com.barryburgle.gameapp.service.SessionServiceTestUtils
+import com.barryburgle.gameapp.service.ServiceTestData
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.junit.Test
 
-class DateServiceTest : SessionServiceTestUtils() {
-    val LEAD_ID: Long = 1L
-    val LOCATION: String = "location"
-    val COST: Int = 20
-    val DATE_NUMBER: Int = 1
-    val DATE_TYPE: String = "date-type"
-    val PULL: Boolean = false
-    val BOUNCE: Boolean = false
-    val KISS: Boolean = false
-    val LAY: Boolean = false
-    val RECORDED: Boolean = false
-    val TWEET_URL: String = "https://..."
+class DateServiceTest : ServiceTestData() {
 
     val dateService: DateService = DateService()
 
