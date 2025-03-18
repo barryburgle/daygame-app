@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.date
 
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowOutward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
@@ -31,6 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
@@ -55,6 +59,8 @@ fun DateCard(
     onEvent: (DateEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val localContext = LocalContext.current.applicationContext
+    val uriHandler = LocalUriHandler.current
     val perfFontSize = 15.sp
     val descriptionFontSize = 10.sp
     Card(
@@ -284,6 +290,46 @@ fun DateCard(
                                     description = "Date",
                                     descriptionFontSize = descriptionFontSize
                                 )
+                                Column(
+                                    modifier = Modifier.fillMaxHeight(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .background(
+                                                MaterialTheme.colorScheme.primaryContainer,
+                                                shape = RoundedCornerShape(30.dp)
+                                            )
+                                            .size(30.dp)
+                                    ) {
+                                        IconButton(onClick = {
+                                            if (date.tweetUrl != null && date.tweetUrl!!.isNotBlank()) {
+                                                uriHandler.openUri(date.tweetUrl!!)
+                                            } else {
+                                                Toast.makeText(
+                                                    localContext,
+                                                    "No tweet url saved",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Default.ArrowOutward,
+                                                contentDescription = "Tweet",
+                                                tint = MaterialTheme.colorScheme.inversePrimary,
+                                                modifier = Modifier
+                                                    .height(20.dp)
+                                            )
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.height(5.dp))
+                                    Text(
+                                        text = "Tweet",
+                                        fontSize = descriptionFontSize,
+                                        lineHeight = 10.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
                             }
                             Row(
                                 horizontalArrangement = Arrangement.SpaceEvenly,
