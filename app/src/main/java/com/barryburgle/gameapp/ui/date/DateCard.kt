@@ -150,9 +150,7 @@ fun DateCard(
                                                 shape = RoundedCornerShape(30.dp)
                                             )
                                     ) {
-                                        // TODO: pass fields location, date type and tweet url to dialog before updating
-                                        // TODO: make date flags updatable
-                                        // TODO: test updateing a date and changing all vars about that
+                                        // TODO: import date flags values from the date
                                         IconButton(onClick = {
                                             onEvent(
                                                 DateEvent.EditDate(
