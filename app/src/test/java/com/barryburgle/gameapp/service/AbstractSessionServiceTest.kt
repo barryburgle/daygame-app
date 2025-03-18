@@ -3,7 +3,7 @@ package com.barryburgle.gameapp.service
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 
-class AbstractSessionServiceTest : SessionServiceTestUtils() {
+class AbstractSessionServiceTest : ServiceTestData() {
 
     @Test
     fun computeApproachTimeTest() {

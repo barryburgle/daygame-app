@@ -1,12 +1,12 @@
 package com.barryburgle.gameapp.service.batch
 
 import com.barryburgle.gameapp.model.session.AbstractSession
-import com.barryburgle.gameapp.service.SessionServiceTestUtils
+import com.barryburgle.gameapp.service.ServiceTestData
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.junit.Test
 
-class BatchSessionServiceTest : SessionServiceTestUtils() {
+class BatchSessionServiceTest : ServiceTestData() {
 
     val batchSessionService: BatchSessionService = BatchSessionService()
 

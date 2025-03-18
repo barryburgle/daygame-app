@@ -3,7 +3,7 @@ package com.barryburgle.gameapp.service
 import junit.framework.TestCase
 import org.junit.Test
 
-class GlobalStatsServiceTest : SessionServiceTestUtils() {
+class GlobalStatsServiceTest : ServiceTestData() {
 
     @Test
     fun computeSetsTest() {

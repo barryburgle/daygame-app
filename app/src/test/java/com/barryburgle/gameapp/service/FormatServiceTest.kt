@@ -3,7 +3,7 @@ package com.barryburgle.gameapp.service
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 
-class FormatServiceTest : SessionServiceTestUtils() {
+class FormatServiceTest : ServiceTestData() {
     val SAVED_DATE = "2023-10-15T10:12+00"
     val VIEW_DATE = "15-10-2023"
     val VIEW_TIME = "10:12"

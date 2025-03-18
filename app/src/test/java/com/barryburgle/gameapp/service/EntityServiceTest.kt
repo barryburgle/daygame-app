@@ -2,9 +2,8 @@ package com.barryburgle.gameapp.service
 
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
-import java.time.Month
 
-class EntityServiceTest : SessionServiceTestUtils() {
+class EntityServiceTest : ServiceTestData() {
 
     @Test
     fun computeTimeTest() {
