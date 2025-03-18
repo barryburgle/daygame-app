@@ -9,7 +9,6 @@ import java.time.ZoneOffset
 
 class DateService : DateInitializer, EntityService() {
 
-    // TODO: unit test the following method
     override fun init(
         id: String?,
         leadId: Long,
