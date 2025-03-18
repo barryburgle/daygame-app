@@ -150,6 +150,7 @@ fun StatsScreen(
                     }
                 }
                 if (state.dates.isNotEmpty()) {
+                    // TODO: check why the stat screen fails with empty dates list from db, and check the same for sessions and leads
                     item {
                         Row {
                             Spacer(
@@ -160,7 +161,6 @@ fun StatsScreen(
                             val bounces: Int = state.dates.filter { date -> date.bounce }.size
                             val kisses: Int = state.dates.filter { date -> date.kiss }.size
                             val lays: Int = state.dates.filter { date -> date.lay }.size
-                            val recorded: Int = state.dates.filter { date -> date.recorded }.size
                             StatsCard(
                                 modifier = cardModifier,
                                 title = "Dates",

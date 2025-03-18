@@ -54,6 +54,7 @@ fun DataExchangeCard(
     dateCsvService: DateCsvService,
     onEvent: (ToolEvent) -> Unit
 ) {
+    // TODO: all icons in this caed should be round
     var icon: ImageVector? = null
     if (DataExchangeTypeEnum.EXPORT.type.equals(cardTitle)) {
         icon = Icons.Default.Upload

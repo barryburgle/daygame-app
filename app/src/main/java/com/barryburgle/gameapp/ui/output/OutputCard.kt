@@ -32,6 +32,7 @@ fun OutputCard(
     integerValues: Boolean,
     movingAverageWindow: Int
 ) {
+    // TODO: if no data are passed write "Insert new {chartLabel}s" at the center of the card
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
