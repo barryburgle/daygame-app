@@ -33,6 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -68,6 +70,7 @@ fun DateDialog(
 ) {
     // TODO: make all the fields displayed in the dialog change when in edit mode (similarly to counters)
     val localContext = LocalContext.current.applicationContext
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val dateDialogState = rememberMaterialDialogState()
     val startHourDialogState = rememberMaterialDialogState()
     val endHourDialogState = rememberMaterialDialogState()
@@ -357,7 +360,17 @@ fun DateDialog(
                     }
                     Button(colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer
-                    ), onClick = { /*TODO: copy the url in clipboard*/ }) {
+                    ), onClick = {
+                        var tweetUrl: String = clipboardManager.getText()!!.toString()
+                        if (tweetUrl.startsWith("https://x.com/")) {
+                            onEvent(DateEvent.SetTweetUrl(tweetUrl))
+                            Toast.makeText(
+                                localContext,
+                                "Copied tweet url",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
