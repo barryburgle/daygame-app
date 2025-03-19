@@ -52,6 +52,7 @@ import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
@@ -192,13 +193,13 @@ fun SessionDialog(
                         Column(
                             modifier = Modifier.width(sessionTimeColumnWidth)
                         ) {
-                            formSectionDescription("Set session's:", descriptionFontSize)
+                            DialogFormSectionDescription("Set session's:", descriptionFontSize)
                         }
                         Spacer(modifier = Modifier.width(10.dp))
                         Column(
                             modifier = Modifier.width(sessionLeadColumnWidth - addLeadColumnWidth)
                         ) {
-                            formSectionDescription("Leads:", descriptionFontSize)
+                            DialogFormSectionDescription("Leads:", descriptionFontSize)
                         }
                         Column(
                             modifier = Modifier.width(addLeadColumnWidth)
@@ -380,18 +381,6 @@ fun timeInputButton(
             modifier = Modifier.fillMaxWidth()
         )
     }
-}
-
-@Composable
-fun formSectionDescription(
-    text: String, descriptionFontSize: TextUnit
-) {
-    Text(
-        text = text,
-        fontSize = descriptionFontSize,
-        fontWeight = FontWeight.W600,
-        textAlign = TextAlign.Center
-    )
 }
 
 @Composable

@@ -51,6 +51,7 @@ import com.barryburgle.gameapp.ui.date.state.DateState
 import com.barryburgle.gameapp.ui.input.InputCounter
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
+import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
@@ -194,7 +195,7 @@ fun DateDialog(
                         Column(
                             modifier = Modifier.width(sessionTimeColumnWidth)
                         ) {
-                            formSectionDescription("Set date's:", descriptionFontSize)
+                            DialogFormSectionDescription("Set date's:", descriptionFontSize)
                         }
                         Spacer(modifier = Modifier.width(10.dp))
                         var leadIcon = Icons.Default.Add
@@ -202,14 +203,14 @@ fun DateDialog(
                             modifier = Modifier.width(sessionLeadColumnWidth - addLeadColumnWidth)
                         ) {
                             if (state.leadId == 0L) {
-                                com.barryburgle.gameapp.ui.input.formSectionDescription(
+                                DialogFormSectionDescription(
                                     "Add lead:",
                                     descriptionFontSize
                                 )
                             } else {
                                 val lead =
                                     state.allLeads.filter { lead -> lead.id == state.leadId }.get(0)
-                                com.barryburgle.gameapp.ui.input.formSectionDescription(
+                                DialogFormSectionDescription(
                                     CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age,
                                     descriptionFontSize
                                 )
@@ -563,18 +564,6 @@ fun timeInputButton(
     }
 }
 
-@Composable
-fun formSectionDescription(
-    text: String, descriptionFontSize: TextUnit
-) {
-    // TODO: refactor in components
-    Text(
-        text = text,
-        fontSize = descriptionFontSize,
-        fontWeight = FontWeight.W600,
-        textAlign = TextAlign.Center
-    )
-}
 
 @Composable
 fun InputDateCountComponent(
