@@ -476,14 +476,6 @@ fun DateDialog(
                 ) {
                     onEvent(DateEvent.SwitchRecorded)
                 }
-                //TODO: set the following to copy and import the following the tweet link (validating it, verifying it starts by https...)
-                /*ToggleIcon(
-                    "lay",
-                    state.lay,
-                    R.drawable.bed_b
-                ) {
-                    onEvent(DateEvent.SwitchLay)
-                }*/
             }
         }
     }, confirmButton = {
