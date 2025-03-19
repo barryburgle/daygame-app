@@ -2,15 +2,18 @@ package com.barryburgle.gameapp.ui.tool.utils
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -35,7 +38,7 @@ fun FilenameComposable(
 ) {
     RowTitle(
         "${cardTitle} ${tableTitle}s file name:",
-        "${tableTitle.replaceFirstChar { it.uppercase() }}s:",
+        "",
         textFieldColumnWidth
     )
     Row(
@@ -54,34 +57,43 @@ fun FilenameComposable(
                 },
                 placeholder = { Text(text = "Insert here the ${cardTitle.lowercase()} file name") },
                 shape = MaterialTheme.shapes.large,
-                modifier = Modifier
-                    .height(textFieldHeight)
+                modifier = Modifier.height(textFieldHeight)
             )
         }
         Column(
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Button(
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                ),
-                onClick = {
-                    buttonFunction()
-                    Toast.makeText(
-                        localContext,
-                        "Successfully ${cardTitle.lowercase()}ed",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Spacer(modifier = Modifier.width(0.dp))
                 if (icon != null) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = cardTitle,
-                        tint = MaterialTheme.colorScheme.onPrimary,
+                    IconButton(
                         modifier = Modifier
-                            .height(25.dp)
-                    )
+                            .background(
+                                MaterialTheme.colorScheme.primaryContainer,
+                                shape = RoundedCornerShape(50.dp)
+                            )
+                            .size(50.dp),
+                        onClick = {
+                            buttonFunction()
+                            Toast.makeText(
+                                localContext,
+                                "Successfully ${cardTitle.lowercase()}ed",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }) {
+                        Icon(
+                            imageVector = icon!!,
+                            contentDescription = cardTitle,
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier
+                                .height(30.dp)
+                        )
+                    }
                 }
             }
         }

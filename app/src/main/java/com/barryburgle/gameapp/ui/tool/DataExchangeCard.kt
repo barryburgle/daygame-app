@@ -54,7 +54,6 @@ fun DataExchangeCard(
     dateCsvService: DateCsvService,
     onEvent: (ToolEvent) -> Unit
 ) {
-    // TODO: all icons in this caed should be round
     var icon: ImageVector? = null
     if (DataExchangeTypeEnum.EXPORT.type.equals(cardTitle)) {
         icon = Icons.Default.Upload
@@ -67,7 +66,7 @@ fun DataExchangeCard(
         ), shape = MaterialTheme.shapes.large
     ) {
         val textFieldHeight = 55.dp
-        val textFieldColumnWidth = 250.dp
+        val textFieldColumnWidth = 230.dp
         val localContext = LocalContext.current.applicationContext
         Row(
             verticalAlignment = Alignment.CenterVertically
