@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.input
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -50,6 +55,8 @@ fun InputCard(
     val countFontSize = 50.sp
     val perfFontSize = 15.sp
     val descriptionFontSize = 10.sp
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
+    val localContext = LocalContext.current.applicationContext
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
@@ -311,6 +318,8 @@ fun InputCard(
                                     horizontalArrangement = Arrangement.SpaceEvenly,
                                     modifier = Modifier.fillMaxHeight()
                                 ) {
+                                    val stickingPoints =
+                                        if (abstractSession.stickingPoints.isBlank()) "No sticking points" else abstractSession.stickingPoints
                                     Column(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -320,14 +329,24 @@ fun InputCard(
                                                 shape = RoundedCornerShape(10.dp)
                                             )
                                             .padding(7.dp)
+                                            .clickable {
+                                                clipboardManager.setText(
+                                                    AnnotatedString(
+                                                        stickingPoints
+                                                    )
+                                                )
+                                                Toast.makeText(
+                                                    localContext,
+                                                    "Sticking points copied",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
                                     ) {
                                         Text(
                                             text = "Sticking Points:",
                                             style = MaterialTheme.typography.bodySmall
                                         )
                                         Spacer(modifier = Modifier.height(5.dp))
-                                        val stickingPoints =
-                                            if (abstractSession.stickingPoints.isBlank()) "No sticking points" else abstractSession.stickingPoints
                                         Text(
                                             text = stickingPoints,
                                             style = MaterialTheme.typography.bodyMedium

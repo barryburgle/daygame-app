@@ -33,9 +33,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -61,6 +64,7 @@ fun DateCard(
 ) {
     val localContext = LocalContext.current.applicationContext
     val uriHandler = LocalUriHandler.current
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val perfFontSize = 15.sp
     val descriptionFontSize = 10.sp
     Card(
@@ -384,6 +388,10 @@ fun DateCard(
                             .padding(5.dp)
                             .fillMaxWidth()
                     ) {
+                        var stickingPoints = "No sticking points"
+                        if (date.stickingPoints != null || !date.stickingPoints!!.isBlank()) {
+                            stickingPoints = date.stickingPoints.toString()
+                        }
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -393,14 +401,20 @@ fun DateCard(
                                     shape = RoundedCornerShape(10.dp)
                                 )
                                 .padding(7.dp)
+                                .clickable {
+                                    clipboardManager.setText(AnnotatedString(stickingPoints))
+                                    Toast.makeText(
+                                        localContext,
+                                        "Sticking points copied",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                         ) {
                             Text(
                                 text = "Sticking Points:",
                                 style = MaterialTheme.typography.bodySmall
                             )
                             Spacer(modifier = Modifier.height(5.dp))
-                            val stickingPoints =
-                                if (date.stickingPoints!!.isBlank()) "No sticking points" else date.stickingPoints
                             if (stickingPoints != null) {
                                 Text(
                                     text = stickingPoints,

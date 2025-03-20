@@ -314,7 +314,6 @@ fun SessionDialog(
                     saveEvent = AbstractSessionEvent::SetContacts
                 )
             }
-            // TODO: a tap on the sticking points of a card should put the content in clipboard and prompt a Toast with "Sticking points copied"
             OutlinedTextField(
                 value = state.stickingPoints,
                 onValueChange = { onEvent(AbstractSessionEvent.SetStickingPoints(it)) },
