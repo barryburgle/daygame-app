@@ -23,7 +23,6 @@ fun InputCounter(
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
-    // TODO: doesn't handle the numbers above 9, fix it
     var oldCount by remember {
         mutableStateOf(count)
     }
@@ -44,6 +43,8 @@ fun InputCounter(
             for (charIndex in countString.indices) {
                 val oldChar = oldCountString.getOrNull(charIndex)
                 val newChar = countString[charIndex]
+                val oldDigit = oldChar?.toString()?.toIntOrNull() ?: 0
+                val newDigit = newChar.toString().toInt()
                 val char = if (oldChar == newChar) {
                     oldCountString[charIndex]
                 } else {
@@ -52,7 +53,7 @@ fun InputCounter(
                 AnimatedContent(
                     targetState = char,
                     transitionSpec = {
-                        transitionSpec(newChar, oldChar!!)
+                        transitionSpec(newDigit, oldDigit!!)
                     }) { char ->
                     Text(
                         text = char.toString(),
@@ -66,8 +67,8 @@ fun InputCounter(
     }
 }
 
-fun transitionSpec(newChar: Char, oldChar: Char): ContentTransform {
-    if (newChar > oldChar) {
+fun transitionSpec(newDigit: Int, oldDigit: Int): ContentTransform {
+    if (newDigit > oldDigit) {
         return ContentTransform(
             targetContentEnter = slideInVertically { it },
             initialContentExit = slideOutVertically { -it }
