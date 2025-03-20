@@ -154,8 +154,22 @@ fun DateCard(
                                                 shape = RoundedCornerShape(30.dp)
                                             )
                                     ) {
-                                        // TODO: import date flags values from the date
                                         IconButton(onClick = {
+                                            onEvent(
+                                                DateEvent.SetPull(date.pull)
+                                            )
+                                            onEvent(
+                                                DateEvent.SetBounce(date.bounce)
+                                            )
+                                            onEvent(
+                                                DateEvent.SetKiss(date.kiss)
+                                            )
+                                            onEvent(
+                                                DateEvent.SetLay(date.lay)
+                                            )
+                                            onEvent(
+                                                DateEvent.SetRecorded(date.recorded)
+                                            )
                                             onEvent(
                                                 DateEvent.EditDate(
                                                     date
@@ -435,7 +449,7 @@ fun describedIcon(
     falseFlagDescription: String,
     descriptionFontSize: TextUnit,
     @DrawableRes icon: Int,
-    happened: Boolean
+    happened: Boolean?
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -443,7 +457,7 @@ fun describedIcon(
     ) {
         var color: Color = MaterialTheme.colorScheme.onPrimary
         var flagDescription = trueFlagDescription
-        if (!happened) {
+        if (!happened!!) {
             color = MaterialTheme.colorScheme.secondaryContainer
             flagDescription = falseFlagDescription
         }

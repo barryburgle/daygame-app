@@ -240,6 +240,46 @@ class DateViewModel(
                 }
             }
 
+            is DateEvent.SetPull -> {
+                _state.update {
+                    it.copy(
+                        pull = event.pull!!
+                    )
+                }
+            }
+
+            is DateEvent.SetBounce -> {
+                _state.update {
+                    it.copy(
+                        bounce = event.bounce!!
+                    )
+                }
+            }
+
+            is DateEvent.SetKiss -> {
+                _state.update {
+                    it.copy(
+                        kiss = event.kiss!!
+                    )
+                }
+            }
+
+            is DateEvent.SetLay -> {
+                _state.update {
+                    it.copy(
+                        lay = event.lay!!
+                    )
+                }
+            }
+
+            is DateEvent.SetRecorded -> {
+                _state.update {
+                    it.copy(
+                        recorded = event.recorded!!
+                    )
+                }
+            }
+
             is DateEvent.SetStickingPoints -> {
                 _state.update {
                     it.copy(

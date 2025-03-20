@@ -21,6 +21,11 @@ sealed interface DateEvent : GenericEvent {
     object SwitchKiss: DateEvent
     object SwitchLay: DateEvent
     object SwitchRecorded: DateEvent
+    data class SetPull(val pull: Boolean?): DateEvent
+    data class SetBounce(val bounce: Boolean?): DateEvent
+    data class SetKiss(val kiss: Boolean?): DateEvent
+    data class SetLay(val lay: Boolean?): DateEvent
+    data class SetRecorded(val recorded: Boolean?): DateEvent
     data class SetStickingPoints(val stickingPoints: String) : DateEvent
     data class SetTweetUrl(val tweetUrl: String) : DateEvent
     data class SortDates(val sortType: DateSortType) : DateEvent

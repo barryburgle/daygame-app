@@ -526,21 +526,6 @@ fun setState(
         state.cost = state.editDate.cost.toString()
         state.dateNumber = state.editDate.dateNumber.toString()
         state.dateType = state.editDate.dateType
-        if (state.pull == state.editDate.pull) {
-            state.pull = state.editDate.pull
-        }
-        if (state.bounce == state.editDate.bounce) {
-            state.bounce = state.editDate.bounce
-        }
-        if (state.kiss == state.editDate.kiss) {
-            state.kiss = state.editDate.kiss
-        }
-        if (state.lay == state.editDate.lay) {
-            state.lay = state.editDate.lay
-        }
-        if (state.recorded == state.editDate.recorded) {
-            state.recorded = state.editDate.recorded
-        }
         if (state.stickingPoints.isBlank()) {
             state.stickingPoints = state.editDate.stickingPoints!!
         }
