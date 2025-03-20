@@ -220,8 +220,6 @@ fun DateCard(
                                 } : ${date.dateTime} minutes"
                             Row {
                                 Text(
-                                    // TODO: convert date to integer inside week and then day of week
-                                    // TODO: compute minutes before filling date list
                                     text = subtitle,
                                     style = MaterialTheme.typography.bodySmall
                                 )
