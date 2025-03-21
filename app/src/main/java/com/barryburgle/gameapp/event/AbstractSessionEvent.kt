@@ -8,7 +8,7 @@ sealed interface AbstractSessionEvent: GenericEvent {
     object SaveAbstractSession : AbstractSessionEvent
     data class ShowDialog(val addSession: Boolean, val updateSession: Boolean) :
         AbstractSessionEvent
-    class ShowLeadDialog(val addLead: Boolean, val modifyLead: Boolean) :AbstractSessionEvent
+    class ShowLeadDialog(val addLead: Boolean, val modifyLead: Boolean, val updateLead: Boolean) :AbstractSessionEvent
     object HideDialog : AbstractSessionEvent
     object HideLeadDialog : AbstractSessionEvent
     data class SetDate(val date: String) : AbstractSessionEvent

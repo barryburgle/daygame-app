@@ -284,7 +284,8 @@ fun InputCard(
                                                     onEvent(
                                                         AbstractSessionEvent.ShowLeadDialog(
                                                             false,
-                                                            false
+                                                            false,
+                                                            true
                                                         )
                                                     )
                                                 },
