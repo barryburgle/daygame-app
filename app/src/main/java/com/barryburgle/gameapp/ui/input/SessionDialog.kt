@@ -40,11 +40,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
@@ -52,6 +49,7 @@ import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -76,10 +74,6 @@ fun SessionDialog(
     val dateDialogState = rememberMaterialDialogState()
     val startHourDialogState = rememberMaterialDialogState()
     val endHourDialogState = rememberMaterialDialogState()
-    val descriptionFontSize = 13.sp
-    val sessionTimeColumnWidth = 130.dp
-    val sessionLeadColumnWidth = 130.dp
-    val addLeadColumnWidth = 40.dp
     if (state.isUpdatingSession) {
         setState(state)
     }
@@ -181,7 +175,7 @@ fun SessionDialog(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(addLeadColumnWidth),
+                    .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
@@ -191,18 +185,24 @@ fun SessionDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(
-                            modifier = Modifier.width(sessionTimeColumnWidth)
+                            modifier = Modifier.width(DialogConstant.TIME_COLUMN_WIDTH)
                         ) {
-                            DialogFormSectionDescription("Set session's:", descriptionFontSize)
+                            DialogFormSectionDescription(
+                                "Set session's:",
+                                DialogConstant.DESCRIPTION_FONT_SIZE
+                            )
                         }
                         Spacer(modifier = Modifier.width(10.dp))
                         Column(
-                            modifier = Modifier.width(sessionLeadColumnWidth - addLeadColumnWidth)
+                            modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH - DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                         ) {
-                            DialogFormSectionDescription("Leads:", descriptionFontSize)
+                            DialogFormSectionDescription(
+                                "Leads:",
+                                DialogConstant.DESCRIPTION_FONT_SIZE
+                            )
                         }
                         Column(
-                            modifier = Modifier.width(addLeadColumnWidth)
+                            modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                         ) {
                             IconButton(onClick = {
                                 onEvent(AbstractSessionEvent.ShowLeadDialog(true, false, false))
@@ -215,8 +215,8 @@ fun SessionDialog(
                                         .background(
                                             MaterialTheme.colorScheme.secondaryContainer
                                         )
-                                        .width(addLeadColumnWidth)
-                                        .height(addLeadColumnWidth)
+                                        .width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
+                                        .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                                 )
                             }
                         }
@@ -227,7 +227,7 @@ fun SessionDialog(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
-                    modifier = Modifier.width(sessionTimeColumnWidth)
+                    modifier = Modifier.width(DialogConstant.TIME_COLUMN_WIDTH)
                 ) {
                     timeInputButton(
                         getButtonTitle(
@@ -243,7 +243,7 @@ fun SessionDialog(
                     )
                 }
                 Column(
-                    modifier = Modifier.width(sessionLeadColumnWidth)
+                    modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH)
                 ) {
                     Spacer(modifier = Modifier.height(5.dp))
                     for (lead in state.leads) {

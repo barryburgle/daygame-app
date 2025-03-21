@@ -37,11 +37,8 @@ import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.DateEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
@@ -50,6 +47,7 @@ import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.date.state.DateState
 import com.barryburgle.gameapp.ui.input.InputCounter
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
+import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -78,11 +76,6 @@ fun DateDialog(
     var leadsExpanded by remember { mutableStateOf(false) }
     var dateTypesExpanded by remember { mutableStateOf(false) }
     var locationTextFieldExpanded by remember { mutableStateOf(false) }
-    // TODO: unify across all dialogs
-    val descriptionFontSize = 13.sp
-    val sessionTimeColumnWidth = 130.dp
-    val sessionLeadColumnWidth = 130.dp
-    val addLeadColumnWidth = 40.dp
     if (state.isUpdatingDate) {
         setState(state)
     }
@@ -183,7 +176,7 @@ fun DateDialog(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(addLeadColumnWidth),
+                    .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
@@ -193,32 +186,35 @@ fun DateDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(
-                            modifier = Modifier.width(sessionTimeColumnWidth)
+                            modifier = Modifier.width(DialogConstant.TIME_COLUMN_WIDTH)
                         ) {
-                            DialogFormSectionDescription("Set date's:", descriptionFontSize)
+                            DialogFormSectionDescription(
+                                "Set date's:",
+                                DialogConstant.DESCRIPTION_FONT_SIZE
+                            )
                         }
                         Spacer(modifier = Modifier.width(10.dp))
                         var leadIcon = Icons.Default.Add
                         Column(
-                            modifier = Modifier.width(sessionLeadColumnWidth - addLeadColumnWidth)
+                            modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH - DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                         ) {
                             if (state.leadId == 0L) {
                                 DialogFormSectionDescription(
                                     "Add lead:",
-                                    descriptionFontSize
+                                    DialogConstant.DESCRIPTION_FONT_SIZE
                                 )
                             } else {
                                 val lead =
                                     state.allLeads.filter { lead -> lead.id == state.leadId }.get(0)
                                 DialogFormSectionDescription(
                                     CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age,
-                                    descriptionFontSize
+                                    DialogConstant.DESCRIPTION_FONT_SIZE
                                 )
                                 leadIcon = Icons.Default.SwapHoriz
                             }
                         }
                         Column(
-                            modifier = Modifier.width(addLeadColumnWidth)
+                            modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                         ) {
                             IconButton(onClick = {
                                 leadsExpanded = true
@@ -231,8 +227,8 @@ fun DateDialog(
                                         .background(
                                             MaterialTheme.colorScheme.secondaryContainer
                                         )
-                                        .width(addLeadColumnWidth)
-                                        .height(addLeadColumnWidth)
+                                        .width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
+                                        .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                                 )
                             }
                         }
