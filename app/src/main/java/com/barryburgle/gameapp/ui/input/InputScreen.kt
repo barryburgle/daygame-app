@@ -64,13 +64,13 @@ fun InputScreen(
             SessionDialog(state = state, onEvent = onEvent, "Edit a Session")
         }
         if (state.isAddingLead) {
-            AddLeadDialog(state = state, onEvent = onEvent, "Add a lead")
+            LeadDialog(state = state, onEvent = onEvent, "Add a lead")
         }
         if (state.isModifyingLead) {
-            AddLeadDialog(state = state, onEvent = onEvent, "Modify the lead")
+            LeadDialog(state = state, onEvent = onEvent, "Modify the lead")
         }
         if (state.isUpdatingLead) {
-            AddLeadDialog(state = state, onEvent = onEvent, "Update the lead")
+            LeadDialog(state = state, onEvent = onEvent, "Update the lead")
         }
         InsertInvite(state.abstractSessions, "Session")
         LazyColumn(

@@ -45,7 +45,7 @@ import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 
 @Composable
-fun AddLeadDialog(
+fun LeadDialog(
     state: InputState,
     onEvent: (AbstractSessionEvent) -> Unit,
     description: String,
@@ -55,8 +55,6 @@ fun AddLeadDialog(
     val lead = Lead()
     val localContext = LocalContext.current.applicationContext
     var expanded by remember { mutableStateOf(false) }
-    val numberFlag = state.leadContact == ContactTypeEnum.NUMBER.getField()
-    val socialFlag = state.leadContact == ContactTypeEnum.SOCIAL.getField()
     AlertDialog(modifier = modifier
         .shadow(elevation = 10.dp), onDismissRequest = {
         onEvent(AbstractSessionEvent.HideLeadDialog)
