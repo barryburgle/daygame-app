@@ -10,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.ui.output.chart.OutputLineChart
@@ -32,7 +31,6 @@ fun OutputCard(
     integerValues: Boolean,
     movingAverageWindow: Int
 ) {
-    // TODO: if no data are passed write "Insert new {chartLabel}s" at the center of the card
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(

@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.ui.theme.Shapes
+import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarEntry
@@ -78,6 +79,7 @@ fun OutputLineChart(
                         )
                     }
                 }
+                InsertInvite(barEntryList, description, MaterialTheme.typography.titleMedium)
                 AndroidView(
                     modifier = Modifier
                         .fillMaxSize(),
