@@ -41,11 +41,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.DateEvent
+import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.DateType
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.date.state.DateState
-import com.barryburgle.gameapp.ui.input.InputCounter
+import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
@@ -418,19 +419,19 @@ fun DateDialog(
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround
             ) {
-                InputDateCountComponent(
+                InputCountComponent(
                     inputTitle = "Date Number",
                     modifier = Modifier,
                     style = MaterialTheme.typography.titleSmall,
-                    onEvent = onEvent,
+                    onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingDate) 0 else state.editDate?.dateNumber,
                     saveEvent = DateEvent::SetDateNumber
                 )
-                InputDateCountComponent(
+                InputCountComponent(
                     inputTitle = "Cost [€]",
                     modifier = Modifier,
                     style = MaterialTheme.typography.titleSmall,
-                    onEvent = onEvent,
+                    onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingDate) 0 else state.editDate?.cost,
                     saveEvent = DateEvent::SetCost
                 )
@@ -542,49 +543,5 @@ fun timeInputButton(
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.fillMaxWidth()
         )
-    }
-}
-
-
-@Composable
-fun InputDateCountComponent(
-    inputTitle: String,
-    modifier: Modifier = Modifier,
-    style: TextStyle = MaterialTheme.typography.bodyMedium,
-    onEvent: (DateEvent) -> Unit,
-    countStart: Int? = 0,
-    saveEvent: (input: String) -> DateEvent
-) {
-    // TODO: delete this composable from this file and use the centralized one adapting it to wor both with AbstractSessionEvent and DateEvent
-    var count by remember {
-        mutableStateOf(if (countStart == null) 0 else countStart)
-    }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = inputTitle, textAlign = TextAlign.Center)
-        Button(
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            ),
-            onClick = {
-                count--
-                onEvent(saveEvent(count.toString()))
-            }
-        ) {
-            Text(text = "-")
-        }
-        InputCounter(count = count, style = style, modifier = modifier)
-        Button(
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            ),
-            onClick = {
-                count++
-                onEvent(saveEvent(count.toString()))
-            }
-        ) {
-            Text(text = "+")
-        }
     }
 }

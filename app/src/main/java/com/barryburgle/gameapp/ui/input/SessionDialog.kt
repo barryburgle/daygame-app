@@ -44,6 +44,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
@@ -293,7 +294,7 @@ fun SessionDialog(
                     inputTitle = "Sets",
                     modifier = Modifier,
                     style = MaterialTheme.typography.titleSmall,
-                    onEvent = onEvent,
+                    onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.sets,
                     saveEvent = AbstractSessionEvent::SetSets
                 )
@@ -301,7 +302,7 @@ fun SessionDialog(
                     inputTitle = "Conversations",
                     modifier = Modifier,
                     style = MaterialTheme.typography.titleSmall,
-                    onEvent = onEvent,
+                    onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.convos,
                     saveEvent = AbstractSessionEvent::SetConvos
                 )
@@ -309,7 +310,7 @@ fun SessionDialog(
                     inputTitle = "Contacts",
                     modifier = Modifier,
                     style = MaterialTheme.typography.titleSmall,
-                    onEvent = onEvent,
+                    onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.contacts,
                     saveEvent = AbstractSessionEvent::SetContacts
                 )

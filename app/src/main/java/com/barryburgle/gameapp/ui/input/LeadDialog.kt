@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
@@ -191,7 +192,7 @@ fun LeadDialog(
                         inputTitle = "Age",
                         modifier = Modifier,
                         style = MaterialTheme.typography.titleSmall,
-                        onEvent = onEvent,
+                        onEvent = onEvent as (GenericEvent) -> Unit,
                         countStart = state.leadAge.toInt(),
                         saveEvent = AbstractSessionEvent::SetLeadAge
                     )
