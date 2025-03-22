@@ -72,7 +72,7 @@ fun InputScreen(
         if (state.isUpdatingLead) {
             LeadDialog(state = state, onEvent = onEvent, "Update the lead")
         }
-        InsertInvite(state.abstractSessions, "Session")
+        InsertInvite(state.abstractSessions, "Session", MaterialTheme.typography.titleLarge)
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

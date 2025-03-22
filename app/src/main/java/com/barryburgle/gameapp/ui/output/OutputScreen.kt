@@ -56,7 +56,7 @@ fun OutputScreen(
     // TODO: make cards with injectable type of charts
     // TODO: make different types of charts injectable with arrays
     Scaffold { padding ->
-        InsertInvite(state.abstractSessions, "Session")
+        InsertInvite(state.abstractSessions, "Session", MaterialTheme.typography.titleLarge)
         if (state.abstractSessions.isNotEmpty()) {
             LazyColumn(
                 modifier = Modifier

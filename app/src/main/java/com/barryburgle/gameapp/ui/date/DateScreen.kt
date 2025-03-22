@@ -62,7 +62,7 @@ fun DateScreen(
         if (state.isUpdatingDate) {
             DateDialog(state = state, onEvent = onEvent, "Edit a Date")
         }
-        InsertInvite(state.dates, "Date")
+        InsertInvite(state.dates, "Date", MaterialTheme.typography.titleLarge)
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

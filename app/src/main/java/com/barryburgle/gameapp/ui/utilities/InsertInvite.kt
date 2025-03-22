@@ -10,10 +10,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 
 @Composable
-fun InsertInvite(entities: List<*>, entitiesName: String) {
+fun InsertInvite(entities: List<*>, entitiesName: String, style: TextStyle) {
     if (entities.isEmpty()) {
         Column(
             modifier = Modifier
@@ -28,9 +29,9 @@ fun InsertInvite(entities: List<*>, entitiesName: String) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Insert a new ${entitiesName}!",
+                    text = "Insert new ${entitiesName}!",
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge
+                    style = style
                 )
             }
         }

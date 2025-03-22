@@ -36,7 +36,7 @@ fun StatsScreen(
     val heigh: Dp = 200.dp
     val width: Dp = 320.dp
     Scaffold { padding ->
-        InsertInvite(state.abstractSessions, "Session")
+        InsertInvite(state.abstractSessions, "Session", MaterialTheme.typography.titleLarge)
         if (state.abstractSessions.isNotEmpty()) {
             val cardModifier = Modifier
                 .shadow(
