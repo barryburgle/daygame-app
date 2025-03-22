@@ -34,10 +34,12 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
+import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.Switch
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
@@ -144,12 +146,13 @@ fun SettingsCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Spacer(modifier = Modifier.height(12.dp))
-                    ToolCountComponent(
-                        inputTitle = "Average last", modifier = Modifier,
+                    InputCountComponent(
+                        inputTitle = "Average last",
+                        modifier = Modifier,
                         style = MaterialTheme.typography.bodySmall,
-                        onEvent = onEvent,
-                        saveEvent = ToolEvent::SetLastSessionAverageQuantity,
-                        initialCount = state.lastSessionAverageQuantity
+                        onEvent = onEvent as (GenericEvent) -> Unit,
+                        countStart = state.lastSessionAverageQuantity,
+                        saveEvent = ToolEvent::SetLastSessionAverageQuantity
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,

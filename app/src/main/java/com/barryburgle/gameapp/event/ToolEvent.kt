@@ -4,7 +4,7 @@ import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 
-sealed interface ToolEvent {
+sealed interface ToolEvent : GenericEvent {
     data class SetExportSessionsFileName(val exportSessionsFileName: String) : ToolEvent
     data class SetImportSessionsFileName(val importSessionsFileName: String) : ToolEvent
     data class SetExportLeadsFileName(val exportLeadsFileName: String) : ToolEvent
