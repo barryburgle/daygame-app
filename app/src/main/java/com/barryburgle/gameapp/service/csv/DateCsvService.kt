@@ -5,6 +5,15 @@ import com.barryburgle.gameapp.service.date.DateService
 
 class DateCsvService : AbstractCsvService<Date>() {
 
+    companion object {
+        private const val DATES_BACKUP_FILENAME: String = "dates_backup"
+    }
+
+    public override fun getBackupFileName(): String {
+        return DATES_BACKUP_FILENAME
+    }
+
+    // TODO: service to use or delete
     val dateService = DateService()
 
     override fun exportSingleRow(date: Date): Array<String> {
@@ -82,5 +91,13 @@ class DateCsvService : AbstractCsvService<Date>() {
             fields[18].toInt(),
             fields[19].toInt(),
         )
+    }
+
+    override fun isEntityValid(date: Date): Boolean {
+        // TODO: do better check on data validity on most of the fields
+        if (date.id == 0L || date.id == null || date.insertTime.isEmpty()) {
+            return false
+        }
+        return true
     }
 }

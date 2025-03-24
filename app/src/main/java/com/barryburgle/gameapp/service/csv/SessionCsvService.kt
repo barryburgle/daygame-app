@@ -5,6 +5,14 @@ import com.barryburgle.gameapp.service.batch.BatchSessionService
 
 class SessionCsvService : AbstractCsvService<AbstractSession>() {
 
+    companion object {
+        private const val SESSIONS_BACKUP_FILENAME: String = "sessions_backup"
+    }
+
+    public override fun getBackupFileName(): String {
+        return SESSIONS_BACKUP_FILENAME
+    }
+
     val batchSessionService = BatchSessionService()
 
     override fun exportSingleRow(abstractSession: AbstractSession): Array<String> {
@@ -62,5 +70,13 @@ class SessionCsvService : AbstractCsvService<AbstractSession>() {
             fields[7],
             fields[8]
         )
+    }
+
+    override fun isEntityValid(session: AbstractSession): Boolean {
+        // TODO: do better check on data validity on most of the fields
+        if (session.id == 0L || session.id == null || session.insertTime.isEmpty()) {
+            return false
+        }
+        return true
     }
 }

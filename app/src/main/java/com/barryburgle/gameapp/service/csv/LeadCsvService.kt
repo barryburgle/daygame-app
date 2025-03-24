@@ -4,6 +4,14 @@ import com.barryburgle.gameapp.model.lead.Lead
 
 class LeadCsvService : AbstractCsvService<Lead>() {
 
+    companion object {
+        private const val LEADS_BACKUP_FILENAME: String = "leads_backup"
+    }
+
+    public override fun getBackupFileName(): String {
+        return LEADS_BACKUP_FILENAME
+    }
+
     override fun exportSingleRow(lead: Lead): Array<String> {
         val leadFieldList = mutableListOf<String>()
         leadFieldList.add(lead.id.toString())
@@ -40,5 +48,13 @@ class LeadCsvService : AbstractCsvService<Lead>() {
             fields[5],
             fields[6].toLong()
         )
+    }
+
+    override fun isEntityValid(lead: Lead): Boolean {
+        // TODO: do better check on data validity on most of the fields
+        if (lead.id == 0L || lead.id == null || lead.insertTime.isEmpty()) {
+            return false
+        }
+        return true
     }
 }
