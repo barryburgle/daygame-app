@@ -20,6 +20,8 @@ abstract class AbstractCsvService<T : Any> {
     protected abstract fun generateHeader(): Array<String>
 
     protected abstract fun mapImportRow(fields: Array<String>): T
+    protected abstract fun isEntityValid(entity: T): Boolean
+    protected abstract fun getBackupFileName(): String
 
     val localPath = Environment.getExternalStorageDirectory()
 
@@ -28,17 +30,14 @@ abstract class AbstractCsvService<T : Any> {
     }
 
     fun exportRows(
-        exportFolder: String,
-        filename: String,
-        exportHeader: Boolean
+        exportFolder: String, filename: String, exportHeader: Boolean
     ) {
         val exportDir = File(localPath, "/$exportFolder")
         if (!exportDir.exists()) {
             exportDir.mkdirs()
         }
         val file = File(
-            exportDir,
-            filename + SimpleDateFormat("_yyyy_MM_dd_HH_mm'.csv'").format(Date())
+            exportDir, filename + SimpleDateFormat("_yyyy_MM_dd_HH_mm'.csv'").format(Date())
         )
         try {
             file.createNewFile()
@@ -48,8 +47,7 @@ abstract class AbstractCsvService<T : Any> {
                 csvWrite.writeNext(exportArrayHeader)
             }
             for (singleObject in exportObjects!!) {
-                val exportArrayRow =
-                    exportSingleRow(singleObject)
+                val exportArrayRow = exportSingleRow(singleObject)
                 csvWrite.writeNext(exportArrayRow)
             }
             csvWrite.close()
@@ -58,10 +56,50 @@ abstract class AbstractCsvService<T : Any> {
         }
     }
 
+    fun listFileNamesLike(folder: String, prefix: String, outputPath: Boolean): List<String> {
+        return try {
+            File("$localPath/$folder")
+                .listFiles { _, name -> name.startsWith(prefix + "_") }
+                ?.filter { it.isFile }
+                ?.sortedByDescending { it.name }
+                ?.map {
+                    if (outputPath) it.absolutePath else it.name
+                }
+                ?: emptyList()
+        } catch (e: Exception) {
+            Log.e("MainActivity", e.message, e)
+            emptyList()
+        }
+    }
+
+    fun cleanBackupFolder(folder: String) {
+        val filenames = listFileNamesLike(
+            folder,
+            getBackupFileName(),
+            true
+        ).drop(3) // TODO: let the user set this number by settings -> do a separate backup card
+        filenames.forEach { filename ->
+            try {
+                File(filename).delete()
+            } catch (e: Exception) {
+                Log.e("MainActivity", e.message, e)
+            }
+        }
+    }
+
+    fun validateExport(folder: String): Boolean {
+        val filenames = listFileNamesLike(folder, getBackupFileName(), false)
+        if (filenames != null && filenames.isNotEmpty()) {
+            val validationList = importRows(folder, filenames.get(0), true, 1)
+            if (isEntityValid(validationList.get(0))) {
+                return true
+            }
+        }
+        return false
+    }
+
     fun importRows(
-        importFolder: String,
-        filename: String,
-        importHeader: Boolean
+        importFolder: String, filename: String, importHeader: Boolean, rowLimit: Int? = null
     ): List<T> {
         val fullPath = "$localPath/$importFolder/$filename"
         if (!File(fullPath).exists()) {
@@ -74,7 +112,11 @@ abstract class AbstractCsvService<T : Any> {
         }
         val startCount: Int = if (importHeader) 1 else 0
         var exportObjects: MutableList<T> = mutableListOf()
-        for (index in startCount..listOfStrings.lastIndex) {
+        var lastIndex = listOfStrings.lastIndex
+        if (rowLimit != null) {
+            lastIndex = rowLimit
+        }
+        for (index in startCount..lastIndex) {
             exportObjects.add(mapImportRow(listOfStrings.get(index)))
         }
         return exportObjects
