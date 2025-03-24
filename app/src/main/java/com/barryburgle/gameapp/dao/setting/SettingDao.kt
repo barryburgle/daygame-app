@@ -16,8 +16,10 @@ interface SettingDao {
         const val LATEST_DOWNLOAD_URL_ID: String = "latest_download_url"
         const val EXPORT_FOLDER_ID: String = "export_folder"
         const val IMPORT_FOLDER_ID: String = "import_folder"
+        const val BACKUP_FOLDER_ID: String = "backup_folder"
         const val EXPORT_HEADER_ID: String = "export_header"
         const val IMPORT_HEADER_ID: String = "import_header"
+        const val BACKUP_ACTIVE_ID: String = "backup_active"
         const val LAST_SESSION_AVERAGE_QUANTITY_ID: String = "average_last"
         const val NOTIFICATION_TIME_ID: String = "notification_time"
         const val DEFAULT_MOVING_AVERAGE_WINDOW: Int = 4
@@ -39,8 +41,10 @@ interface SettingDao {
         const val DEFAULT_LATEST_DOWNLOAD_URL: String = ""
         const val DEFAULT_EXPORT_FOLDER: String = "Download"
         const val DEFAULT_IMPORT_FOLDER: String = "Download"
+        const val DEFAULT_BACKUP_FOLDER: String = "Backup_Daygame"
         const val DEFAULT_EXPORT_HEADER_FLAG: String = "false"
         const val DEFAULT_IMPORT_HEADER_FLAG: String = "false"
+        const val DEFAULT_BACKUP_ACTIVE_FLAG: String = "true"
         const val DEFAULT_NOTIFICATION_TIME: String = "18:00"
     }
 
@@ -74,11 +78,17 @@ interface SettingDao {
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_IMPORT_FOLDER}' ELSE value END FROM setting WHERE id = '${IMPORT_FOLDER_ID}'")
     fun getImportFolder(): Flow<String>
 
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_BACKUP_FOLDER}' ELSE value END FROM setting WHERE id = '${BACKUP_FOLDER_ID}'")
+    fun getBackupFolder(): Flow<String>
+
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_EXPORT_HEADER_FLAG}' ELSE value END FROM setting WHERE id = '${EXPORT_HEADER_ID}'")
     fun getExportHeaderFlag(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_IMPORT_HEADER_FLAG}' ELSE value END FROM setting WHERE id = '${IMPORT_HEADER_ID}'")
     fun getImportHeaderFlag(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_BACKUP_ACTIVE_FLAG}' ELSE value END FROM setting WHERE id = '${BACKUP_ACTIVE_ID}'")
+    fun getBackupActiveFlag(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_MOVING_AVERAGE_WINDOW}' ELSE value END FROM setting WHERE id = '${LAST_SESSION_AVERAGE_QUANTITY_ID}'")
     fun getAverageLast(): Flow<Int>

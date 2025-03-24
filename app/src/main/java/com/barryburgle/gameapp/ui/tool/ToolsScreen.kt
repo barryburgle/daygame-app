@@ -61,7 +61,13 @@ fun ToolsScreen(
     val dateCsvService = DateCsvService()
     val csvFindService = CSVFindService()
     Scaffold { padding ->
-        val dataExchangeCardModifier = Modifier
+        val exportCardModifier = Modifier
+            .height(610.dp)
+            .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
+            .shadow(
+                elevation = 5.dp, shape = MaterialTheme.shapes.large
+            )
+        val importCardModifier = Modifier
             .height(480.dp)
             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
             .shadow(
@@ -88,7 +94,7 @@ fun ToolsScreen(
                         cardSubtitle = "Holding ${state.abstractSessions.size} sessions and ${state.leads.size} leads",
                         state = state,
                         onEvent = onEvent,
-                        modifier = dataExchangeCardModifier,
+                        modifier = exportCardModifier,
                         sessionCsvService = sessionCsvService,
                         leadCsvService = leadCsvService,
                         dateCsvService = dateCsvService
@@ -103,7 +109,7 @@ fun ToolsScreen(
                         cardSubtitle = "Found ${csvFindService.findCsvFiles(state.importFolder).size} csv files in your ${state.importFolder} folder",
                         state = state,
                         onEvent = onEvent,
-                        modifier = dataExchangeCardModifier,
+                        modifier = importCardModifier,
                         sessionCsvService = sessionCsvService,
                         leadCsvService = leadCsvService,
                         dateCsvService = dateCsvService

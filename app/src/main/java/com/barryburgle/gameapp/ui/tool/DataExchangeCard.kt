@@ -38,6 +38,7 @@ import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
 import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
+import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.FilenameComposable
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
@@ -91,12 +92,8 @@ fun DataExchangeCard(
                             containerColor = MaterialTheme.colorScheme.primaryContainer
                         ), onClick = {
                             if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                exportAll(
-                                    cardTitle,
-                                    sessionCsvService,
+                                DataExchangeService.exportAll(
                                     state,
-                                    leadCsvService,
-                                    dateCsvService,
                                     localContext
                                 )
                             } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
@@ -351,7 +348,71 @@ fun DataExchangeCard(
                                 } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
                                     onEvent(ToolEvent.SetImportDatesFileName(it))
                                 }
-                            })
+                            }
+                        )
+                        if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                            RowTitle(
+                                "Backup folder:", "Active:", textFieldColumnWidth
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(textFieldHeight),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(
+                                    modifier = Modifier.width(textFieldColumnWidth),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    OutlinedTextField(
+                                        value = state.backupFolder,
+                                        onValueChange = { onEvent(ToolEvent.SetBackupFolder(it)) },
+                                        placeholder = { Text(text = "Insert here the backup folder") },
+                                        shape = MaterialTheme.shapes.large,
+                                        modifier = Modifier.height(textFieldHeight)
+                                    )
+                                }
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    var checked = state.backupActive
+                                    val thumbColor by animateColorAsState(// TODO: refactor expressions as thumbColor & trackColor alltogether
+                                        targetValue = if (checked) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface,
+                                        animationSpec = tween(durationMillis = 500)
+                                    )
+                                    val trackColor by animateColorAsState(
+                                        targetValue = if (checked) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surface,
+                                        animationSpec = tween(durationMillis = 500)
+                                    )
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceAround
+                                    ) {
+                                        Spacer(modifier = Modifier.width(0.dp))
+                                        Switch(
+                                            checked = checked,
+                                            onCheckedChange = {
+                                                checked = it
+                                                onEvent(ToolEvent.SetBackupActive(it))
+                                            },
+                                            colors = SwitchDefaults.colors(
+                                                checkedThumbColor = thumbColor,
+                                                checkedTrackColor = trackColor,
+                                                uncheckedThumbColor = thumbColor,
+                                                uncheckedTrackColor = trackColor
+                                            ),
+                                        )
+                                    }
+                                }
+                            }
+                            Text(
+                                text = "The backup folder will be created and managed directly under the export folder. Keeping the last 3 backups.",
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
                     }
                 }
             }
@@ -359,40 +420,7 @@ fun DataExchangeCard(
     }
 }
 
-private fun exportAll(
-    cardTitle: String,
-    sessionCsvService: SessionCsvService,
-    state: ToolsState,
-    leadCsvService: LeadCsvService,
-    dateCsvService: DateCsvService,
-    localContext: Context
-) {
-    sessionCsvService.setExportObjects(state.abstractSessions)
-    sessionCsvService.exportRows(
-        state.exportFolder,
-        state.exportSessionsFileName,
-        state.exportHeader
-    )
-    leadCsvService.setExportObjects(state.leads)
-    leadCsvService.exportRows(
-        state.exportFolder,
-        state.exportLeadsFileName,
-        state.exportHeader
-    )
-    dateCsvService.setExportObjects(state.dates)
-    dateCsvService.exportRows(
-        state.exportFolder,
-        state.exportDatesFileName,
-        state.exportHeader
-    )
-    Toast.makeText(
-        localContext,
-        "Successfully ${cardTitle.lowercase()}ed all tables",
-        Toast.LENGTH_SHORT
-    ).show()
-}
-
-private fun importAll(
+fun importAll(
     cardTitle: String,
     sessionCsvService: SessionCsvService,
     state: ToolsState,

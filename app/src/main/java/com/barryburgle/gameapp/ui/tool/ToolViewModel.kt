@@ -8,7 +8,7 @@ import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
-import com.barryburgle.gameapp.ui.CombineTwenty
+import com.barryburgle.gameapp.ui.CombineTwentyTwo
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,8 +35,10 @@ class ToolViewModel(
     private val _importDatesFilename = settingDao.getImportDatesFilename()
     private val _exportFolder = settingDao.getExportFolder()
     private val _importFolder = settingDao.getImportFolder()
+    private val _backupFolder = settingDao.getBackupFolder()
     private val _exportHeader = settingDao.getExportHeaderFlag()
     private val _importHeader = settingDao.getImportHeaderFlag()
+    private val _backupActive = settingDao.getBackupActiveFlag()
     private val _notificationTime = settingDao.getNotificationTime()
     private val _averageLast = settingDao.getAverageLast()
     private val _latestAvailable = settingDao.getLatestAvailable()
@@ -44,7 +46,7 @@ class ToolViewModel(
     private val _latestChangelog = settingDao.getLatestChangelog()
     private val _latestDownloadUrl = settingDao.getLatestDownloadUrl()
     val state =
-        CombineTwenty(
+        CombineTwentyTwo(
             _state,
             _abstractSessions,
             _leads,
@@ -57,15 +59,17 @@ class ToolViewModel(
             _importDatesFilename,
             _exportFolder,
             _importFolder,
+            _backupFolder,
             _notificationTime,
             _averageLast,
             _exportHeader,
             _importHeader,
+            _backupActive,
             _latestAvailable,
             _latestPublishDate,
             _latestChangelog,
             _latestDownloadUrl
-        ) { state, abstractSessions, leads, dates, exportSessionsFilename, importSessionsFilename, exportLeadsFilename, importLeadsFilename, exportDatesFilename, importDatesFilename, exportFolder, importFolder, notificationTime, averageLast, exportHeader, importHeader, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl ->
+        ) { state, abstractSessions, leads, dates, exportSessionsFilename, importSessionsFilename, exportLeadsFilename, importLeadsFilename, exportDatesFilename, importDatesFilename, exportFolder, importFolder, backupFolder, notificationTime, averageLast, exportHeader, importHeader, backupActive, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl ->
             state.copy(
                 exportSessionsFileName = exportSessionsFilename,
                 importSessionsFileName = importSessionsFilename,
@@ -75,6 +79,7 @@ class ToolViewModel(
                 importDatesFileName = importDatesFilename,
                 exportFolder = exportFolder,
                 importFolder = importFolder,
+                backupFolder = backupFolder,
                 notificationTime = notificationTime,
                 abstractSessions = abstractSessions,
                 leads = leads,
@@ -82,6 +87,7 @@ class ToolViewModel(
                 lastSessionAverageQuantity = averageLast,
                 exportHeader = exportHeader.toBoolean(),
                 importHeader = importHeader.toBoolean(),
+                backupActive = backupActive.toBoolean(),
                 latestAvailable = latestAvailable,
                 latestPublishDate = latestPublishDate,
                 latestChangelog = latestChangelog,
@@ -181,6 +187,17 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SetBackupFolder -> {
+                _state.update {
+                    it.copy(
+                        backupFolder = event.backupFolder
+                    )
+                }
+                val backupFolder = _state.value.backupFolder
+                val setting = Setting(SettingDao.BACKUP_FOLDER_ID, backupFolder)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetAbstractSessions -> {
                 _state.update {
                     it.copy(
@@ -255,6 +272,17 @@ class ToolViewModel(
                 }
                 val importHeader = _state.value.importHeader
                 val setting = Setting(SettingDao.IMPORT_HEADER_ID, importHeader.toString())
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetBackupActive -> {
+                _state.update {
+                    it.copy(
+                        backupActive = event.backupActive
+                    )
+                }
+                val backupActive = _state.value.backupActive
+                val setting = Setting(SettingDao.BACKUP_ACTIVE_ID, backupActive.toString())
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 

@@ -13,6 +13,7 @@ sealed interface ToolEvent : GenericEvent {
     data class SetImportDatesFileName(val importDatesFileName: String) : ToolEvent
     data class SetExportFolder(val exportFolder: String) : ToolEvent
     data class SetImportFolder(val importFolder: String) : ToolEvent
+    data class SetBackupFolder(val backupFolder: String) : ToolEvent
     data class SetAbstractSessions(val abstractSessions: List<AbstractSession>) : ToolEvent
     data class SetLeads(val leads: List<Lead>) : ToolEvent
     data class SetDates(val dates: List<Date>) : ToolEvent
@@ -20,6 +21,7 @@ sealed interface ToolEvent : GenericEvent {
     data class SetNotificationTime(val notificationTime: String) : ToolEvent
     data class SetExportHeader(val exportHeader: Boolean) : ToolEvent
     data class SetImportHeader(val importHeader: Boolean) : ToolEvent
+    data class SetBackupActive(val backupActive: Boolean) : ToolEvent
     object SwitchShowChangelog : ToolEvent
     object SwitchExportAll : ToolEvent
 }
