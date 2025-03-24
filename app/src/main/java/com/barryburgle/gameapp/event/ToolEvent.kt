@@ -14,9 +14,9 @@ sealed interface ToolEvent : GenericEvent {
     data class SetExportFolder(val exportFolder: String) : ToolEvent
     data class SetImportFolder(val importFolder: String) : ToolEvent
     data class SetBackupFolder(val backupFolder: String) : ToolEvent
-    data class SetAbstractSessions(val abstractSessions: List<AbstractSession>) : ToolEvent
-    data class SetLeads(val leads: List<Lead>) : ToolEvent
-    data class SetDates(val dates: List<Date>) : ToolEvent
+    data class SetAllSessions(val allSessions: List<AbstractSession>) : ToolEvent
+    data class SetAllLeads(val allLeads: List<Lead>) : ToolEvent
+    data class SetAllDates(val allDates: List<Date>) : ToolEvent
     data class SetLastSessionAverageQuantity(val lastSessionAverageQuantity: String) : ToolEvent
     data class SetNotificationTime(val notificationTime: String) : ToolEvent
     data class SetExportHeader(val exportHeader: Boolean) : ToolEvent

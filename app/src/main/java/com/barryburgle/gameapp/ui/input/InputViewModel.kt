@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.ui.input
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
@@ -12,11 +13,11 @@ import com.barryburgle.gameapp.notification.AndroidNotificationScheduler
 import com.barryburgle.gameapp.notification.state.NotificationState
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.notification.NotificationService
+import com.barryburgle.gameapp.ui.CombineTwelve
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -27,7 +28,8 @@ class InputViewModel(
     private val context: Context,
     private val abstractSessionDao: AbstractSessionDao,
     private val settingDao: SettingDao,
-    private val leadDao: LeadDao
+    private val leadDao: LeadDao,
+    private val dateDao: DateDao
 ) : ViewModel() {
 
     val notificationScheduler = AndroidNotificationScheduler(context)
@@ -35,7 +37,7 @@ class InputViewModel(
 
     private val _batchSessionService = BatchSessionService()
     private val _sortType = MutableStateFlow(SortType.DATE)
-    private val _abstractSessions = _sortType.flatMapLatest { sortType ->
+    private val _allSessions = _sortType.flatMapLatest { sortType ->
         when (sortType) {
             SortType.DATE -> abstractSessionDao.getByDate()
             SortType.SETS -> abstractSessionDao.getBySets()
@@ -52,20 +54,42 @@ class InputViewModel(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _allLeads = leadDao.getAll()
+    private val _allDates = dateDao.getAll()
     private val _notificationTime = settingDao.getNotificationTime()
+    private val _exportSessionsFileName = settingDao.getExportSessionsFilename()
+    private val _exportLeadsFileName = settingDao.getExportLeadsFilename()
+    private val _exportDatesFileName = settingDao.getExportDatesFilename()
+    private val _exportFolder = settingDao.getExportFolder()
+    private val _backupFolder = settingDao.getBackupFolder()
+    private val _backupActive = settingDao.getBackupActiveFlag()
+
     private val _state = MutableStateFlow(InputState())
-    val state = combine(
+    val state = CombineTwelve(
         _state,
         _sortType,
-        _abstractSessions,
+        _allSessions,
         _allLeads,
-        _notificationTime
-    ) { state, sortType, abstractSessions, allLeads, notificationTime ->
+        _allDates,
+        _notificationTime,
+        _exportSessionsFileName,
+        _exportLeadsFileName,
+        _exportDatesFileName,
+        _exportFolder,
+        _backupFolder,
+        _backupActive
+    ) { state, sortType, allSessions, allLeads, allDates, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportFolder, backupFolder, backupActive ->
         state.copy(
-            abstractSessions = abstractSessions,
+            allSessions = allSessions,
             allLeads = allLeads,
+            allDates = allDates,
             sortType = sortType,
-            notificationTime = notificationTime
+            notificationTime = notificationTime,
+            exportSessionsFileName = exportSessionsFileName,
+            exportLeadsFileName = exportLeadsFileName,
+            exportDatesFileName = exportDatesFileName,
+            exportFolder = exportFolder,
+            backupFolder = backupFolder,
+            backupActive = backupActive.toBoolean()
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())
 

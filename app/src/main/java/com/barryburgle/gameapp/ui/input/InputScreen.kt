@@ -72,7 +72,7 @@ fun InputScreen(
         if (state.isUpdatingLead) {
             LeadDialog(state = state, onEvent = onEvent, "Update the lead")
         }
-        InsertInvite(state.abstractSessions, "Session", MaterialTheme.typography.titleLarge)
+        InsertInvite(state.allSessions, "Session", MaterialTheme.typography.titleLarge)
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -97,7 +97,7 @@ fun InputScreen(
                     }
                 }
             }
-            items(state.abstractSessions) { abstractSession ->
+            items(state.allSessions) { abstractSession ->
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     InputCard(

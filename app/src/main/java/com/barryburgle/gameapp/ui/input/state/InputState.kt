@@ -1,13 +1,14 @@
 package com.barryburgle.gameapp.ui.input.state
 
+import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.ui.state.OrderState
 
 data class InputState(
-    val abstractSessions: List<AbstractSession> = emptyList(),
-    val allLeads: List<Lead> = emptyList(),
+    override var allSessions: List<AbstractSession> = emptyList(),
+    override var allLeads: List<Lead> = emptyList(),
     var date: String = "",
     var startHour: String = "",
     var endHour: String = "",
@@ -21,7 +22,7 @@ data class InputState(
     val isAddingLead: Boolean = false,
     val isModifyingLead: Boolean = false,
     val isUpdatingLead: Boolean = false,
-    val leads: List<Lead> = emptyList(),
+    var leads: List<Lead> = emptyList(),
     val leadId: Long = 0L,
     val leadInsertTime: String = "",
     val leadSessionId: Long? = 0L,
@@ -31,7 +32,23 @@ data class InputState(
     val leadAge: Long = 20,
     val countryName: String = "",
     val notificationTime: String = "",
-    val editAbstractSession: AbstractSession? = null
+    val editAbstractSession: AbstractSession? = null,
+    override var exportSessionsFileName: String = "",
+    override var exportLeadsFileName: String = "",
+    override var exportDatesFileName: String = "",
+    override var exportFolder: String = "",
+    override var backupFolder: String = "",
+    override var allDates: List<Date> = emptyList(),
+    override var backupActive: Boolean = true
 ) : OrderState(
-    sortType
+    sortType,
+    exportSessionsFileName,
+    exportLeadsFileName,
+    exportDatesFileName,
+    exportFolder,
+    backupFolder,
+    allSessions,
+    allLeads,
+    allDates,
+    backupActive
 )

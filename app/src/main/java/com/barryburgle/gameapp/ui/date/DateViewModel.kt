@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
+import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.event.DateEvent
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.service.date.DateService
-import com.barryburgle.gameapp.ui.CombineFour
+import com.barryburgle.gameapp.ui.CombineFive
 import com.barryburgle.gameapp.ui.date.state.DateState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,13 +19,14 @@ import kotlinx.coroutines.launch
 
 class DateViewModel(
     private val dateDao: DateDao,
-    private val leadDao: LeadDao
+    private val leadDao: LeadDao,
+    private val abstractSessionDao: AbstractSessionDao
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(DateState())
     private val _dateService = DateService()
     private val _sortType = MutableStateFlow(DateSortType.DATE)
-    private val _dates = _sortType.flatMapLatest { sortType ->
+    private val _allDates = _sortType.flatMapLatest { sortType ->
         when (sortType) {
             DateSortType.LEAD -> dateDao.getByLead()
             DateSortType.LOCATION -> dateDao.getByLocation()
@@ -48,18 +50,21 @@ class DateViewModel(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _allLeads = leadDao.getAll()
+    private val _allSessions = abstractSessionDao.getAll()
 
     val state =
-        CombineFour(
+        CombineFive(
             _sortType,
             _state,
-            _dates,
-            _allLeads
-        ) { sortType, state, dates, allLeads ->
+            _allDates,
+            _allLeads,
+            _allSessions
+        ) { sortType, state, allDates, allLeads, allSessions ->
             state.copy(
                 sortType = sortType,
-                dates = dates,
-                allLeads = allLeads
+                allDates = allDates,
+                allLeads = allLeads,
+                allSessions = allSessions
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DateState())
 
@@ -69,19 +74,19 @@ class DateViewModel(
                 viewModelScope.launch {
                     val date = _dateService.init(
                         id = null,
-                        leadId = if(_state.value.leadId==0L) state.value.leadId else _state.value.leadId,
+                        leadId = if (_state.value.leadId == 0L) state.value.leadId else _state.value.leadId,
                         location = if (_state.value.location.isBlank()) state.value.location else _state.value.location,
                         date = if (_state.value.date.isBlank()) state.value.date else _state.value.date,
                         startHour = if (_state.value.startHour.isBlank()) state.value.startHour else _state.value.startHour,
                         endHour = if (_state.value.endHour.isBlank()) state.value.endHour else _state.value.endHour,
                         cost = if (_state.value.cost.isBlank()) state.value.cost.toInt() else _state.value.cost.toInt(),
                         dateNumber = if (_state.value.dateNumber.isBlank()) state.value.dateNumber.toInt() else _state.value.dateNumber.toInt(),
-                        dateType =  if(_state.value.dateType.isBlank()) state.value.dateType else _state.value.dateType,
-                        pull = if(!_state.value.pull) state.value.pull else _state.value.pull,
-                        bounce = if(!_state.value.bounce) state.value.bounce else _state.value.bounce,
-                        kiss = if(!_state.value.kiss) state.value.kiss else _state.value.kiss,
-                        lay = if(!_state.value.lay) state.value.lay else _state.value.lay,
-                        recorded = if(!_state.value.recorded) state.value.recorded else _state.value.recorded,
+                        dateType = if (_state.value.dateType.isBlank()) state.value.dateType else _state.value.dateType,
+                        pull = if (!_state.value.pull) state.value.pull else _state.value.pull,
+                        bounce = if (!_state.value.bounce) state.value.bounce else _state.value.bounce,
+                        kiss = if (!_state.value.kiss) state.value.kiss else _state.value.kiss,
+                        lay = if (!_state.value.lay) state.value.lay else _state.value.lay,
+                        recorded = if (!_state.value.recorded) state.value.recorded else _state.value.recorded,
                         stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
                         tweetUrl = if (_state.value.tweetUrl.isBlank()) state.value.tweetUrl else _state.value.tweetUrl
                     )

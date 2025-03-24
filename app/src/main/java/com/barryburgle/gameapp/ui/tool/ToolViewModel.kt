@@ -24,9 +24,9 @@ class ToolViewModel(
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(ToolsState())
-    private val _abstractSessions = abstractSessionDao.getAll()
-    private val _leads = leadDao.getAll()
-    private val _dates = dateDao.getAll()
+    private val _allSessions = abstractSessionDao.getAll()
+    private val _allLeads = leadDao.getAll()
+    private val _allDates = dateDao.getAll()
     private val _exportSessionsFilename = settingDao.getExportSessionsFilename()
     private val _importSessionsFilename = settingDao.getImportSessionsFilename()
     private val _exportLeadsFilename = settingDao.getExportLeadsFilename()
@@ -48,9 +48,9 @@ class ToolViewModel(
     val state =
         CombineTwentyTwo(
             _state,
-            _abstractSessions,
-            _leads,
-            _dates,
+            _allSessions,
+            _allLeads,
+            _allDates,
             _exportSessionsFilename,
             _importSessionsFilename,
             _exportLeadsFilename,
@@ -69,7 +69,7 @@ class ToolViewModel(
             _latestPublishDate,
             _latestChangelog,
             _latestDownloadUrl
-        ) { state, abstractSessions, leads, dates, exportSessionsFilename, importSessionsFilename, exportLeadsFilename, importLeadsFilename, exportDatesFilename, importDatesFilename, exportFolder, importFolder, backupFolder, notificationTime, averageLast, exportHeader, importHeader, backupActive, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl ->
+        ) { state, allSessions, allLeads, allDates, exportSessionsFilename, importSessionsFilename, exportLeadsFilename, importLeadsFilename, exportDatesFilename, importDatesFilename, exportFolder, importFolder, backupFolder, notificationTime, averageLast, exportHeader, importHeader, backupActive, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl ->
             state.copy(
                 exportSessionsFileName = exportSessionsFilename,
                 importSessionsFileName = importSessionsFilename,
@@ -81,9 +81,9 @@ class ToolViewModel(
                 importFolder = importFolder,
                 backupFolder = backupFolder,
                 notificationTime = notificationTime,
-                abstractSessions = abstractSessions,
-                leads = leads,
-                dates = dates,
+                allSessions = allSessions,
+                allLeads = allLeads,
+                allDates = allDates,
                 lastSessionAverageQuantity = averageLast,
                 exportHeader = exportHeader.toBoolean(),
                 importHeader = importHeader.toBoolean(),
@@ -198,34 +198,34 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
-            is ToolEvent.SetAbstractSessions -> {
+            is ToolEvent.SetAllSessions -> {
                 _state.update {
                     it.copy(
-                        abstractSessions = event.abstractSessions
+                        allSessions = event.allSessions
                     )
                 }
-                val abstractSessions = _state.value.abstractSessions
-                viewModelScope.launch { abstractSessionDao.batchInsert(abstractSessions) }
+                val allSessions = _state.value.allSessions
+                viewModelScope.launch { abstractSessionDao.batchInsert(allSessions) }
             }
 
-            is ToolEvent.SetLeads -> {
+            is ToolEvent.SetAllLeads -> {
                 _state.update {
                     it.copy(
-                        leads = event.leads
+                        allLeads = event.allLeads
                     )
                 }
-                val leads = _state.value.leads
-                viewModelScope.launch { leadDao.batchInsert(leads) }
+                val allLeads = _state.value.allLeads
+                viewModelScope.launch { leadDao.batchInsert(allLeads) }
             }
 
-            is ToolEvent.SetDates -> {
+            is ToolEvent.SetAllDates -> {
                 _state.update {
                     it.copy(
-                        dates = event.dates
+                        allDates = event.allDates
                     )
                 }
-                val dates = _state.value.dates
-                viewModelScope.launch { dateDao.batchInsert(dates) }
+                val allDates = _state.value.allDates
+                viewModelScope.launch { dateDao.batchInsert(allDates) }
             }
 
             is ToolEvent.SetLastSessionAverageQuantity -> {

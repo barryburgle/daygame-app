@@ -224,7 +224,7 @@ fun DataExchangeCard(
                             } else "",
                             buttonFunction = {
                                 if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    sessionCsvService.setExportObjects(state.abstractSessions)
+                                    sessionCsvService.setExportObjects(state.allSessions)
                                     sessionCsvService.exportRows(
                                         state.exportFolder,
                                         state.exportSessionsFileName,
@@ -233,7 +233,7 @@ fun DataExchangeCard(
                                 } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
                                     try {
                                         onEvent(
-                                            ToolEvent.SetAbstractSessions(
+                                            ToolEvent.SetAllSessions(
                                                 sessionCsvService.importRows(
                                                     state.importFolder,
                                                     state.importSessionsFileName,
@@ -270,7 +270,7 @@ fun DataExchangeCard(
                             } else "",
                             buttonFunction = {
                                 if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    leadCsvService.setExportObjects(state.leads)
+                                    leadCsvService.setExportObjects(state.allLeads)
                                     leadCsvService.exportRows(
                                         state.exportFolder,
                                         state.exportLeadsFileName,
@@ -279,7 +279,7 @@ fun DataExchangeCard(
                                 } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
                                     try {
                                         onEvent(
-                                            ToolEvent.SetLeads(
+                                            ToolEvent.SetAllLeads(
                                                 leadCsvService.importRows(
                                                     state.importFolder,
                                                     state.importLeadsFileName,
@@ -316,7 +316,7 @@ fun DataExchangeCard(
                             } else "",
                             buttonFunction = {
                                 if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    dateCsvService.setExportObjects(state.dates)
+                                    dateCsvService.setExportObjects(state.allDates)
                                     dateCsvService.exportRows(
                                         state.exportFolder,
                                         state.exportDatesFileName,
@@ -325,7 +325,7 @@ fun DataExchangeCard(
                                 } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
                                     try {
                                         onEvent(
-                                            ToolEvent.SetDates(
+                                            ToolEvent.SetAllDates(
                                                 dateCsvService.importRows(
                                                     state.importFolder,
                                                     state.importDatesFileName,
@@ -431,7 +431,7 @@ fun importAll(
 ) {
     try {
         onEvent(
-            ToolEvent.SetAbstractSessions(
+            ToolEvent.SetAllSessions(
                 sessionCsvService.importRows(
                     state.importFolder,
                     state.importSessionsFileName,
@@ -440,7 +440,7 @@ fun importAll(
             )
         )
         onEvent(
-            ToolEvent.SetLeads(
+            ToolEvent.SetAllLeads(
                 leadCsvService.importRows(
                     state.importFolder,
                     state.importLeadsFileName,
@@ -449,7 +449,7 @@ fun importAll(
             )
         )
         onEvent(
-            ToolEvent.SetDates(
+            ToolEvent.SetAllDates(
                 dateCsvService.importRows(
                     state.importFolder,
                     state.importDatesFileName,

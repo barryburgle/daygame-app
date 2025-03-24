@@ -249,19 +249,19 @@ fun versionInfo(
                     IconButton(
                         onClick = {
                             if (state.exportAll) {
-                                sessionCsvService.setExportObjects(state.abstractSessions)
+                                sessionCsvService.setExportObjects(state.allSessions)
                                 sessionCsvService.exportRows(
                                     state.exportFolder,
                                     state.exportSessionsFileName,
                                     state.exportHeader
                                 )
-                                leadCsvService.setExportObjects(state.leads)
+                                leadCsvService.setExportObjects(state.allLeads)
                                 leadCsvService.exportRows(
                                     state.exportFolder,
                                     state.exportLeadsFileName,
                                     state.exportHeader
                                 )
-                                dateCsvService.setExportObjects(state.dates)
+                                dateCsvService.setExportObjects(state.allDates)
                                 dateCsvService.exportRows(
                                     state.exportFolder,
                                     state.exportDatesFileName,

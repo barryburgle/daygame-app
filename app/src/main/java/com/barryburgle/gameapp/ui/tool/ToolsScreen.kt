@@ -91,7 +91,7 @@ fun ToolsScreen(
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     DataExchangeCard(
                         cardTitle = "Export",
-                        cardSubtitle = "Holding ${state.abstractSessions.size} sessions and ${state.leads.size} leads",
+                        cardSubtitle = "Holding ${state.allSessions.size} sessions and ${state.allLeads.size} leads",
                         state = state,
                         onEvent = onEvent,
                         modifier = exportCardModifier,
