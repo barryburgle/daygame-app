@@ -16,4 +16,17 @@ class CSVFindService {
             it.name
         } ?: listOf()
     }
+
+    fun getLastBackupDate(backupFolder: String): String {
+        val filenameList = processBackupFilenames(findCsvFiles(backupFolder))
+        if (filenameList != null && filenameList.isNotEmpty()) {
+            val firstFilename = filenameList.get(0)
+            if (firstFilename != null && firstFilename.isNotBlank()) {
+                val backupDate = firstFilename.take(10).split("_").reversed().joinToString("-")
+                val backupTime = firstFilename.takeLast(5).replace("_", ":")
+                return "Last backup completed at " + backupTime + " on " + backupDate
+            }
+        }
+        return ""
+    }
 }
