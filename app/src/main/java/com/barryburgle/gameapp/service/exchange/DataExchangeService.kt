@@ -21,14 +21,10 @@ class DataExchangeService {
         fun backup(
             state: OrderState,
             localContext: Context
-        ): String {
+        ) {
             backupAll(state, localContext)
             validateAll(state)
             cleanAllBackups(state)
-            // TODO: 1. collect info about the last backup (time and tables)
-            // TODO: 2. save backup infos to settings table
-            // TODO: 3. return  backup infos about last backup in settings export card
-            return "Last backup done on {date} - {time}"
         }
 
         fun cleanAllBackups(
@@ -66,9 +62,7 @@ class DataExchangeService {
             exportLeadsFileName: String,
             allDates: List<Date>,
             exportDatesFileName: String,
-            exportFolder: String,
-            localContext: Context,
-            message: String
+            exportFolder: String
         ) {
             sessionCsvService.setExportObjects(allSessions)
             sessionCsvService.exportRows(
@@ -88,11 +82,6 @@ class DataExchangeService {
                 exportDatesFileName,
                 true
             )
-            Toast.makeText(
-                localContext,
-                "Successfully ${message} all tables",
-                Toast.LENGTH_SHORT
-            ).show()
         }
 
         fun backupAll(
@@ -106,9 +95,7 @@ class DataExchangeService {
                 leadCsvService.getBackupFileName(),
                 state.allDates,
                 dateCsvService.getBackupFileName(),
-                state.exportFolder + "/" + state.backupFolder,
-                localContext,
-                "backed up"
+                state.exportFolder + "/" + state.backupFolder
             )
         }
 
@@ -123,10 +110,13 @@ class DataExchangeService {
                 state.exportLeadsFileName,
                 state.allDates,
                 state.exportDatesFileName,
-                state.exportFolder,
-                localContext,
-                "exported"
+                state.exportFolder
             )
+            Toast.makeText(
+                localContext,
+                "Successfully exported all tables",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }
