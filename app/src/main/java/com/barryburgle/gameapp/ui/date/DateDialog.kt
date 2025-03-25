@@ -45,6 +45,7 @@ import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.DateType
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.date.state.DateState
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
@@ -58,6 +59,8 @@ import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -497,6 +500,16 @@ fun DateDialog(
                         onEvent(DateEvent.SaveDate)
                         onEvent(DateEvent.HideDialog)
                         Toast.makeText(localContext, "Date saved", Toast.LENGTH_SHORT).show()
+                        if (state.backupActive) {
+                            runBlocking {
+                                async {
+                                    DataExchangeService.backup(
+                                        state,
+                                        localContext
+                                    )
+                                }
+                            }
+                        }
                     }
                 }) {
                     Text(text = "Save")

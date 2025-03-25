@@ -42,8 +42,11 @@ import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun LeadDialog(
@@ -246,6 +249,16 @@ fun LeadDialog(
                             Toast.makeText(localContext, "Lead saved", Toast.LENGTH_SHORT).show()
                         } else {
                             Toast.makeText(localContext, "Lead on hold", Toast.LENGTH_SHORT).show()
+                        }
+                        if (state.backupActive) {
+                            runBlocking {
+                                async {
+                                    DataExchangeService.backup(
+                                        state,
+                                        localContext
+                                    )
+                                }
+                            }
                         }
                     }
                 ) {

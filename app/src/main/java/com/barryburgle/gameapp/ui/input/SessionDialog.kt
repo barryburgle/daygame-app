@@ -49,6 +49,7 @@ import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
@@ -59,6 +60,8 @@ import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -339,7 +342,18 @@ fun SessionDialog(
                 Button(onClick = {
                     onEvent(AbstractSessionEvent.SaveAbstractSession)
                     onEvent(AbstractSessionEvent.HideDialog)
-                    Toast.makeText(localContext, "Session saved", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(localContext, "Session saved", Toast.LENGTH_SHORT)
+                        .show()
+                    if (state.backupActive) {
+                        runBlocking {
+                            async {
+                                DataExchangeService.backup(
+                                    state,
+                                    localContext
+                                )
+                            }
+                        }
+                    }
                 }) {
                     Text(text = "Save")
                 }
