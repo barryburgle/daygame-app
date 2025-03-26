@@ -21,7 +21,6 @@ sealed interface ToolEvent : GenericEvent {
     data class SetNotificationTime(val notificationTime: String) : ToolEvent
     data class SetExportHeader(val exportHeader: Boolean) : ToolEvent
     data class SetImportHeader(val importHeader: Boolean) : ToolEvent
-    // TODO: no methods should be using Set and have only one boolean value in input: should use switch instead like the following
     object SwitchBackupActive : ToolEvent
     data class SetLastBackup(val lastBackup: String) : ToolEvent
     object SwitchShowChangelog : ToolEvent
