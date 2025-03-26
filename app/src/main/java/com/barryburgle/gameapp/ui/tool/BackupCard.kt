@@ -1,6 +1,5 @@
 package com.barryburgle.gameapp.ui.tool
 
-import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,7 +27,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
@@ -53,7 +51,6 @@ fun BackupCard(
         val textFieldHeight = 55.dp
         val textFieldColumnWidth = 230.dp
         val localContext = LocalContext.current.applicationContext
-        val activity = LocalLifecycleOwner.current as? Activity
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
