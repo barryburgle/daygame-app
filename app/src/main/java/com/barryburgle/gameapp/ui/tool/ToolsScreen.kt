@@ -61,13 +61,7 @@ fun ToolsScreen(
     val dateCsvService = DateCsvService()
     val csvFindService = CSVFindService()
     Scaffold { padding ->
-        val exportCardModifier = Modifier
-            .height(610.dp)
-            .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
-            .shadow(
-                elevation = 5.dp, shape = MaterialTheme.shapes.large
-            )
-        val importCardModifier = Modifier
+        val dataExchangeCardModifier = Modifier
             .height(480.dp)
             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
             .shadow(
@@ -94,7 +88,7 @@ fun ToolsScreen(
                         cardSubtitle = "Holding ${state.allSessions.size} sessions and ${state.allLeads.size} leads",
                         state = state,
                         onEvent = onEvent,
-                        modifier = exportCardModifier,
+                        modifier = dataExchangeCardModifier,
                         sessionCsvService = sessionCsvService,
                         leadCsvService = leadCsvService,
                         dateCsvService = dateCsvService
@@ -109,10 +103,22 @@ fun ToolsScreen(
                         cardSubtitle = "Found ${csvFindService.findCsvFiles(state.importFolder).size} csv files in your ${state.importFolder} folder",
                         state = state,
                         onEvent = onEvent,
-                        modifier = importCardModifier,
+                        modifier = dataExchangeCardModifier,
                         sessionCsvService = sessionCsvService,
                         leadCsvService = leadCsvService,
                         dateCsvService = dateCsvService
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    BackupCard(
+                        cardTitle = "Backup",
+                        cardSubtitle = csvFindService.getLastBackupDate(state.exportFolder + "/" + state.backupFolder),
+                        state = state,
+                        onEvent = onEvent,
+                        modifier = settingsCardModifier
                     )
                 }
             }
@@ -124,9 +130,6 @@ fun ToolsScreen(
                         onEvent = onEvent,
                         modifier = settingsCardModifier,
                         currentVersion = versionName,
-                        sessionCsvService = sessionCsvService,
-                        leadCsvService = leadCsvService,
-                        dateCsvService = dateCsvService,
                         context = context
                     )
                 }
