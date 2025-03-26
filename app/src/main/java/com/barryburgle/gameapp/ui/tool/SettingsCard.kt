@@ -36,12 +36,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
-import com.barryburgle.gameapp.service.csv.DateCsvService
-import com.barryburgle.gameapp.service.csv.LeadCsvService
-import com.barryburgle.gameapp.service.csv.SessionCsvService
+import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
-import com.barryburgle.gameapp.ui.tool.utils.Switch
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
@@ -57,9 +54,6 @@ fun SettingsCard(
     modifier: Modifier,
     onEvent: (ToolEvent) -> Unit,
     currentVersion: String,
-    sessionCsvService: SessionCsvService,
-    leadCsvService: LeadCsvService,
-    dateCsvService: DateCsvService,
     context: Context
 ) {
     val notificationHourDialogState = rememberMaterialDialogState()
@@ -131,9 +125,6 @@ fun SettingsCard(
                         state,
                         currentVersion,
                         onEvent,
-                        sessionCsvService,
-                        leadCsvService,
-                        dateCsvService,
                         context
                     )
                 }
@@ -163,19 +154,6 @@ fun SettingsCard(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Export all tables\nbefore download",
-                                    style = MaterialTheme.typography.titleSmall
-                                )
-                                Spacer(modifier = Modifier.width(5.dp))
-                                Switch(state.exportAll) {
-                                    onEvent(ToolEvent.SwitchExportAll)
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(20.dp))
                             Button(
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -220,9 +198,6 @@ fun versionInfo(
     state: ToolsState,
     currentVersion: String,
     onEvent: (ToolEvent) -> Unit,
-    sessionCsvService: SessionCsvService,
-    leadCsvService: LeadCsvService,
-    dateCsvService: DateCsvService,
     context: Context
 ) {
     Row(
@@ -248,31 +223,16 @@ fun versionInfo(
                 ) {
                     IconButton(
                         onClick = {
-                            if (state.exportAll) {
-                                sessionCsvService.setExportObjects(state.allSessions)
-                                sessionCsvService.exportRows(
-                                    state.exportFolder,
-                                    state.exportSessionsFileName,
-                                    state.exportHeader
-                                )
-                                leadCsvService.setExportObjects(state.allLeads)
-                                leadCsvService.exportRows(
-                                    state.exportFolder,
-                                    state.exportLeadsFileName,
-                                    state.exportHeader
-                                )
-                                dateCsvService.setExportObjects(state.allDates)
-                                dateCsvService.exportRows(
-                                    state.exportFolder,
-                                    state.exportDatesFileName,
-                                    state.exportHeader
+                            if (state.backupBeforeUpdate) {
+                                DataExchangeService.backup(
+                                    state,
+                                    context
                                 )
                                 Toast.makeText(
                                     context,
-                                    "Successfully exported tables",
+                                    "Successfully backed up all tables",
                                     Toast.LENGTH_SHORT
                                 ).show()
-
                             }
                             uriHandler.openUri(state.latestDownloadUrl)
                         }) {
