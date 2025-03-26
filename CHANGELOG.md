@@ -3,7 +3,8 @@
 **Features**
 - Insert, edit, delete, view and manage your dates 🩷
 - Update checker and new version download button ⬇️
-- Import and export cards interface improvements and bulk import-export 🗂️
+- Import and export cards interface improvements and bulk import-export 🔄
+- Backup in csv files on your device all the tables on each new data entry and before update 🗃️
 
 **Bugs**
 - Leads bugfix
