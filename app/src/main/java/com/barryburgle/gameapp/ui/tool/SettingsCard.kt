@@ -39,6 +39,7 @@ import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import com.barryburgle.gameapp.ui.tool.utils.RowTitle
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
@@ -56,6 +57,7 @@ fun SettingsCard(
     currentVersion: String,
     context: Context
 ) {
+    val textFieldColumnWidth = 230.dp
     val notificationHourDialogState = rememberMaterialDialogState()
     MaterialDialog(
         dialogState = notificationHourDialogState,
@@ -128,6 +130,9 @@ fun SettingsCard(
                         context
                     )
                 }
+                RowTitle(
+                    "Sessions:", "", textFieldColumnWidth
+                )
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
                     modifier = Modifier
@@ -136,14 +141,22 @@ fun SettingsCard(
                         .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Spacer(modifier = Modifier.height(12.dp))
                     InputCountComponent(
-                        inputTitle = "Average last",
+                        inputTitle = "Average\nlast",
                         modifier = Modifier,
                         style = MaterialTheme.typography.bodySmall,
                         onEvent = onEvent as (GenericEvent) -> Unit,
                         countStart = state.lastSessionAverageQuantity,
                         saveEvent = ToolEvent::SetLastSessionAverageQuantity
+                    )
+                    // TODO: do the same of the following for weeks and months
+                    InputCountComponent(
+                        inputTitle = "Show\nlast",
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.bodySmall,
+                        onEvent = onEvent as (GenericEvent) -> Unit,
+                        countStart = state.lastSessionsShown,
+                        saveEvent = ToolEvent::SetLastSessionsShown
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,

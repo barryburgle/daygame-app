@@ -19,6 +19,7 @@ data class ToolsState(
     override var allLeads: List<Lead> = emptyList(),
     override var allDates: List<Date> = emptyList(),
     val lastSessionAverageQuantity: Int = 4,
+    val lastSessionsShown: Int = 14,
     val notificationTime: String = "",
     var exportHeader: Boolean = true,
     var importHeader: Boolean = true,

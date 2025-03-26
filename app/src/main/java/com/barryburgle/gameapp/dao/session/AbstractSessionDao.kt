@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
+import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.stat.Histogram
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +13,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AbstractSessionDao {
+
+    companion object {
+        const val QUERY_GET_ALL_LIMIT =
+            "SELECT * from (SELECT * from abstract_session ORDER BY session_date DESC LIMIT (" + SettingDao.QUERY_LAST_SESSIONS_SHOWN + ")) ORDER BY session_date ASC"
+    }
 
     @Insert(onConflict = REPLACE)
     suspend fun batchInsert(abstractSessions: List<AbstractSession>)
@@ -34,8 +40,8 @@ interface AbstractSessionDao {
     @Query("SELECT * from abstract_session")
     fun getAll(): Flow<List<AbstractSession>>
 
-    @Query("SELECT * from (SELECT * from abstract_session ORDER BY session_date DESC LIMIT :limit) ORDER BY session_date ASC")
-    fun getAllLimit(limit: Int): Flow<List<AbstractSession>>
+    @Query(QUERY_GET_ALL_LIMIT)
+    fun getAllLimit(): Flow<List<AbstractSession>>
 
     @Query("SELECT * from abstract_session ORDER BY session_date DESC, end_hour DESC")
     fun getByDate(): Flow<List<AbstractSession>>

@@ -27,8 +27,7 @@ class OutputViewModel(
 ) : ViewModel() {
     private val _state = MutableStateFlow(OutputState())
 
-    // TODO: let user set n for following query from tools screen with a writing query on db
-    private val _abstractSessions = abstractSessionDao.getAllLimit(14)
+    private val _abstractSessions = abstractSessionDao.getAllLimit()
     private val _leads = leadDao.getAll()
     private val _sessionsByWeek = aggregatedSessionsDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())

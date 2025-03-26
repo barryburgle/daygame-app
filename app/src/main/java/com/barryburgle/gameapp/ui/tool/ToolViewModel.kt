@@ -242,6 +242,20 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SetLastSessionsShown -> {
+                _state.update {
+                    it.copy(
+                        lastSessionsShown = event.lastSessionsShown.toInt()
+                    )
+                }
+                val lastSessionsShown = _state.value.lastSessionsShown
+                val setting = Setting(
+                    SettingDao.LAST_SESSIONS_SHOWN_ID,
+                    lastSessionsShown.toString()
+                )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetNotificationTime -> {
                 _state.update {
                     it.copy(
