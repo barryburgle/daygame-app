@@ -78,6 +78,9 @@ class GlobalStatsService {
             dateList: List<Date>,
             lays: Int
         ): Long {
+            if (lays == 0) {
+                return 0L
+            }
             var dateTime = computeDateTime(dateList)
             var avgLayTime = dateTime / lays
             return avgLayTime
@@ -142,6 +145,9 @@ class GlobalStatsService {
             leadsNumber: Int,
             abstractSessionList: List<AbstractSession>
         ): Long {
+            if (leadsNumber == 0) {
+                return 0L
+            }
             var sessionTime = computeSessionTime(abstractSessionList)
             var leadsNumber = leadsNumber.toLong()
             var avgLeadTime = sessionTime / leadsNumber
@@ -152,6 +158,9 @@ class GlobalStatsService {
             whole: Int,
             portion: Int
         ): Int {
+            if (whole == 0) {
+                return 0
+            }
             return portion * 100 / whole
         }
     }

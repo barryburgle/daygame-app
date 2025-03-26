@@ -54,6 +54,14 @@ class GlobalStatsServiceTest : ServiceTestData() {
     }
 
     @Test
+    fun computeAvgLayTimeZeroLaysTest() {
+        TestCase.assertEquals(
+            0L,
+            GlobalStatsService.computeAvgLayTime(datesList, 0)
+        )
+    }
+
+    @Test
     fun computeAvgApproachTimeTest() {
         TestCase.assertEquals(
             AVG_APPROACH_TIME,
@@ -102,10 +110,26 @@ class GlobalStatsServiceTest : ServiceTestData() {
     }
 
     @Test
+    fun computeAvgLeadTimeZeroLeadsTest() {
+        TestCase.assertEquals(
+            0L,
+            GlobalStatsService.computeAvgLeadTime(0, abstractSessionList)
+        )
+    }
+
+    @Test
     fun computeGenericRatioTest() {
         TestCase.assertEquals(
             (CONTACT_RATIO * 100).toInt(),
             GlobalStatsService.computeGenericRatio(SETS, CONTACTS)
+        )
+    }
+
+    @Test
+    fun computeGenericRatioZeroSetsTest() {
+        TestCase.assertEquals(
+            0,
+            GlobalStatsService.computeGenericRatio(0, CONTACTS)
         )
     }
 }
