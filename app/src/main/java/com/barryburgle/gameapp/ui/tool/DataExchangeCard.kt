@@ -350,75 +350,13 @@ fun DataExchangeCard(
                                 }
                             }
                         )
-                        if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                            RowTitle(
-                                "Backup folder:", "Active:", textFieldColumnWidth
-                            )
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(textFieldHeight),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Column(
-                                    modifier = Modifier.width(textFieldColumnWidth),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    OutlinedTextField(
-                                        value = state.backupFolder,
-                                        onValueChange = { onEvent(ToolEvent.SetBackupFolder(it)) },
-                                        placeholder = { Text(text = "Insert here the backup folder") },
-                                        shape = MaterialTheme.shapes.large,
-                                        modifier = Modifier.height(textFieldHeight)
-                                    )
-                                }
-                                Column(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    var checked = state.backupActive
-                                    val thumbColor by animateColorAsState(// TODO: refactor expressions as thumbColor & trackColor alltogether
-                                        targetValue = if (checked) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface,
-                                        animationSpec = tween(durationMillis = 500)
-                                    )
-                                    val trackColor by animateColorAsState(
-                                        targetValue = if (checked) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surface,
-                                        animationSpec = tween(durationMillis = 500)
-                                    )
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceAround
-                                    ) {
-                                        Spacer(modifier = Modifier.width(0.dp))
-                                        Switch(
-                                            checked = checked,
-                                            onCheckedChange = {
-                                                checked = it
-                                                onEvent(ToolEvent.SetBackupActive(it))
-                                            },
-                                            colors = SwitchDefaults.colors(
-                                                checkedThumbColor = thumbColor,
-                                                checkedTrackColor = trackColor,
-                                                uncheckedThumbColor = thumbColor,
-                                                uncheckedTrackColor = trackColor
-                                            ),
-                                        )
-                                    }
-                                }
-                            }
-                            Text(
-                                text = "The backup folder will be created and managed directly under the export folder. Keeping the last 3 backups.",
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
                     }
                 }
             }
         }
     }
 }
+
 
 fun importAll(
     cardTitle: String,
