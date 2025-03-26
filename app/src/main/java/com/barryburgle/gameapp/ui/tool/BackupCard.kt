@@ -130,6 +130,9 @@ fun BackupCard(
                             text = "The backup folder will be created and managed directly under the export folder: /emulated/0/storage/${state.exportFolder}/${state.backupFolder}",
                             style = MaterialTheme.typography.bodySmall
                         )
+                        RowTitle(
+                            "Backups:", "", textFieldColumnWidth
+                        )
                         Row(
                             horizontalArrangement = Arrangement.SpaceAround,
                             modifier = Modifier
@@ -138,9 +141,8 @@ fun BackupCard(
                                 .padding(16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Spacer(modifier = Modifier.height(12.dp))
                             InputCountComponent(
-                                inputTitle = "Keep last",
+                                inputTitle = "Keep\nlast",
                                 modifier = Modifier,
                                 style = MaterialTheme.typography.bodySmall,
                                 onEvent = onEvent as (GenericEvent) -> Unit,
@@ -149,7 +151,8 @@ fun BackupCard(
                             )
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.SpaceBetween
+                                verticalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth(0.6f)
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
@@ -157,7 +160,7 @@ fun BackupCard(
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Text(
-                                        text = "Backup after save",
+                                        text = "After save",
                                         style = MaterialTheme.typography.titleSmall
                                     )
                                     Spacer(modifier = Modifier.width(5.dp))
@@ -172,7 +175,7 @@ fun BackupCard(
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Text(
-                                        text = "Backup before update",
+                                        text = "Before update",
                                         style = MaterialTheme.typography.titleSmall
                                     )
                                     Spacer(modifier = Modifier.width(5.dp))
