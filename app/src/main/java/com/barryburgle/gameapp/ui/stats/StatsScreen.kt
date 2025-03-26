@@ -102,14 +102,14 @@ fun StatsScreen(
                                 state.leads.filter { lead -> lead.contact == ContactTypeEnum.NUMBER.getField() }.size
                             val socials: Int =
                                 state.leads.filter { lead -> lead.contact == ContactTypeEnum.SOCIAL.getField() }.size
+                            val avgLeadTime: Long = GlobalStatsService.computeAvgLeadTime(
+                                state.leads.size,
+                                state.abstractSessions
+                            )
                             StatsCard(
                                 modifier = cardModifier,
                                 title = "Leads",
-                                description = "On average a new lead each ${
-                                    GlobalStatsService.computeAvgLeadTime(
-                                        state.leads.size, state.abstractSessions
-                                    )
-                                } minutes",
+                                description = if (avgLeadTime != 0L) "On average a new lead each ${avgLeadTime} minutes" else "No leads acquired yet",
                                 firstQuantifierQuantity = "${state.leads.size}",
                                 firstQuantifierDescription = "Leads",
                                 secondQuantifierQuantity = "${numbers}",
@@ -148,14 +148,14 @@ fun StatsScreen(
                             val bounces: Int = state.dates.filter { date -> date.bounce }.size
                             val kisses: Int = state.dates.filter { date -> date.kiss }.size
                             val lays: Int = state.dates.filter { date -> date.lay }.size
+                            val avgLayTime: Long =
+                                GlobalStatsService.computeAvgLayTime(state.dates, lays)
+                            val layTimeSentence =
+                                if (avgLayTime != 0L) "on average a lay each ${avgLayTime} minutes" else "no lays yet"
                             StatsCard(
                                 modifier = cardModifier,
                                 title = "Dates",
-                                description = "${GlobalStatsService.computeDateSpentHours(state.dates)} hours spent on dates, on average a lay each ${
-                                    GlobalStatsService.computeAvgLayTime(
-                                        state.dates, lays
-                                    )
-                                } minutes",
+                                description = "${GlobalStatsService.computeDateSpentHours(state.dates)} hours spent on dates, " + layTimeSentence,
                                 firstQuantifierQuantity = "${state.dates.size}",
                                 firstQuantifierDescription = "Dates",
                                 secondQuantifierQuantity = "${pulls}",
