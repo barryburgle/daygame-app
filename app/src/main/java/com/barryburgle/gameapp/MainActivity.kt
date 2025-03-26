@@ -81,7 +81,7 @@ class MainActivity : ComponentActivity() {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return db?.let {
-                    DateViewModel(it.dateDao, it.leadDao, it.abstractSessionDao)
+                    DateViewModel(it.dateDao, it.leadDao, it.abstractSessionDao, it.settingDao)
                 } as T
             }
         }
