@@ -29,4 +29,16 @@ class CSVFindService {
         }
         return ""
     }
+
+    private fun processBackupFilenames(backupFilenames: List<String>): List<String> {
+        return backupFilenames
+            .map { filename ->
+                filename.removePrefix("sessions_backup_")
+                    .removePrefix("leads_backup_")
+                    .removePrefix("dates_backup_")
+                    .removeSuffix(".csv")
+            }
+            .toSet()
+            .sortedDescending()
+    }
 }
