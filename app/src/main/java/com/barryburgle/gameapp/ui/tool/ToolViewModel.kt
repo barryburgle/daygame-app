@@ -286,6 +286,17 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SetLastBackup -> {
+                _state.update {
+                    it.copy(
+                        lastBackup = event.lastBackup.toInt()
+                    )
+                }
+                val lastBackup = _state.value.lastBackup
+                val setting = Setting(SettingDao.BACKUP_NUMBER_ID, lastBackup.toString())
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SwitchShowChangelog -> {
                 _state.update {
                     it.copy(
@@ -294,10 +305,10 @@ class ToolViewModel(
                 }
             }
 
-            is ToolEvent.SwitchExportAll -> {
+            is ToolEvent.SwitchBackupBeforeUpdate -> {
                 _state.update {
                     it.copy(
-                        exportAll = _state.value.exportAll.not()
+                        backupBeforeUpdate = _state.value.backupBeforeUpdate.not()
                     )
                 }
             }

@@ -22,6 +22,7 @@ sealed interface ToolEvent : GenericEvent {
     data class SetExportHeader(val exportHeader: Boolean) : ToolEvent
     data class SetImportHeader(val importHeader: Boolean) : ToolEvent
     data class SetBackupActive(val backupActive: Boolean) : ToolEvent
+    data class SetLastBackup(val lastBackup: String) : ToolEvent
     object SwitchShowChangelog : ToolEvent
-    object SwitchExportAll : ToolEvent
+    object SwitchBackupBeforeUpdate : ToolEvent
 }

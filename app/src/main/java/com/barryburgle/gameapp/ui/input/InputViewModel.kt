@@ -13,7 +13,7 @@ import com.barryburgle.gameapp.notification.AndroidNotificationScheduler
 import com.barryburgle.gameapp.notification.state.NotificationState
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.notification.NotificationService
-import com.barryburgle.gameapp.ui.CombineTwelve
+import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,9 +62,10 @@ class InputViewModel(
     private val _exportFolder = settingDao.getExportFolder()
     private val _backupFolder = settingDao.getBackupFolder()
     private val _backupActive = settingDao.getBackupActiveFlag()
+    private val _lastBackup = settingDao.getBackupNumber()
 
     private val _state = MutableStateFlow(InputState())
-    val state = CombineTwelve(
+    val state = CombineThirteen(
         _state,
         _sortType,
         _allSessions,
@@ -76,8 +77,9 @@ class InputViewModel(
         _exportDatesFileName,
         _exportFolder,
         _backupFolder,
-        _backupActive
-    ) { state, sortType, allSessions, allLeads, allDates, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportFolder, backupFolder, backupActive ->
+        _backupActive,
+        _lastBackup
+    ) { state, sortType, allSessions, allLeads, allDates, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportFolder, backupFolder, backupActive, lastBackup ->
         state.copy(
             allSessions = allSessions,
             allLeads = allLeads,
@@ -89,7 +91,8 @@ class InputViewModel(
             exportDatesFileName = exportDatesFileName,
             exportFolder = exportFolder,
             backupFolder = backupFolder,
-            backupActive = backupActive.toBoolean()
+            backupActive = backupActive.toBoolean(),
+            lastBackup = lastBackup.toInt()
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())
 

@@ -5,10 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
+import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.DateEvent
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.service.date.DateService
-import com.barryburgle.gameapp.ui.CombineFive
+import com.barryburgle.gameapp.ui.CombineEight
 import com.barryburgle.gameapp.ui.date.state.DateState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,7 +21,8 @@ import kotlinx.coroutines.launch
 class DateViewModel(
     private val dateDao: DateDao,
     private val leadDao: LeadDao,
-    private val abstractSessionDao: AbstractSessionDao
+    private val abstractSessionDao: AbstractSessionDao,
+    private val settingDao: SettingDao
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(DateState())
@@ -51,20 +53,29 @@ class DateViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _allLeads = leadDao.getAll()
     private val _allSessions = abstractSessionDao.getAll()
+    private val _lastBackup = settingDao.getBackupNumber()
+    private val _exportFolder = settingDao.getExportFolder()
+    private val _backupFolder = settingDao.getBackupFolder()
 
     val state =
-        CombineFive(
+        CombineEight(
             _sortType,
             _state,
             _allDates,
             _allLeads,
-            _allSessions
-        ) { sortType, state, allDates, allLeads, allSessions ->
+            _allSessions,
+            _lastBackup,
+            _exportFolder,
+            _backupFolder
+        ) { sortType, state, allDates, allLeads, allSessions, lastBackup, exportFolder, backupFolder ->
             state.copy(
                 sortType = sortType,
                 allDates = allDates,
                 allLeads = allLeads,
-                allSessions = allSessions
+                allSessions = allSessions,
+                lastBackup = lastBackup.toInt(),
+                exportFolder = exportFolder,
+                backupFolder = backupFolder
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DateState())
 

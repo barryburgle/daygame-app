@@ -23,12 +23,13 @@ data class ToolsState(
     var exportHeader: Boolean = true,
     var importHeader: Boolean = true,
     override var backupActive: Boolean = true,
+    override var lastBackup: Int = 3,
     val latestAvailable: String = "",
     val latestPublishDate: String = "",
     val latestChangelog: String = "",
     val latestDownloadUrl: String = "",
     val showChangelog: Boolean = false,
-    var exportAll: Boolean = true
+    var backupBeforeUpdate: Boolean = true
 ) : OrderState(
     null,
     exportSessionsFileName,
@@ -39,5 +40,6 @@ data class ToolsState(
     allSessions,
     allLeads,
     allDates,
-    backupActive
+    backupActive,
+    lastBackup
 )

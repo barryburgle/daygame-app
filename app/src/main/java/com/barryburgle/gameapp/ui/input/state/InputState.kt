@@ -39,7 +39,8 @@ data class InputState(
     override var exportFolder: String = "",
     override var backupFolder: String = "",
     override var allDates: List<Date> = emptyList(),
-    override var backupActive: Boolean = true
+    override var backupActive: Boolean = true,
+    override var lastBackup: Int = 3
 ) : OrderState(
     sortType,
     exportSessionsFileName,
@@ -50,5 +51,6 @@ data class InputState(
     allSessions,
     allLeads,
     allDates,
-    backupActive
+    backupActive,
+    lastBackup
 )

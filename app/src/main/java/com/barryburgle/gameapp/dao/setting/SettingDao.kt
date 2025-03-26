@@ -20,6 +20,7 @@ interface SettingDao {
         const val EXPORT_HEADER_ID: String = "export_header"
         const val IMPORT_HEADER_ID: String = "import_header"
         const val BACKUP_ACTIVE_ID: String = "backup_active"
+        const val BACKUP_NUMBER_ID: String = "backup_number"
         const val LAST_SESSION_AVERAGE_QUANTITY_ID: String = "average_last"
         const val NOTIFICATION_TIME_ID: String = "notification_time"
         const val DEFAULT_MOVING_AVERAGE_WINDOW: Int = 4
@@ -45,6 +46,7 @@ interface SettingDao {
         const val DEFAULT_EXPORT_HEADER_FLAG: String = "false"
         const val DEFAULT_IMPORT_HEADER_FLAG: String = "false"
         const val DEFAULT_BACKUP_ACTIVE_FLAG: String = "true"
+        const val DEFAULT_BACKUP_NUMBER: String = "3"
         const val DEFAULT_NOTIFICATION_TIME: String = "18:00"
     }
 
@@ -89,6 +91,9 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_BACKUP_ACTIVE_FLAG}' ELSE value END FROM setting WHERE id = '${BACKUP_ACTIVE_ID}'")
     fun getBackupActiveFlag(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_BACKUP_NUMBER}' ELSE value END FROM setting WHERE id = '${BACKUP_NUMBER_ID}'")
+    fun getBackupNumber(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_MOVING_AVERAGE_WINDOW}' ELSE value END FROM setting WHERE id = '${LAST_SESSION_AVERAGE_QUANTITY_ID}'")
     fun getAverageLast(): Flow<Int>
