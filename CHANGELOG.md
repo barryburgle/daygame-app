@@ -5,10 +5,12 @@
 - Update checker and new version download button ⬇️
 - Import and export cards interface improvements and bulk import-export 🔄
 - Backup in csv files on your device all the tables on each new data entry and before update 🗃️
+- Set how many sessions you want to see in Dashboard ⚙️
 
 **Bugs**
 - Leads bugfix
 - Import bugfix
+- Ratio computation zero division bugfix
 
 # Version 1.5.0-beta (2025-02-08)
 
