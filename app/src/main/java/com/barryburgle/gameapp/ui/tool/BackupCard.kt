@@ -76,10 +76,7 @@ fun BackupCard(
                         Button(colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer
                         ), onClick = {
-                            DataExchangeService.backup(
-                                state,
-                                localContext
-                            )
+                            DataExchangeService.backup(state)
                             Toast.makeText(
                                 localContext,
                                 "Successfully backed up all tables",

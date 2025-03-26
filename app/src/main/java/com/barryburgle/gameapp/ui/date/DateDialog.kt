@@ -503,10 +503,7 @@ fun DateDialog(
                         if (state.backupActive) {
                             runBlocking {
                                 async {
-                                    DataExchangeService.backup(
-                                        state,
-                                        localContext
-                                    )
+                                    DataExchangeService.backup(state)
                                 }
                             }
                         }

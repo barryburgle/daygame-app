@@ -224,10 +224,7 @@ fun versionInfo(
                     IconButton(
                         onClick = {
                             if (state.backupBeforeUpdate) {
-                                DataExchangeService.backup(
-                                    state,
-                                    context
-                                )
+                                DataExchangeService.backup(state)
                                 Toast.makeText(
                                     context,
                                     "Successfully backed up all tables",
