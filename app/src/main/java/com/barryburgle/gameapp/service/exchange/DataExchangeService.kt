@@ -22,7 +22,8 @@ class DataExchangeService {
             state: OrderState,
             localContext: Context
         ) {
-            backupAll(state, localContext)
+            // TODO: for now it saves all the data before the last modification on the list modified: correct re-fetching the list
+            backupAll(state)
             validateAll(state)
             cleanAllBackups(state)
         }
@@ -31,13 +32,16 @@ class DataExchangeService {
             state: OrderState
         ) {
             sessionCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder
+                state.exportFolder + "/" + state.backupFolder,
+                state.lastBackup
             )
             leadCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder
+                state.exportFolder + "/" + state.backupFolder,
+                state.lastBackup
             )
             dateCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder
+                state.exportFolder + "/" + state.backupFolder,
+                state.lastBackup
             )
         }
 
@@ -85,8 +89,7 @@ class DataExchangeService {
         }
 
         fun backupAll(
-            state: OrderState,
-            localContext: Context,
+            state: OrderState
         ) {
             export(
                 state.allSessions,

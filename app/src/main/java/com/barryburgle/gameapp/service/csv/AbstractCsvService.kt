@@ -72,12 +72,12 @@ abstract class AbstractCsvService<T : Any> {
         }
     }
 
-    fun cleanBackupFolder(folder: String) {
+    fun cleanBackupFolder(folder: String, leaveLast: Int) {
         val filenames = listFileNamesLike(
             folder,
             getBackupFileName(),
             true
-        ).drop(3) // TODO: let the user set this number by settings -> do a separate backup card
+        ).drop(leaveLast)
         filenames.forEach { filename ->
             try {
                 File(filename).delete()
