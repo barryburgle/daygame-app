@@ -369,13 +369,6 @@ fun DateCard(
                                                     true
                                                 )
                                             )
-                                            /*onEvent(
-                                            DateEvent.ShowLeadDialog(
-                                                false,
-                                                false,
-                                                true
-                                            )
-                                        )*/
                                         },
                                         horizontalArrangement = Arrangement.spacedBy(7.dp)
                                     ) {
