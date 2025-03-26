@@ -275,10 +275,18 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
-            is ToolEvent.SetBackupActive -> {
+            is ToolEvent.SwitchBackupBeforeUpdate -> {
                 _state.update {
                     it.copy(
-                        backupActive = event.backupActive
+                        backupBeforeUpdate = _state.value.backupBeforeUpdate.not()
+                    )
+                }
+            }
+
+            is ToolEvent.SwitchBackupActive -> {
+                _state.update {
+                    it.copy(
+                        backupActive = _state.value.backupActive.not()
                     )
                 }
                 val backupActive = _state.value.backupActive
