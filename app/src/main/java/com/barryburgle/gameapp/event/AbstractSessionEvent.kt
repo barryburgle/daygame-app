@@ -31,4 +31,5 @@ sealed interface AbstractSessionEvent: GenericEvent {
     data class SetLeadCountryName(val countryName: String) : AbstractSessionEvent
     data class SetLeadNationality(val nationality: String) : AbstractSessionEvent
     data class SetLeadAge(val age: String) : AbstractSessionEvent
+    object SwitchJustSaved: AbstractSessionEvent
 }

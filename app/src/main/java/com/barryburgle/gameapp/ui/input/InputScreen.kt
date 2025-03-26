@@ -26,10 +26,13 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.SortType
+import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.ScrollableSorter
 import com.barryburgle.gameapp.ui.utilities.SelectionRow
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,6 +74,14 @@ fun InputScreen(
         }
         if (state.isUpdatingLead) {
             LeadDialog(state = state, onEvent = onEvent, "Update the lead")
+        }
+        if (state.justSaved && state.backupActive) {
+            runBlocking {
+                async {
+                    DataExchangeService.backup(state)
+                }
+            }
+            onEvent(AbstractSessionEvent.SwitchJustSaved)
         }
         InsertInvite(state.allSessions, "Session", MaterialTheme.typography.titleLarge)
         LazyColumn(

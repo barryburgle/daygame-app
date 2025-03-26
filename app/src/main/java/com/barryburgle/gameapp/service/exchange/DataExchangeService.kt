@@ -21,7 +21,6 @@ class DataExchangeService {
         fun backup(
             state: OrderState
         ) {
-            // TODO: for now it saves all the data before the last modification on the list modified: correct re-fetching the list
             backupAll(state)
             validateAll(state)
             cleanAllBackups(state)

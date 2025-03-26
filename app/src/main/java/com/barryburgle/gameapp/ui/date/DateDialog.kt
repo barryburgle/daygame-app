@@ -499,14 +499,8 @@ fun DateDialog(
                     } else {
                         onEvent(DateEvent.SaveDate)
                         onEvent(DateEvent.HideDialog)
+                        onEvent(DateEvent.SwitchJustSaved)
                         Toast.makeText(localContext, "Date saved", Toast.LENGTH_SHORT).show()
-                        if (state.backupActive) {
-                            runBlocking {
-                                async {
-                                    DataExchangeService.backup(state)
-                                }
-                            }
-                        }
                     }
                 }) {
                     Text(text = "Save")

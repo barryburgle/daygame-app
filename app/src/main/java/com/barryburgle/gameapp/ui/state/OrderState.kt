@@ -18,5 +18,6 @@ open class OrderState(
     open var allLeads: List<Lead> = emptyList(),
     open var allDates: List<Date> = emptyList(),
     open var backupActive: Boolean = true,
-    open var lastBackup: Int = 3
+    open var lastBackup: Int = 3,
+    open var justSaved: Boolean = false
 )

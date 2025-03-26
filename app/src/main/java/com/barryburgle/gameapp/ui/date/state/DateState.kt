@@ -37,7 +37,8 @@ data class DateState(
     override var exportFolder: String = "",
     override var backupFolder: String = "",
     override var backupActive: Boolean = true,
-    override var lastBackup: Int = 3
+    override var lastBackup: Int = 3,
+    override var justSaved: Boolean = false
 ) : OrderState(
     sortType,
     exportSessionsFileName,
@@ -49,5 +50,6 @@ data class DateState(
     allLeads,
     allDates,
     backupActive,
-    lastBackup
+    lastBackup,
+    justSaved
 )

@@ -26,10 +26,13 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.DateEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.DateSortType
+import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.date.state.DateState
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.ScrollableSorter
 import com.barryburgle.gameapp.ui.utilities.SelectionRow
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,6 +64,14 @@ fun DateScreen(
         }
         if (state.isUpdatingDate) {
             DateDialog(state = state, onEvent = onEvent, "Edit a Date")
+        }
+        if (state.justSaved && state.backupActive) {
+            runBlocking {
+                async {
+                    DataExchangeService.backup(state)
+                }
+            }
+            onEvent(DateEvent.SwitchJustSaved)
         }
         InsertInvite(state.allDates, "Date", MaterialTheme.typography.titleLarge)
         LazyColumn(

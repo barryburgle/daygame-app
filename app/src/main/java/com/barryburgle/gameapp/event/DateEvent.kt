@@ -33,4 +33,5 @@ sealed interface DateEvent : GenericEvent {
     data class EditDate(val date: Date) : DateEvent
     data class EditLead(val lead: Lead, val isUpdatingLead: Boolean) : DateEvent
     object EmptyLead : DateEvent
+    object SwitchJustSaved: DateEvent
 }

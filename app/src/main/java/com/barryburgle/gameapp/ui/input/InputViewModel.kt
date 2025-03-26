@@ -367,6 +367,14 @@ class InputViewModel(
                     )
                 }
             }
+
+            is AbstractSessionEvent.SwitchJustSaved -> {
+                _state.update {
+                    it.copy(
+                        justSaved = _state.value.justSaved.not()
+                    )
+                }
+            }
         }
     }
 }

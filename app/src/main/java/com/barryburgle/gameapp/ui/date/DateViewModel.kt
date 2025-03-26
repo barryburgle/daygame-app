@@ -345,6 +345,14 @@ class DateViewModel(
                     )
                 }
             }
+
+            is DateEvent.SwitchJustSaved -> {
+                _state.update {
+                    it.copy(
+                        justSaved = _state.value.justSaved.not()
+                    )
+                }
+            }
         }
     }
 }
