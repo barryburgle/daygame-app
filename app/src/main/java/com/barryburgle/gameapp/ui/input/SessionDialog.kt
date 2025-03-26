@@ -206,7 +206,7 @@ fun SessionDialog(
                             modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                         ) {
                             IconButton(onClick = {
-                                onEvent(AbstractSessionEvent.ShowLeadDialog(true, false, false))
+                                onEvent(AbstractSessionEvent.ShowLeadDialog(true, false))
                             }) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
@@ -255,7 +255,7 @@ fun SessionDialog(
                             Box(modifier = Modifier.clickable {
                                 onEvent(AbstractSessionEvent.EditLead(lead, true))
                                 onEvent(
-                                    AbstractSessionEvent.ShowLeadDialog(false, true, false)
+                                    AbstractSessionEvent.ShowLeadDialog(false, true)
                                 )
                             }) {
                                 leadName(
