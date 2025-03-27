@@ -130,6 +130,7 @@ fun SettingsCard(
                         context
                     )
                 }
+                // TODO: align the following with below titles
                 RowTitle(
                     "Sessions:", "", textFieldColumnWidth
                 )

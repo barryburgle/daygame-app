@@ -42,6 +42,7 @@ fun BackupCard(
     modifier: Modifier,
     onEvent: (ToolEvent) -> Unit
 ) {
+    // TODO: one tap button to import last backup for all tables
     var icon: ImageVector? = Icons.Default.Backup
     Card(
         modifier = modifier, colors = CardDefaults.cardColors(

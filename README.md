@@ -24,16 +24,17 @@
   <img src="https://tokei.rs/b1/github/barryburgle/daygame-app?category=lines&style=for-the-badge" alt="Lines">
 </div>
 
-The main goal of this daygame app it to provide a tool for measurement and improvement of your daygame.
-Everything is stored locally on your device. The app provides four tabs: 
+The main goal of this app it to provide a tool for measurement and improvement of your daygame.
+All data are stored locally, on your device *only*. The app provides four tabs: 
 - the Sessions Tab is where you can insert, see and delete all the sessions
+- the Dates Tab is where you can insert, see and delete all the dates
 - the Dashboard Tab is where you can observe your progress over time
 - the Results Tab is where you can observe your statics
 - the Settings Tab is where you can import or export data and customize your app experience
 
-| Sessions Tab                                                                                               | Dashboard Tab                                                                                               | Results Tab                                                                                                | Settings Tab                                                                                               |
-|------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
-| ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/sessions.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/dashboard.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/results.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/settings.jpg?raw=true) |
+| Sessions Tab                                                                                               | Dates Tab                                                                                               | Dashboard Tab                                                                                               | Results Tab                                                                                                | Settings Tab                                                                                               |
+|------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
+| ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/sessions.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/dates.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/dashboard.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/results.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/settings.jpg?raw=true) |
 
 ## Download
 
@@ -44,10 +45,6 @@ You can download the app .apk installer on the release page clicking on the foll
   <img src="https://i.ibb.co/q0mdc4Z/get-it-on-github.png" alt="Get it on Github" height="80">
 </a>
 </div>
-
-## Updates
-
-You can get notified when a new update is available simply installing [Obtainium](https://github.com/ImranR98/Obtainium), searching the Daygame app or adding the current page url in its "Add App" page.
 
 ## Features
 - [x] `Sessions Tab` Add, edit and delete a new session, or list all of them, sorting by:
@@ -68,7 +65,7 @@ You can get notified when a new update is available simply installing [Obtainium
   - country
   - Whatsapp/Instagram
   - age
-- [x] 🟢 `Dates Tab` Add, edit and delete a new date, or list all of them, sorting by:
+- [x] `Dates Tab` Add, edit and delete a new date, or list all of them, sorting by:
   - date
   - lead
   - location
@@ -106,9 +103,9 @@ You can get notified when a new update is available simply installing [Obtainium
   - last session sticking points reminder time setter
   - project page and credits
  
-## Features Roadmap
+## Project Roadmap
 
-The following are the features I thought could be useful in future, divided in:
+The future features are divided in:
 
 | Color Code | Complexity Level | Focus On |
 | ---------- | ---------------- | -------- |
@@ -117,7 +114,7 @@ The following are the features I thought could be useful in future, divided in:
 | 🔴 | Hard | Analisys Experience Customization |
 | ⚫ | Pro | Data acquisition delegation |
 
-### Next features
+### Features
 
 - [ ] 🟢 `Dashboard Tab` Integrate some charts that plot the sum of sets/dates/contacts/lays from the start of the month/year comparing curves of the last n (settable from settings) months or years: the higher the curve the faster proceeds the "accumulation" of results on your behalf
 
@@ -189,30 +186,22 @@ The following are the features I thought could be useful in future, divided in:
 - [ ] 🔴 `Dashboard Tab` Custom chart generation from extended tables.
 - [ ] ⚫ `Sessions Tab` Live session stealth set recording (mic access, AI-based set detection, AI-based set record trim, settable record folder).
 
-## Project Roadmap
+## Project Advancements
 
-The following list contains all the possible technical advancements needed:
+The following list contains all the possible project advancements, divided in `Dev Experience` and `User Experience`:
 
-- [ ] CI/CD for APK generation on `main` branch
-- [ ] Better UI Animations
-- [ ] More unit tests
-- [ ] Instrumentation tests
-- [ ] Performance optimizations
-- [ ] Security improvements
-- [ ] Language translations
-- [ ] Accessibility integrations
-- [ ] AI assistant integrations
-- [ ] Customizable color themes
-
-## Bugs
-To file a bug or report and issue please log in to Github and open an issue on this repository, alternatively send an email to barryburgle@gmail.com .
-Follow these steps:
-- Give a descriptive title/object to the issue/mail. If mail please write `[Daygame App] Issue:` before the issue description in the mail object
-- Try to describe in the most accurate way how the problem arose and after which steps or inserted data
-  - If mail, attach screenshots to clarify descriptions
+- `Dev Experience` CI/CD for APK build
+- `Dev Experience` Unit tests
+- `Dev Experience` Instrumentation tests
+- `Dev Experience` Security improvements
+- `User Experience` UI Animations
+- `User Experience` Themes
+- `User Experience` Language translations
+- `User Experience` Performance optimizations
+- `User Experience` Accessibility integrations
 
 ## Contribute
-If you want to contribute please look at TODOs in code and open a Pull Request (guide [here](https://www.youtube.com/watch?v=jRLGobWwA3Y)). Do the same if you would like to implement new features. Last, if you want to fork the code and create your own version of Daygame you're welcome to do it. 
+If you want to contribute suggesting a feature or reporting a bug open a Pull Request (guide [here](https://www.youtube.com/watch?v=jRLGobWwA3Y)), or alternatively send an email to barryburgle@gmail.com . The project is open to forks. 
 
 ## Credits
 This project is developed and maintained by [Barry Burgle](https://linktr.ee/barryburgle).
