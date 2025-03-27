@@ -1,4 +1,4 @@
-# Version 1.6.0 (2025-03-dd)
+# Version 1.6.0 (2025-03-27)
 
 **Features**
 - Insert, edit, delete, view and manage your dates 🩷
