@@ -52,3 +52,6 @@
     <fields>;
     <methods>;
 }
+
+# Keep Github Response
+-keep class com.barryburgle.gameapp.api.response.** { *; }

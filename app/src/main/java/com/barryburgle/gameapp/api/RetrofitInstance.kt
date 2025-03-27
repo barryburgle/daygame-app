@@ -1,6 +1,6 @@
 package com.barryburgle.gameapp.api
 
-import com.barryburgle.gameapp.api.github.GithubService
+import com.barryburgle.gameapp.api.service.github.GithubService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
