@@ -11,6 +11,7 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -28,8 +29,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.barryburgle.gameapp.api.RetrofitInstance
-import com.barryburgle.gameapp.api.github.response.GithubLatestResponse
+import com.barryburgle.gameapp.api.response.github.GithubLatestResponse
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.database.session.GameAppDatabase
 import com.barryburgle.gameapp.model.setting.Setting
@@ -58,7 +60,11 @@ class MainActivity : ComponentActivity() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return db?.let {
                     InputViewModel(
-                        applicationContext, it.abstractSessionDao, it.settingDao, it.leadDao, it.dateDao
+                        applicationContext,
+                        it.abstractSessionDao,
+                        it.settingDao,
+                        it.leadDao,
+                        it.dateDao
                     )
                 } as T
             }
@@ -70,7 +76,11 @@ class MainActivity : ComponentActivity() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return db?.let {
                     OutputViewModel(
-                        it.abstractSessionDao, it.aggregatedSessionsDao, it.aggregatedDatesDao, it.settingDao, it.leadDao
+                        it.abstractSessionDao,
+                        it.aggregatedSessionsDao,
+                        it.aggregatedDatesDao,
+                        it.settingDao,
+                        it.leadDao
                     )
                 } as T
             }
@@ -90,7 +100,13 @@ class MainActivity : ComponentActivity() {
     private val statsViewModel by viewModels<StatsViewModel>(factoryProducer = {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return db?.let { StatsViewModel(it.abstractSessionDao, it.leadDao, it.dateDao) } as T
+                return db?.let {
+                    StatsViewModel(
+                        it.abstractSessionDao,
+                        it.leadDao,
+                        it.dateDao
+                    )
+                } as T
             }
         }
     })
@@ -145,66 +161,79 @@ class MainActivity : ComponentActivity() {
     }
 
     private suspend fun checkForUpdates() {
-        try {
-            val response = RetrofitInstance.githubApiService.getLatestVersion()
-            if (response.isSuccessful && response.body() != null) {
-                val context = this
-                val packageInfo: PackageInfo =
-                    context.packageManager.getPackageInfo(context.packageName, 0)
-                val githubLatestResponse: GithubLatestResponse = response.body()!!
-                db?.let {
-                    it.settingDao.insert(
-                        Setting(
-                            SettingDao.LATEST_CHANGELOG_ID,
-                            if (githubLatestResponse.body != null) githubLatestResponse.body else SettingDao.DEFAULT_LATEST_CHANGELOG
-                        )
-                    )
-                    if (!packageInfo.versionName.equals(githubLatestResponse.tag_name.drop(1))) {
+        val context = this
+        val packageInfo: PackageInfo =
+            context.packageManager.getPackageInfo(context.packageName, 0)
+        lifecycleScope.launch {
+            try {
+                val isConnected = isOnline(context)
+                if (!isConnected) {
+                    return@launch
+                }
+                val response = RetrofitInstance.githubApiService.getLatestVersion()
+                if (response.isSuccessful && response.body() != null) {
+                    val githubLatestResponse: GithubLatestResponse = response.body()!!
+                    db?.let {
                         it.settingDao.insert(
                             Setting(
-                                SettingDao.LATEST_AVAILABLE_ID,
-                                githubLatestResponse.tag_name
+                                SettingDao.LATEST_CHANGELOG_ID,
+                                if (githubLatestResponse.body != null) githubLatestResponse.body else SettingDao.DEFAULT_LATEST_CHANGELOG
                             )
                         )
-                        it.settingDao.insert(
-                            Setting(
-                                SettingDao.LATEST_PUBLISH_DATE_ID,
-                                githubLatestResponse.published_at
+                        if (!packageInfo.versionName.equals(githubLatestResponse.tag_name.drop(1))) {
+                            it.settingDao.insert(
+                                Setting(
+                                    SettingDao.LATEST_AVAILABLE_ID,
+                                    githubLatestResponse.tag_name
+                                )
                             )
-                        )
-                        val latestDownloadUrl =
-                            githubLatestResponse.assets?.get(0)?.browser_download_url
-                        it.settingDao.insert(
-                            Setting(
-                                SettingDao.LATEST_DOWNLOAD_URL_ID,
-                                if (latestDownloadUrl != null) latestDownloadUrl else SettingDao.DEFAULT_LATEST_DOWNLOAD_URL
+                            it.settingDao.insert(
+                                Setting(
+                                    SettingDao.LATEST_PUBLISH_DATE_ID,
+                                    githubLatestResponse.published_at
+                                )
                             )
-                        )
-                    } else {
-                        it.settingDao.insert(
-                            Setting(
-                                SettingDao.LATEST_AVAILABLE_ID,
-                                SettingDao.DEFAULT_LATEST_AVAILABLE
+                            val latestDownloadUrl =
+                                githubLatestResponse.assets?.get(0)?.browser_download_url
+                            it.settingDao.insert(
+                                Setting(
+                                    SettingDao.LATEST_DOWNLOAD_URL_ID,
+                                    if (latestDownloadUrl != null) latestDownloadUrl else SettingDao.DEFAULT_LATEST_DOWNLOAD_URL
+                                )
                             )
-                        )
-                        it.settingDao.insert(
-                            Setting(
-                                SettingDao.LATEST_PUBLISH_DATE_ID,
-                                SettingDao.DEFAULT_LATEST_PUBLISH_DATE
+                        } else {
+                            it.settingDao.insert(
+                                Setting(
+                                    SettingDao.LATEST_AVAILABLE_ID,
+                                    SettingDao.DEFAULT_LATEST_AVAILABLE
+                                )
                             )
-                        )
-                        it.settingDao.insert(
-                            Setting(
-                                SettingDao.LATEST_DOWNLOAD_URL_ID,
-                                SettingDao.DEFAULT_LATEST_DOWNLOAD_URL
+                            it.settingDao.insert(
+                                Setting(
+                                    SettingDao.LATEST_PUBLISH_DATE_ID,
+                                    SettingDao.DEFAULT_LATEST_PUBLISH_DATE
+                                )
                             )
-                        )
+                            it.settingDao.insert(
+                                Setting(
+                                    SettingDao.LATEST_DOWNLOAD_URL_ID,
+                                    SettingDao.DEFAULT_LATEST_DOWNLOAD_URL
+                                )
+                            )
+                        }
                     }
                 }
+            } catch (ioException: IOException) {
+                Log.e("ToolViewModel", "IOException while checking for updates")
             }
-        } catch (ioException: IOException) {
-            Log.e("ToolViewModel", "IOException while checking for updates")
         }
+    }
+
+    private fun isOnline(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE)
+                as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetwork
+        return activeNetwork != null && connectivityManager.getNetworkCapabilities(activeNetwork) != null
     }
 
     private fun createNotificationChannel() {
