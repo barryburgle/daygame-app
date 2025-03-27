@@ -68,7 +68,7 @@ You can get notified when a new update is available simply installing [Obtainium
   - country
   - Whatsapp/Instagram
   - age
-- [ ] 🟢 `Dates Tab` Add, edit and delete a new date, or list all of them, sorting by:
+- [x] 🟢 `Dates Tab` Add, edit and delete a new date, or list all of them, sorting by:
   - date
   - lead
   - location
