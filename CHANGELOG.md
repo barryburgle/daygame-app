@@ -1,3 +1,10 @@
+# Version 1.7.0 (2025-04-xx)
+
+**Features**
+
+**Bugs**
+- Insert dialog fields valued properly after insertion or deletion
+
 # Version 1.6.0 (2025-03-27)
 
 **Features**

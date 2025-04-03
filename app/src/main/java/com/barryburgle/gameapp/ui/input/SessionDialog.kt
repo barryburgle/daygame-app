@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,28 +38,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
+import com.barryburgle.gameapp.model.enums.TimeInputFormEnum
 import com.barryburgle.gameapp.model.lead.Lead
-import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.MaterialDialogState
-import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
-import com.vanpra.composematerialdialogs.datetime.date.datepicker
-import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
-import com.vanpra.composematerialdialogs.datetime.time.timepicker
-import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import java.time.LocalDate
-import java.time.LocalTime
+import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,100 +62,11 @@ fun SessionDialog(
 ) {
     // TODO: make all the fields displayed in the dialog change when in edit mode (similarly to counters)
     val localContext = LocalContext.current.applicationContext
-    val dateDialogState = rememberMaterialDialogState()
-    val startHourDialogState = rememberMaterialDialogState()
-    val endHourDialogState = rememberMaterialDialogState()
-    // TODO: do the same of the following variable for all session, date and then set dialogs
-    var dateButtonText = state.date
+    var latestDateValue = state.date
+    var latestStartHour = state.startHour
+    var latestEndHour = state.endHour
     if (state.isUpdatingSession) {
         setState(state)
-    }
-    MaterialDialog(
-        dialogState = dateDialogState, elevation = 10.dp, buttons = {
-            positiveButton(
-                "Ok", textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.surfaceVariant
-                )
-            )
-            negativeButton(
-                "Cancel", textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.surfaceVariant
-                )
-            )
-        }, shape = MaterialTheme.shapes.extraLarge
-    ) {
-        this.datepicker(
-            initialDate = if (state.isAddingSession || state.editAbstractSession == null) LocalDate.now() else FormatService.parseDate(
-                state.editAbstractSession.date
-            ), title = "Set date", colors = DatePickerDefaults.colors(
-                headerBackgroundColor = MaterialTheme.colorScheme.background,
-                headerTextColor = MaterialTheme.colorScheme.onPrimary,
-                dateActiveBackgroundColor = MaterialTheme.colorScheme.tertiary,
-                dateActiveTextColor = MaterialTheme.colorScheme.onPrimary,
-                dateInactiveBackgroundColor = MaterialTheme.colorScheme.onTertiary,
-                dateInactiveTextColor = MaterialTheme.colorScheme.background
-
-            )
-        ) {
-            onEvent(AbstractSessionEvent.SetDate(it.toString()))
-            dateButtonText = it.toString()
-        }
-    }
-    MaterialDialog(
-        dialogState = startHourDialogState, elevation = 10.dp, buttons = {
-            positiveButton(
-                "Ok", textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.surfaceVariant
-                )
-            )
-            negativeButton(
-                "Cancel", textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.surfaceVariant
-                )
-            )
-        }, shape = MaterialTheme.shapes.extraLarge
-    ) {
-        this.timepicker(
-            initialTime = if (state.isAddingSession || state.editAbstractSession == null) LocalTime.now() else FormatService.parseTime(
-                state.editAbstractSession.startHour
-            ), title = "Set start hour", colors = TimePickerDefaults.colors(
-                selectorColor = MaterialTheme.colorScheme.onPrimary,
-                activeBackgroundColor = MaterialTheme.colorScheme.tertiary,
-                activeTextColor = MaterialTheme.colorScheme.background,
-                inactiveBackgroundColor = MaterialTheme.colorScheme.primary,
-                inactiveTextColor = MaterialTheme.colorScheme.onPrimary
-            )
-        ) {
-            onEvent(AbstractSessionEvent.SetStartHour(it.toString().substring(0, 5)))
-        }
-    }
-    MaterialDialog(
-        dialogState = endHourDialogState, elevation = 10.dp, buttons = {
-            positiveButton(
-                "Ok", textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.surfaceVariant
-                )
-            )
-            negativeButton(
-                "Cancel", textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.surfaceVariant
-                )
-            )
-        }, shape = MaterialTheme.shapes.extraLarge
-    ) {
-        this.timepicker(
-            initialTime = if (state.isAddingSession || state.editAbstractSession == null) LocalTime.now() else FormatService.parseTime(
-                state.editAbstractSession.endHour
-            ), title = "Set end hour", colors = TimePickerDefaults.colors(
-                selectorColor = MaterialTheme.colorScheme.onPrimary,
-                activeBackgroundColor = MaterialTheme.colorScheme.tertiary,
-                activeTextColor = MaterialTheme.colorScheme.background,
-                inactiveBackgroundColor = MaterialTheme.colorScheme.primary,
-                inactiveTextColor = MaterialTheme.colorScheme.onPrimary
-            )
-        ) {
-            onEvent(AbstractSessionEvent.SetEndHour(it.toString().substring(0, 5)))
-        }
     }
     AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
         onEvent(AbstractSessionEvent.HideDialog)
@@ -233,22 +134,45 @@ fun SessionDialog(
                 Column(
                     modifier = Modifier.width(DialogConstant.TIME_COLUMN_WIDTH)
                 ) {
-                    timeInputButton(
-                        getButtonTitle(
-                            if (dateButtonText.isBlank()) state.date else dateButtonText,
-                            "",
-                            "Date"
+                    TimeInputFormButton(
+                        passStateValue(state.date, latestDateValue),
+                        TimeInputFormEnum.DATE,
+                        passInitialValue(
+                            state.isAddingSession,
+                            state.editAbstractSession,
+                            if (state.editAbstractSession != null) state.editAbstractSession!!.date else ""
                         ),
-                        dateDialogState
-                    )
-                    timeInputButton(
-                        getButtonTitle(state.startHour, "Start ", "Start Hour"),
-                        startHourDialogState
-                    )
-                    timeInputButton(
-                        getButtonTitle(state.endHour, "End ", "End Hour"),
-                        endHourDialogState
-                    )
+                        "session",
+                        ""
+                    ) {
+                        onEvent(AbstractSessionEvent.SetDate(it))
+                    }
+                    TimeInputFormButton(
+                        passStateValue(state.startHour, latestStartHour),
+                        TimeInputFormEnum.HOUR,
+                        passInitialValue(
+                            state.isAddingSession,
+                            state.editAbstractSession,
+                            if (state.editAbstractSession != null) state.editAbstractSession!!.startHour else ""
+                        ),
+                        "session",
+                        "Start"
+                    ) {
+                        onEvent(AbstractSessionEvent.SetStartHour(it.substring(0, 5)))
+                    }
+                    TimeInputFormButton(
+                        passStateValue(state.endHour, latestEndHour),
+                        TimeInputFormEnum.HOUR,
+                        passInitialValue(
+                            state.isAddingSession,
+                            state.editAbstractSession,
+                            if (state.editAbstractSession != null) state.editAbstractSession!!.endHour else ""
+                        ),
+                        "session",
+                        "End"
+                    ) {
+                        onEvent(AbstractSessionEvent.SetEndHour(it.substring(0, 5)))
+                    }
                 }
                 Column(
                     modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH)
@@ -377,22 +301,6 @@ fun setState(
 }
 
 @Composable
-fun timeInputButton(
-    text: String, dialogState: MaterialDialogState
-) {
-    Button(colors = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.primaryContainer
-    ), onClick = { dialogState.show() }) {
-        Text(
-            text = text,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
-
-@Composable
 fun leadName(
     lead: Lead,
     backgroundColor: Color,
@@ -491,4 +399,20 @@ fun leadName(
             }
         }
     }
+}
+
+private fun passStateValue(stateValue: String, latestValue: String): String {
+    if (stateValue != latestValue && latestValue.isNotEmpty())
+        return latestValue
+    return stateValue
+}
+
+private fun passInitialValue(
+    isAddingSession: Boolean,
+    editEntity: Any?,
+    possibleReturn: String
+): String {
+    if (isAddingSession || editEntity == null)
+        return LocalDateTime.now().toString().substring(0, 16) + "Z"
+    return possibleReturn
 }
