@@ -141,6 +141,7 @@ fun InputCard(
                                     )
                             ) {
                                 IconButton(onClick = {
+                                    onEvent(AbstractSessionEvent.EmptyLeads)
                                     leads.forEach { lead ->
                                         onEvent(
                                             AbstractSessionEvent.SetLead(
