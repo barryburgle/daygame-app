@@ -394,7 +394,7 @@ fun leadName(
     cardShow: Boolean
 ) {
     var displayName = lead.name
-    if (displayName != null && !displayName.isBlank() && lead.sessionId != null) {
+    if (displayName != null && !displayName.isBlank()) {
         if (displayName.length > 7) {
             displayName = displayName.substring(0, 6) + "... "
         }
