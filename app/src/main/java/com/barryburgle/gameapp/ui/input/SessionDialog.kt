@@ -75,6 +75,8 @@ fun SessionDialog(
     val dateDialogState = rememberMaterialDialogState()
     val startHourDialogState = rememberMaterialDialogState()
     val endHourDialogState = rememberMaterialDialogState()
+    // TODO: do the same of the following variable for all session, date and then set dialogs
+    var dateButtonText = state.date
     if (state.isUpdatingSession) {
         setState(state)
     }
@@ -106,6 +108,7 @@ fun SessionDialog(
             )
         ) {
             onEvent(AbstractSessionEvent.SetDate(it.toString()))
+            dateButtonText = it.toString()
         }
     }
     MaterialDialog(
@@ -232,15 +235,19 @@ fun SessionDialog(
                 ) {
                     timeInputButton(
                         getButtonTitle(
-                            state.date, "", "Date"
-                        ), dateDialogState
+                            if (dateButtonText.isBlank()) state.date else dateButtonText,
+                            "",
+                            "Date"
+                        ),
+                        dateDialogState
                     )
                     timeInputButton(
                         getButtonTitle(state.startHour, "Start ", "Start Hour"),
                         startHourDialogState
                     )
                     timeInputButton(
-                        getButtonTitle(state.endHour, "End ", "End Hour"), endHourDialogState
+                        getButtonTitle(state.endHour, "End ", "End Hour"),
+                        endHourDialogState
                     )
                 }
                 Column(
