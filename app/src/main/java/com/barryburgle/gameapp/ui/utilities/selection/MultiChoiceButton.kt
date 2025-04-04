@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -24,7 +25,6 @@ fun MultiChoiceButton(
     modifier: Modifier,
     selectedOptions: SnapshotStateList<Boolean>
 ) {
-    // TODO: swap selection colors to resemble the ones of SelectionRow
     // TODO: move all the selection composables in the .selection package
     Row(
         modifier = Modifier
@@ -49,7 +49,13 @@ fun MultiChoiceButton(
                     icon = { SegmentedButtonDefaults.Icon(selectedOptions[index]) },
                     label = {
                         Text(label)
-                    }
+                    },
+                    colors = SegmentedButtonDefaults.colors(
+                        activeContentColor = MaterialTheme.colorScheme.onPrimary,
+                        inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        activeContainerColor = MaterialTheme.colorScheme.primary,
+                        inactiveContainerColor = MaterialTheme.colorScheme.surfaceVariant
+                    ),
                 )
             }
         }
