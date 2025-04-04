@@ -375,6 +375,31 @@ class InputViewModel(
                     )
                 }
             }
+
+            is AbstractSessionEvent.SwitchShowFlag -> {
+                if (event.flagNumber == 0) {
+                    _state.update {
+                        it.copy(
+                            showSessions = _state.value.showSessions.not()
+                        )
+                    }
+                }
+                if (event.flagNumber == 1) {
+                    _state.update {
+                        it.copy(
+                            showSets = _state.value.showSets.not()
+                        )
+                    }
+                }
+
+                if (event.flagNumber == 2) {
+                    _state.update {
+                        it.copy(
+                            showDates = _state.value.showDates.not()
+                        )
+                    }
+                }
+            }
         }
     }
 }

@@ -23,9 +23,11 @@ import androidx.compose.ui.util.fastForEachIndexed
 fun MultiChoiceButton(
     options: List<String>,
     modifier: Modifier,
-    selectedOptions: SnapshotStateList<Boolean>
+    selectedOptions: SnapshotStateList<Boolean>,
+    onCheckedChange: (Int) -> Unit
 ) {
     // TODO: move all the selection composables in the .selection package
+    val selectedOptionsToDisplay = selectedOptions
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -42,9 +44,10 @@ fun MultiChoiceButton(
                         index = index,
                         count = options.size
                     ),
-                    checked = selectedOptions[index],
+                    checked = selectedOptionsToDisplay[index],
                     onCheckedChange = {
-                        selectedOptions[index] = !selectedOptions[index]
+                        selectedOptionsToDisplay[index] = !selectedOptionsToDisplay[index]
+                        onCheckedChange(index)
                     },
                     icon = { SegmentedButtonDefaults.Icon(selectedOptions[index]) },
                     label = {

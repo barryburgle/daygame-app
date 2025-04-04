@@ -18,6 +18,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
@@ -25,12 +27,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.event.GenericEvent
+import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.ScrollableSorter
 import com.barryburgle.gameapp.ui.utilities.SelectionRow
+import com.barryburgle.gameapp.ui.utilities.selection.MultiChoiceButton
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 
@@ -45,6 +49,9 @@ fun InputScreen(
 ) {
     // TODO: integrate on the right a scrollbar (mainly invisible) that allows to easily jump to a session around a certain date
     val spaceFromNavBar = 80.dp
+    val selectedOptions = remember {
+        mutableStateListOf(state.showSessions, state.showSets, state.showDates)
+    }
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -92,6 +99,16 @@ fun InputScreen(
                 ),
             verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
         ) {
+            item {
+                MultiChoiceButton(
+                    EventTypeEnum.getAllFields(),
+                    Modifier
+                        .fillMaxSize(0.95f),
+                    selectedOptions
+                ) {
+                    onEvent(AbstractSessionEvent.SwitchShowFlag(it))
+                }
+            }
             item {
                 ScrollableSorter(
                     spaceFromLeft

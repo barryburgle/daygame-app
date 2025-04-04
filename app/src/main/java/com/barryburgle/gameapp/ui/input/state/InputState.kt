@@ -41,7 +41,10 @@ data class InputState(
     override var allDates: List<Date> = emptyList(),
     override var backupActive: Boolean = true,
     override var lastBackup: Int = 3,
-    override var justSaved: Boolean = false
+    override var justSaved: Boolean = false,
+    val showSessions: Boolean = true,
+    val showSets: Boolean = true,
+    val showDates: Boolean = true
 ) : OrderState(
     sortType,
     exportSessionsFileName,
