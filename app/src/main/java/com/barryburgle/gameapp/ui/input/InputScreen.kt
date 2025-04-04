@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -110,9 +111,17 @@ fun InputScreen(
                 }
             }
             item {
+                // TODO: make the following values change accordingly to the type of entity selected by MultiChoiceButton
                 ScrollableSorter(
                     spaceFromLeft
                 ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.Sort,
+                        contentDescription = "Sort By",
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.height(25.dp)
+                    )
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
                     SortType.values().forEach { sortType ->
                         state.sortType?.let {
                             SelectionRow(
