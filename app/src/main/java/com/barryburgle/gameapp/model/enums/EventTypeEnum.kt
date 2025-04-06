@@ -11,7 +11,7 @@ enum class EventTypeEnum(private val field: String) : FieldEnum {
 
     companion object {
         fun getAllFields(): List<String> {
-            return values().map { it.getField() }
+            return values().map { it.getField()  + "s" }
         }
     }
 }
