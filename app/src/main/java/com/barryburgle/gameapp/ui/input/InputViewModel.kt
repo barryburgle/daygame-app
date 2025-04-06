@@ -8,16 +8,21 @@ import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.SortType
+import com.barryburgle.gameapp.model.game.SortableGameEvent
+import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.notification.AndroidNotificationScheduler
 import com.barryburgle.gameapp.notification.state.NotificationState
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.notification.NotificationService
-import com.barryburgle.gameapp.ui.CombineThirteen
+import com.barryburgle.gameapp.ui.CombineFourteen
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -64,13 +69,46 @@ class InputViewModel(
     private val _backupActive = settingDao.getBackupActiveFlag()
     private val _lastBackup = settingDao.getBackupNumber()
 
+    val _showSessions = MutableStateFlow(true)
+    val _showSets = MutableStateFlow(true)
+    val _showDates = MutableStateFlow(true)
+    val _allEvents: Flow<List<SortableGameEvent>> = combine(
+        _showSessions,
+        _showSets,
+        _showDates,
+        _allSessions,
+        _allDates
+    ) { showSessions, showSets, showDates, allSessions, allDates ->
+        listOf(showSessions, showSets, showDates, allSessions, allDates)
+    }.flatMapLatest { (showSessions, showSets, showDates, allSessions, allDates) ->
+        val combinedList = mutableListOf<SortableGameEvent>().apply {
+            if (showSessions as Boolean) addAll((allSessions as List<AbstractSession>).map {
+                SortableGameEvent(
+                    it.insertTime,
+                    AbstractSession::class.java.simpleName,
+                    it
+                )
+            }) else removeIf { it.classType == AbstractSession::class.java.simpleName }
+            // TODO: manage sets here
+            if (showDates as Boolean) addAll((allDates as List<Date>).map {
+                SortableGameEvent(
+                    it.insertTime,
+                    Date::class.java.simpleName,
+                    it
+                )
+            }) else removeIf { it.classType == Date::class.java.simpleName }
+        }
+        kotlinx.coroutines.flow.flowOf(combinedList.sortedBy { it.insertTime })
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     private val _state = MutableStateFlow(InputState())
-    val state = CombineThirteen(
+    val state = CombineFourteen(
         _state,
         _sortType,
         _allSessions,
         _allLeads,
         _allDates,
+        _allEvents,
         _notificationTime,
         _exportSessionsFileName,
         _exportLeadsFileName,
@@ -79,11 +117,12 @@ class InputViewModel(
         _backupFolder,
         _backupActive,
         _lastBackup
-    ) { state, sortType, allSessions, allLeads, allDates, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportFolder, backupFolder, backupActive, lastBackup ->
+    ) { state, sortType, allSessions, allLeads, allDates, allEvents, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportFolder, backupFolder, backupActive, lastBackup ->
         state.copy(
             allSessions = allSessions,
             allLeads = allLeads,
             allDates = allDates,
+            allEvents = allEvents,
             sortType = sortType,
             notificationTime = notificationTime,
             exportSessionsFileName = exportSessionsFileName,
@@ -378,26 +417,13 @@ class InputViewModel(
 
             is AbstractSessionEvent.SwitchShowFlag -> {
                 if (event.flagNumber == 0) {
-                    _state.update {
-                        it.copy(
-                            showSessions = _state.value.showSessions.not()
-                        )
-                    }
+                    _showSessions.value = !_showSessions.value
                 }
                 if (event.flagNumber == 1) {
-                    _state.update {
-                        it.copy(
-                            showSets = _state.value.showSets.not()
-                        )
-                    }
+                    _showSets.value = !_showSets.value
                 }
-
                 if (event.flagNumber == 2) {
-                    _state.update {
-                        it.copy(
-                            showDates = _state.value.showDates.not()
-                        )
-                    }
+                    _showDates.value = !_showDates.value
                 }
             }
         }
