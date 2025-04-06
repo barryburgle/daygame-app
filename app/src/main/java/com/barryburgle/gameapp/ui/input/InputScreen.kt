@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.input
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -21,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
@@ -51,7 +54,7 @@ fun InputScreen(
     // TODO: integrate on the right a scrollbar (mainly invisible) that allows to easily jump to a session around a certain date
     val spaceFromNavBar = 80.dp
     val selectedOptions = remember {
-        mutableStateListOf(state.showSessions, state.showSets, state.showDates)
+        mutableStateListOf(true, true, true)
     }
     Scaffold(
         floatingActionButton = {
@@ -101,13 +104,30 @@ fun InputScreen(
             verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
         ) {
             item {
-                MultiChoiceButton(
-                    EventTypeEnum.getAllFields(),
-                    Modifier
-                        .fillMaxSize(0.95f),
-                    selectedOptions
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    onEvent(AbstractSessionEvent.SwitchShowFlag(it))
+                    Row(
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.background)
+                            .width(spaceFromLeft)
+                    ) {}
+                    Icon(
+                        imageVector = Icons.Filled.CalendarToday,
+                        contentDescription = "Sort By",
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.height(25.dp)
+                    )
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    MultiChoiceButton(
+                        EventTypeEnum.getAllFields(),
+                        Modifier.fillMaxWidth(0.95f),
+                        selectedOptions
+                    ) {
+                        onEvent(AbstractSessionEvent.SwitchShowFlag(it))
+                    }
                 }
             }
             item {
