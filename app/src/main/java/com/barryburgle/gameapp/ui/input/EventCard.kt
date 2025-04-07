@@ -34,9 +34,11 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.FormatService
 
 @ExperimentalMaterial3Api
@@ -172,7 +174,21 @@ fun EventCard(
                     Column(
                         modifier = Modifier.fillMaxHeight()
                     ) {
-                        // TODO: insert here body function
+                        EventCardSection {
+                            if (AbstractSession::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                SessionBody(
+                                    sortableGameEvent.event as AbstractSession,
+                                    50.sp,
+                                    10.sp,
+                                    15.sp
+                                )
+                            }
+                            // TODO: fix the following
+                            /*if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                DateBody(sortableGameEvent.event as Date, 50.sp, 10.sp, 15.sp)
+                            }*/
+                        }
+                        Spacer(modifier = Modifier.height(7.dp))
                         EventCardSection {
                             if (leads == null || leads.isEmpty()) {
                                 Text(
@@ -184,7 +200,7 @@ fun EventCard(
                                     text = "Leads:",
                                     style = MaterialTheme.typography.bodySmall
                                 )
-                                Spacer(modifier = Modifier.height(5.dp))
+                                Spacer(modifier = Modifier.height(7.dp))
                                 LazyRow(
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
@@ -222,7 +238,7 @@ fun EventCard(
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(5.dp))
+                        Spacer(modifier = Modifier.height(7.dp))
                         EventCardSection {
                             Row(
                                 horizontalArrangement = Arrangement.SpaceEvenly,
