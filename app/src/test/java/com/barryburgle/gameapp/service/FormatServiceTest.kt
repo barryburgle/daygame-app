@@ -27,6 +27,14 @@ class FormatServiceTest : ServiceTestData() {
     }
 
     @Test
+    fun getDateNullTest() {
+        assertEquals(
+            FormatService.NO_DATE,
+            FormatService.getDate(null)
+        )
+    }
+
+    @Test
     fun getTimeTest() {
         assertEquals(
             VIEW_TIME,

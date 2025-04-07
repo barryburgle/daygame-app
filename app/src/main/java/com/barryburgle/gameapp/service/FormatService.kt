@@ -12,6 +12,7 @@ class FormatService {
         val SAVE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX")
         val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy")
         val TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm")
+        val NO_DATE = "No date"
 
         fun getPerc(
             number: Double
@@ -21,8 +22,11 @@ class FormatService {
         }
 
         fun getDate(
-            localDate: String
+            localDate: String?
         ): String {
+            if(localDate==null){
+                return NO_DATE
+            }
             return DATE_FORMATTER.format(parseDate(localDate))
         }
 
