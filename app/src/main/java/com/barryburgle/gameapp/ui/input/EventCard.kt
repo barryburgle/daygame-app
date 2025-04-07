@@ -173,76 +173,49 @@ fun EventCard(
                         modifier = Modifier.fillMaxHeight()
                     ) {
                         // TODO: insert here body function
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxHeight()
-                        ) {
-                            // TODO: style the leads section similarly to sticking points one, with rounded rectangle
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                            ) {
-                                Row(
-                                    horizontalArrangement = Arrangement.SpaceEvenly,
-                                    modifier = Modifier.fillMaxHeight()
+                        EventCardSection {
+                            if (leads == null || leads.isEmpty()) {
+                                Text(
+                                    text = "No leads",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            } else {
+                                Text(
+                                    text = "Leads:",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                                Spacer(modifier = Modifier.height(5.dp))
+                                LazyRow(
+                                    modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .fillMaxHeight()
-                                            .background(
-                                                color = MaterialTheme.colorScheme.primary,
-                                                shape = RoundedCornerShape(10.dp)
-                                            )
-                                            .padding(7.dp)
-                                    ) {
-                                        if (leads == null || leads.isEmpty()) {
-                                            Text(
-                                                text = "No leads",
-                                                style = MaterialTheme.typography.bodySmall
-                                            )
-                                        } else {
-                                            Text(
-                                                text = "Leads:",
-                                                style = MaterialTheme.typography.bodySmall
-                                            )
-                                            Spacer(modifier = Modifier.height(5.dp))
-                                            LazyRow(
-                                                modifier = Modifier.fillMaxWidth()
+                                    for (lead in leads) {
+                                        item {
+                                            Spacer(modifier = Modifier.width(5.dp))
+                                        }
+                                        item {
+                                            Row(
+                                                modifier = Modifier.clickable {
+                                                    onEvent(
+                                                        AbstractSessionEvent.EditLead(
+                                                            lead, true
+                                                        )
+                                                    )
+                                                    onEvent(
+                                                        AbstractSessionEvent.ShowLeadDialog(
+                                                            false, false
+                                                        )
+                                                    )
+                                                },
+                                                horizontalArrangement = Arrangement.spacedBy(
+                                                    7.dp
+                                                )
                                             ) {
-                                                for (lead in leads) {
-                                                    item {
-                                                        Spacer(modifier = Modifier.width(5.dp))
-                                                    }
-                                                    item {
-                                                        Row(
-                                                            modifier = Modifier.clickable {
-                                                                onEvent(
-                                                                    AbstractSessionEvent.EditLead(
-                                                                        lead, true
-                                                                    )
-                                                                )
-                                                                onEvent(
-                                                                    AbstractSessionEvent.ShowLeadDialog(
-                                                                        false, false
-                                                                    )
-                                                                )
-                                                            },
-                                                            horizontalArrangement = Arrangement.spacedBy(
-                                                                7.dp
-                                                            )
-                                                        ) {
-                                                            leadName(
-                                                                lead = lead,
-                                                                backgroundColor = MaterialTheme.colorScheme.background,
-                                                                outputShow = false,
-                                                                cardShow = true
-                                                            )
-                                                        }
-                                                    }
-                                                }
+                                                leadName(
+                                                    lead = lead,
+                                                    backgroundColor = MaterialTheme.colorScheme.background,
+                                                    outputShow = false,
+                                                    cardShow = true
+                                                )
                                             }
                                         }
                                     }
@@ -250,85 +223,59 @@ fun EventCard(
                             }
                         }
                         Spacer(modifier = Modifier.height(5.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxHeight()
-                        ) {
-                            val stickingPoints =
-                                sortableGameEvent.event.getEventStickingPoints()
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxHeight()
+                        EventCardSection {
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxHeight()
                             ) {
-                                Row(
-                                    horizontalArrangement = Arrangement.SpaceEvenly,
-                                    modifier = Modifier.fillMaxHeight()
+                                val stickingPoints =
+                                    sortableGameEvent.event.getEventStickingPoints()
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.9f)
+                                        .fillMaxHeight()
                                 ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .fillMaxHeight()
-                                            .background(
-                                                color = MaterialTheme.colorScheme.primary,
-                                                shape = RoundedCornerShape(10.dp)
-                                            )
-                                            .padding(7.dp)
-                                    ) {
-                                        Row(
-                                            horizontalArrangement = Arrangement.SpaceEvenly,
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            modifier = Modifier.fillMaxHeight()
-                                        ) {
-                                            Column(
-                                                modifier = Modifier
-                                                    .fillMaxWidth(0.9f)
-                                                    .fillMaxHeight()
-                                            ) {
-                                                if (stickingPoints == null || stickingPoints.isBlank()) {
-                                                    Text(
-                                                        text = "No sticking points",
-                                                        style = MaterialTheme.typography.bodySmall
-                                                    )
-                                                } else {
-                                                    Text(
-                                                        text = "Sticking points:",
-                                                        style = MaterialTheme.typography.bodySmall
-                                                    )
-                                                    Spacer(modifier = Modifier.height(5.dp))
-                                                    Text(
-                                                        text = if (stickingPoints != null) stickingPoints else "No sticking points",
-                                                        style = MaterialTheme.typography.bodyMedium
-                                                    )
-                                                }
-                                            }
-                                            if (stickingPoints != null && !stickingPoints.isBlank()) {
-                                                Spacer(modifier = Modifier.width(7.dp))
-                                                Icon(
-                                                    modifier = Modifier
-                                                        .size(20.dp)
-                                                        .clickable {
-                                                            if (stickingPoints != null) {
-                                                                clipboardManager.setText(
-                                                                    AnnotatedString(
-                                                                        stickingPoints
-                                                                    )
-                                                                )
-                                                                Toast.makeText(
-                                                                    localContext,
-                                                                    "Sticking points copied",
-                                                                    Toast.LENGTH_SHORT
-                                                                ).show()
-                                                            }
-                                                        },
-                                                    imageVector = Icons.Default.ContentCopy,
-                                                    contentDescription = "Copy Sticking Points",
-                                                    tint = MaterialTheme.colorScheme.tertiary
-                                                )
-                                            }
-                                        }
+                                    if (stickingPoints == null || stickingPoints.isBlank()) {
+                                        Text(
+                                            text = "No sticking points",
+                                            style = MaterialTheme.typography.bodySmall
+                                        )
+                                    } else {
+                                        Text(
+                                            text = "Sticking points:",
+                                            style = MaterialTheme.typography.bodySmall
+                                        )
+                                        Spacer(modifier = Modifier.height(5.dp))
+                                        Text(
+                                            text = if (stickingPoints != null) stickingPoints else "No sticking points",
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
                                     }
+                                }
+                                if (stickingPoints != null && !stickingPoints.isBlank()) {
+                                    Spacer(modifier = Modifier.width(7.dp))
+                                    Icon(
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                            .clickable {
+                                                if (stickingPoints != null) {
+                                                    clipboardManager.setText(
+                                                        AnnotatedString(
+                                                            stickingPoints
+                                                        )
+                                                    )
+                                                    Toast.makeText(
+                                                        localContext,
+                                                        "Sticking points copied",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            },
+                                        imageVector = Icons.Default.ContentCopy,
+                                        contentDescription = "Copy Sticking Points",
+                                        tint = MaterialTheme.colorScheme.tertiary
+                                    )
                                 }
                             }
                         }
