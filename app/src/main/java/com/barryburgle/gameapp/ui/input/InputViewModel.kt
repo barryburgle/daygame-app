@@ -85,6 +85,7 @@ class InputViewModel(
             if (showSessions as Boolean) addAll((allSessions as List<AbstractSession>).map {
                 SortableGameEvent(
                     it.insertTime,
+                    it.date,
                     AbstractSession::class.java.simpleName,
                     it
                 )
@@ -93,12 +94,18 @@ class InputViewModel(
             if (showDates as Boolean) addAll((allDates as List<Date>).map {
                 SortableGameEvent(
                     it.insertTime,
+                    it.date!!,
                     Date::class.java.simpleName,
                     it
                 )
             }) else removeIf { it.classType == Date::class.java.simpleName }
         }
-        kotlinx.coroutines.flow.flowOf(combinedList.sortedBy { it.insertTime })
+        kotlinx.coroutines.flow.flowOf(
+            combinedList.sortedWith(
+                compareByDescending<SortableGameEvent> { it.eventDate }
+                    .thenByDescending { it.insertTime }
+            )
+        )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _state = MutableStateFlow(InputState())
