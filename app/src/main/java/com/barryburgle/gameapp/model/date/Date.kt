@@ -34,19 +34,19 @@ open class Date(
     @ColumnInfo(name = "day_of_week") var dayOfWeek: Int,
     @ColumnInfo(name = "week_number") var weekNumber: Int
 ) : EventModel {
-    override fun getDate(): String? {
+    override fun getEventDate(): String? {
         return date
     }
 
-    override fun getTitle(): String {
+    override fun getEventTitle(): String {
         return "${dateType.replaceFirstChar { it.uppercase() }} ${EventTypeEnum.DATE.getField()}"
     }
 
-    override fun getIcon(): ImageVector {
+    override fun getEventIcon(): ImageVector {
         return DateType.getIcon(dateType)
     }
 
-    override fun getDescription(): String {
+    override fun getEventDescription(): String {
         return "${
             DayOfWeek.of(dayOfWeek).toString().lowercase()
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
@@ -61,20 +61,20 @@ open class Date(
         } : ${dateTime} minutes"
     }
 
-    override fun getDeleteEvent() {
+    override fun getEventDeleteMethod() {
         TODO("Not yet implemented")
     }
 
-    override fun getEditEvent() {
+    override fun getEventEditMethod() {
         TODO("Not yet implemented")
     }
 
-    override fun getLeadIds(): List<Long> {
+    override fun getEventLeadIds(): List<Long> {
         TODO("Not yet implemented")
         return listOf()
     }
 
-    override fun getStickingPoints(): String? {
+    override fun getEventStickingPoints(): String? {
         return stickingPoints
     }
 
