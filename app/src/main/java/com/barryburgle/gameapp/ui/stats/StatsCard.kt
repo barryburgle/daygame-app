@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.barryburgle.gameapp.ui.input.describedQuantifier
+import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 
 @ExperimentalMaterial3Api
 @Composable
@@ -101,26 +101,26 @@ fun StatsCard(
                                 .fillMaxHeight(),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            describedQuantifier(
+                            DescribedQuantifier(
                                 quantity = firstQuantifierQuantity,
                                 quantityFontSize = countFontSize,
                                 description = firstQuantifierDescription,
                                 descriptionFontSize = descriptionFontSize
                             )
-                            describedQuantifier(
+                            DescribedQuantifier(
                                 quantity = secondQuantifierQuantity,
                                 quantityFontSize = countFontSize,
                                 description = secondQuantifierDescription,
                                 descriptionFontSize = descriptionFontSize
                             )
-                            describedQuantifier(
+                            DescribedQuantifier(
                                 quantity = thirdQuantifierQuantity,
                                 quantityFontSize = countFontSize,
                                 description = thirdQuantifierDescription,
                                 descriptionFontSize = descriptionFontSize
                             )
                             if (fourthQuantifierQuantity != null && fourthQuantifierDescription != null) {
-                                describedQuantifier(
+                                DescribedQuantifier(
                                     quantity = fourthQuantifierQuantity,
                                     quantityFontSize = countFontSize,
                                     description = fourthQuantifierDescription,
@@ -128,7 +128,7 @@ fun StatsCard(
                                 )
                             }
                             if (fifthQuantifierQuantity != null && fifthQuantifierDescription != null) {
-                                describedQuantifier(
+                                DescribedQuantifier(
                                     quantity = fifthQuantifierQuantity,
                                     quantityFontSize = countFontSize,
                                     description = fifthQuantifierDescription,
@@ -143,20 +143,20 @@ fun StatsCard(
                                 .fillMaxHeight(),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            describedQuantifier(
+                            DescribedQuantifier(
                                 quantity = firstPerformanceQuantity,
                                 quantityFontSize = perfFontSize,
                                 description = firstPerformanceDescription,
                                 descriptionFontSize = descriptionFontSize
                             )
-                            describedQuantifier(
+                            DescribedQuantifier(
                                 quantity = secondPerformanceQuantity,
                                 quantityFontSize = perfFontSize,
                                 description = secondPerformanceDescription,
                                 descriptionFontSize = descriptionFontSize
                             )
                             if (thirdPerformanceQuantity != null && thirdPerformanceDescription != null) {
-                                describedQuantifier(
+                                DescribedQuantifier(
                                     quantity = thirdPerformanceQuantity,
                                     quantityFontSize = perfFontSize,
                                     description = thirdPerformanceDescription,
@@ -164,7 +164,7 @@ fun StatsCard(
                                 )
                             }
                             if (fourthPerformanceQuantity != null && fourthPerformanceDescription != null) {
-                                describedQuantifier(
+                                DescribedQuantifier(
                                     quantity = fourthPerformanceQuantity,
                                     quantityFontSize = perfFontSize,
                                     description = fourthPerformanceDescription,
@@ -172,7 +172,7 @@ fun StatsCard(
                                 )
                             }
                             if (fifthPerformanceQuantity != null && fifthPerformanceDescription != null) {
-                                describedQuantifier(
+                                DescribedQuantifier(
                                     quantity = fifthPerformanceQuantity,
                                     quantityFontSize = perfFontSize,
                                     description = fifthPerformanceDescription,
