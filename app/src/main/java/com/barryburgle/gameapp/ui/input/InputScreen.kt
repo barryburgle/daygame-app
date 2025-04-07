@@ -31,8 +31,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
 import com.barryburgle.gameapp.event.GenericEvent
+import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.SortType
+import com.barryburgle.gameapp.model.game.SortableGameEvent
+import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
@@ -154,12 +158,12 @@ fun InputScreen(
                     }
                 }
             }
-            items(state.allSessions) { abstractSession ->
+            items(state.allEvents) { sortableGameEvent ->
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
-                    InputCard(
-                        abstractSession,
-                        state.allLeads.filter { lead -> lead.sessionId == abstractSession.id },
+                    EventCard(
+                        sortableGameEvent,
+                        getLeads(state, sortableGameEvent),
                         onEvent,
                         Modifier
                             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
@@ -170,7 +174,19 @@ fun InputScreen(
                     )
                 }
             }
-            item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom + spaceFromLeft * 2)) {} }
+            item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom * 2 + spaceFromLeft * 3)) {} }
         }
     }
+}
+
+fun getLeads(state: InputState, sortableGameEvent: SortableGameEvent): List<Lead> {
+    if (AbstractSession::class.java.simpleName.equals(sortableGameEvent.classType)) {
+        val abstractSession = sortableGameEvent.event as AbstractSession
+        return state.allLeads.filter { lead -> lead.sessionId == abstractSession.id }
+    }
+    if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
+        val date = sortableGameEvent.event as Date
+        return state.allLeads.filter { lead -> lead.id == date.leadId }
+    }
+    return emptyList()
 }
