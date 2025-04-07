@@ -1,8 +1,16 @@
 package com.barryburgle.gameapp.model.session
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.barryburgle.gameapp.model.enums.EventTypeEnum
+import com.barryburgle.gameapp.model.game.EventModel
+import com.barryburgle.gameapp.service.FormatService
+import java.time.DayOfWeek
+import java.util.Locale
 
 @Entity(tableName = "abstract_session")
 open class AbstractSession(
@@ -23,4 +31,48 @@ open class AbstractSession(
     @ColumnInfo(name = "index") var index: Double,
     @ColumnInfo(name = "day_of_week") var dayOfWeek: Int,
     @ColumnInfo(name = "week_number") var weekNumber: Int
-)
+) : EventModel {
+    override fun getDate(): String {
+        return date
+    }
+
+    override fun getTitle(): String {
+        return EventTypeEnum.SESSION.getField()
+    }
+
+    override fun getIcon(): ImageVector {
+        return Icons.Filled.CalendarToday
+    }
+
+    override fun getDescription(): String {
+        return "${
+            DayOfWeek.of(dayOfWeek).toString().lowercase()
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+        } ${
+            FormatService.getTime(
+                startHour
+            )
+        } - ${
+            FormatService.getTime(
+                endHour
+            )
+        } : ${sessionTime} minutes"
+    }
+
+    override fun getDeleteEvent() {
+        TODO("Not yet implemented")
+    }
+
+    override fun getEditEvent() {
+        TODO("Not yet implemented")
+    }
+
+    override fun getLeadIds(): List<Long> {
+        TODO("Not yet implemented")
+        return listOf()
+    }
+
+    override fun getStickingPoints(): String {
+        return stickingPoints
+    }
+}

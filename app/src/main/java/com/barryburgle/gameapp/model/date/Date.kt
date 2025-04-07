@@ -1,8 +1,15 @@
 package com.barryburgle.gameapp.model.date
 
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.barryburgle.gameapp.model.enums.DateType
+import com.barryburgle.gameapp.model.enums.EventTypeEnum
+import com.barryburgle.gameapp.model.game.EventModel
+import com.barryburgle.gameapp.service.FormatService
+import java.time.DayOfWeek
+import java.util.Locale
 
 @Entity(tableName = "meeting")
 open class Date(
@@ -26,7 +33,51 @@ open class Date(
     @ColumnInfo(name = "date_time") var dateTime: Long,
     @ColumnInfo(name = "day_of_week") var dayOfWeek: Int,
     @ColumnInfo(name = "week_number") var weekNumber: Int
-) {
+) : EventModel {
+    override fun getDate(): String? {
+        return date
+    }
+
+    override fun getTitle(): String {
+        return "${dateType.replaceFirstChar { it.uppercase() }} ${EventTypeEnum.DATE.getField()}"
+    }
+
+    override fun getIcon(): ImageVector {
+        return DateType.getIcon(dateType)
+    }
+
+    override fun getDescription(): String {
+        return "${
+            DayOfWeek.of(dayOfWeek).toString().lowercase()
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+        } ${
+            FormatService.getTime(
+                startHour
+            )
+        } - ${
+            FormatService.getTime(
+                endHour
+            )
+        } : ${dateTime} minutes"
+    }
+
+    override fun getDeleteEvent() {
+        TODO("Not yet implemented")
+    }
+
+    override fun getEditEvent() {
+        TODO("Not yet implemented")
+    }
+
+    override fun getLeadIds(): List<Long> {
+        TODO("Not yet implemented")
+        return listOf()
+    }
+
+    override fun getStickingPoints(): String? {
+        return stickingPoints
+    }
+
     constructor() : this(
         0,
         "",
