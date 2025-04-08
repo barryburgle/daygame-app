@@ -1,6 +1,7 @@
 # Version 1.7.0 (2025-04-xx)
 
 **Features**
+- Unified Game events timeline (sessions, dates) with event type selection
 
 **Bugs**
 - Insert dialog fields valued properly after insertion or deletion
