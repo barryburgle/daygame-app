@@ -36,10 +36,14 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.ui.input.card.body.DateBody
+import com.barryburgle.gameapp.ui.input.card.body.SessionBody
+import com.barryburgle.gameapp.ui.input.leadName
 
 @ExperimentalMaterial3Api
 @Composable
@@ -183,10 +187,9 @@ fun EventCard(
                                     15.sp
                                 )
                             }
-                            // TODO: fix the following
-                            /*if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
-                                DateBody(sortableGameEvent.event as Date, 50.sp, 10.sp, 15.sp)
-                            }*/
+                            if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                DateBody(sortableGameEvent.event as Date, 10.sp, 15.sp)
+                            }
                         }
                         Spacer(modifier = Modifier.height(7.dp))
                         EventCardSection {
