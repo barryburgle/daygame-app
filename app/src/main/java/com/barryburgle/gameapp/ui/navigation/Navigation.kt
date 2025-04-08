@@ -7,15 +7,12 @@ import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.automirrored.outlined.TrendingUp
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.EditNote
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.EditNote
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -32,12 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.barryburgle.gameapp.event.AbstractSessionEvent
-import com.barryburgle.gameapp.event.DateEvent
+import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.event.ToolEvent
-import com.barryburgle.gameapp.ui.date.DateScreen
-import com.barryburgle.gameapp.ui.date.state.DateState
 import com.barryburgle.gameapp.ui.input.InputScreen
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.output.OutputScreen
@@ -48,34 +42,24 @@ import com.barryburgle.gameapp.ui.tool.ToolsScreen
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 
 @SuppressLint("ComposableDestinationInComposeScope")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Navigation(
     inputState: InputState,
     outputState: OutputState,
-    dateState: DateState,
     statsState: StatsState,
     toolState: ToolsState,
-    inputOnEvent: (AbstractSessionEvent) -> Unit,
+    inputOnEvent: (GameEvent) -> Unit,
     outputOnEvent: (OutputEvent) -> Unit,
-    dateOnEvent: (DateEvent) -> Unit,
     toolOnEvent: (ToolEvent) -> Unit
 ) {
     val navController = rememberNavController()
     val items = listOf(
         BottomNavigationItem(
-            title = "Sessions",
+            title = "Game",
             selectedIcon = Icons.Filled.EditNote,
             unselectedIcon = Icons.Outlined.EditNote,
             hasNews = false,
             destinationScreen = Screen.InputScreen.route
-        ),
-        BottomNavigationItem(
-            title = "Dates",
-            selectedIcon = Icons.Filled.Favorite,
-            unselectedIcon = Icons.Outlined.FavoriteBorder,
-            hasNews = false,
-            destinationScreen = Screen.DateScreen.route
         ),
         BottomNavigationItem(
             title = "Dashboard",
@@ -165,15 +149,6 @@ fun Navigation(
                 OutputScreen(
                     state = outputState,
                     onEvent = outputOnEvent,
-                    spaceFromLeft = spaceFromLeft,
-                    spaceFromTop = spaceFromTop,
-                    spaceFromBottom = spaceFromBottom
-                )
-            }
-            composable(Screen.DateScreen.route) {
-                DateScreen(
-                    state = dateState,
-                    onEvent = dateOnEvent,
                     spaceFromLeft = spaceFromLeft,
                     spaceFromTop = spaceFromTop,
                     spaceFromBottom = spaceFromBottom
