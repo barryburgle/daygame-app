@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.ui.input
+package com.barryburgle.gameapp.ui.input.card
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
