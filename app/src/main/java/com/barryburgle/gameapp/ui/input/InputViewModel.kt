@@ -7,14 +7,16 @@ import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
-import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.notification.AndroidNotificationScheduler
 import com.barryburgle.gameapp.notification.state.NotificationState
 import com.barryburgle.gameapp.service.batch.BatchSessionService
+import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.ui.CombineFourteen
 import com.barryburgle.gameapp.ui.input.state.InputState
@@ -41,6 +43,7 @@ class InputViewModel(
     var notificationState: NotificationState? = null
 
     private val _batchSessionService = BatchSessionService()
+    private val _dateService = DateService()
     private val _sortType = MutableStateFlow(SortType.DATE)
     private val _allSessions = _sortType.flatMapLatest { sortType ->
         when (sortType) {
@@ -142,10 +145,10 @@ class InputViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())
 
-    fun onEvent(event: AbstractSessionEvent) {
+    fun onEvent(event: GameEvent) {
         when (event) {
 
-            is AbstractSessionEvent.EditSession -> {
+            is GameEvent.EditSession -> {
                 _state.update {
                     it.copy(
                         editAbstractSession = event.abstractSession,
@@ -153,7 +156,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.EditLead -> {
+            is GameEvent.EditLead -> {
                 _state.update {
                     if (event.isUpdatingLead) {
                         it.copy(
@@ -177,13 +180,13 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.DeleteSession -> {
+            is GameEvent.DeleteSession -> {
                 viewModelScope.launch {
                     abstractSessionDao.delete(event.abstractSession)
                 }
             }
 
-            is AbstractSessionEvent.DeleteLead -> {
+            is GameEvent.DeleteLead -> {
                 if (_state.value.isUpdatingLead) {
                     viewModelScope.launch {
                         leadDao.delete(event.lead)
@@ -197,16 +200,18 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.HideDialog -> {
+            is GameEvent.HideDialog -> {
                 _state.update {
                     it.copy(
                         isAddingSession = false,
-                        isUpdatingSession = false
+                        isUpdatingSession = false,
+                        isAddingDate = false,
+                        isUpdatingDate = false
                     )
                 }
             }
 
-            is AbstractSessionEvent.HideLeadDialog -> {
+            is GameEvent.HideLeadDialog -> {
                 _state.update {
                     it.copy(
                         isAddingLead = false,
@@ -216,7 +221,7 @@ class InputViewModel(
                 }
             }
 
-            AbstractSessionEvent.SaveAbstractSession ->
+            GameEvent.SaveAbstractSession ->
                 viewModelScope.launch {
                     val abstractSession = _batchSessionService.init(
                         id = null,
@@ -271,7 +276,7 @@ class InputViewModel(
                     }
                 }
 
-            is AbstractSessionEvent.SetDate -> {
+            is GameEvent.SetDate -> {
                 _state.update {
                     it.copy(
                         date = event.date
@@ -279,7 +284,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.SetStartHour -> {
+            is GameEvent.SetStartHour -> {
                 _state.update {
                     it.copy(
                         startHour = event.startHour
@@ -287,7 +292,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.SetEndHour -> {
+            is GameEvent.SetEndHour -> {
                 _state.update {
                     it.copy(
                         endHour = event.endHour
@@ -295,7 +300,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.SetSets -> {
+            is GameEvent.SetSets -> {
                 _state.update {
                     it.copy(
                         sets = event.sets
@@ -303,7 +308,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.SetConvos -> {
+            is GameEvent.SetConvos -> {
                 _state.update {
                     it.copy(
                         convos = event.convos
@@ -311,7 +316,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.SetContacts -> {
+            is GameEvent.SetContacts -> {
                 _state.update {
                     it.copy(
                         contacts = event.contacts
@@ -319,7 +324,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.SetStickingPoints -> {
+            is GameEvent.SetStickingPoints -> {
                 _state.update {
                     it.copy(
                         stickingPoints = event.stickingPoints
@@ -327,19 +332,29 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.ShowDialog -> {
-                _state.update {
-                    it.copy(
-                        isAddingSession = event.addSession,
-                        isUpdatingSession = event.updateSession
-                    )
+            is GameEvent.ShowDialog -> {
+                if (EventTypeEnum.SESSION.equals(event.eventType)) {
+                    _state.update {
+                        it.copy(
+                            isAddingSession = event.addEvent,
+                            isUpdatingSession = event.updateEvent
+                        )
+                    }
+                }
+                if (EventTypeEnum.DATE.equals(event.eventType)) {
+                    _state.update {
+                        it.copy(
+                            isAddingDate = event.addEvent,
+                            isUpdatingDate = event.updateEvent
+                        )
+                    }
                 }
                 if (_state.value.isAddingSession) {
-                    onEvent(AbstractSessionEvent.EmptyLeads)
+                    onEvent(GameEvent.EmptyLeads)
                 }
             }
 
-            is AbstractSessionEvent.ShowLeadDialog -> {
+            is GameEvent.ShowLeadDialog -> {
                 _state.update {
                     it.copy(
                         isAddingLead = event.addLead,
@@ -348,17 +363,17 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.SortSessions -> {
+            is GameEvent.SortSessions -> {
                 _sortType.value = event.sortType
             }
 
-            is AbstractSessionEvent.SaveLead -> {
+            is GameEvent.SaveLead -> {
                 viewModelScope.launch {
                     leadDao.insert(event.lead)
                 }
             }
 
-            is AbstractSessionEvent.SetLead -> {
+            is GameEvent.SetLead -> {
                 _state.update {
                     it.copy(
                         leads = it.leads + event.lead
@@ -366,7 +381,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.EmptyLeads -> {
+            is GameEvent.EmptyLeads -> {
                 _state.update {
                     it.copy(
                         leads = emptyList()
@@ -374,7 +389,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.SetLeadName -> {
+            is GameEvent.SetLeadName -> {
                 _state.update {
                     it.copy(
                         leadName = event.name
@@ -382,7 +397,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.SetLeadContact -> {
+            is GameEvent.SetLeadContact -> {
                 _state.update {
                     it.copy(
                         leadContact = event.contact
@@ -390,7 +405,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.SetLeadCountryName -> {
+            is GameEvent.SetLeadCountryName -> {
                 _state.update {
                     it.copy(
                         countryName = event.countryName
@@ -398,7 +413,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.SetLeadNationality -> {
+            is GameEvent.SetLeadNationality -> {
                 _state.update {
                     it.copy(
                         leadNationality = event.nationality
@@ -406,7 +421,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.SetLeadAge -> {
+            is GameEvent.SetLeadAge -> {
                 _state.update {
                     it.copy(
                         leadAge = event.age.toLong()
@@ -414,7 +429,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.SwitchJustSaved -> {
+            is GameEvent.SwitchJustSaved -> {
                 _state.update {
                     it.copy(
                         justSaved = _state.value.justSaved.not()
@@ -422,7 +437,7 @@ class InputViewModel(
                 }
             }
 
-            is AbstractSessionEvent.SwitchShowFlag -> {
+            is GameEvent.SwitchShowFlag -> {
                 if (event.flagNumber == 0) {
                     _showSessions.value = !_showSessions.value
                 }
@@ -433,6 +448,216 @@ class InputViewModel(
                     _showDates.value = !_showDates.value
                 }
             }
+
+            is GameEvent.SaveDate -> {
+                viewModelScope.launch {
+                    val date = _dateService.init(
+                        id = null,
+                        leadId = if (_state.value.leadId == 0L) state.value.leadId else _state.value.leadId,
+                        location = if (_state.value.location.isBlank()) state.value.location else _state.value.location,
+                        date = if (_state.value.date.isBlank()) state.value.date else _state.value.date,
+                        startHour = if (_state.value.startHour.isBlank()) state.value.startHour else _state.value.startHour,
+                        endHour = if (_state.value.endHour.isBlank()) state.value.endHour else _state.value.endHour,
+                        cost = if (_state.value.cost.isBlank()) state.value.cost.toInt() else _state.value.cost.toInt(),
+                        dateNumber = if (_state.value.dateNumber.isBlank()) state.value.dateNumber.toInt() else _state.value.dateNumber.toInt(),
+                        dateType = if (_state.value.dateType.isBlank()) state.value.dateType else _state.value.dateType,
+                        pull = if (!_state.value.pull) state.value.pull else _state.value.pull,
+                        bounce = if (!_state.value.bounce) state.value.bounce else _state.value.bounce,
+                        kiss = if (!_state.value.kiss) state.value.kiss else _state.value.kiss,
+                        lay = if (!_state.value.lay) state.value.lay else _state.value.lay,
+                        recorded = if (!_state.value.recorded) state.value.recorded else _state.value.recorded,
+                        stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
+                        tweetUrl = if (_state.value.tweetUrl.isBlank()) state.value.tweetUrl else _state.value.tweetUrl
+                    )
+                    if (state.value.isUpdatingDate) {
+                        date.id = state.value.editDate!!.id
+                        date.insertTime = state.value.editDate!!.insertTime
+                    }
+                    dateDao.insert(date)
+                    _state.update {
+                        it.copy(
+                            leadId = 0L,
+                            location = "",
+                            date = "",
+                            startHour = "",
+                            endHour = "",
+                            cost = "0",
+                            dateNumber = "0",
+                            dateType = "",
+                            pull = false,
+                            bounce = false,
+                            kiss = false,
+                            lay = false,
+                            recorded = false,
+                            stickingPoints = "",
+                            tweetUrl = "",
+                            sortType = SortType.DATE,
+                            isAddingDate = false,
+                            isUpdatingDate = false
+                        )
+                    }
+                }
+            }
+
+            is GameEvent.SetLeadId -> {
+                _state.update {
+                    it.copy(
+                        leadId = event.leadId
+                    )
+                }
+            }
+
+            is GameEvent.SetLocation -> {
+                _state.update {
+                    it.copy(
+                        location = event.location
+                    )
+                }
+            }
+
+            is GameEvent.SetMeetingDate -> {
+                _state.update {
+                    it.copy(
+                        date = event.date
+                    )
+                }
+            }
+
+            is GameEvent.SetCost -> {
+                _state.update {
+                    it.copy(
+                        cost = event.cost
+                    )
+                }
+            }
+
+            is GameEvent.SetDateNumber -> {
+                _state.update {
+                    it.copy(
+                        dateNumber = event.dateNumber
+                    )
+                }
+            }
+
+            is GameEvent.SetDateType -> {
+                _state.update {
+                    it.copy(
+                        dateType = event.dateType
+                    )
+                }
+            }
+
+            is GameEvent.SwitchPull -> {
+                _state.update {
+                    it.copy(
+                        pull = _state.value.pull.not()
+                    )
+                }
+            }
+
+            is GameEvent.SwitchBounce -> {
+                _state.update {
+                    it.copy(
+                        bounce = _state.value.bounce.not()
+                    )
+                }
+            }
+
+            is GameEvent.SwitchKiss -> {
+                _state.update {
+                    it.copy(
+                        kiss = _state.value.kiss.not()
+                    )
+                }
+            }
+
+            is GameEvent.SwitchLay -> {
+                _state.update {
+                    it.copy(
+                        lay = _state.value.lay.not()
+                    )
+                }
+            }
+
+            is GameEvent.SwitchRecorded -> {
+                _state.update {
+                    it.copy(
+                        recorded = _state.value.recorded.not()
+                    )
+                }
+            }
+
+            is GameEvent.SetPull -> {
+                _state.update {
+                    it.copy(
+                        pull = event.pull!!
+                    )
+                }
+            }
+
+            is GameEvent.SetBounce -> {
+                _state.update {
+                    it.copy(
+                        bounce = event.bounce!!
+                    )
+                }
+            }
+
+            is GameEvent.SetKiss -> {
+                _state.update {
+                    it.copy(
+                        kiss = event.kiss!!
+                    )
+                }
+            }
+
+            is GameEvent.SetLay -> {
+                _state.update {
+                    it.copy(
+                        lay = event.lay!!
+                    )
+                }
+            }
+
+            is GameEvent.SetRecorded -> {
+                _state.update {
+                    it.copy(
+                        recorded = event.recorded!!
+                    )
+                }
+            }
+
+            is GameEvent.SetTweetUrl -> {
+                _state.update {
+                    it.copy(
+                        tweetUrl = event.tweetUrl
+                    )
+                }
+            }
+
+            is GameEvent.DeleteDate -> {
+                viewModelScope.launch {
+                    dateDao.delete(event.date)
+                }
+            }
+
+            is GameEvent.EditDate -> {
+                _state.update {
+                    it.copy(
+                        editDate = event.date,
+                    )
+                }
+            }
+
+            is GameEvent.EmptyLead -> {
+                _state.update {
+                    it.copy(
+                        lead = null
+                    )
+                }
+            }
+
+            is GameEvent.SortDates -> TODO("Make one sorting for all events changing by properties by event selection")
         }
     }
 }
