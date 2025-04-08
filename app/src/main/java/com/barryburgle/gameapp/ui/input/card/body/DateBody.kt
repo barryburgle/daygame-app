@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
-import com.barryburgle.gameapp.ui.date.describedIcon
+import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedIcon
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 
 @Composable
@@ -51,35 +51,35 @@ fun DateBody(
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        describedIcon(
+        DescribedIcon(
             DateSortType.PULL.getField(),
             DateSortType.NOT_PULL.getField(),
             descriptionFontSize,
             R.drawable.pull_w,
             date.pull
         )
-        describedIcon(
+        DescribedIcon(
             DateSortType.BOUNCE.getField(),
             DateSortType.NOT_BOUNCE.getField(),
             descriptionFontSize,
             R.drawable.bounce_w,
             date.bounce
         )
-        describedIcon(
+        DescribedIcon(
             DateSortType.KISS.getField(),
             DateSortType.NOT_KISS.getField(),
             descriptionFontSize,
             R.drawable.kiss_w,
             date.kiss
         )
-        describedIcon(
+        DescribedIcon(
             DateSortType.LAY.getField(),
             DateSortType.NOT_LAY.getField(),
             descriptionFontSize,
             R.drawable.bed_w,
             date.lay
         )
-        describedIcon(
+        DescribedIcon(
             DateSortType.RECORD.getField(),
             DateSortType.NOT_RECORD.getField(),
             descriptionFontSize,
