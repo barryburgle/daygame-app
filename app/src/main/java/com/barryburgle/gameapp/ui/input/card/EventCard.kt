@@ -35,15 +35,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.card.body.DateBody
 import com.barryburgle.gameapp.ui.input.card.body.SessionBody
-import com.barryburgle.gameapp.ui.input.leadName
+import com.barryburgle.gameapp.ui.input.dialog.leadName
 
 @ExperimentalMaterial3Api
 @Composable
@@ -51,7 +52,7 @@ fun EventCard(
     sortableGameEvent: SortableGameEvent,
     leads: List<Lead>,
     // TODO: the following should be a generic Input/GameEvent -> Unit
-    onEvent: (AbstractSessionEvent) -> Unit,
+    onEvent: (GameEvent) -> Unit,
     modifier: Modifier = Modifier
     // TODO: pass here the body function
 ) {
@@ -115,12 +116,23 @@ fun EventCard(
                                 )
                             ) {
                                 IconButton(onClick = {
-                                    // TODO: define the following
-                                    /*onEvent(
-                                        AbstractSessionEvent.DeleteSession(
-                                            abstractSession
+                                    if (AbstractSession::class.java.simpleName.equals(
+                                            sortableGameEvent.classType
                                         )
-                                    )*/
+                                    ) {
+                                        onEvent(
+                                            GameEvent.DeleteSession(
+                                                sortableGameEvent.event as AbstractSession
+                                            )
+                                        )
+                                    }
+                                    if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                        onEvent(
+                                            GameEvent.DeleteDate(
+                                                sortableGameEvent.event as Date
+                                            )
+                                        )
+                                    }
                                 }) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,
@@ -136,23 +148,52 @@ fun EventCard(
                                 )
                             ) {
                                 IconButton(onClick = {
-                                    onEvent(AbstractSessionEvent.EmptyLeads)
-                                    // TODO: define the following
-                                    /*leads.forEach { lead ->
+                                    onEvent(GameEvent.EmptyLeads)
+                                    if (AbstractSession::class.java.simpleName.equals(
+                                            sortableGameEvent.classType
+                                        )
+                                    ) {
+                                        leads.forEach { lead ->
+                                            onEvent(
+                                                GameEvent.SetLead(
+                                                    lead
+                                                )
+                                            )
+                                        }
                                         onEvent(
-                                            AbstractSessionEvent.SetLead(
-                                                lead
+                                            GameEvent.EditSession(
+                                                sortableGameEvent.event as AbstractSession
                                             )
                                         )
-                                    }
-                                    onEvent(
-                                        AbstractSessionEvent.EditSession(
-                                            abstractSession
+                                        onEvent(
+                                            GameEvent.ShowDialog(false, true, EventTypeEnum.SESSION)
                                         )
-                                    )
-                                    onEvent(
-                                        AbstractSessionEvent.ShowDialog(false, true)
-                                    )*/
+                                    }
+                                    if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                        onEvent(
+                                            GameEvent.SetPull((sortableGameEvent.event as Date).pull)
+                                        )
+                                        onEvent(
+                                            GameEvent.SetBounce((sortableGameEvent.event as Date).bounce)
+                                        )
+                                        onEvent(
+                                            GameEvent.SetKiss((sortableGameEvent.event as Date).kiss)
+                                        )
+                                        onEvent(
+                                            GameEvent.SetLay((sortableGameEvent.event as Date).lay)
+                                        )
+                                        onEvent(
+                                            GameEvent.SetRecorded((sortableGameEvent.event as Date).recorded)
+                                        )
+                                        onEvent(
+                                            GameEvent.EditDate(
+                                                sortableGameEvent.event as Date
+                                            )
+                                        )
+                                        onEvent(
+                                            GameEvent.ShowDialog(false, true, EventTypeEnum.DATE)
+                                        )
+                                    }
                                 }) {
                                     Icon(
                                         imageVector = Icons.Default.Edit,
@@ -215,12 +256,12 @@ fun EventCard(
                                             Row(
                                                 modifier = Modifier.clickable {
                                                     onEvent(
-                                                        AbstractSessionEvent.EditLead(
+                                                        GameEvent.EditLead(
                                                             lead, true
                                                         )
                                                     )
                                                     onEvent(
-                                                        AbstractSessionEvent.ShowLeadDialog(
+                                                        GameEvent.ShowLeadDialog(
                                                             false, false
                                                         )
                                                     )
