@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
-import com.barryburgle.gameapp.ui.input.leadName
+import com.barryburgle.gameapp.ui.input.dialog.leadName
 import com.barryburgle.gameapp.ui.output.section.MonthSection
 import com.barryburgle.gameapp.ui.output.section.SessionSection
 import com.barryburgle.gameapp.ui.output.section.WeekSection

@@ -37,7 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
-import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
@@ -48,7 +48,7 @@ import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 @Composable
 fun LeadDialog(
     state: InputState,
-    onEvent: (AbstractSessionEvent) -> Unit,
+    onEvent: (GameEvent) -> Unit,
     description: String,
     modifier: Modifier = Modifier
         .height(460.dp)
@@ -58,7 +58,7 @@ fun LeadDialog(
     var expanded by remember { mutableStateOf(false) }
     AlertDialog(modifier = modifier
         .shadow(elevation = 10.dp), onDismissRequest = {
-        onEvent(AbstractSessionEvent.HideLeadDialog)
+        onEvent(GameEvent.HideLeadDialog)
     }, title = {
         Text(text = description)
     }, text = {
@@ -86,7 +86,7 @@ fun LeadDialog(
                 OutlinedTextField(
                     readOnly = state.isModifyingLead,
                     value = state.leadName,
-                    onValueChange = { onEvent(AbstractSessionEvent.SetLeadName(it)) },
+                    onValueChange = { onEvent(GameEvent.SetLeadName(it)) },
                     placeholder = { Text(text = "Name") },
                     shape = MaterialTheme.shapes.large,
                     modifier = textModifier
@@ -99,12 +99,12 @@ fun LeadDialog(
                         lead.nationality = state.leadNationality
                         lead.age = state.leadAge
                         onEvent(
-                            AbstractSessionEvent.DeleteLead(
+                            GameEvent.DeleteLead(
                                 lead
                             )
                         )
                         onEvent(
-                            AbstractSessionEvent.HideLeadDialog
+                            GameEvent.HideLeadDialog
                         )
                         Toast.makeText(localContext, "Lead deleted", Toast.LENGTH_SHORT).show()
                     }) {
@@ -153,7 +153,7 @@ fun LeadDialog(
                     DropdownMenuItem(
                         text = { Text(text = country.flag + "  " + country.countryName) },
                         onClick = {
-                            onEvent(AbstractSessionEvent.SetLeadNationality(country.alpha3))
+                            onEvent(GameEvent.SetLeadNationality(country.alpha3))
                             expanded = false
                         }
                     )
@@ -176,12 +176,12 @@ fun LeadDialog(
                         "Whatsapp",
                         ContactTypeEnum.NUMBER.getField().equals(state.leadContact),
                         if (isDarkTheme) R.drawable.whatsapp_w else R.drawable.whatsapp_b
-                    ) { onEvent(AbstractSessionEvent.SetLeadContact(ContactTypeEnum.NUMBER.getField())) }
+                    ) { onEvent(GameEvent.SetLeadContact(ContactTypeEnum.NUMBER.getField())) }
                     ToggleIcon(
                         "Instagram",
                         ContactTypeEnum.SOCIAL.getField().equals(state.leadContact),
                         if (isDarkTheme) R.drawable.instagram_w else R.drawable.instagram_b
-                    ) { onEvent(AbstractSessionEvent.SetLeadContact(ContactTypeEnum.SOCIAL.getField())) }
+                    ) { onEvent(GameEvent.SetLeadContact(ContactTypeEnum.SOCIAL.getField())) }
                 }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -194,7 +194,7 @@ fun LeadDialog(
                         style = MaterialTheme.typography.titleSmall,
                         onEvent = onEvent as (GenericEvent) -> Unit,
                         countStart = state.leadAge.toInt(),
-                        saveEvent = AbstractSessionEvent::SetLeadAge
+                        saveEvent = GameEvent::SetLeadAge
                     )
                 }
             }
@@ -210,7 +210,7 @@ fun LeadDialog(
             ) {
                 Button(
                     onClick = {
-                        onEvent(AbstractSessionEvent.HideLeadDialog)
+                        onEvent(GameEvent.HideLeadDialog)
                     }
                 ) {
                     Text(text = "Cancel")
@@ -231,18 +231,18 @@ fun LeadDialog(
                         lead.age = state.leadAge
                         if (state.isModifyingLead) {
                             onEvent(
-                                AbstractSessionEvent.DeleteLead(
+                                GameEvent.DeleteLead(
                                     lead
                                 )
                             )
                         }
                         if (state.isUpdatingLead) {
-                            onEvent(AbstractSessionEvent.SaveLead(lead))
+                            onEvent(GameEvent.SaveLead(lead))
                         } else {
-                            onEvent(AbstractSessionEvent.SetLead(lead))
+                            onEvent(GameEvent.SetLead(lead))
                         }
-                        onEvent(AbstractSessionEvent.HideLeadDialog)
-                        onEvent(AbstractSessionEvent.SwitchJustSaved)
+                        onEvent(GameEvent.HideLeadDialog)
+                        onEvent(GameEvent.SwitchJustSaved)
                         if (state.isUpdatingLead) {
                             Toast.makeText(localContext, "Lead saved", Toast.LENGTH_SHORT).show()
                         } else {

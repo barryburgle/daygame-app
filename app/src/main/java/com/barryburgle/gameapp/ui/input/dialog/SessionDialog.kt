@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.ui.input
+package com.barryburgle.gameapp.ui.input.dialog
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -40,12 +40,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
-import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.TimeInputFormEnum
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
@@ -56,7 +57,7 @@ import java.time.LocalDateTime
 @Composable
 fun SessionDialog(
     state: InputState,
-    onEvent: (AbstractSessionEvent) -> Unit,
+    onEvent: (GameEvent) -> Unit,
     description: String,
     modifier: Modifier = Modifier
 ) {
@@ -69,7 +70,7 @@ fun SessionDialog(
         setState(state)
     }
     AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
-        onEvent(AbstractSessionEvent.HideDialog)
+        onEvent(GameEvent.HideDialog)
     }, title = {
         Text(text = description)
     }, text = {
@@ -110,7 +111,7 @@ fun SessionDialog(
                             modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                         ) {
                             IconButton(onClick = {
-                                onEvent(AbstractSessionEvent.ShowLeadDialog(true, false))
+                                onEvent(GameEvent.ShowLeadDialog(true, false))
                             }) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
@@ -145,7 +146,7 @@ fun SessionDialog(
                         "session",
                         ""
                     ) {
-                        onEvent(AbstractSessionEvent.SetDate(it))
+                        onEvent(GameEvent.SetDate(it))
                     }
                     TimeInputFormButton(
                         passStateValue(state.startHour, latestStartHour),
@@ -158,7 +159,7 @@ fun SessionDialog(
                         "session",
                         "Start"
                     ) {
-                        onEvent(AbstractSessionEvent.SetStartHour(it.substring(0, 5)))
+                        onEvent(GameEvent.SetStartHour(it.substring(0, 5)))
                     }
                     TimeInputFormButton(
                         passStateValue(state.endHour, latestEndHour),
@@ -171,7 +172,7 @@ fun SessionDialog(
                         "session",
                         "End"
                     ) {
-                        onEvent(AbstractSessionEvent.SetEndHour(it.substring(0, 5)))
+                        onEvent(GameEvent.SetEndHour(it.substring(0, 5)))
                     }
                 }
                 Column(
@@ -184,9 +185,9 @@ fun SessionDialog(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Box(modifier = Modifier.clickable {
-                                onEvent(AbstractSessionEvent.EditLead(lead, true))
+                                onEvent(GameEvent.EditLead(lead, true))
                                 onEvent(
-                                    AbstractSessionEvent.ShowLeadDialog(false, true)
+                                    GameEvent.ShowLeadDialog(false, true)
                                 )
                             }) {
                                 leadName(
@@ -199,7 +200,7 @@ fun SessionDialog(
                             CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                                 IconButton(onClick = {
                                     onEvent(
-                                        AbstractSessionEvent.DeleteLead(
+                                        GameEvent.DeleteLead(
                                             lead
                                         )
                                     )
@@ -227,7 +228,7 @@ fun SessionDialog(
                     style = MaterialTheme.typography.titleSmall,
                     onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.sets,
-                    saveEvent = AbstractSessionEvent::SetSets
+                    saveEvent = GameEvent::SetSets
                 )
                 InputCountComponent(
                     inputTitle = "Conversations",
@@ -235,7 +236,7 @@ fun SessionDialog(
                     style = MaterialTheme.typography.titleSmall,
                     onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.convos,
-                    saveEvent = AbstractSessionEvent::SetConvos
+                    saveEvent = GameEvent::SetConvos
                 )
                 InputCountComponent(
                     inputTitle = "Contacts",
@@ -243,12 +244,12 @@ fun SessionDialog(
                     style = MaterialTheme.typography.titleSmall,
                     onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.contacts,
-                    saveEvent = AbstractSessionEvent::SetContacts
+                    saveEvent = GameEvent::SetContacts
                 )
             }
             OutlinedTextField(
                 value = state.stickingPoints,
-                onValueChange = { onEvent(AbstractSessionEvent.SetStickingPoints(it)) },
+                onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
                 placeholder = { Text(text = "Sticking Points") },
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier.height(100.dp)
@@ -262,15 +263,15 @@ fun SessionDialog(
                 modifier = Modifier.width(250.dp), horizontalArrangement = Arrangement.End
             ) {
                 Button(onClick = {
-                    onEvent(AbstractSessionEvent.HideDialog)
+                    onEvent(GameEvent.HideDialog)
                 }) {
                     Text(text = "Cancel")
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Button(onClick = {
-                    onEvent(AbstractSessionEvent.SaveAbstractSession)
-                    onEvent(AbstractSessionEvent.HideDialog)
-                    onEvent(AbstractSessionEvent.SwitchJustSaved)
+                    onEvent(GameEvent.SaveAbstractSession)
+                    onEvent(GameEvent.HideDialog)
+                    onEvent(GameEvent.SwitchJustSaved)
                     Toast.makeText(localContext, "Session saved", Toast.LENGTH_SHORT)
                         .show()
                 }) {
@@ -281,10 +282,7 @@ fun SessionDialog(
     })
 }
 
-fun getButtonTitle(stateString: String, addToState: String, buttonDescription: String) =
-    if (stateString == null || stateString.isBlank()) buttonDescription else addToState + stateString
-
-fun setState(
+private fun setState(
     state: InputState
 ) {
     if (state.editAbstractSession != null) {

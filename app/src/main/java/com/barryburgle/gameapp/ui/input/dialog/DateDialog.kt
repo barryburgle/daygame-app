@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.ui.date
+package com.barryburgle.gameapp.ui.input.dialog
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -40,14 +40,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
-import com.barryburgle.gameapp.event.DateEvent
+import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.DateType
 import com.barryburgle.gameapp.service.FormatService
-import com.barryburgle.gameapp.service.exchange.DataExchangeService
-import com.barryburgle.gameapp.ui.date.state.DateState
 import com.barryburgle.gameapp.ui.input.InputCountComponent
+import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
@@ -59,15 +58,13 @@ import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalTime
 
 @Composable
 fun DateDialog(
-    state: DateState,
-    onEvent: (DateEvent) -> Unit,
+    state: InputState,
+    onEvent: (GameEvent) -> Unit,
     description: String,
     modifier: Modifier = Modifier
 ) {
@@ -109,7 +106,7 @@ fun DateDialog(
                 dateInactiveTextColor = MaterialTheme.colorScheme.background
             )
         ) {
-            onEvent(DateEvent.SetMeetingDate(it.toString()))
+            onEvent(GameEvent.SetMeetingDate(it.toString()))
         }
     }
     MaterialDialog(
@@ -137,7 +134,7 @@ fun DateDialog(
                 inactiveTextColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
-            onEvent(DateEvent.SetStartHour(it.toString().substring(0, 5)))
+            onEvent(GameEvent.SetStartHour(it.toString().substring(0, 5)))
         }
     }
     MaterialDialog(
@@ -165,11 +162,11 @@ fun DateDialog(
                 inactiveTextColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
-            onEvent(DateEvent.SetEndHour(it.toString().substring(0, 5)))
+            onEvent(GameEvent.SetEndHour(it.toString().substring(0, 5)))
         }
     }
     AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
-        onEvent(DateEvent.HideDialog)
+        onEvent(GameEvent.HideDialog)
     }, title = {
         Text(text = description)
     }, text = {
@@ -247,7 +244,7 @@ fun DateDialog(
                                 DropdownMenuItem(
                                     text = { Text(text = CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age) },
                                     onClick = {
-                                        onEvent(DateEvent.SetLeadId(lead.id))
+                                        onEvent(GameEvent.SetLeadId(lead.id))
                                         leadsExpanded = false
                                     }
                                 )
@@ -263,16 +260,17 @@ fun DateDialog(
                     modifier = Modifier.fillMaxWidth(0.5f)
                 ) {
                     timeInputButton(
-                        getButtonTitle(
+                        GenericDialog.getButtonTitle(
                             state.date, "", "Date"
                         ), dateDialogState
                     )
                     timeInputButton(
-                        getButtonTitle(state.startHour, "Start ", "Start Hour"),
+                        GenericDialog.getButtonTitle(state.startHour, "Start ", "Start Hour"),
                         startHourDialogState
                     )
                     timeInputButton(
-                        getButtonTitle(state.endHour, "End ", "End Hour"), endHourDialogState
+                        GenericDialog.getButtonTitle(state.endHour, "End ", "End Hour"),
+                        endHourDialogState
                     )
                 }
                 Spacer(modifier = Modifier.width(5.dp))
@@ -330,7 +328,7 @@ fun DateDialog(
                                     }
                                 },
                                 onClick = {
-                                    onEvent(DateEvent.SetDateType(dateType.getType()))
+                                    onEvent(GameEvent.SetDateType(dateType.getType()))
                                     dateTypesExpanded = false
                                 }
                             )
@@ -364,7 +362,7 @@ fun DateDialog(
                     ), onClick = {
                         var tweetUrl: String = clipboardManager.getText()!!.toString()
                         if (tweetUrl.startsWith("https://x.com/")) {
-                            onEvent(DateEvent.SetTweetUrl(tweetUrl))
+                            onEvent(GameEvent.SetTweetUrl(tweetUrl))
                             Toast.makeText(
                                 localContext,
                                 "Copied tweet url",
@@ -399,7 +397,7 @@ fun DateDialog(
                 Spacer(modifier = Modifier.height(7.dp))
                 OutlinedTextField(
                     value = state.location,
-                    onValueChange = { onEvent(DateEvent.SetLocation(it)) },
+                    onValueChange = { onEvent(GameEvent.SetLocation(it)) },
                     placeholder = { Text(text = "Location") },
                     shape = MaterialTheme.shapes.large,
                     modifier = Modifier.height(80.dp)
@@ -412,7 +410,7 @@ fun DateDialog(
                 Spacer(modifier = Modifier.height(7.dp))
                 OutlinedTextField(
                     value = state.stickingPoints,
-                    onValueChange = { onEvent(DateEvent.SetStickingPoints(it)) },
+                    onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
                     placeholder = { Text(text = "Sticking Points") },
                     shape = MaterialTheme.shapes.large,
                     modifier = Modifier.height(80.dp)
@@ -428,7 +426,7 @@ fun DateDialog(
                     style = MaterialTheme.typography.titleSmall,
                     onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingDate) 0 else state.editDate?.dateNumber,
-                    saveEvent = DateEvent::SetDateNumber
+                    saveEvent = GameEvent::SetDateNumber
                 )
                 InputCountComponent(
                     inputTitle = "Cost [€]",
@@ -436,7 +434,7 @@ fun DateDialog(
                     style = MaterialTheme.typography.titleSmall,
                     onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingDate) 0 else state.editDate?.cost,
-                    saveEvent = DateEvent::SetCost
+                    saveEvent = GameEvent::SetCost
                 )
             }
             Row(
@@ -447,35 +445,35 @@ fun DateDialog(
                     state.pull,
                     R.drawable.pull_b
                 ) {
-                    onEvent(DateEvent.SwitchPull)
+                    onEvent(GameEvent.SwitchPull)
                 }
                 ToggleIcon(
                     "bounce",
                     state.bounce,
                     R.drawable.bounce_b
                 ) {
-                    onEvent(DateEvent.SwitchBounce)
+                    onEvent(GameEvent.SwitchBounce)
                 }
                 ToggleIcon(
                     "kiss",
                     state.kiss,
                     R.drawable.kiss_b
                 ) {
-                    onEvent(DateEvent.SwitchKiss)
+                    onEvent(GameEvent.SwitchKiss)
                 }
                 ToggleIcon(
                     "lay",
                     state.lay,
                     R.drawable.bed_b
                 ) {
-                    onEvent(DateEvent.SwitchLay)
+                    onEvent(GameEvent.SwitchLay)
                 }
                 ToggleIcon(
                     "record",
                     state.recorded,
                     R.drawable.microphone_b
                 ) {
-                    onEvent(DateEvent.SwitchRecorded)
+                    onEvent(GameEvent.SwitchRecorded)
                 }
             }
         }
@@ -487,7 +485,7 @@ fun DateDialog(
                 modifier = Modifier.width(250.dp), horizontalArrangement = Arrangement.End
             ) {
                 Button(onClick = {
-                    onEvent(DateEvent.HideDialog)
+                    onEvent(GameEvent.HideDialog)
                 }) {
                     Text(text = "Cancel")
                 }
@@ -497,9 +495,9 @@ fun DateDialog(
                         Toast.makeText(localContext, "Please choose a lead", Toast.LENGTH_SHORT)
                             .show()
                     } else {
-                        onEvent(DateEvent.SaveDate)
-                        onEvent(DateEvent.HideDialog)
-                        onEvent(DateEvent.SwitchJustSaved)
+                        onEvent(GameEvent.SaveDate)
+                        onEvent(GameEvent.HideDialog)
+                        onEvent(GameEvent.SwitchJustSaved)
                         Toast.makeText(localContext, "Date saved", Toast.LENGTH_SHORT).show()
                     }
                 }) {
@@ -510,11 +508,8 @@ fun DateDialog(
     })
 }
 
-fun getButtonTitle(stateString: String, addToState: String, buttonDescription: String) =
-    if (stateString == null || stateString.isBlank()) buttonDescription else addToState + stateString
-
-fun setState(
-    state: DateState
+private fun setState(
+    state: InputState
 ) {
     if (state.editDate != null) {
         state.leadId = state.editDate.leadId!!
