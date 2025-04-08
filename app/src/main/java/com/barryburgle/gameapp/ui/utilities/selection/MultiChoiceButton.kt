@@ -22,6 +22,7 @@ import androidx.compose.ui.util.fastForEachIndexed
 @Composable
 fun MultiChoiceButton(
     options: List<String>,
+    sizes: List<Int>,
     modifier: Modifier,
     selectedOptions: SnapshotStateList<Boolean>,
     onCheckedChange: (Int) -> Unit
@@ -38,6 +39,7 @@ fun MultiChoiceButton(
                 .height(35.dp)
         ) {
             options.fastForEachIndexed { index, label ->
+                val count: String = if (sizes[index] < 100) sizes[index].toString() else "99+"
                 SegmentedButton(
                     border = BorderStroke(0.dp, Color.Transparent),
                     shape = SegmentedButtonDefaults.itemShape(
@@ -49,9 +51,11 @@ fun MultiChoiceButton(
                         selectedOptionsToDisplay[index] = !selectedOptionsToDisplay[index]
                         onCheckedChange(index)
                     },
-                    icon = { SegmentedButtonDefaults.Icon(selectedOptions[index]) },
+                    icon = {
+                        SegmentedButtonDefaults.Icon(selectedOptions[index])
+                    },
                     label = {
-                        Text(label)
+                        Text(label + " ($count)")
                     },
                     colors = SegmentedButtonDefaults.colors(
                         activeContentColor = MaterialTheme.colorScheme.onPrimary,

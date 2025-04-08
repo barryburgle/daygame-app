@@ -195,6 +195,7 @@ fun InputScreen(
                     Spacer(modifier = Modifier.width(spaceFromLeft))*/
                     MultiChoiceButton(
                         EventTypeEnum.getAllFields(),
+                        listOf(state.allSessions.size, 100, state.allDates.size),
                         Modifier.fillMaxWidth(0.95f),
                         selectedOptions
                     ) {
