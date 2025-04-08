@@ -1,35 +1,50 @@
 package com.barryburgle.gameapp.ui.input
 
-import androidx.compose.foundation.background
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.GroupAdd
+import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.barryburgle.gameapp.event.AbstractSessionEvent
+import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
@@ -38,7 +53,9 @@ import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
+import com.barryburgle.gameapp.ui.input.dialog.DateDialog
 import com.barryburgle.gameapp.ui.input.card.EventCard
+import com.barryburgle.gameapp.ui.input.dialog.SessionDialog
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.ScrollableSorter
@@ -51,7 +68,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun InputScreen(
     state: InputState,
-    onEvent: (AbstractSessionEvent) -> Unit,
+    onEvent: (GameEvent) -> Unit,
     spaceFromLeft: Dp,
     spaceFromTop: Dp,
     spaceFromBottom: Dp
@@ -61,26 +78,70 @@ fun InputScreen(
     val selectedOptions = remember {
         mutableStateListOf(true, true, true)
     }
+    var isRotated by remember { mutableStateOf(false) }
+    var isExpanded by remember { mutableStateOf(false) }
+    val rotationAngle by animateFloatAsState(
+        targetValue = if (isRotated) -225f else 0f,
+        animationSpec = tween(durationMillis = 650),
+        label = "rotationAngle"
+    )
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { onEvent(AbstractSessionEvent.ShowDialog(true, false)) },
-                modifier = Modifier.offset(y = -spaceFromNavBar),
-                contentColor = MaterialTheme.colorScheme.inversePrimary,
-                containerColor = MaterialTheme.colorScheme.onTertiary
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add a session"
-                )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight(0.2f)
+                            .offset(y = -100.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        floatingAddButton(Icons.Default.Favorite, "date") {
+                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.DATE))
+                            isExpanded = false
+                            isRotated = false
+                        }
+                        floatingAddButton(Icons.Default.PersonAddAlt1, "set") {
+                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SET))
+                            isExpanded = false
+                            isRotated = false
+                        }
+                        floatingAddButton(Icons.Default.GroupAdd, "session") {
+                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SESSION))
+                            isExpanded = false
+                            isRotated = false
+                        }
+                    }
+                }
+                FloatingActionButton(
+                    onClick = {
+                        isRotated = !isRotated
+                        isExpanded = !isExpanded
+                    },
+                    modifier = Modifier
+                        .offset(y = -spaceFromNavBar)
+                        .rotate(rotationAngle),
+                    contentColor = MaterialTheme.colorScheme.inversePrimary,
+                    containerColor = MaterialTheme.colorScheme.onTertiary,
+                    shape = CircleShape
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add an event"
+                    )
+                }
             }
         }
     ) { padding ->
         if (state.isAddingSession) {
-            SessionDialog(state = state, onEvent = onEvent, "Add a Session")
+            SessionDialog(state = state, onEvent = onEvent, "Add a session")
         }
         if (state.isUpdatingSession) {
-            SessionDialog(state = state, onEvent = onEvent, "Edit a Session")
+            SessionDialog(state = state, onEvent = onEvent, "Edit a session")
         }
         if (state.isAddingLead) {
             LeadDialog(state = state, onEvent = onEvent, "Add a lead")
@@ -91,13 +152,19 @@ fun InputScreen(
         if (state.isUpdatingLead) {
             LeadDialog(state = state, onEvent = onEvent, "Update the lead")
         }
+        if (state.isAddingDate) {
+            DateDialog(state = state, onEvent = onEvent, "Add a date")
+        }
+        if (state.isUpdatingDate) {
+            DateDialog(state = state, onEvent = onEvent, "Edit a date")
+        }
         if (state.justSaved && state.backupActive) {
             runBlocking {
                 async {
                     DataExchangeService.backup(state)
                 }
             }
-            onEvent(AbstractSessionEvent.SwitchJustSaved)
+            onEvent(GameEvent.SwitchJustSaved)
         }
         InsertInvite(state.allSessions, "Session", MaterialTheme.typography.titleLarge)
         LazyColumn(
@@ -114,7 +181,7 @@ fun InputScreen(
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Row(
+                    /*Row(
                         modifier = Modifier
                             .background(MaterialTheme.colorScheme.background)
                             .width(spaceFromLeft)
@@ -125,13 +192,13 @@ fun InputScreen(
                         tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.height(25.dp)
                     )
-                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    Spacer(modifier = Modifier.width(spaceFromLeft))*/
                     MultiChoiceButton(
                         EventTypeEnum.getAllFields(),
                         Modifier.fillMaxWidth(0.95f),
                         selectedOptions
                     ) {
-                        onEvent(AbstractSessionEvent.SwitchShowFlag(it))
+                        onEvent(GameEvent.SwitchShowFlag(it))
                     }
                 }
             }
@@ -151,7 +218,7 @@ fun InputScreen(
                         state.sortType?.let {
                             SelectionRow(
                                 it, sortType, onEvent as (GenericEvent) -> Unit,
-                                AbstractSessionEvent.SortSessions(
+                                GameEvent.SortSessions(
                                     sortType
                                 )
                             )
@@ -191,3 +258,45 @@ fun getLeads(state: InputState, sortableGameEvent: SortableGameEvent): List<Lead
     }
     return emptyList()
 }
+
+@Composable
+fun floatingAddButton(
+    icon: ImageVector,
+    description: String,
+    onClick: () -> Unit
+) {
+    val contentDescription = "Add a $description"
+    // TODO: add tooltips below and fix
+    /*Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth(0.4f),
+        horizontalArrangement = Arrangement.End
+    ) {
+        Text(
+            modifier = Modifier
+                .offset(x = (-100).dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f))
+                .padding(8.dp),
+            text = contentDescription,
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 10.sp
+        )
+        Spacer(modifier = Modifier.width(8.dp))*/
+    FloatingActionButton(
+        onClick = {
+            onClick()
+        },
+        modifier = Modifier
+            .size(40.dp),
+        contentColor = MaterialTheme.colorScheme.inversePrimary,
+        containerColor = MaterialTheme.colorScheme.tertiary,
+        shape = CircleShape
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription
+        )
+    }
+}
+//}
