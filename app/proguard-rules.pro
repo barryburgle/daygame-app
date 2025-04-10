@@ -55,3 +55,6 @@
 
 # Keep Github Response
 -keep class com.barryburgle.gameapp.api.response.** { *; }
+
+# Keep Model
+-keep class com.barryburgle.gameapp.model.** { *; }
