@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
 
 @Composable
 fun FilenameComposable(
@@ -34,6 +37,7 @@ fun FilenameComposable(
     localContext: Context,
     filenamePlaceholder: String,
     buttonFunction: () -> Unit,
+    reloadFunction: () -> Unit,
     filenameOnEvent: (String) -> Unit
 ) {
     RowTitle(
@@ -57,7 +61,8 @@ fun FilenameComposable(
                 },
                 placeholder = { Text(text = "Insert here the ${cardTitle.lowercase()} file name") },
                 shape = MaterialTheme.shapes.large,
-                modifier = Modifier.height(textFieldHeight)
+                modifier = Modifier.height(textFieldHeight),
+                singleLine = true
             )
         }
         Column(
@@ -71,13 +76,39 @@ fun FilenameComposable(
             ) {
                 Spacer(modifier = Modifier.width(0.dp))
                 if (icon != null) {
+                    if (DataExchangeTypeEnum.IMPORT.type.equals(cardTitle, ignoreCase = true)) {
+                        IconButton(
+                            modifier = Modifier
+                                .background(
+                                    MaterialTheme.colorScheme.primaryContainer,
+                                    shape = RoundedCornerShape(40.dp)
+                                )
+                                .size(40.dp),
+                            onClick = {
+                                reloadFunction()
+                                Toast.makeText(
+                                    localContext,
+                                    "Reloaded filename",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }) {
+                            Icon(
+                                imageVector = Icons.Default.Replay,
+                                contentDescription = cardTitle,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier
+                                    .height(30.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(0.dp))
+                    }
                     IconButton(
                         modifier = Modifier
                             .background(
                                 MaterialTheme.colorScheme.primaryContainer,
-                                shape = RoundedCornerShape(50.dp)
+                                shape = RoundedCornerShape(40.dp)
                             )
-                            .size(50.dp),
+                            .size(40.dp),
                         onClick = {
                             buttonFunction()
                             Toast.makeText(

@@ -2,6 +2,7 @@
 
 **Features**
 - Unified Game events timeline (sessions, dates) with event type selection
+- Reload csv import filenames from last filename in import folder
 
 **Bugs**
 - Insert dialog fields valued properly after insertion or deletion

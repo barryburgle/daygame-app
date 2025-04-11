@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
+import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
@@ -53,9 +54,9 @@ fun DataExchangeCard(
     sessionCsvService: SessionCsvService,
     leadCsvService: LeadCsvService,
     dateCsvService: DateCsvService,
+    csvFindService: CSVFindService,
     onEvent: (ToolEvent) -> Unit
 ) {
-    // TODO: add a reload button close to the import/export one to load into the field (and state) the latest csv name relative to file
     var icon: ImageVector? = null
     if (DataExchangeTypeEnum.EXPORT.type.equals(cardTitle)) {
         icon = Icons.Default.Upload
@@ -166,7 +167,8 @@ fun DataExchangeCard(
                                     },
                                     placeholder = { Text(text = "Insert here the ${cardTitle.lowercase()} folder") },
                                     shape = MaterialTheme.shapes.large,
-                                    modifier = Modifier.height(textFieldHeight)
+                                    modifier = Modifier.height(textFieldHeight),
+                                    singleLine = true
                                 )
                             }
                             Column(
@@ -251,6 +253,18 @@ fun DataExchangeCard(
                                     }
                                 }
                             },
+                            reloadFunction = {
+                                if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(
+                                        ToolEvent.SetImportSessionsFileName(
+                                            csvFindService.getLastFilenameInFolder(
+                                                state.importFolder,
+                                                "session"
+                                            )
+                                        )
+                                    )
+                                }
+                            },
                             filenameOnEvent = {
                                 if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                     onEvent(ToolEvent.SetExportSessionsFileName(it))
@@ -297,6 +311,18 @@ fun DataExchangeCard(
                                     }
                                 }
                             },
+                            reloadFunction = {
+                                if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(
+                                        ToolEvent.SetImportLeadsFileName(
+                                            csvFindService.getLastFilenameInFolder(
+                                                state.importFolder,
+                                                "lead"
+                                            )
+                                        )
+                                    )
+                                }
+                            },
                             filenameOnEvent = {
                                 if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                     onEvent(ToolEvent.SetExportLeadsFileName(it))
@@ -341,6 +367,18 @@ fun DataExchangeCard(
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
+                                }
+                            },
+                            reloadFunction = {
+                                if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(
+                                        ToolEvent.SetImportDatesFileName(
+                                            csvFindService.getLastFilenameInFolder(
+                                                state.importFolder,
+                                                "date"
+                                            )
+                                        )
+                                    )
                                 }
                             },
                             filenameOnEvent = {

@@ -91,7 +91,8 @@ fun ToolsScreen(
                         modifier = dataExchangeCardModifier,
                         sessionCsvService = sessionCsvService,
                         leadCsvService = leadCsvService,
-                        dateCsvService = dateCsvService
+                        dateCsvService = dateCsvService,
+                        csvFindService = csvFindService
                     )
                 }
             }
@@ -100,13 +101,14 @@ fun ToolsScreen(
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     DataExchangeCard(
                         cardTitle = "Import",
-                        cardSubtitle = "Found ${csvFindService.findCsvFiles(state.importFolder).size} csv files in your ${state.importFolder} folder",
+                        cardSubtitle = "Found ${csvFindService.findCsvFiles(state.importFolder).size} csv files in your import folder",
                         state = state,
                         onEvent = onEvent,
                         modifier = dataExchangeCardModifier,
                         sessionCsvService = sessionCsvService,
                         leadCsvService = leadCsvService,
-                        dateCsvService = dateCsvService
+                        dateCsvService = dateCsvService,
+                        csvFindService = csvFindService
                     )
                 }
             }

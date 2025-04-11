@@ -17,6 +17,14 @@ class CSVFindService {
         } ?: listOf()
     }
 
+    fun getLastFilenameInFolder(folder: String, prefix: String): String {
+        var foundFiles: List<String> = findCsvFiles(folder)
+        val foundFilename: String = foundFiles.filter { foundFile -> foundFile.startsWith(prefix) }
+            .toSet()
+            .sortedDescending()[0]
+        return foundFilename
+    }
+
     fun getLastBackupDate(backupFolder: String): String {
         val filenameList = processBackupFilenames(findCsvFiles(backupFolder))
         if (filenameList != null && filenameList.isNotEmpty()) {
