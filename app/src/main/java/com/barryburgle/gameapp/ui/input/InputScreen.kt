@@ -26,7 +26,6 @@ import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -47,16 +46,18 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
-import com.barryburgle.gameapp.ui.input.dialog.DateDialog
 import com.barryburgle.gameapp.ui.input.card.EventCard
+import com.barryburgle.gameapp.ui.input.dialog.DateDialog
 import com.barryburgle.gameapp.ui.input.dialog.SessionDialog
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.ScrollableSorter
 import com.barryburgle.gameapp.ui.utilities.SelectionRow
@@ -172,27 +173,13 @@ fun InputScreen(
                 .fillMaxSize()
                 .offset(
                     y = spaceFromTop + spaceFromLeft
-                ),
-            verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
+                ), verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
         ) {
             item {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    /*Row(
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.background)
-                            .width(spaceFromLeft)
-                    ) {}
-                    Icon(
-                        imageVector = Icons.Filled.CalendarToday,
-                        contentDescription = "Sort By",
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.height(25.dp)
-                    )
-                    Spacer(modifier = Modifier.width(spaceFromLeft))*/
                     MultiChoiceButton(
                         EventTypeEnum.getAllFields(),
                         listOf(state.allSessions.size, 100, state.allDates.size),
@@ -204,25 +191,75 @@ fun InputScreen(
                 }
             }
             item {
-                // TODO: make the following values change accordingly to the type of entity selected by MultiChoiceButton
-                ScrollableSorter(
-                    spaceFromLeft
+                var showSessionSorter: Boolean = false
+                var showSetsSorter: Boolean = false
+                var showDatesSorter: Boolean = false
+                if (state.showSessions && !state.showSets && !state.showDates) {
+                    showSessionSorter = true
+                } else {
+                    showSessionSorter = false
+                }
+                if (!state.showSessions && state.showSets && !state.showDates) {
+                    showSetsSorter = true
+                } else {
+                    showSetsSorter = false
+                }
+                if (!state.showSessions && !state.showSets && state.showDates) {
+                    showDatesSorter = true
+                } else {
+                    showDatesSorter = false
+                }
+                BasicAnimatedVisibility(
+                    visibilityFlag = showSessionSorter
                 ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.Sort,
-                        contentDescription = "Sort By",
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.height(25.dp)
-                    )
-                    Spacer(modifier = Modifier.width(spaceFromLeft))
-                    SortType.values().forEach { sortType ->
-                        state.sortType?.let {
-                            SelectionRow(
-                                it, sortType, onEvent as (GenericEvent) -> Unit,
-                                GameEvent.SortSessions(
-                                    sortType
+                    ScrollableSorter(
+                        spaceFromLeft
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.Sort,
+                            contentDescription = "Sort By",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.height(25.dp)
+                        )
+                        Spacer(modifier = Modifier.width(spaceFromLeft))
+                        SortType.values().forEach { sortType ->
+                            state.sortType?.let {
+                                SelectionRow(
+                                    it,
+                                    sortType,
+                                    onEvent as (GenericEvent) -> Unit,
+                                    GameEvent.SortSessions(
+                                        sortType
+                                    )
                                 )
-                            )
+                            }
+                        }
+                    }
+                }
+                BasicAnimatedVisibility(
+                    visibilityFlag = showDatesSorter
+                ) {
+                    ScrollableSorter(
+                        spaceFromLeft
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.Sort,
+                            contentDescription = "Sort By",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.height(25.dp)
+                        )
+                        Spacer(modifier = Modifier.width(spaceFromLeft))
+                        DateSortType.values().forEach { sortType ->
+                            state.sortType?.let {
+                                SelectionRow(
+                                    it,
+                                    sortType,
+                                    onEvent as (GenericEvent) -> Unit,
+                                    GameEvent.SortDates(
+                                        sortType
+                                    )
+                                )
+                            }
                         }
                     }
                 }
@@ -262,9 +299,7 @@ fun getLeads(state: InputState, sortableGameEvent: SortableGameEvent): List<Lead
 
 @Composable
 fun floatingAddButton(
-    icon: ImageVector,
-    description: String,
-    onClick: () -> Unit
+    icon: ImageVector, description: String, onClick: () -> Unit
 ) {
     val contentDescription = "Add a $description"
     // TODO: add tooltips below and fix
@@ -288,15 +323,13 @@ fun floatingAddButton(
         onClick = {
             onClick()
         },
-        modifier = Modifier
-            .size(40.dp),
+        modifier = Modifier.size(40.dp),
         contentColor = MaterialTheme.colorScheme.inversePrimary,
         containerColor = MaterialTheme.colorScheme.tertiary,
         shape = CircleShape
     ) {
         Icon(
-            imageVector = icon,
-            contentDescription = contentDescription
+            imageVector = icon, contentDescription = contentDescription
         )
     }
 }

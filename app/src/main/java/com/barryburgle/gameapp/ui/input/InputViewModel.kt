@@ -18,7 +18,7 @@ import com.barryburgle.gameapp.notification.state.NotificationState
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.notification.NotificationService
-import com.barryburgle.gameapp.ui.CombineFourteen
+import com.barryburgle.gameapp.ui.CombineSeventeen
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -112,7 +112,7 @@ class InputViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _state = MutableStateFlow(InputState())
-    val state = CombineFourteen(
+    val state = CombineSeventeen(
         _state,
         _sortType,
         _allSessions,
@@ -126,8 +126,11 @@ class InputViewModel(
         _exportFolder,
         _backupFolder,
         _backupActive,
-        _lastBackup
-    ) { state, sortType, allSessions, allLeads, allDates, allEvents, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportFolder, backupFolder, backupActive, lastBackup ->
+        _lastBackup,
+        _showSessions,
+        _showSets,
+        _showDates
+    ) { state, sortType, allSessions, allLeads, allDates, allEvents, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportFolder, backupFolder, backupActive, lastBackup, showSessions, showSets, showDates ->
         state.copy(
             allSessions = allSessions,
             allLeads = allLeads,
@@ -141,7 +144,10 @@ class InputViewModel(
             exportFolder = exportFolder,
             backupFolder = backupFolder,
             backupActive = backupActive.toBoolean(),
-            lastBackup = lastBackup.toInt()
+            lastBackup = lastBackup.toInt(),
+            showSessions = showSessions,
+            showSets = showSets,
+            showDates = showDates
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())
 

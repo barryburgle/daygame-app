@@ -10,6 +10,9 @@ import com.barryburgle.gameapp.ui.state.OrderState
 data class InputState(
     override var allSessions: List<AbstractSession> = emptyList(),
     override var allLeads: List<Lead> = emptyList(),
+    var showSessions: Boolean = true,
+    var showSets: Boolean = true,
+    var showDates: Boolean = true,
     var date: String = "",
     var startHour: String = "",
     var endHour: String = "",
