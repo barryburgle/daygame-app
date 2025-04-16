@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 interface DateDao {
 
     @Insert(onConflict = REPLACE)
-    suspend fun batchInsert(leads: List<Date>)
+    suspend fun batchInsert(date: List<Date>)
 
     @Insert(onConflict = REPLACE)
     suspend fun insert(date: Date): Long
