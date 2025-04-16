@@ -63,7 +63,8 @@ class MainActivity : ComponentActivity() {
                         it.abstractSessionDao,
                         it.settingDao,
                         it.leadDao,
-                        it.dateDao
+                        it.dateDao,
+                        it.setDao
                     )
                 } as T
             }

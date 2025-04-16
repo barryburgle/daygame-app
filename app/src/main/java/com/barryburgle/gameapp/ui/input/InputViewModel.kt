@@ -36,7 +36,8 @@ class InputViewModel(
     private val abstractSessionDao: AbstractSessionDao,
     private val settingDao: SettingDao,
     private val leadDao: LeadDao,
-    private val dateDao: DateDao
+    private val dateDao: DateDao,
+    private val setDao: SetDao
 ) : ViewModel() {
 
     val notificationScheduler = AndroidNotificationScheduler(context)
