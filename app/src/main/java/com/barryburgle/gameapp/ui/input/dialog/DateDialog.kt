@@ -469,7 +469,7 @@ fun DateDialog(
                     onEvent(GameEvent.SwitchLay)
                 }
                 ToggleIcon(
-                    "record",
+                    "recorded",
                     state.recorded,
                     R.drawable.microphone_b
                 ) {
