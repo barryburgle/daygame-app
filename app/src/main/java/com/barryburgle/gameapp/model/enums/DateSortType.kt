@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.model.enums
 
 enum class DateSortType(private val field: String) : FieldEnum {
     DATE("Date"),
+    DURATION("Duration"),
     LEAD("Lead"),
     LOCATION("Location"),
     DATE_TIME("Date Time"),
