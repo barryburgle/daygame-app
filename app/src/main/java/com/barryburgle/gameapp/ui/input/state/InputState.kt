@@ -5,6 +5,7 @@ import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.ui.state.OrderState
 
 data class InputState(
@@ -25,6 +26,8 @@ data class InputState(
     val isUpdatingSession: Boolean = false,
     val isAddingDate: Boolean = false,
     val isUpdatingDate: Boolean = false,
+    val isAddingSet: Boolean = false,
+    val isUpdatingSet: Boolean = false,
     val isAddingLead: Boolean = false,
     val isModifyingLead: Boolean = false,
     val isUpdatingLead: Boolean = false,
@@ -46,6 +49,7 @@ data class InputState(
     override var backupFolder: String = "",
     override var allDates: List<Date> = emptyList(),
     var allEvents: List<SortableGameEvent> = emptyList(),
+    override var allSets: List<SingleSet> = emptyList(),
     override var backupActive: Boolean = true,
     override var lastBackup: Int = 3,
     override var justSaved: Boolean = false,
@@ -61,6 +65,9 @@ data class InputState(
     var recorded: Boolean = false,
     val editDate: Date? = null,
     val lead: Lead? = null,
+    var conversation: Boolean = false,
+    var contact: Boolean = false,
+    var instant_date: Boolean = false
 ) : OrderState(
     sortType,
     exportSessionsFileName,
@@ -71,6 +78,7 @@ data class InputState(
     allSessions,
     allLeads,
     allDates,
+    allSets,
     backupActive,
     lastBackup,
     justSaved
