@@ -182,7 +182,7 @@ fun InputScreen(
                 ) {
                     MultiChoiceButton(
                         EventTypeEnum.getAllFields(),
-                        listOf(state.allSessions.size, 100, state.allDates.size),
+                        listOf(state.allSessions.size, state.allSets.size, state.allDates.size),
                         Modifier.fillMaxWidth(0.95f),
                         selectedOptions
                     ) {
