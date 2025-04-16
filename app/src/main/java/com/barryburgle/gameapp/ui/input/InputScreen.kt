@@ -209,60 +209,27 @@ fun InputScreen(
                 } else {
                     showDatesSorter = false
                 }
-                BasicAnimatedVisibility(
-                    visibilityFlag = showSessionSorter
-                ) {
-                    ScrollableSorter(
-                        spaceFromLeft
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.Sort,
-                            contentDescription = "Sort By",
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.height(25.dp)
-                        )
-                        Spacer(modifier = Modifier.width(spaceFromLeft))
-                        SortType.values().forEach { sortType ->
-                            state.sortType?.let {
-                                SelectionRow(
-                                    it,
-                                    sortType,
-                                    onEvent as (GenericEvent) -> Unit,
-                                    GameEvent.SortSessions(
-                                        sortType
-                                    )
-                                )
-                            }
-                        }
-                    }
-                }
-                BasicAnimatedVisibility(
-                    visibilityFlag = showDatesSorter
-                ) {
-                    ScrollableSorter(
-                        spaceFromLeft
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.Sort,
-                            contentDescription = "Sort By",
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.height(25.dp)
-                        )
-                        Spacer(modifier = Modifier.width(spaceFromLeft))
-                        DateSortType.values().forEach { sortType ->
-                            state.sortType?.let {
-                                SelectionRow(
-                                    it,
-                                    sortType,
-                                    onEvent as (GenericEvent) -> Unit,
-                                    GameEvent.SortDates(
-                                        sortType
-                                    )
-                                )
-                            }
-                        }
-                    }
-                }
+                EntitySorter(
+                    showSessionSorter,
+                    spaceFromLeft,
+                    EventTypeEnum.SESSION,
+                    state,
+                    onEvent
+                )
+                EntitySorter(
+                    showSetsSorter,
+                    spaceFromLeft,
+                    EventTypeEnum.SET,
+                    state,
+                    onEvent
+                )
+                EntitySorter(
+                    showDatesSorter,
+                    spaceFromLeft,
+                    EventTypeEnum.DATE,
+                    state,
+                    onEvent
+                )
             }
             items(state.allEvents) { sortableGameEvent ->
                 Row(modifier = Modifier.fillMaxWidth()) {
