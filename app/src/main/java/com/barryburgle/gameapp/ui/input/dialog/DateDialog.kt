@@ -106,7 +106,7 @@ fun DateDialog(
                 dateInactiveTextColor = MaterialTheme.colorScheme.background
             )
         ) {
-            onEvent(GameEvent.SetMeetingDate(it.toString()))
+            onEvent(GameEvent.SetDate(it.toString()))
         }
     }
     MaterialDialog(
