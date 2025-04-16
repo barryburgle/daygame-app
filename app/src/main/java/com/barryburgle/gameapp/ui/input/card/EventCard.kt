@@ -41,9 +41,11 @@ import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.card.body.DateBody
 import com.barryburgle.gameapp.ui.input.card.body.SessionBody
+import com.barryburgle.gameapp.ui.input.card.body.SetBody
 import com.barryburgle.gameapp.ui.input.dialog.leadName
 
 @ExperimentalMaterial3Api
@@ -227,6 +229,9 @@ fun EventCard(
                                     10.sp,
                                     15.sp
                                 )
+                            }
+                            if (SingleSet::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                SetBody(sortableGameEvent.event as SingleSet, 10.sp, 15.sp)
                             }
                             if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
                                 DateBody(sortableGameEvent.event as Date, 10.sp, 15.sp)
