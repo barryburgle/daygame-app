@@ -11,16 +11,17 @@ import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
+import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.setting.Setting
 
-
 @Database(
-    entities = [AbstractSession::class, Setting::class, Lead::class, Date::class],
-    version = 4
+    entities = [AbstractSession::class, Setting::class, Lead::class, Date::class, SingleSet::class],
+    version = 5
 )
 abstract class GameAppDatabase : RoomDatabase() {
     abstract val abstractSessionDao: AbstractSessionDao
@@ -29,6 +30,7 @@ abstract class GameAppDatabase : RoomDatabase() {
     abstract val settingDao: SettingDao
     abstract val leadDao: LeadDao
     abstract val dateDao: DateDao
+    abstract val setDao: SetDao
 
     companion object {
         private const val DATABASE_NAME = "game_app_db"
@@ -63,6 +65,14 @@ abstract class GameAppDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_4_5: Migration = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS single_set (id INTEGER NOT NULL PRIMARY KEY, insert_time TEXT NULL, start_hour TEXT NULL, end_hour TEXT NULL, set_date TEXT NULL, session_id INTEGER NULL, location TEXT NULL, conversation INTEGER NOT NULL, contact INTEGER NOT NULL, instant_date INTEGER NOT NULL, recorded INTEGER NOT NULL, lead_id INTEGER NULL, date_id INTEGER NULL, sticking_points TEXT NULL, set_time INTEGER NULL, day_of_week INTEGER NULL, week_number INTEGER NULL);"
+                )
+            }
+        }
+
         fun getInstance(context: Context): GameAppDatabase? {
             if (INSTANCE == null) {
                 synchronized(GameAppDatabase::class) {
@@ -70,7 +80,7 @@ abstract class GameAppDatabase : RoomDatabase() {
                         context.applicationContext,
                         GameAppDatabase::class.java, DATABASE_NAME
                     ).addMigrations(MIGRATION_1_2).addMigrations(MIGRATION_2_3)
-                        .addMigrations(MIGRATION_3_4).build()
+                        .addMigrations(MIGRATION_3_4).addMigrations(MIGRATION_4_5).build()
                 }
             }
             return INSTANCE
