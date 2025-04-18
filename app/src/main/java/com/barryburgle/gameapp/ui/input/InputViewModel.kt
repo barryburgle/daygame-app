@@ -18,7 +18,8 @@ import com.barryburgle.gameapp.notification.state.NotificationState
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.notification.NotificationService
-import com.barryburgle.gameapp.ui.CombineSeventeen
+import com.barryburgle.gameapp.ui.CombineEighteen
+import com.barryburgle.gameapp.ui.CombineSix
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -76,17 +77,20 @@ class InputViewModel(
     val _showSessions = MutableStateFlow(true)
     val _showSets = MutableStateFlow(true)
     val _showDates = MutableStateFlow(true)
-    val _allEvents: Flow<List<SortableGameEvent>> = combine(
+    val _allEvents: Flow<List<SortableGameEvent>> = CombineSix(
         _showSessions,
         _showSets,
         _showDates,
         _allSessions,
-        _allDates
-    ) { showSessions, showSets, showDates, allSessions, allDates ->
-        listOf(showSessions, showSets, showDates, allSessions, allDates)
-    }.flatMapLatest { (showSessions, showSets, showDates, allSessions, allDates) ->
+        _allDates,
+        _allSets
+    ) { showSessions, showSets, showDates, allSessions, allDates, allSets ->
+        val flagsTriple = Triple(showSessions, showSets, showDates)
+        listOf(flagsTriple, allSessions, allDates, allSets)
+    }.flatMapLatest { (flagsTriple, allSessions, allDates, allSets) ->
+        val (showSessions, showSets, showDates) = flagsTriple as Triple<Boolean, Boolean, Boolean>
         val combinedList = mutableListOf<SortableGameEvent>().apply {
-            if (showSessions as Boolean) addAll((allSessions as List<AbstractSession>).map {
+            if (showSessions) addAll((allSessions as List<AbstractSession>).map {
                 SortableGameEvent(
                     it.insertTime,
                     it.date,
@@ -94,8 +98,15 @@ class InputViewModel(
                     it
                 )
             }) else removeIf { it.classType == AbstractSession::class.java.simpleName }
-            // TODO: manage sets here
-            if (showDates as Boolean) addAll((allDates as List<Date>).map {
+            if (showSets) addAll((allSets as List<SingleSet>).map {
+                SortableGameEvent(
+                    it.insertTime,
+                    it.date,
+                    SingleSet::class.java.simpleName,
+                    it
+                )
+            }) else removeIf { it.classType == SingleSet::class.java.simpleName }
+            if (showDates) addAll((allDates as List<Date>).map {
                 SortableGameEvent(
                     it.insertTime,
                     it.date!!,
@@ -113,12 +124,13 @@ class InputViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _state = MutableStateFlow(InputState())
-    val state = CombineSeventeen(
+    val state = CombineEighteen(
         _state,
         _sortType,
         _allSessions,
         _allLeads,
         _allDates,
+        _allSets,
         _allEvents,
         _notificationTime,
         _exportSessionsFileName,
@@ -131,11 +143,12 @@ class InputViewModel(
         _showSessions,
         _showSets,
         _showDates
-    ) { state, sortType, allSessions, allLeads, allDates, allEvents, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportFolder, backupFolder, backupActive, lastBackup, showSessions, showSets, showDates ->
+    ) { state, sortType, allSessions, allLeads, allDates, allSets, allEvents, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportFolder, backupFolder, backupActive, lastBackup, showSessions, showSets, showDates ->
         state.copy(
             allSessions = allSessions,
             allLeads = allLeads,
             allDates = allDates,
+            allSets = allSets,
             allEvents = allEvents,
             sortType = sortType,
             notificationTime = notificationTime,
@@ -213,7 +226,9 @@ class InputViewModel(
                         isAddingSession = false,
                         isUpdatingSession = false,
                         isAddingDate = false,
-                        isUpdatingDate = false
+                        isUpdatingDate = false,
+                        isAddingSet = false,
+                        isUpdatingSet = false
                     )
                 }
             }
@@ -345,6 +360,14 @@ class InputViewModel(
                         it.copy(
                             isAddingSession = event.addEvent,
                             isUpdatingSession = event.updateEvent
+                        )
+                    }
+                }
+                if (EventTypeEnum.SET.equals(event.eventType)) {
+                    _state.update {
+                        it.copy(
+                            isAddingSet = event.addEvent,
+                            isUpdatingSet = event.updateEvent
                         )
                     }
                 }
