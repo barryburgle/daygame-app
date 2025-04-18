@@ -3,9 +3,11 @@ package com.barryburgle.gameapp.event
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
+import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.set.SingleSet
 
 sealed interface GameEvent : GenericEvent {
     object SaveAbstractSession : GameEvent
@@ -45,7 +47,6 @@ sealed interface GameEvent : GenericEvent {
     object SaveDate : GameEvent
     data class SetLeadId(val leadId: Long) : GameEvent
     data class SetLocation(val location: String) : GameEvent
-    data class SetMeetingDate(val date: String) : GameEvent
     data class SetCost(val cost: String) : GameEvent
     data class SetDateNumber(val dateNumber: String) : GameEvent
     data class SetDateType(val dateType: String) : GameEvent
@@ -64,4 +65,14 @@ sealed interface GameEvent : GenericEvent {
     data class DeleteDate(val date: Date) : GameEvent
     data class EditDate(val date: Date) : GameEvent
     object EmptyLead : GameEvent
+
+    object SaveSet : GameEvent
+    data class SetSessionId(val sessionId: Long) : GameEvent
+    data class SetDateId(val dateId: Long) : GameEvent
+    object SwitchConversation : GameEvent
+    object SwitchContact : GameEvent
+    object SwitchInstantDate : GameEvent
+    data class SortSets(val sortType: SetSortType) : GameEvent
+    data class DeleteSet(val set: SingleSet) : GameEvent
+    data class EditSet(val set: SingleSet) : GameEvent
 }
