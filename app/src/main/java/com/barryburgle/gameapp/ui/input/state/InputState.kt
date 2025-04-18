@@ -64,10 +64,13 @@ data class InputState(
     var lay: Boolean = false,
     var recorded: Boolean = false,
     val editDate: Date? = null,
+    val editSet: SingleSet? = null,
     val lead: Lead? = null,
     var conversation: Boolean = false,
     var contact: Boolean = false,
-    var instant_date: Boolean = false
+    var instantDate: Boolean = false,
+    var sessionId: Long? = 0L,
+    var dateId: Long? = 0L
 ) : OrderState(
     sortType,
     exportSessionsFileName,
