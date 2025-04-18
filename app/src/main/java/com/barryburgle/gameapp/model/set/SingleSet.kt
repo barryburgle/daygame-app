@@ -23,7 +23,7 @@ open class SingleSet(
     @ColumnInfo(name = "location") var location: String?,
     @ColumnInfo(name = "conversation") var conversation: Boolean,
     @ColumnInfo(name = "contact") var contact: Boolean,
-    @ColumnInfo(name = "instant_date") var instant_date: Boolean,
+    @ColumnInfo(name = "instant_date") var instantDate: Boolean,
     @ColumnInfo(name = "recorded") var recorded: Boolean,
     @ColumnInfo(name = "lead_id") var leadId: Long?,
     @ColumnInfo(name = "date_id") var dateId: Long?,

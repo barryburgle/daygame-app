@@ -55,7 +55,7 @@ fun SetBody(
             SetSortType.NO_INSTANT_DATE.getField(),
             descriptionFontSize,
             R.drawable.idate_w,
-            set.instant_date
+            set.instantDate
         )
         DescribedIcon(
             SetSortType.RECORDED.getField(),

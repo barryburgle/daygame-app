@@ -328,7 +328,7 @@ fun SetDialog(
                 }
                 ToggleIcon(
                     "instant\ndate",
-                    state.instant_date,
+                    state.instantDate,
                     true,
                     R.drawable.idate_b
                 ) {
@@ -389,7 +389,7 @@ private fun setState(
         }
         state.conversation = state.editSet.conversation
         state.contact = state.editSet.contact
-        state.instant_date = state.editSet.instant_date
+        state.instantDate = state.editSet.instantDate
         state.recorded = state.editSet.recorded
         state.leadId = state.editSet.leadId!!
         // TODO: solve following
