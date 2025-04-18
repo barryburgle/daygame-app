@@ -68,7 +68,7 @@ abstract class GameAppDatabase : RoomDatabase() {
         val MIGRATION_4_5: Migration = object : Migration(4, 5) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS single_set (id INTEGER NOT NULL PRIMARY KEY, insert_time TEXT NULL, start_hour TEXT NULL, end_hour TEXT NULL, set_date TEXT NULL, session_id INTEGER NULL, location TEXT NULL, conversation INTEGER NOT NULL, contact INTEGER NOT NULL, instant_date INTEGER NOT NULL, recorded INTEGER NOT NULL, lead_id INTEGER NULL, date_id INTEGER NULL, sticking_points TEXT NULL, set_time INTEGER NULL, day_of_week INTEGER NULL, week_number INTEGER NULL);"
+                    "CREATE TABLE IF NOT EXISTS single_set (id INTEGER NOT NULL PRIMARY KEY, insert_time TEXT NULL, start_hour TEXT NULL, end_hour TEXT NULL, set_date TEXT NULL, session_id INTEGER NULL, location TEXT NULL, conversation INTEGER NOT NULL, contact INTEGER NOT NULL, instant_date INTEGER NOT NULL, recorded INTEGER NOT NULL, lead_id INTEGER NULL, date_id INTEGER NULL, sticking_points TEXT NULL, tweet_url TEXT NULL, set_time INTEGER NULL, day_of_week INTEGER NULL, week_number INTEGER NULL);"
                 )
             }
         }

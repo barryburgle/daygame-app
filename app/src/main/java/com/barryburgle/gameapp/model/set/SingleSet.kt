@@ -28,6 +28,7 @@ open class SingleSet(
     @ColumnInfo(name = "lead_id") var leadId: Long?,
     @ColumnInfo(name = "date_id") var dateId: Long?,
     @ColumnInfo(name = "sticking_points") var stickingPoints: String,
+    @ColumnInfo(name = "tweet_url") var tweetUrl: String?,
     @ColumnInfo(name = "set_time") var setTime: Long,
     @ColumnInfo(name = "day_of_week") var dayOfWeek: Int,
     @ColumnInfo(name = "week_number") var weekNumber: Int
@@ -93,6 +94,7 @@ open class SingleSet(
         false,
         null,
         null,
+        "",
         "",
         0L,
         1,
