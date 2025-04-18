@@ -50,6 +50,7 @@ import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
+import com.barryburgle.gameapp.ui.utilities.button.TweetLinkImportButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -70,7 +71,6 @@ fun DateDialog(
 ) {
     // TODO: make all the fields displayed in the dialog change when in edit mode (similarly to counters)
     val localContext = LocalContext.current.applicationContext
-    val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val dateDialogState = rememberMaterialDialogState()
     val startHourDialogState = rememberMaterialDialogState()
     val endHourDialogState = rememberMaterialDialogState()
@@ -357,38 +357,7 @@ fun DateDialog(
                             )
                         }
                     }
-                    Button(colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    ), onClick = {
-                        var tweetUrl: String = clipboardManager.getText()!!.toString()
-                        if (tweetUrl.startsWith("https://x.com/")) {
-                            onEvent(GameEvent.SetTweetUrl(tweetUrl))
-                            Toast.makeText(
-                                localContext,
-                                "Copied tweet url",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ContentPaste,
-                                contentDescription = state.dateType,
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier
-                                    .height(15.dp)
-                            )
-                            Text(
-                                text = "Tweet Url",
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-                    }
+                    TweetLinkImportButton(onEvent)
                 }
             }
             BasicAnimatedVisibility(
