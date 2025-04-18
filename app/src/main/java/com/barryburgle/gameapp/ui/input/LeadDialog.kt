@@ -175,11 +175,13 @@ fun LeadDialog(
                     ToggleIcon(
                         "Whatsapp",
                         ContactTypeEnum.NUMBER.getField().equals(state.leadContact),
+                        false,
                         if (isDarkTheme) R.drawable.whatsapp_w else R.drawable.whatsapp_b
                     ) { onEvent(GameEvent.SetLeadContact(ContactTypeEnum.NUMBER.getField())) }
                     ToggleIcon(
                         "Instagram",
                         ContactTypeEnum.SOCIAL.getField().equals(state.leadContact),
+                        false,
                         if (isDarkTheme) R.drawable.instagram_w else R.drawable.instagram_b
                     ) { onEvent(GameEvent.SetLeadContact(ContactTypeEnum.SOCIAL.getField())) }
                 }
