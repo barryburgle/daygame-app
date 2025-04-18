@@ -443,6 +443,7 @@ fun DateDialog(
                 ToggleIcon(
                     "pull",
                     state.pull,
+                    false,
                     R.drawable.pull_b
                 ) {
                     onEvent(GameEvent.SwitchPull)
@@ -450,6 +451,7 @@ fun DateDialog(
                 ToggleIcon(
                     "bounce",
                     state.bounce,
+                    false,
                     R.drawable.bounce_b
                 ) {
                     onEvent(GameEvent.SwitchBounce)
@@ -457,6 +459,7 @@ fun DateDialog(
                 ToggleIcon(
                     "kiss",
                     state.kiss,
+                    false,
                     R.drawable.kiss_b
                 ) {
                     onEvent(GameEvent.SwitchKiss)
@@ -464,6 +467,7 @@ fun DateDialog(
                 ToggleIcon(
                     "lay",
                     state.lay,
+                    false,
                     R.drawable.bed_b
                 ) {
                     onEvent(GameEvent.SwitchLay)
@@ -471,6 +475,7 @@ fun DateDialog(
                 ToggleIcon(
                     "recorded",
                     state.recorded,
+                    true,
                     R.drawable.microphone_b
                 ) {
                     onEvent(GameEvent.SwitchRecorded)

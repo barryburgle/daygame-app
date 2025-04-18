@@ -25,7 +25,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ToggleIcon(
-    description: String, flag: Boolean, @DrawableRes icon: Int, onCheckedChange: () -> Unit
+    description: String,
+    flag: Boolean,
+    smallerIcon: Boolean,
+    @DrawableRes icon: Int,
+    onCheckedChange: () -> Unit
 ) {
     // TODO: instead of having descriptions with or without "Not", display a little badge (Icons.Filled.CheckCircle) with a tick on the bottom right of the icon
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -43,14 +47,20 @@ fun ToggleIcon(
             if (!flag) {
                 color = MaterialTheme.colorScheme.primary
             }
+            var iconModifier: Modifier = Modifier
+                .fillMaxSize()
+                .padding(7.dp)
+            if (smallerIcon) {
+                iconModifier = Modifier
+                    .fillMaxSize(0.88f)
+                    .padding(7.dp)
+            }
             Image(
                 painter = painterResource(icon),
                 contentDescription = description,
                 alignment = Alignment.Center,
                 contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(7.dp),
+                modifier = iconModifier,
                 colorFilter = ColorFilter.tint(color)
             )
         }
