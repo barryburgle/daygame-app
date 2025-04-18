@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
+import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.date.Date
@@ -13,11 +14,13 @@ import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.notification.AndroidNotificationScheduler
 import com.barryburgle.gameapp.notification.state.NotificationState
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.notification.NotificationService
+import com.barryburgle.gameapp.service.set.SetService
 import com.barryburgle.gameapp.ui.CombineEighteen
 import com.barryburgle.gameapp.ui.CombineSix
 import com.barryburgle.gameapp.ui.input.state.InputState
@@ -25,7 +28,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -46,6 +48,7 @@ class InputViewModel(
 
     private val _batchSessionService = BatchSessionService()
     private val _dateService = DateService()
+    private val _setService = SetService()
     private val _sortType = MutableStateFlow(SortType.DATE)
     private val _allSessions = _sortType.flatMapLatest { sortType ->
         when (sortType) {
@@ -65,6 +68,7 @@ class InputViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _allLeads = leadDao.getAll()
     private val _allDates = dateDao.getAll()
+    private val _allSets = setDao.getAll()
     private val _notificationTime = settingDao.getNotificationTime()
     private val _exportSessionsFileName = settingDao.getExportSessionsFilename()
     private val _exportLeadsFileName = settingDao.getExportLeadsFilename()
@@ -394,6 +398,7 @@ class InputViewModel(
             }
 
             is GameEvent.SortSessions -> {
+                TODO("Make this sorting work with the _allEvents list")
                 _sortType.value = event.sortType
             }
 
@@ -545,14 +550,6 @@ class InputViewModel(
                 }
             }
 
-            is GameEvent.SetMeetingDate -> {
-                _state.update {
-                    it.copy(
-                        date = event.date
-                    )
-                }
-            }
-
             is GameEvent.SetCost -> {
                 _state.update {
                     it.copy(
@@ -688,6 +685,107 @@ class InputViewModel(
             }
 
             is GameEvent.SortDates -> TODO("Make one sorting for all events changing by properties by event selection")
+
+            is GameEvent.SaveSet -> {
+                viewModelScope.launch {
+                    val set = _setService.init(
+                        id = null,
+                        date = if (_state.value.date.isBlank()) state.value.date else _state.value.date,
+                        startHour = if (_state.value.startHour.isBlank()) state.value.startHour else _state.value.startHour,
+                        endHour = if (_state.value.endHour.isBlank()) state.value.endHour else _state.value.endHour,
+                        sessionId = if (_state.value.sessionId == 0L) state.value.sessionId else _state.value.sessionId,
+                        location = if (_state.value.location.isBlank()) state.value.location else _state.value.location,
+                        conversation = if (!_state.value.conversation) state.value.conversation else _state.value.conversation,
+                        contact = if (!_state.value.contact) state.value.contact else _state.value.contact,
+                        instantDate = if (!_state.value.instantDate) state.value.instantDate else _state.value.instantDate,
+                        recorded = if (!_state.value.recorded) state.value.recorded else _state.value.recorded,
+                        leadId = if (_state.value.leadId == 0L) state.value.leadId else _state.value.leadId,
+                        dateId = if (_state.value.dateId == 0L) state.value.dateId else _state.value.dateId,
+                        stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
+                        tweetUrl = if (_state.value.tweetUrl.isBlank()) state.value.tweetUrl else _state.value.tweetUrl
+                    )
+                    if (state.value.isUpdatingSet) {
+                        set.id = state.value.editSet!!.id
+                        set.insertTime = state.value.editSet!!.insertTime
+                    }
+                    setDao.insert(set)
+                    _state.update {
+                        it.copy(
+                            date = "",
+                            startHour = "",
+                            endHour = "",
+                            sessionId = 0L,
+                            location = "",
+                            conversation = false,
+                            contact = false,
+                            instantDate = false,
+                            recorded = false,
+                            leadId = 0L,
+                            dateId = 0L,
+                            stickingPoints = "",
+                            tweetUrl = "",
+                            sortType = SortType.DATE, // TODO: set sets sort type back to its first value
+                            isAddingSet = false,
+                            isUpdatingSet = false
+                        )
+                    }
+                }
+            }
+
+            is GameEvent.SetSessionId -> {
+                _state.update {
+                    it.copy(
+                        sessionId = event.sessionId
+                    )
+                }
+            }
+
+            is GameEvent.SetDateId -> {
+                _state.update {
+                    it.copy(
+                        dateId = event.dateId
+                    )
+                }
+            }
+
+            is GameEvent.SwitchConversation -> {
+                _state.update {
+                    it.copy(
+                        conversation = _state.value.conversation.not()
+                    )
+                }
+            }
+
+            is GameEvent.SwitchContact -> {
+                _state.update {
+                    it.copy(
+                        contact = _state.value.contact.not()
+                    )
+                }
+            }
+
+            is GameEvent.SwitchInstantDate -> {
+                _state.update {
+                    it.copy(
+                        instantDate = _state.value.instantDate.not()
+                    )
+                }
+            }
+
+            is GameEvent.SortSets -> TODO()
+            is GameEvent.DeleteSet -> {
+                viewModelScope.launch {
+                    setDao.delete(event.set)
+                }
+            }
+
+            is GameEvent.EditSet -> {
+                _state.update {
+                    it.copy(
+                        editSet = event.set
+                    )
+                }
+            }
         }
     }
 }
