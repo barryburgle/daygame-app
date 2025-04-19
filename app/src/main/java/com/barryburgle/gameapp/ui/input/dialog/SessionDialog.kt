@@ -103,7 +103,7 @@ fun SessionDialog(
                             modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH - DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                         ) {
                             DialogFormSectionDescription(
-                                "Leads:",
+                                "Add leads:",
                                 DialogConstant.DESCRIPTION_FONT_SIZE
                             )
                         }
