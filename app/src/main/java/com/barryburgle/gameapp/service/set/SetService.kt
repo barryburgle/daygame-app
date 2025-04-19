@@ -25,8 +25,8 @@ class SetService : SetInitializer, EntityService() {
         stickingPoints: String,
         tweetUrl: String
     ): SingleSet {
-        TODO("Group the following under some methods common to all EntityService children")
-        TODO("Do unit tests")
+        // TODO: Group the following under some methods common to all EntityService children
+        // TODO: Do unit tests
         val id: Long? = if (id.isNullOrBlank()) null else id.toLong()
         val parsedDate = if (date.isBlank()) getLocalDateTimeNow(15, "00:00:00.000Z") else
             LocalDateTime.parse(date + DATE_SUFFIX, savingFormatter)
