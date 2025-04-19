@@ -75,4 +75,7 @@ sealed interface GameEvent : GenericEvent {
     data class SortSets(val sortType: SetSortType) : GameEvent
     data class DeleteSet(val set: SingleSet) : GameEvent
     data class EditSet(val set: SingleSet) : GameEvent
+    data class SetConversation(val conversation: Boolean?) : GameEvent
+    data class SetContact(val contact: Boolean?) : GameEvent
+    data class SetInstantDate(val instantDate: Boolean?) : GameEvent
 }

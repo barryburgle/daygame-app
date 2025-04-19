@@ -796,6 +796,30 @@ class InputViewModel(
                     )
                 }
             }
+
+            is GameEvent.SetConversation -> {
+                _state.update {
+                    it.copy(
+                        conversation = event.conversation!!
+                    )
+                }
+            }
+
+            is GameEvent.SetContact -> {
+                _state.update {
+                    it.copy(
+                        contact = event.contact!!
+                    )
+                }
+            }
+
+            is GameEvent.SetInstantDate -> {
+                _state.update {
+                    it.copy(
+                        instantDate = event.instantDate!!
+                    )
+                }
+            }
         }
     }
 }
