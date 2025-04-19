@@ -91,6 +91,9 @@ abstract class AbstractCsvService<T : Any> {
         val filenames = listFileNamesLike(folder, getBackupFileName(), false)
         if (filenames != null && filenames.isNotEmpty()) {
             val validationList = importRows(folder, filenames.get(0), true, 1)
+            if (validationList == null || validationList.size == 0) {
+                return true
+            }
             if (isEntityValid(validationList.get(0))) {
                 return true
             }
@@ -116,8 +119,10 @@ abstract class AbstractCsvService<T : Any> {
         if (rowLimit != null) {
             lastIndex = rowLimit
         }
-        for (index in startCount..lastIndex) {
-            exportObjects.add(mapImportRow(listOfStrings.get(index)))
+        if (lastIndex > 1) {
+            for (index in startCount..lastIndex) {
+                exportObjects.add(mapImportRow(listOfStrings.get(index)))
+            }
         }
         return exportObjects
     }
