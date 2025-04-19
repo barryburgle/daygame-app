@@ -507,6 +507,8 @@ private fun setState(
 fun timeInputButton(
     text: String, dialogState: MaterialDialogState
 ) {
+    // TODO: remove TimeInputFormButton or this timeInputButton => uniform
+    // TODO: isolate in a separate file
     Button(colors = ButtonDefaults.buttonColors(
         containerColor = MaterialTheme.colorScheme.primaryContainer
     ), onClick = { dialogState.show() }) {
