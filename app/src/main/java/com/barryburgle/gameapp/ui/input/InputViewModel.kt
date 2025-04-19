@@ -704,7 +704,17 @@ class InputViewModel(
                         stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
                         tweetUrl = if (_state.value.tweetUrl.isBlank()) state.value.tweetUrl else _state.value.tweetUrl
                     )
-                    if (state.value.isUpdatingSet) {
+                    if (state.value.isAddingSet) {
+                        var leadId = 0L
+                        if (!state.value.leads.isEmpty()) {
+                            val lead = state.value.leads[0]
+                            lead.insertTime = set.insertTime
+                            leadId = leadDao.insert(lead)
+                        }
+                        if (leadId != 0L) {
+                            set.leadId = leadId
+                        }
+                    } else if (state.value.isUpdatingSet) {
                         set.id = state.value.editSet!!.id
                         set.insertTime = state.value.editSet!!.insertTime
                     }

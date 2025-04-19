@@ -17,7 +17,7 @@ interface LeadDao {
     suspend fun batchInsert(leads: List<Lead>)
 
     @Insert(onConflict = REPLACE)
-    suspend fun insert(lead: Lead)
+    suspend fun insert(lead: Lead): Long
 
     @Delete
     suspend fun delete(lead: Lead)
