@@ -364,15 +364,10 @@ fun SetDialog(
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Button(onClick = {
-                    if (state.leadId == 0L) {
-                        Toast.makeText(localContext, "Please choose a lead", Toast.LENGTH_SHORT)
-                            .show()
-                    } else {
-                        onEvent(GameEvent.SaveDate)
-                        onEvent(GameEvent.HideDialog)
-                        onEvent(GameEvent.SwitchJustSaved)
-                        Toast.makeText(localContext, "Date saved", Toast.LENGTH_SHORT).show()
-                    }
+                    onEvent(GameEvent.SaveSet)
+                    onEvent(GameEvent.HideDialog)
+                    onEvent(GameEvent.SwitchJustSaved)
+                    Toast.makeText(localContext, "Set saved", Toast.LENGTH_SHORT).show()
                 }) {
                     Text(text = "Save")
                 }
