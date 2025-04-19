@@ -190,41 +190,47 @@ fun SetDialog(
                         }
                         Spacer(modifier = Modifier.width(10.dp))
                         var leadIcon = Icons.Default.Add
-                        Column(
-                            modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH - DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                        ) {
-                            if (state.leadId == 0L) {
-                                DialogFormSectionDescription(
-                                    "Add lead:",
-                                    DialogConstant.DESCRIPTION_FONT_SIZE
-                                )
-                            } else {
-                                val lead =
-                                    state.allLeads.filter { lead -> lead.id == state.leadId }.get(0)
-                                DialogFormSectionDescription(
-                                    CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age,
-                                    DialogConstant.DESCRIPTION_FONT_SIZE
-                                )
-                                leadIcon = Icons.Default.SwapHoriz
+                        var editLead: Boolean = false
+                        if (!state.isUpdatingSet) {
+                            Column(
+                                modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH - DialogConstant.ADD_LEAD_COLUMN_WIDTH)
+                            ) {
+                                if (state.leads.isEmpty()) {
+                                    DialogFormSectionDescription(
+                                        "Add lead:",
+                                        DialogConstant.DESCRIPTION_FONT_SIZE
+                                    )
+                                } else {
+                                    val lead = state.leads.get(0)
+                                    DialogFormSectionDescription(
+                                        CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age,
+                                        DialogConstant.DESCRIPTION_FONT_SIZE
+                                    )
+                                    leadIcon = Icons.Default.SwapHoriz
+                                    editLead = true
+                                }
                             }
-                        }
-                        Column(
-                            modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                        ) {
-                            IconButton(onClick = {
-                                onEvent(GameEvent.ShowLeadDialog(true, false))
-                            }) {
-                                Icon(
-                                    imageVector = leadIcon,
-                                    contentDescription = "Add lead",
-                                    tint = MaterialTheme.colorScheme.inversePrimary,
-                                    modifier = Modifier
-                                        .background(
-                                            MaterialTheme.colorScheme.secondaryContainer
-                                        )
-                                        .width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                                        .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                                )
+                            Column(
+                                modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
+                            ) {
+                                IconButton(onClick = {
+                                    if (editLead) {
+                                        onEvent(GameEvent.EmptyLeads)
+                                    }
+                                    onEvent(GameEvent.ShowLeadDialog(true, false))
+                                }) {
+                                    Icon(
+                                        imageVector = leadIcon,
+                                        contentDescription = "Add a lead",
+                                        tint = MaterialTheme.colorScheme.inversePrimary,
+                                        modifier = Modifier
+                                            .background(
+                                                MaterialTheme.colorScheme.secondaryContainer
+                                            )
+                                            .width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
+                                            .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
+                                    )
+                                }
                             }
                         }
                     }
