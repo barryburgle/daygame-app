@@ -48,6 +48,7 @@ import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.card.EventCard
 import com.barryburgle.gameapp.ui.input.dialog.DateDialog
@@ -256,6 +257,10 @@ fun getLeads(state: InputState, sortableGameEvent: SortableGameEvent): List<Lead
     if (AbstractSession::class.java.simpleName.equals(sortableGameEvent.classType)) {
         val abstractSession = sortableGameEvent.event as AbstractSession
         return state.allLeads.filter { lead -> lead.sessionId == abstractSession.id }
+    }
+    if (SingleSet::class.java.simpleName.equals(sortableGameEvent.classType)) {
+        val set = sortableGameEvent.event as SingleSet
+        return state.allLeads.filter { lead -> lead.id == set.leadId }
     }
     if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
         val date = sortableGameEvent.event as Date
