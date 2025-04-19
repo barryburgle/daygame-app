@@ -128,6 +128,13 @@ fun EventCard(
                                             )
                                         )
                                     }
+                                    if (SingleSet::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                        onEvent(
+                                            GameEvent.DeleteSet(
+                                                sortableGameEvent.event as SingleSet
+                                            )
+                                        )
+                                    }
                                     if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
                                         onEvent(
                                             GameEvent.DeleteDate(
@@ -169,6 +176,28 @@ fun EventCard(
                                         )
                                         onEvent(
                                             GameEvent.ShowDialog(false, true, EventTypeEnum.SESSION)
+                                        )
+                                    }
+                                    if (SingleSet::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                        onEvent(
+                                            GameEvent.SetConversation((sortableGameEvent.event as SingleSet).conversation)
+                                        )
+                                        onEvent(
+                                            GameEvent.SetContact((sortableGameEvent.event as SingleSet).contact)
+                                        )
+                                        onEvent(
+                                            GameEvent.SetInstantDate((sortableGameEvent.event as SingleSet).instantDate)
+                                        )
+                                        onEvent(
+                                            GameEvent.SetRecorded((sortableGameEvent.event as SingleSet).recorded)
+                                        )
+                                        onEvent(
+                                            GameEvent.EditSet(
+                                                sortableGameEvent.event as SingleSet
+                                            )
+                                        )
+                                        onEvent(
+                                            GameEvent.ShowDialog(false, true, EventTypeEnum.SET)
                                         )
                                     }
                                     if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
