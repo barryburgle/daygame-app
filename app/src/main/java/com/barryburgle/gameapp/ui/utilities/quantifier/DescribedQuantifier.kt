@@ -38,21 +38,20 @@ fun DescribedQuantifier(
                 modifier = Modifier
                     .fillMaxHeight()
             ) {
-                var quantityDescription = description
+                var shownQuantity = "No"
                 if (!quantity.isNullOrBlank()) {
-                    Text(
-                        text = quantity, fontSize = quantityFontSize
-                    )
-                } else {
-                    quantityDescription = "No\n$description"
+                    shownQuantity = quantity
                 }
+                Text(
+                    text = shownQuantity, fontSize = quantityFontSize
+                )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxHeight()
                 ) {
                     Text(
-                        text = quantityDescription,
+                        text = description,
                         fontSize = descriptionFontSize,
                         lineHeight = 10.sp,
                         textAlign = TextAlign.Center
