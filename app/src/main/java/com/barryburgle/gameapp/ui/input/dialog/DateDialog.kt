@@ -44,6 +44,7 @@ import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.DateType
+import com.barryburgle.gameapp.model.enums.TimeInputFormEnum
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
@@ -52,6 +53,7 @@ import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkImportButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
+import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
@@ -71,6 +73,9 @@ fun DateDialog(
 ) {
     // TODO: make all the fields displayed in the dialog change when in edit mode (similarly to counters)
     val localContext = LocalContext.current.applicationContext
+    var latestDateValue = state.date
+    var latestStartHour = state.startHour
+    var latestEndHour = state.endHour
     val dateDialogState = rememberMaterialDialogState()
     val startHourDialogState = rememberMaterialDialogState()
     val endHourDialogState = rememberMaterialDialogState()
@@ -259,19 +264,42 @@ fun DateDialog(
                 Column(
                     modifier = Modifier.fillMaxWidth(0.5f)
                 ) {
-                    timeInputButton(
-                        GenericDialog.getButtonTitle(
-                            state.date, "", "Date"
-                        ), dateDialogState
-                    )
-                    timeInputButton(
-                        GenericDialog.getButtonTitle(state.startHour, "Start ", "Start Hour"),
-                        startHourDialogState
-                    )
-                    timeInputButton(
-                        GenericDialog.getButtonTitle(state.endHour, "End ", "End Hour"),
-                        endHourDialogState
-                    )
+                    TimeInputFormButton(
+                        state.date,
+                        latestDateValue,
+                        TimeInputFormEnum.DATE,
+                        state.isAddingDate,
+                        state.editDate,
+                        if (state.editDate != null && state.editDate!!.date != null) state.editDate!!.date!! else "",
+                        "session",
+                        ""
+                    ) {
+                        onEvent(GameEvent.SetDate(it))
+                    }
+                    TimeInputFormButton(
+                        state.startHour,
+                        latestStartHour,
+                        TimeInputFormEnum.HOUR,
+                        state.isAddingDate,
+                        state.editDate,
+                        if (state.editDate != null) state.editDate!!.startHour else "",
+                        "session",
+                        "Start"
+                    ) {
+                        onEvent(GameEvent.SetStartHour(it.substring(0, 5)))
+                    }
+                    TimeInputFormButton(
+                        state.endHour,
+                        latestEndHour,
+                        TimeInputFormEnum.HOUR,
+                        state.isAddingDate,
+                        state.editDate,
+                        if (state.editDate != null) state.editDate!!.endHour else "",
+                        "session",
+                        "End"
+                    ) {
+                        onEvent(GameEvent.SetEndHour(it.substring(0, 5)))
+                    }
                 }
                 Spacer(modifier = Modifier.width(5.dp))
                 Column {
@@ -500,23 +528,5 @@ private fun setState(
             state.stickingPoints = state.editDate.stickingPoints!!
         }
         state.tweetUrl = state.editDate.tweetUrl!!
-    }
-}
-
-@Composable
-fun timeInputButton(
-    text: String, dialogState: MaterialDialogState
-) {
-    // TODO: remove TimeInputFormButton or this timeInputButton => uniform
-    // TODO: isolate in a separate file
-    Button(colors = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.primaryContainer
-    ), onClick = { dialogState.show() }) {
-        Text(
-            text = text,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }

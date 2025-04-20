@@ -30,8 +30,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.platform.ClipboardManager
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +38,7 @@ import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.SetSortType
+import com.barryburgle.gameapp.model.enums.TimeInputFormEnum
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
@@ -47,6 +46,7 @@ import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkImportButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
+import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
@@ -65,7 +65,9 @@ fun SetDialog(
 ) {
     // TODO: make all the fields displayed in the dialog change when in edit mode (similarly to counters)
     val localContext = LocalContext.current.applicationContext
-    val clipboardManager: ClipboardManager = LocalClipboardManager.current
+    var latestDateValue = state.date
+    var latestStartHour = state.startHour
+    var latestEndHour = state.endHour
     val setDialogState = rememberMaterialDialogState()
     val startHourDialogState = rememberMaterialDialogState()
     val endHourDialogState = rememberMaterialDialogState()
@@ -118,7 +120,7 @@ fun SetDialog(
         }, shape = MaterialTheme.shapes.extraLarge
     ) {
         this.timepicker(
-            initialTime = if (state.isAddingSet || state.editDate == null) LocalTime.now() else FormatService.parseTime(
+            initialTime = if (state.isAddingSet || state.editSet == null) LocalTime.now() else FormatService.parseTime(
                 state.editSet!!.startHour
             ), title = "Set start hour", colors = TimePickerDefaults.colors(
                 selectorColor = MaterialTheme.colorScheme.onPrimary,
@@ -242,19 +244,42 @@ fun SetDialog(
                 Column(
                     modifier = Modifier.fillMaxWidth(0.5f)
                 ) {
-                    timeInputButton(
-                        GenericDialog.getButtonTitle(
-                            state.date, "", "Date"
-                        ), setDialogState
-                    )
-                    timeInputButton(
-                        GenericDialog.getButtonTitle(state.startHour, "Start ", "Start Hour"),
-                        startHourDialogState
-                    )
-                    timeInputButton(
-                        GenericDialog.getButtonTitle(state.endHour, "End ", "End Hour"),
-                        endHourDialogState
-                    )
+                    TimeInputFormButton(
+                        state.date,
+                        latestDateValue,
+                        TimeInputFormEnum.DATE,
+                        state.isAddingSet,
+                        state.editSet,
+                        if (state.editSet != null) state.editSet!!.date else "",
+                        "session",
+                        ""
+                    ) {
+                        onEvent(GameEvent.SetDate(it))
+                    }
+                    TimeInputFormButton(
+                        state.startHour,
+                        latestStartHour,
+                        TimeInputFormEnum.HOUR,
+                        state.isAddingSet,
+                        state.editSet,
+                        if (state.editSet != null) state.editSet!!.startHour else "",
+                        "session",
+                        "Start"
+                    ) {
+                        onEvent(GameEvent.SetStartHour(it.substring(0, 5)))
+                    }
+                    TimeInputFormButton(
+                        state.endHour,
+                        latestEndHour,
+                        TimeInputFormEnum.HOUR,
+                        state.isAddingSet,
+                        state.editSet,
+                        if (state.editSet != null) state.editSet!!.endHour else "",
+                        "session",
+                        "End"
+                    ) {
+                        onEvent(GameEvent.SetEndHour(it.substring(0, 5)))
+                    }
                 }
                 Spacer(modifier = Modifier.width(5.dp))
                 Column {

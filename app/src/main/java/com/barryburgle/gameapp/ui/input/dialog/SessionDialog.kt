@@ -136,39 +136,36 @@ fun SessionDialog(
                     modifier = Modifier.width(DialogConstant.TIME_COLUMN_WIDTH)
                 ) {
                     TimeInputFormButton(
-                        passStateValue(state.date, latestDateValue),
+                        state.date,
+                        latestDateValue,
                         TimeInputFormEnum.DATE,
-                        passInitialValue(
-                            state.isAddingSession,
-                            state.editAbstractSession,
-                            if (state.editAbstractSession != null) state.editAbstractSession!!.date else ""
-                        ),
+                        state.isAddingSession,
+                        state.editAbstractSession,
+                        if (state.editAbstractSession != null) state.editAbstractSession!!.date else "",
                         "session",
                         ""
                     ) {
                         onEvent(GameEvent.SetDate(it))
                     }
                     TimeInputFormButton(
-                        passStateValue(state.startHour, latestStartHour),
+                        state.startHour,
+                        latestStartHour,
                         TimeInputFormEnum.HOUR,
-                        passInitialValue(
-                            state.isAddingSession,
-                            state.editAbstractSession,
-                            if (state.editAbstractSession != null) state.editAbstractSession!!.startHour else ""
-                        ),
+                        state.isAddingSession,
+                        state.editAbstractSession,
+                        if (state.editAbstractSession != null) state.editAbstractSession!!.startHour else "",
                         "session",
                         "Start"
                     ) {
                         onEvent(GameEvent.SetStartHour(it.substring(0, 5)))
                     }
                     TimeInputFormButton(
-                        passStateValue(state.endHour, latestEndHour),
+                        state.endHour,
+                        latestEndHour,
                         TimeInputFormEnum.HOUR,
-                        passInitialValue(
-                            state.isAddingSession,
-                            state.editAbstractSession,
-                            if (state.editAbstractSession != null) state.editAbstractSession!!.endHour else ""
-                        ),
+                        state.isAddingSession,
+                        state.editAbstractSession,
+                        if (state.editAbstractSession != null) state.editAbstractSession!!.endHour else "",
                         "session",
                         "End"
                     ) {
@@ -397,20 +394,4 @@ fun leadName(
             }
         }
     }
-}
-
-private fun passStateValue(stateValue: String, latestValue: String): String {
-    if (stateValue != latestValue && latestValue.isNotEmpty())
-        return latestValue
-    return stateValue
-}
-
-private fun passInitialValue(
-    isAddingSession: Boolean,
-    editEntity: Any?,
-    possibleReturn: String
-): String {
-    if (isAddingSession || editEntity == null)
-        return LocalDateTime.now().toString().substring(0, 16) + "Z"
-    return possibleReturn
 }
