@@ -53,10 +53,8 @@ import com.barryburgle.gameapp.ui.input.dialog.leadName
 fun EventCard(
     sortableGameEvent: SortableGameEvent,
     leads: List<Lead>,
-    // TODO: the following should be a generic Input/GameEvent -> Unit
     onEvent: (GameEvent) -> Unit,
     modifier: Modifier = Modifier
-    // TODO: pass here the body function
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val localContext = LocalContext.current.applicationContext
