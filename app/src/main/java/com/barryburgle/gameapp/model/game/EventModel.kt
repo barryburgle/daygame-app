@@ -12,11 +12,5 @@ interface EventModel {
 
     fun getEventDescription(): String
 
-    fun getEventDeleteMethod() // TODO: define return type
-
-    fun getEventEditMethod() // TODO: define return type
-
-    fun getEventLeadIds(): List<Long>
-
     fun getEventStickingPoints(): String?
 }

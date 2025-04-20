@@ -60,22 +60,6 @@ open class SingleSet(
         } : ${setTime} minutes"
     }
 
-    override fun getEventDeleteMethod() {
-        TODO("Not yet implemented")
-    }
-
-    override fun getEventEditMethod() {
-        TODO("Not yet implemented")
-    }
-
-    override fun getEventLeadIds(): List<Long> {
-        TODO("Not yet implemented")
-        if (leadId != null) {
-            return listOf(leadId!!)
-        }
-        return listOf()
-    }
-
     override fun getEventStickingPoints(): String {
         return stickingPoints
     }

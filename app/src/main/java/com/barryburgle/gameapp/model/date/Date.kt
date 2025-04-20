@@ -61,19 +61,6 @@ open class Date(
         } : ${dateTime} minutes"
     }
 
-    override fun getEventDeleteMethod() {
-        TODO("Not yet implemented")
-    }
-
-    override fun getEventEditMethod() {
-        TODO("Not yet implemented")
-    }
-
-    override fun getEventLeadIds(): List<Long> {
-        TODO("Not yet implemented")
-        return listOf()
-    }
-
     override fun getEventStickingPoints(): String? {
         return stickingPoints
     }
