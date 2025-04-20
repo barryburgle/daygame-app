@@ -395,7 +395,7 @@
             "notNull": true
           },
           {
-            "fieldPath": "instant_date",
+            "fieldPath": "instantDate",
             "columnName": "instant_date",
             "affinity": "INTEGER",
             "notNull": true
