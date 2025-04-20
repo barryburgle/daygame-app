@@ -80,13 +80,13 @@ fun DateBody(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         DescribedQuantifier(
-            quantity = "${date.location!!}",
+            quantity = "${date.location}",
             quantityFontSize = perfFontSize,
             description = "Location",
             descriptionFontSize = descriptionFontSize
         )
         DescribedQuantifier(
-            quantity = "${date.cost!!} €",
+            quantity = "${date.cost} €",
             quantityFontSize = perfFontSize,
             description = "Cost",
             descriptionFontSize = descriptionFontSize

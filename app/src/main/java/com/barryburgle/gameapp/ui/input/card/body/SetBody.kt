@@ -73,7 +73,7 @@ fun SetBody(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         DescribedQuantifier(
-            quantity = "${set.location!!}",
+            quantity = "${set.location}",
             quantityFontSize = perfFontSize,
             description = "Location",
             descriptionFontSize = descriptionFontSize
