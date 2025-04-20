@@ -63,7 +63,6 @@ fun SetDialog(
     description: String,
     modifier: Modifier = Modifier
 ) {
-    // TODO: make all the fields displayed in the dialog change when in edit mode (similarly to counters)
     val localContext = LocalContext.current.applicationContext
     var latestDateValue = state.date
     var latestStartHour = state.startHour
