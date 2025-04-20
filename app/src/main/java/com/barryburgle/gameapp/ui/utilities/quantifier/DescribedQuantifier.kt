@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.sp
 fun DescribedQuantifier(
     quantity: String, quantityFontSize: TextUnit, description: String, descriptionFontSize: TextUnit
 ) {
-    // TODO: rename package of this component as "quantifier"
     // TODO: manage null quantities and if no quantity provided write "No <description>"
     // replacing quantity and description texts
     Column(
