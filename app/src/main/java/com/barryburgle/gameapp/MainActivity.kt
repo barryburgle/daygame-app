@@ -107,7 +107,7 @@ class MainActivity : ComponentActivity() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return db?.let {
                     ToolViewModel(
-                        it.abstractSessionDao, it.leadDao, it.dateDao, it.settingDao
+                        it.abstractSessionDao, it.leadDao, it.dateDao, it.setDao, it.settingDao
                     )
                 } as T
             }
