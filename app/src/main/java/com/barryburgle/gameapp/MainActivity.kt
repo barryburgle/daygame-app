@@ -94,7 +94,8 @@ class MainActivity : ComponentActivity() {
                     StatsViewModel(
                         it.abstractSessionDao,
                         it.leadDao,
-                        it.dateDao
+                        it.dateDao,
+                        it.setDao
                     )
                 } as T
             }
