@@ -38,7 +38,6 @@ class LeadCsvService : AbstractCsvService<Lead>() {
     }
 
     override fun mapImportRow(fields: Array<String>): Lead {
-        // TODO: create a init service for lead too
         val id = importLong(fields[0])
         val age = importLong(fields[6])
         return Lead(

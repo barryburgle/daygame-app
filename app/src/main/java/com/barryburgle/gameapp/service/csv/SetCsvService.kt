@@ -1,7 +1,6 @@
 package com.barryburgle.gameapp.service.csv
 
 import com.barryburgle.gameapp.model.set.SingleSet
-import com.barryburgle.gameapp.service.set.SetService
 
 class SetCsvService : AbstractCsvService<SingleSet>() {
 
@@ -61,7 +60,6 @@ class SetCsvService : AbstractCsvService<SingleSet>() {
     }
 
     override fun mapImportRow(fields: Array<String>): SingleSet {
-        // TODO: use setService.init(...) to reinit with fresh metadata dates here
         var setTime = importLong(fields[15])
         if (setTime == null) {
             setTime = 0L

@@ -1,7 +1,6 @@
 package com.barryburgle.gameapp.service.csv
 
 import com.barryburgle.gameapp.model.date.Date
-import com.barryburgle.gameapp.service.date.DateService
 
 class DateCsvService : AbstractCsvService<Date>() {
 
@@ -12,9 +11,6 @@ class DateCsvService : AbstractCsvService<Date>() {
     public override fun getBackupFileName(): String {
         return DATES_BACKUP_FILENAME
     }
-
-    // TODO: service to use or delete
-    val dateService = DateService()
 
     override fun exportSingleRow(date: Date): Array<String> {
         val dateFieldList = mutableListOf<String>()
@@ -68,7 +64,6 @@ class DateCsvService : AbstractCsvService<Date>() {
     }
 
     override fun mapImportRow(fields: Array<String>): Date {
-        // TODO: use dateService.init(...) to reinit with fresh metadata dates here
         return Date(
             importLong(fields[0]),
             fields[1],
