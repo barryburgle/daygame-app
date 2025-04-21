@@ -5,11 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
+import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
-import com.barryburgle.gameapp.ui.CombineTwentyTwo
+import com.barryburgle.gameapp.ui.CombineEight
+import com.barryburgle.gameapp.ui.CombineEighteen
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -20,6 +23,7 @@ class ToolViewModel(
     private val abstractSessionDao: AbstractSessionDao,
     private val leadDao: LeadDao,
     private val dateDao: DateDao,
+    private val setDao: SetDao,
     private val settingDao: SettingDao
 ) : ViewModel() {
     private val _state =
@@ -27,12 +31,28 @@ class ToolViewModel(
     private val _allSessions = abstractSessionDao.getAll()
     private val _allLeads = leadDao.getAll()
     private val _allDates = dateDao.getAll()
-    private val _exportSessionsFilename = settingDao.getExportSessionsFilename()
-    private val _importSessionsFilename = settingDao.getImportSessionsFilename()
-    private val _exportLeadsFilename = settingDao.getExportLeadsFilename()
-    private val _importLeadsFilename = settingDao.getImportLeadsFilename()
-    private val _exportDatesFilename = settingDao.getExportDatesFilename()
-    private val _importDatesFilename = settingDao.getImportDatesFilename()
+    private val _allSets = setDao.getAll()
+    val _importExportFilenames: Flow<ImportExportFilenames> = CombineEight(
+        settingDao.getExportSessionsFilename(),
+        settingDao.getImportSessionsFilename(),
+        settingDao.getExportLeadsFilename(),
+        settingDao.getImportLeadsFilename(),
+        settingDao.getExportDatesFilename(),
+        settingDao.getImportDatesFilename(),
+        settingDao.getExportSetsFilename(),
+        settingDao.getImportSetsFilename()
+    ) { exportSessions, importSessions, exportLeads, importLeads, exportDates, importDates, exportSets, importSets ->
+        ImportExportFilenames(
+            exportSessionsFilename = exportSessions,
+            importSessionsFilename = importSessions,
+            exportLeadsFilename = exportLeads,
+            importLeadsFilename = importLeads,
+            exportDatesFilename = exportDates,
+            importDatesFilename = importDates,
+            exportSetsFilename = exportSets,
+            importSetsFilename = importSets
+        )
+    }
     private val _exportFolder = settingDao.getExportFolder()
     private val _importFolder = settingDao.getImportFolder()
     private val _backupFolder = settingDao.getBackupFolder()
@@ -46,17 +66,13 @@ class ToolViewModel(
     private val _latestChangelog = settingDao.getLatestChangelog()
     private val _latestDownloadUrl = settingDao.getLatestDownloadUrl()
     val state =
-        CombineTwentyTwo(
+        CombineEighteen(
             _state,
             _allSessions,
             _allLeads,
             _allDates,
-            _exportSessionsFilename,
-            _importSessionsFilename,
-            _exportLeadsFilename,
-            _importLeadsFilename,
-            _exportDatesFilename,
-            _importDatesFilename,
+            _allSets,
+            _importExportFilenames,
             _exportFolder,
             _importFolder,
             _backupFolder,
@@ -69,14 +85,16 @@ class ToolViewModel(
             _latestPublishDate,
             _latestChangelog,
             _latestDownloadUrl
-        ) { state, allSessions, allLeads, allDates, exportSessionsFilename, importSessionsFilename, exportLeadsFilename, importLeadsFilename, exportDatesFilename, importDatesFilename, exportFolder, importFolder, backupFolder, notificationTime, averageLast, exportHeader, importHeader, backupActive, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl ->
+        ) { state, allSessions, allLeads, allDates, allSets, importExportFilenames, exportFolder, importFolder, backupFolder, notificationTime, averageLast, exportHeader, importHeader, backupActive, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl ->
             state.copy(
-                exportSessionsFileName = exportSessionsFilename,
-                importSessionsFileName = importSessionsFilename,
-                exportLeadsFileName = exportLeadsFilename,
-                importLeadsFileName = importLeadsFilename,
-                exportDatesFileName = exportDatesFilename,
-                importDatesFileName = importDatesFilename,
+                exportSessionsFileName = importExportFilenames.exportSessionsFilename,
+                importSessionsFileName = importExportFilenames.importSessionsFilename,
+                exportLeadsFileName = importExportFilenames.exportLeadsFilename,
+                importLeadsFileName = importExportFilenames.importLeadsFilename,
+                exportDatesFileName = importExportFilenames.exportDatesFilename,
+                importDatesFileName = importExportFilenames.importDatesFilename,
+                exportSetsFileName = importExportFilenames.exportSetsFilename,
+                importSetsFileName = importExportFilenames.importSetsFilename,
                 exportFolder = exportFolder,
                 importFolder = importFolder,
                 backupFolder = backupFolder,
@@ -84,6 +102,7 @@ class ToolViewModel(
                 allSessions = allSessions,
                 allLeads = allLeads,
                 allDates = allDates,
+                allSets = allSets,
                 lastSessionAverageQuantity = averageLast,
                 exportHeader = exportHeader.toBoolean(),
                 importHeader = importHeader.toBoolean(),
@@ -165,6 +184,28 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SetExportSetsFileName -> {
+                _state.update {
+                    it.copy(
+                        exportSetsFileName = event.exportSetsFileName
+                    )
+                }
+                val exportSetsFileName = _state.value.exportSetsFileName
+                val setting = Setting(SettingDao.EXPORT_SETS_FILE_NAME_ID, exportSetsFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetImportSetsFileName -> {
+                _state.update {
+                    it.copy(
+                        importSetsFileName = event.importSetsFileName
+                    )
+                }
+                val importSetsFileName = _state.value.importSetsFileName
+                val setting = Setting(SettingDao.IMPORT_SETS_FILE_NAME_ID, importSetsFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetExportFolder -> {
                 _state.update {
                     it.copy(
@@ -226,6 +267,16 @@ class ToolViewModel(
                 }
                 val allDates = _state.value.allDates
                 viewModelScope.launch { dateDao.batchInsert(allDates) }
+            }
+
+            is ToolEvent.SetAllSets -> {
+                _state.update {
+                    it.copy(
+                        allSets = event.allSets
+                    )
+                }
+                val allSets = _state.value.allSets
+                viewModelScope.launch { setDao.batchInsert(allSets) }
             }
 
             is ToolEvent.SetLastSessionAverageQuantity -> {
@@ -337,3 +388,14 @@ class ToolViewModel(
         }
     }
 }
+
+data class ImportExportFilenames(
+    val exportSessionsFilename: String,
+    val importSessionsFilename: String,
+    val exportLeadsFilename: String,
+    val importLeadsFilename: String,
+    val exportDatesFilename: String,
+    val importDatesFilename: String,
+    val exportSetsFilename: String,
+    val importSetsFilename: String,
+)

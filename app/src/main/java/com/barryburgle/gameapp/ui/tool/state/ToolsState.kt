@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.ui.tool.state
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.ui.state.OrderState
 
 data class ToolsState(
@@ -12,12 +13,15 @@ data class ToolsState(
     var importLeadsFileName: String = "",
     override var exportDatesFileName: String = "",
     var importDatesFileName: String = "",
+    override var exportSetsFileName: String = "",
+    var importSetsFileName: String = "",
     override var exportFolder: String = "",
     var importFolder: String = "",
     override var backupFolder: String = "",
     override var allSessions: List<AbstractSession> = emptyList(),
     override var allLeads: List<Lead> = emptyList(),
     override var allDates: List<Date> = emptyList(),
+    override var allSets: List<SingleSet> = emptyList(),
     val lastSessionAverageQuantity: Int = 4,
     val lastSessionsShown: Int = 14,
     val notificationTime: String = "",
@@ -36,11 +40,13 @@ data class ToolsState(
     exportSessionsFileName,
     exportLeadsFileName,
     exportDatesFileName,
+    exportSetsFileName,
     exportFolder,
     backupFolder,
     allSessions,
     allLeads,
     allDates,
+    allSets,
     backupActive,
     lastBackup
 )
