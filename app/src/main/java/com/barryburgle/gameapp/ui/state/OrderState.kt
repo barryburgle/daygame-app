@@ -13,6 +13,7 @@ open class OrderState(
     open var exportSessionsFileName: String = "",
     open var exportLeadsFileName: String = "",
     open var exportDatesFileName: String = "",
+    open var exportSetsFileName: String = "",
     open var exportFolder: String = "",
     open var backupFolder: String = "",
     open var allSessions: List<AbstractSession> = emptyList(),

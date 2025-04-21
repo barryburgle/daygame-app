@@ -21,7 +21,7 @@ import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
-import com.barryburgle.gameapp.ui.CombineEighteen
+import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.CombineSix
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -73,6 +73,7 @@ class InputViewModel(
     private val _exportSessionsFileName = settingDao.getExportSessionsFilename()
     private val _exportLeadsFileName = settingDao.getExportLeadsFilename()
     private val _exportDatesFileName = settingDao.getExportDatesFilename()
+    private val _exportSetsFileName = settingDao.getExportSetsFilename()
     private val _exportFolder = settingDao.getExportFolder()
     private val _backupFolder = settingDao.getBackupFolder()
     private val _backupActive = settingDao.getBackupActiveFlag()
@@ -128,7 +129,7 @@ class InputViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _state = MutableStateFlow(InputState())
-    val state = CombineEighteen(
+    val state = CombineNineteen(
         _state,
         _sortType,
         _allSessions,
@@ -140,6 +141,7 @@ class InputViewModel(
         _exportSessionsFileName,
         _exportLeadsFileName,
         _exportDatesFileName,
+        _exportSetsFileName,
         _exportFolder,
         _backupFolder,
         _backupActive,
@@ -147,7 +149,7 @@ class InputViewModel(
         _showSessions,
         _showSets,
         _showDates
-    ) { state, sortType, allSessions, allLeads, allDates, allSets, allEvents, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportFolder, backupFolder, backupActive, lastBackup, showSessions, showSets, showDates ->
+    ) { state, sortType, allSessions, allLeads, allDates, allSets, allEvents, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, showSessions, showSets, showDates ->
         state.copy(
             allSessions = allSessions,
             allLeads = allLeads,
@@ -159,6 +161,7 @@ class InputViewModel(
             exportSessionsFileName = exportSessionsFileName,
             exportLeadsFileName = exportLeadsFileName,
             exportDatesFileName = exportDatesFileName,
+            exportSetsFileName = exportSetsFileName,
             exportFolder = exportFolder,
             backupFolder = backupFolder,
             backupActive = backupActive.toBoolean(),
