@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.service
 
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.set.SingleSet
 import kotlin.math.truncate
 
 class GlobalStatsService {
@@ -38,6 +39,16 @@ class GlobalStatsService {
             return contacts
         }
 
+        private fun computeSetTime(
+            setList: List<SingleSet>
+        ): Long {
+            var setTime: Long = 0
+            for (set in setList) {
+                setTime = setTime + set.setTime
+            }
+            return setTime
+        }
+
         private fun computeDateTime(
             dateList: List<Date>
         ): Long {
@@ -58,6 +69,20 @@ class GlobalStatsService {
             return sessionTime
         }
 
+        fun computeSetsSpentHours(
+            setList: List<SingleSet>
+        ): Long {
+            var setTime = computeSetsSpentMinutes(setList)
+            var spentHours = setTime / 60L
+            return spentHours
+        }
+
+        fun computeSetsSpentMinutes(
+            setList: List<SingleSet>
+        ): Long {
+            return computeSetTime(setList)
+        }
+
         fun computeDateSpentHours(
             dateList: List<Date>
         ): Long {
@@ -72,6 +97,18 @@ class GlobalStatsService {
             var sessionTime = computeSessionTime(abstractSessionList)
             var spentHours = sessionTime / 60L
             return spentHours
+        }
+
+        fun computeAvgContactTime(
+            setList: List<SingleSet>,
+            contacts: Int
+        ): Long {
+            if (contacts == 0) {
+                return 0L
+            }
+            var setTime = computeSetTime(setList)
+            var avgContactTime = setTime / contacts
+            return avgContactTime
         }
 
         fun computeAvgLayTime(

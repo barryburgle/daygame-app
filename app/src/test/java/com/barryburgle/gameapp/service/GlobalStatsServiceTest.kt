@@ -30,6 +30,22 @@ class GlobalStatsServiceTest : ServiceTestData() {
     }
 
     @Test
+    fun computeSetsSpentHoursTest() {
+        TestCase.assertEquals(
+            SET_TOTAL_HOURS,
+            GlobalStatsService.computeSetsSpentHours(setList)
+        )
+    }
+
+    @Test
+    fun computeSetsSpentMinutesTest() {
+        TestCase.assertEquals(
+            SET_TOTAL_MINUTES,
+            GlobalStatsService.computeSetsSpentMinutes(setList)
+        )
+    }
+
+    @Test
     fun computeDateSpentHoursTest() {
         TestCase.assertEquals(
             DATE_TOTAL_HOURS,
@@ -42,6 +58,17 @@ class GlobalStatsServiceTest : ServiceTestData() {
         TestCase.assertEquals(
             TOTAL_HOURS,
             GlobalStatsService.computeSessionSpentHours(abstractSessionList)
+        )
+    }
+
+    @Test
+    fun computeAvgContactTimeTest() {
+        TestCase.assertEquals(
+            AVG_SET_MINUTES,
+            GlobalStatsService.computeAvgContactTime(
+                setList,
+                setList.filter { set -> set.contact }.size
+            )
         )
     }
 

@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.service
 
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.set.SingleSet
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
@@ -64,6 +65,17 @@ open class ServiceTestData {
     val AVG_LAY_TIME = 120L
     val DATE_TOTAL_HOURS = 4L
     val LAYS = 2
+
+    val SESSION_ID: Long = 1L
+    val CONVERSATION: Boolean = false
+    val CONTACT: Boolean = true
+    val INSTANT_DATE: Boolean = false
+    val DATE_ID: Long = 1L
+    val FIRST_SET_TIME: Long = 8
+    val SECOND_SET_TIME: Long = 10
+    val SET_TOTAL_HOURS = 0L
+    val SET_TOTAL_MINUTES = 18L
+    val AVG_SET_MINUTES = 9L
 
     val abstractSessionList: List<AbstractSession> = listOf(
         AbstractSession(
@@ -148,6 +160,49 @@ open class ServiceTestData {
             STICKING_POINTS,
             TWEET_URL,
             SESSION_TIME,
+            DAY_OF_WEEK.value,
+            WEEK_NUMBER
+        )
+    )
+
+    val setList: List<SingleSet> = listOf(
+        SingleSet(
+            null,
+            DATE.toString(),
+            DATE.toString(),
+            START_HOUR.toString(),
+            END_HOUR.toString(),
+            SESSION_ID,
+            LOCATION,
+            CONVERSATION,
+            CONTACT,
+            INSTANT_DATE,
+            RECORDED,
+            LEAD_ID,
+            DATE_ID,
+            STICKING_POINTS,
+            TWEET_URL,
+            FIRST_SET_TIME,
+            DAY_OF_WEEK.value,
+            WEEK_NUMBER
+        ),
+        SingleSet(
+            null,
+            DATE.toString(),
+            DATE.toString(),
+            START_HOUR.toString(),
+            END_HOUR.toString(),
+            SESSION_ID,
+            LOCATION,
+            CONVERSATION,
+            CONTACT,
+            INSTANT_DATE,
+            RECORDED,
+            LEAD_ID,
+            DATE_ID,
+            STICKING_POINTS,
+            TWEET_URL,
+            SECOND_SET_TIME,
             DAY_OF_WEEK.value,
             WEEK_NUMBER
         )
