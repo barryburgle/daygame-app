@@ -1,9 +1,12 @@
 package com.barryburgle.gameapp.ui.input
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -81,58 +84,67 @@ fun InputScreen(
         animationSpec = tween(durationMillis = 650),
         label = "rotationAngle"
     )
-    Scaffold(
-        floatingActionButton = {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                androidx.compose.animation.AnimatedVisibility(
+    Scaffold(floatingActionButton = {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight(0.2f)
+                    .offset(y = -100.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                AnimatedVisibility(
                     visible = isExpanded,
-                    enter = fadeIn(),
-                    exit = fadeOut()
+                    enter = floatingButtonEnterTransition(300),
+                    exit = floatingButtonExitTransition(300)
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight(0.2f)
-                            .offset(y = -100.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        floatingAddButton(Icons.Default.Favorite, "date") {
-                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.DATE))
-                            isExpanded = false
-                            isRotated = false
-                        }
-                        floatingAddButton(Icons.Default.PersonAddAlt1, "set") {
-                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SET))
-                            isExpanded = false
-                            isRotated = false
-                        }
-                        floatingAddButton(Icons.Default.GroupAdd, "session") {
-                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SESSION))
-                            isExpanded = false
-                            isRotated = false
-                        }
+                    floatingAddButton(Icons.Default.Favorite, "date") {
+                        onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.DATE))
+                        isExpanded = false
+                        isRotated = false
                     }
                 }
-                FloatingActionButton(
-                    onClick = {
-                        isRotated = !isRotated
-                        isExpanded = !isExpanded
-                    },
-                    modifier = Modifier
-                        .offset(y = -spaceFromNavBar)
-                        .rotate(rotationAngle),
-                    contentColor = MaterialTheme.colorScheme.inversePrimary,
-                    containerColor = MaterialTheme.colorScheme.onTertiary,
-                    shape = CircleShape
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = floatingButtonEnterTransition(500),
+                    exit = floatingButtonExitTransition(500)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add an event"
-                    )
+                    floatingAddButton(Icons.Default.PersonAddAlt1, "set") {
+                        onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SET))
+                        isExpanded = false
+                        isRotated = false
+                    }
+                }
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = floatingButtonEnterTransition(700),
+                    exit = floatingButtonExitTransition(700)
+                ) {
+                    floatingAddButton(Icons.Default.GroupAdd, "session") {
+                        onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SESSION))
+                        isExpanded = false
+                        isRotated = false
+                    }
                 }
             }
+            FloatingActionButton(
+                onClick = {
+                    isRotated = !isRotated
+                    isExpanded = !isExpanded
+                },
+                modifier = Modifier
+                    .offset(y = -spaceFromNavBar)
+                    .rotate(rotationAngle),
+                contentColor = MaterialTheme.colorScheme.inversePrimary,
+                containerColor = MaterialTheme.colorScheme.onTertiary,
+                shape = CircleShape
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add, contentDescription = "Add an event"
+                )
+            }
         }
-    ) { padding ->
+    }) { padding ->
         if (state.isAddingSession) {
             SessionDialog(state = state, onEvent = onEvent, "Add a session")
         }
@@ -211,25 +223,13 @@ fun InputScreen(
                     showDatesSorter = false
                 }
                 EntitySorter(
-                    showSessionSorter,
-                    spaceFromLeft,
-                    EventTypeEnum.SESSION,
-                    state,
-                    onEvent
+                    showSessionSorter, spaceFromLeft, EventTypeEnum.SESSION, state, onEvent
                 )
                 EntitySorter(
-                    showSetsSorter,
-                    spaceFromLeft,
-                    EventTypeEnum.SET,
-                    state,
-                    onEvent
+                    showSetsSorter, spaceFromLeft, EventTypeEnum.SET, state, onEvent
                 )
                 EntitySorter(
-                    showDatesSorter,
-                    spaceFromLeft,
-                    EventTypeEnum.DATE,
-                    state,
-                    onEvent
+                    showDatesSorter, spaceFromLeft, EventTypeEnum.DATE, state, onEvent
                 )
             }
             items(state.allEvents) { sortableGameEvent ->
@@ -242,8 +242,7 @@ fun InputScreen(
                         Modifier
                             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
                             .shadow(
-                                elevation = 5.dp,
-                                shape = MaterialTheme.shapes.large
+                                elevation = 5.dp, shape = MaterialTheme.shapes.large
                             )
                     )
                 }
@@ -252,6 +251,18 @@ fun InputScreen(
         }
     }
 }
+
+@Composable
+private fun floatingButtonExitTransition(time: Int) = slideOutVertically(
+    targetOffsetY = { fullHeight -> -fullHeight },
+    animationSpec = tween(durationMillis = time)
+) + fadeOut()
+
+@Composable
+private fun floatingButtonEnterTransition(time: Int) = slideInVertically(
+    initialOffsetY = { fullHeight -> fullHeight },
+    animationSpec = tween(durationMillis = time)
+) + fadeIn()
 
 fun getLeads(state: InputState, sortableGameEvent: SortableGameEvent): List<Lead> {
     if (AbstractSession::class.java.simpleName.equals(sortableGameEvent.classType)) {
