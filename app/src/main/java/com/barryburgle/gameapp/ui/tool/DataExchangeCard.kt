@@ -39,6 +39,7 @@ import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
+import com.barryburgle.gameapp.service.csv.SetCsvService
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.FilenameComposable
@@ -54,6 +55,7 @@ fun DataExchangeCard(
     sessionCsvService: SessionCsvService,
     leadCsvService: LeadCsvService,
     dateCsvService: DateCsvService,
+    setCsvService: SetCsvService,
     csvFindService: CSVFindService,
     onEvent: (ToolEvent) -> Unit
 ) {
@@ -105,6 +107,7 @@ fun DataExchangeCard(
                                     state,
                                     leadCsvService,
                                     dateCsvService,
+                                    setCsvService,
                                     localContext,
                                     onEvent
                                 )
@@ -389,6 +392,65 @@ fun DataExchangeCard(
                                 }
                             }
                         )
+                        FilenameComposable(cardTitle = cardTitle,
+                            icon,
+                            "set",
+                            textFieldColumnWidth,
+                            textFieldHeight,
+                            localContext,
+                            if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                state.exportSetsFileName
+                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                state.importSetsFileName
+                            } else "",
+                            buttonFunction = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    setCsvService.setExportObjects(state.allSets)
+                                    setCsvService.exportRows(
+                                        state.exportFolder,
+                                        state.exportSetsFileName,
+                                        state.exportHeader
+                                    )
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    try {
+                                        onEvent(
+                                            ToolEvent.SetAllSets(
+                                                setCsvService.importRows(
+                                                    state.importFolder,
+                                                    state.importSetsFileName,
+                                                    state.importHeader
+                                                )
+                                            )
+                                        )
+                                    } catch (fileNotFoundException: FileNotFoundException) {
+                                        Toast.makeText(
+                                            localContext,
+                                            fileNotFoundException.message,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            },
+                            reloadFunction = {
+                                if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(
+                                        ToolEvent.SetImportSetsFileName(
+                                            csvFindService.getLastFilenameInFolder(
+                                                state.importFolder,
+                                                "set"
+                                            )
+                                        )
+                                    )
+                                }
+                            },
+                            filenameOnEvent = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetExportSetsFileName(it))
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetImportSetsFileName(it))
+                                }
+                            }
+                        )
                     }
                 }
             }
@@ -403,6 +465,7 @@ fun importAll(
     state: ToolsState,
     leadCsvService: LeadCsvService,
     dateCsvService: DateCsvService,
+    setCsvService: SetCsvService,
     localContext: Context,
     onEvent: (ToolEvent) -> Unit
 ) {
@@ -430,6 +493,15 @@ fun importAll(
                 dateCsvService.importRows(
                     state.importFolder,
                     state.importDatesFileName,
+                    state.importHeader
+                )
+            )
+        )
+        onEvent(
+            ToolEvent.SetAllSets(
+                setCsvService.importRows(
+                    state.importFolder,
+                    state.importSetsFileName,
                     state.importHeader
                 )
             )
