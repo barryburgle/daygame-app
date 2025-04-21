@@ -1,6 +1,10 @@
 package com.barryburgle.gameapp.ui.navigation
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
@@ -130,7 +134,14 @@ fun Navigation(
         val spaceFromTop = 20.dp
         val spaceFromBottom = 60.dp
         NavHost(navController = navController, startDestination = Screen.InputScreen.route) {
-            composable(Screen.InputScreen.route) {
+            composable(route = Screen.InputScreen.route,
+                enterTransition = {
+                    screenEnterTransition()
+                },
+                exitTransition = {
+                    screenExitTransition()
+                }
+            ) {
                 InputScreen(
                     state = inputState,
                     onEvent = inputOnEvent,
@@ -139,7 +150,14 @@ fun Navigation(
                     spaceFromBottom = spaceFromBottom
                 )
             }
-            composable(Screen.OutputScreen.route) {
+            composable(route = Screen.OutputScreen.route,
+                enterTransition = {
+                    screenEnterTransition()
+                },
+                exitTransition = {
+                    screenExitTransition()
+                }
+            ) {
                 OutputScreen(
                     state = outputState,
                     onEvent = outputOnEvent,
@@ -148,7 +166,14 @@ fun Navigation(
                     spaceFromBottom = spaceFromBottom
                 )
             }
-            composable(Screen.StatsScreen.route) {
+            composable(route = Screen.StatsScreen.route,
+                enterTransition = {
+                    screenEnterTransition()
+                },
+                exitTransition = {
+                    screenExitTransition()
+                }
+            ) {
                 StatsScreen(
                     state = statsState,
                     spaceFromLeft = spaceFromLeft,
@@ -156,7 +181,14 @@ fun Navigation(
                     spaceFromBottom = spaceFromBottom
                 )
             }
-            composable(Screen.ToolScreen.route) {
+            composable(route = Screen.ToolScreen.route,
+                enterTransition = {
+                    screenEnterTransition()
+                },
+                exitTransition = {
+                    screenExitTransition()
+                }
+            ) {
                 ToolsScreen(
                     state = toolState,
                     onEvent = toolOnEvent,
@@ -168,3 +200,13 @@ fun Navigation(
         }
     }
 }
+
+private fun screenEnterTransition() = slideInHorizontally(
+    initialOffsetX = { fullWidth -> fullWidth },
+    animationSpec = tween(durationMillis = 250)
+)
+
+private fun screenExitTransition() =
+    slideOutHorizontally(targetOffsetX = { fullWidth -> -fullWidth }) + fadeOut(
+        animationSpec = tween(durationMillis = 150)
+    )
