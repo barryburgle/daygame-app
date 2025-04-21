@@ -42,6 +42,7 @@ import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
+import com.barryburgle.gameapp.service.csv.SetCsvService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,10 +60,11 @@ fun ToolsScreen(
     val sessionCsvService = SessionCsvService()
     val leadCsvService = LeadCsvService()
     val dateCsvService = DateCsvService()
+    val setCsvService = SetCsvService()
     val csvFindService = CSVFindService()
     Scaffold { padding ->
         val dataExchangeCardModifier = Modifier
-            .height(480.dp)
+            .height(580.dp)
             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
             .shadow(
                 elevation = 5.dp, shape = MaterialTheme.shapes.large
@@ -92,6 +94,7 @@ fun ToolsScreen(
                         sessionCsvService = sessionCsvService,
                         leadCsvService = leadCsvService,
                         dateCsvService = dateCsvService,
+                        setCsvService = setCsvService,
                         csvFindService = csvFindService
                     )
                 }
@@ -108,6 +111,7 @@ fun ToolsScreen(
                         sessionCsvService = sessionCsvService,
                         leadCsvService = leadCsvService,
                         dateCsvService = dateCsvService,
+                        setCsvService = setCsvService,
                         csvFindService = csvFindService
                     )
                 }
