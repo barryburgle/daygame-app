@@ -8,6 +8,7 @@
 
 **Bugs**
 - Insert dialog fields valued properly after insertion or deletion
+- Not importing files with header and one row only
 
 # Version 1.6.0 (2025-03-27)
 

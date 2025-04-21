@@ -110,18 +110,19 @@ abstract class AbstractCsvService<T : Any> {
         }
         val csvReader = CSVReader(FileReader(fullPath))
         var listOfStrings: List<Array<String>> = emptyList()
-        listOfStrings = csvReader.readAll().map {
-            it
-        }
+        listOfStrings = csvReader.readAll()
         val startCount: Int = if (importHeader) 1 else 0
         var exportObjects: MutableList<T> = mutableListOf()
         var lastIndex = listOfStrings.lastIndex
         if (rowLimit != null) {
             lastIndex = rowLimit
         }
-        if (lastIndex > 1) {
+        if (lastIndex > startCount - 1) {
             for (index in startCount..lastIndex) {
-                exportObjects.add(mapImportRow(listOfStrings.get(index)))
+                val row = listOfStrings.get(index)
+                if (row != null && row.isNotEmpty()) {
+                    exportObjects.add(mapImportRow(row))
+                }
             }
         }
         return exportObjects
