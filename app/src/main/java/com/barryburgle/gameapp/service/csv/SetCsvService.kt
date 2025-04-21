@@ -13,8 +13,6 @@ class SetCsvService : AbstractCsvService<SingleSet>() {
         return SETS_BACKUP_FILENAME
     }
 
-    val setService = SetService()
-
     override fun exportSingleRow(set: SingleSet): Array<String> {
         val setFieldList = mutableListOf<String>()
         setFieldList.add(set.id.toString())
@@ -63,8 +61,14 @@ class SetCsvService : AbstractCsvService<SingleSet>() {
     }
 
     override fun mapImportRow(fields: Array<String>): SingleSet {
-        return setService.init(
-            fields[0],
+        // TODO: use setService.init(...) to reinit with fresh metadata dates here
+        var setTime = importLong(fields[15])
+        if (setTime == null) {
+            setTime = 0L
+        }
+        return SingleSet(
+            importLong(fields[0]),
+            fields[1],
             fields[2],
             fields[3],
             fields[4],
@@ -77,7 +81,10 @@ class SetCsvService : AbstractCsvService<SingleSet>() {
             importLong(fields[11]),
             importLong(fields[12]),
             fields[13],
-            fields[14]
+            fields[14],
+            setTime,
+            importLong(fields[16])!!.toInt(),
+            importLong(fields[17])!!.toInt()
         )
     }
 
