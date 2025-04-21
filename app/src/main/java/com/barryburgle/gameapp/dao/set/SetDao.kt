@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.Flow
 interface SetDao {
 
     @Insert(onConflict = REPLACE)
+    suspend fun batchInsert(sets: List<SingleSet>)
+
+    @Insert(onConflict = REPLACE)
     suspend fun insert(singleSet: SingleSet): Long
 
     @Delete
