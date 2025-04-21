@@ -50,46 +50,115 @@ fun StatsScreen(
                         y = spaceFromTop + spaceFromLeft
                     ), verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
             ) {
-                item {
-                    Row {
-                        Spacer(
-                            modifier = Modifier.width(spaceFromLeft)
-                        )
-                        StatsCard(
-                            modifier = cardModifier,
-                            title = "Sessions",
-                            description = "${GlobalStatsService.computeSessionSpentHours(state.abstractSessions)} hours spent on sessions, on average a set each ${
-                                GlobalStatsService.computeAvgApproachTime(
-                                    state.abstractSessions
-                                )
-                            } minutes",
-                            firstQuantifierQuantity = "${GlobalStatsService.computeSets(state.abstractSessions)}",
-                            firstQuantifierDescription = "Sets",
-                            secondQuantifierQuantity = "${GlobalStatsService.computeConvos(state.abstractSessions)}",
-                            secondQuantifierDescription = "Conversations",
-                            thirdQuantifierQuantity = "${GlobalStatsService.computeContacts(state.abstractSessions)}",
-                            thirdQuantifierDescription = "Contacts",
-                            firstPerformanceQuantity = "${
-                                GlobalStatsService.computeAvgConvoRatio(
-                                    state.abstractSessions
-                                )
-                            } %",
-                            firstPerformanceDescription = "Conversation\nRatio",
-                            secondPerformanceQuantity = "${
-                                GlobalStatsService.computeAvgRejectionRatio(
-                                    state.abstractSessions
-                                )
-                            } %",
-                            secondPerformanceDescription = "Rejection\nRatio",
-                            thirdPerformanceQuantity = "${
-                                GlobalStatsService.computeAvgContactRatio(
-                                    state.abstractSessions
-                                )
-                            } %",
-                            thirdPerformanceDescription = "Contact\nRatio",
-                            fourthPerformanceQuantity = "${GlobalStatsService.computeAvgIndex(state.abstractSessions)}",
-                            fourthPerformanceDescription = "Average\nIndex"
-                        )
+                if (state.abstractSessions.isNotEmpty()) {
+                    item {
+                        Row {
+                            Spacer(
+                                modifier = Modifier.width(spaceFromLeft)
+                            )
+                            StatsCard(
+                                modifier = cardModifier,
+                                title = "Sessions",
+                                description = "${GlobalStatsService.computeSessionSpentHours(state.abstractSessions)} hours spent on sessions, on average a set each ${
+                                    GlobalStatsService.computeAvgApproachTime(
+                                        state.abstractSessions
+                                    )
+                                } minutes",
+                                firstQuantifierQuantity = "${GlobalStatsService.computeSets(state.abstractSessions)}",
+                                firstQuantifierDescription = "Sets",
+                                secondQuantifierQuantity = "${GlobalStatsService.computeConvos(state.abstractSessions)}",
+                                secondQuantifierDescription = "Conversations",
+                                thirdQuantifierQuantity = "${
+                                    GlobalStatsService.computeContacts(
+                                        state.abstractSessions
+                                    )
+                                }",
+                                thirdQuantifierDescription = "Contacts",
+                                firstPerformanceQuantity = "${
+                                    GlobalStatsService.computeAvgConvoRatio(
+                                        state.abstractSessions
+                                    )
+                                } %",
+                                firstPerformanceDescription = "Conversation\nRatio",
+                                secondPerformanceQuantity = "${
+                                    GlobalStatsService.computeAvgRejectionRatio(
+                                        state.abstractSessions
+                                    )
+                                } %",
+                                secondPerformanceDescription = "Rejection\nRatio",
+                                thirdPerformanceQuantity = "${
+                                    GlobalStatsService.computeAvgContactRatio(
+                                        state.abstractSessions
+                                    )
+                                } %",
+                                thirdPerformanceDescription = "Contact\nRatio",
+                                fourthPerformanceQuantity = "${
+                                    GlobalStatsService.computeAvgIndex(
+                                        state.abstractSessions
+                                    )
+                                }",
+                                fourthPerformanceDescription = "Average\nIndex"
+                            )
+                        }
+                    }
+                }
+                if (state.sets.isNotEmpty()) {
+                    item {
+                        Row {
+                            Spacer(
+                                modifier = Modifier.width(spaceFromLeft)
+                            )
+                            val conversations: Int = state.sets.filter { set -> set.conversation }.size
+                            val contacts: Int = state.sets.filter { set -> set.contact }.size
+                            val instantDates: Int = state.sets.filter { set -> set.instantDate }.size
+                            val recorded: Int = state.sets.filter { set -> set.recorded }.size
+                            val avgContactTime: Long = GlobalStatsService.computeAvgContactTime(state.sets, contacts)
+                            val contactSentence =
+                                if (avgContactTime != 0L) "on average a contact each ${avgContactTime} minutes" else "no contacts yet"
+                            val setSpentHours = GlobalStatsService.computeSetsSpentHours(state.sets)
+                            val setSpentMinutes = GlobalStatsService.computeSetsSpentMinutes(state.sets)
+                            var timeSpentSentence = "${setSpentMinutes} minutes"
+                            if (setSpentHours != 0L) {
+                                val minutesDifference = setSpentMinutes - setSpentHours * 60
+                                timeSpentSentence = "${setSpentHours} hours and " + "${minutesDifference} minutes"
+                            }
+                            StatsCard(
+                                modifier = cardModifier,
+                                title = "Single Sets",
+                                description = "${timeSpentSentence} spent on single sets, " + contactSentence,
+                                firstQuantifierQuantity = "${state.sets.size}",
+                                firstQuantifierDescription = "Sets",
+                                secondQuantifierQuantity = "${conversations}",
+                                secondQuantifierDescription = "Conversations",
+                                thirdQuantifierQuantity = "${contacts}",
+                                thirdQuantifierDescription = "Contacts",
+                                fourthQuantifierQuantity = "${instantDates}",
+                                fourthQuantifierDescription = "Instant\nDates",
+                                fifthQuantifierQuantity = "${recorded}",
+                                fifthQuantifierDescription = "Recorded\nSets",
+                                firstPerformanceQuantity = "${
+                                    GlobalStatsService.computeGenericRatio(
+                                        state.sets.size,
+                                        conversations
+                                    ) //TODO: consider using always compute generic ratio and not other methods
+                                } %",
+                                firstPerformanceDescription = "Conversation\nRatio",
+                                secondPerformanceQuantity = "${
+                                    GlobalStatsService.computeGenericRatio(
+                                        state.sets.size,                                        
+                                        contacts                                        
+                                    )
+                                } %",
+                                secondPerformanceDescription = "Contact\nRatio",
+                                thirdPerformanceQuantity = "${
+                                    GlobalStatsService.computeGenericRatio(
+                                        state.sets.size,
+                                        instantDates
+                                    )
+                                } %",
+                                thirdPerformanceDescription = "iDate\nRatio"
+                            )
+                        }
                     }
                 }
                 if (state.leads.isNotEmpty()) {
