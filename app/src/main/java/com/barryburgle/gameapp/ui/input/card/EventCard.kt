@@ -143,8 +143,8 @@ fun EventCard(
                                 }) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,
-                                        contentDescription = "Delete Session",
-                                        tint = MaterialTheme.colorScheme.onErrorContainer
+                                        contentDescription = "Delete Event",
+                                        tint = MaterialTheme.colorScheme.onErrorContainer,
                                     )
                                 }
                             }
@@ -226,7 +226,7 @@ fun EventCard(
                                 }) {
                                     Icon(
                                         imageVector = Icons.Default.Edit,
-                                        contentDescription = "Edit Session",
+                                        contentDescription = "Edit Event",
                                         tint = MaterialTheme.colorScheme.inversePrimary,
                                         modifier = Modifier.height(20.dp)
                                     )
