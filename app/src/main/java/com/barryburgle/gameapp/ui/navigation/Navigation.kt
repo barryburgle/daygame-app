@@ -1,16 +1,9 @@
 package com.barryburgle.gameapp.ui.navigation
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.automirrored.outlined.TrendingUp
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.EditNote
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.EditNote
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
@@ -25,10 +18,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.event.ToolEvent
@@ -56,29 +51,29 @@ fun Navigation(
     val items = listOf(
         BottomNavigationItem(
             title = "Game",
-            selectedIcon = Icons.Filled.EditNote,
-            unselectedIcon = Icons.Outlined.EditNote,
+            icon = painterResource(R.drawable.dice),
+            modifier = Modifier.size(22.dp),
             hasNews = false,
             destinationScreen = Screen.InputScreen.route
         ),
         BottomNavigationItem(
             title = "Dashboard",
-            selectedIcon = Icons.AutoMirrored.Filled.TrendingUp,
-            unselectedIcon = Icons.AutoMirrored.Outlined.TrendingUp,
+            icon = painterResource(R.drawable.chart),
+            modifier = Modifier.size(22.dp),
             hasNews = false,
             destinationScreen = Screen.OutputScreen.route
         ),
         BottomNavigationItem(
             title = "Results",
-            selectedIcon = Icons.Filled.Check,
-            unselectedIcon = Icons.Outlined.Check,
+            icon = painterResource(R.drawable.badge),
+            modifier = Modifier.size(22.dp),
             hasNews = false,
             destinationScreen = Screen.StatsScreen.route
         ),
         BottomNavigationItem(
             title = "Settings",
-            selectedIcon = Icons.Filled.Settings,
-            unselectedIcon = Icons.Outlined.Settings,
+            icon = painterResource(R.drawable.settings),
+            modifier = Modifier.size(22.dp),
             hasNews = toolState.latestAvailable != null && toolState.latestAvailable.isNotEmpty(),
             destinationScreen = Screen.ToolScreen.route
         )
@@ -117,14 +112,13 @@ fun Navigation(
                                     }
                                 }
                             ) {
+                                if (isSystemInDarkTheme()) {
+                                }
                                 Icon(
-                                    imageVector = if (item.selected) {
-                                        item.selectedIcon
-                                    } else {
-                                        item.unselectedIcon
-                                    },
+                                    painter = item.icon,
                                     contentDescription = item.title,
-                                    tint = selectedColor
+                                    tint = selectedColor,
+                                    modifier = item.modifier
                                 )
                             }
                         })
