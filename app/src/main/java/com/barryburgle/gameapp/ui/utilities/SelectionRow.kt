@@ -32,13 +32,6 @@ fun SelectionRow(
     // TODO: create a tripe-state selection process where either don't sort, sort ascending or sort descending by field
     // TODO: put on the left of every button (animating similarly to MultiChoiceButton) text either [no-icon = no selection, up-arrow = sort ascending, down-arrow = sort descending]
     Row(
-        modifier = Modifier.clickable {
-            onEvent(
-                GameEvent.SortSessions(
-                    sortType as SortType
-                )
-            )
-        },
         verticalAlignment = Alignment.CenterVertically
     ) {
         val textBackgroundColor =
