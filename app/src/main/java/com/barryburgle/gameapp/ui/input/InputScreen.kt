@@ -31,6 +31,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -88,17 +89,17 @@ fun InputScreen(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Column(
                 modifier = Modifier
-                    .fillMaxHeight(0.2f)
+                    .height(220.dp)
                     .offset(y = -100.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceAround
             ) {
                 AnimatedVisibility(
                     visible = isExpanded,
                     enter = floatingButtonEnterTransition(300),
                     exit = floatingButtonExitTransition(300)
                 ) {
-                    floatingAddButton(Icons.Default.Favorite, "date") {
+                    floatingAddButton(Icons.Default.Favorite, "Date") {
                         onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.DATE))
                         isExpanded = false
                         isRotated = false
@@ -109,7 +110,7 @@ fun InputScreen(
                     enter = floatingButtonEnterTransition(500),
                     exit = floatingButtonExitTransition(500)
                 ) {
-                    floatingAddButton(Icons.Default.PersonAddAlt1, "set") {
+                    floatingAddButton(Icons.Default.PersonAddAlt1, "Set") {
                         onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SET))
                         isExpanded = false
                         isRotated = false
@@ -120,7 +121,7 @@ fun InputScreen(
                     enter = floatingButtonEnterTransition(700),
                     exit = floatingButtonExitTransition(700)
                 ) {
-                    floatingAddButton(Icons.Default.GroupAdd, "session") {
+                    floatingAddButton(Icons.Default.GroupAdd, "Session") {
                         onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SESSION))
                         isExpanded = false
                         isRotated = false
@@ -290,36 +291,28 @@ fun getLeads(state: InputState, sortableGameEvent: SortableGameEvent): List<Lead
 fun floatingAddButton(
     icon: ImageVector, description: String, onClick: () -> Unit
 ) {
-    val contentDescription = "Add a $description"
-    // TODO: add tooltips below and fix
-    /*Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth(0.4f),
-        horizontalArrangement = Arrangement.End
+    Column(
+        modifier = Modifier.height(80.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        FloatingActionButton(
+            onClick = {
+                onClick()
+            },
+            modifier = Modifier.size(40.dp),
+            contentColor = MaterialTheme.colorScheme.inversePrimary,
+            containerColor = MaterialTheme.colorScheme.tertiary,
+            shape = CircleShape
+        ) {
+            Icon(
+                imageVector = icon, contentDescription = description
+            )
+        }
+        Spacer(modifier = Modifier.height(5.dp))
         Text(
-            modifier = Modifier
-                .offset(x = (-100).dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f))
-                .padding(8.dp),
-            text = contentDescription,
-            color = MaterialTheme.colorScheme.primary,
-            fontSize = 10.sp
-        )
-        Spacer(modifier = Modifier.width(8.dp))*/
-    FloatingActionButton(
-        onClick = {
-            onClick()
-        },
-        modifier = Modifier.size(40.dp),
-        contentColor = MaterialTheme.colorScheme.inversePrimary,
-        containerColor = MaterialTheme.colorScheme.tertiary,
-        shape = CircleShape
-    ) {
-        Icon(
-            imageVector = icon, contentDescription = contentDescription
+            text = description,
+            color = MaterialTheme.colorScheme.onPrimary,
+            style = MaterialTheme.typography.bodySmall
         )
     }
 }
-//}
