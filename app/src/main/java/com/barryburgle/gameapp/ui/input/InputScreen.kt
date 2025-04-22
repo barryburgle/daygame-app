@@ -189,6 +189,7 @@ fun InputScreen(
                 ), verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
         ) {
             item {
+                Spacer(modifier = Modifier.height(5.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -196,7 +197,12 @@ fun InputScreen(
                     MultiChoiceButton(
                         EventTypeEnum.getAllFields(),
                         listOf(state.allSessions.size, state.allSets.size, state.allDates.size),
-                        Modifier.fillMaxWidth(0.95f),
+                        Modifier
+                            .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
+                            .fillMaxHeight()
+                            .shadow(
+                                elevation = 5.dp, shape = MaterialTheme.shapes.large
+                            ),
                         selectedOptions
                     ) {
                         onEvent(GameEvent.SwitchShowFlag(it))
