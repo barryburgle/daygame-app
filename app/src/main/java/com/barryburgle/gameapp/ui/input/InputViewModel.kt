@@ -144,6 +144,9 @@ class InputViewModel(
                 SortableGameEvent(
                     it.insertTime,
                     it.date,
+                    it.startHour,
+                    it.sessionTime,
+                    it.dayOfWeek,
                     AbstractSession::class.java.simpleName,
                     it
                 )
@@ -152,6 +155,9 @@ class InputViewModel(
                 SortableGameEvent(
                     it.insertTime,
                     it.date,
+                    it.startHour,
+                    it.setTime,
+                    it.dayOfWeek,
                     SingleSet::class.java.simpleName,
                     it
                 )
@@ -160,6 +166,9 @@ class InputViewModel(
                 SortableGameEvent(
                     it.insertTime,
                     it.date!!,
+                    it.startHour,
+                    it.dateTime,
+                    it.dayOfWeek,
                     Date::class.java.simpleName,
                     it
                 )

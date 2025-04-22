@@ -15,6 +15,7 @@ import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
+import com.barryburgle.gameapp.model.enums.GameEventSortType
 import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.ui.input.state.InputState
@@ -77,6 +78,19 @@ fun EntitySorter(
                             sortType,
                             onEvent as (GenericEvent) -> Unit,
                             GameEvent.SortDates(
+                                sortType
+                            )
+                        )
+                    }
+                }
+            } else if (EventTypeEnum.ALL.equals(eventType)) {
+                GameEventSortType.values().forEach { sortType ->
+                    state.gameEventSortType?.let {
+                        SelectionRow(
+                            it,
+                            sortType,
+                            onEvent as (GenericEvent) -> Unit,
+                            GameEvent.SortGameEvents(
                                 sortType
                             )
                         )
