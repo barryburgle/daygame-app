@@ -10,7 +10,9 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
+import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.session.AbstractSession
@@ -21,14 +23,15 @@ import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
-import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.CombineSix
+import com.barryburgle.gameapp.ui.CombineTwentyOne
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -67,8 +70,50 @@ class InputViewModel(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _allLeads = leadDao.getAll()
-    private val _allDates = dateDao.getAll()
-    private val _allSets = setDao.getAll()
+    private val _dateSortType = MutableStateFlow(DateSortType.DATE)
+    private val _allDates = _dateSortType.flatMapLatest { sortType ->
+        when (sortType) {
+            DateSortType.DATE -> dateDao.getByDate()
+            DateSortType.LEAD -> dateDao.getByLead()
+            DateSortType.LOCATION -> dateDao.getByLocation()
+            DateSortType.DATE_TIME -> dateDao.getByDateTime()
+            DateSortType.COST -> dateDao.getByCost()
+            DateSortType.DATE_NUMBER -> dateDao.getByDateNumber()
+            DateSortType.DATE_TYPE -> dateDao.getByDateType()
+            DateSortType.PULL -> dateDao.getPulled()
+            DateSortType.NOT_PULL -> dateDao.getNotPulled()
+            DateSortType.BOUNCE -> dateDao.getBounced()
+            DateSortType.NOT_BOUNCE -> dateDao.getNotBounced()
+            DateSortType.KISS -> dateDao.getKissed()
+            DateSortType.NOT_KISS -> dateDao.getNotKissed()
+            DateSortType.LAY -> dateDao.getLaid()
+            DateSortType.NOT_LAY -> dateDao.getNotLaid()
+            DateSortType.RECORD -> dateDao.getRecorded()
+            DateSortType.NOT_RECORD -> dateDao.getNotRecorded()
+            DateSortType.DAY_OF_WEEK -> dateDao.getByDayOfWeek()
+            DateSortType.WEEK_NUMBER -> dateDao.getByWeekNumber()
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _setSortType = MutableStateFlow(SetSortType.DATE)
+    private val _allSets = _setSortType.flatMapLatest { sortType ->
+        when (sortType) {
+            SetSortType.DATE -> setDao.getByDate()
+            SetSortType.START_HOUR -> setDao.getByStartHour()
+            SetSortType.SET_TIME -> setDao.getBySetTime()
+            SetSortType.LOCATION -> setDao.getByLocation()
+            SetSortType.LEAD -> setDao.getByLead()
+            SetSortType.CONVERSATION -> setDao.getConversed()
+            SetSortType.NO_CONVERSATION -> setDao.getNotConversed()
+            SetSortType.CONTACT -> setDao.getContact()
+            SetSortType.NO_CONTACT -> setDao.getNotContact()
+            SetSortType.INSTANT_DATE -> setDao.getInstantDated()
+            SetSortType.NO_INSTANT_DATE -> setDao.getNotInstantDated()
+            SetSortType.RECORDED -> setDao.getRecorded()
+            SetSortType.NOT_RECORDED -> setDao.getNotRecorded()
+            SetSortType.DAY_OF_WEEK -> setDao.getByDayOfWeek()
+            SetSortType.WEEK_NUMBER -> setDao.getByWeekNumber()
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _notificationTime = settingDao.getNotificationTime()
     private val _exportSessionsFileName = settingDao.getExportSessionsFilename()
     private val _exportLeadsFileName = settingDao.getExportLeadsFilename()
@@ -120,21 +165,29 @@ class InputViewModel(
                 )
             }) else removeIf { it.classType == Date::class.java.simpleName }
         }
-        kotlinx.coroutines.flow.flowOf(
-            combinedList.sortedWith(
-                compareByDescending<SortableGameEvent> { it.eventDate }
-                    .thenByDescending { it.insertTime }
+        if ((showSessions && !showDates && !showSets) || (!showSessions && showDates && !showSets) || (!showSessions && !showDates && showSets)) {
+            flowOf(
+                combinedList
             )
-        )
+        } else {
+            flowOf(
+                combinedList.sortedWith(
+                    compareByDescending<SortableGameEvent> { it.eventDate }
+                        .thenByDescending { it.insertTime }
+                )
+            )
+        }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _state = MutableStateFlow(InputState())
-    val state = CombineNineteen(
+    val state = CombineTwentyOne(
         _state,
-        _sortType,
         _allSessions,
         _allLeads,
         _allDates,
+        _sortType,
+        _dateSortType,
+        _setSortType,
         _allSets,
         _allEvents,
         _notificationTime,
@@ -149,7 +202,7 @@ class InputViewModel(
         _showSessions,
         _showSets,
         _showDates
-    ) { state, sortType, allSessions, allLeads, allDates, allSets, allEvents, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, showSessions, showSets, showDates ->
+    ) { state, allSessions, allLeads, allDates, sortType, dateSortType, setSortType, allSets, allEvents, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, showSessions, showSets, showDates ->
         state.copy(
             allSessions = allSessions,
             allLeads = allLeads,
@@ -157,6 +210,8 @@ class InputViewModel(
             allSets = allSets,
             allEvents = allEvents,
             sortType = sortType,
+            dateSortType = dateSortType,
+            setSortType = setSortType,
             notificationTime = notificationTime,
             exportSessionsFileName = exportSessionsFileName,
             exportLeadsFileName = exportLeadsFileName,
@@ -401,7 +456,6 @@ class InputViewModel(
             }
 
             is GameEvent.SortSessions -> {
-                TODO("Make this sorting work with the _allEvents list")
                 _sortType.value = event.sortType
             }
 
@@ -529,7 +583,7 @@ class InputViewModel(
                             recorded = false,
                             stickingPoints = "",
                             tweetUrl = "",
-                            sortType = SortType.DATE,
+                            dateSortType = DateSortType.DATE,
                             isAddingDate = false,
                             isUpdatingDate = false
                         )
@@ -687,7 +741,9 @@ class InputViewModel(
                 }
             }
 
-            is GameEvent.SortDates -> TODO("Make one sorting for all events changing by properties by event selection")
+            is GameEvent.SortDates -> {
+                _dateSortType.value = event.sortType
+            }
 
             is GameEvent.SaveSet -> {
                 viewModelScope.launch {
@@ -737,7 +793,7 @@ class InputViewModel(
                             dateId = 0L,
                             stickingPoints = "",
                             tweetUrl = "",
-                            sortType = SortType.DATE, // TODO: set sets sort type back to its first value
+                            setSortType = SetSortType.DATE,
                             isAddingSet = false,
                             isUpdatingSet = false
                         )
@@ -785,7 +841,10 @@ class InputViewModel(
                 }
             }
 
-            is GameEvent.SortSets -> TODO()
+            is GameEvent.SortSets -> {
+                _setSortType.value = event.sortType
+            }
+
             is GameEvent.DeleteSet -> {
                 viewModelScope.launch {
                     setDao.delete(event.set)
