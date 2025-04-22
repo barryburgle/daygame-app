@@ -196,7 +196,7 @@ fun InputScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     MultiChoiceButton(
-                        EventTypeEnum.getAllFields(),
+                        EventTypeEnum.getFieldsButAll(),
                         listOf(state.allSessions.size, state.allSets.size, state.allDates.size),
                         Modifier
                             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
@@ -211,32 +211,27 @@ fun InputScreen(
                 }
             }
             item {
-                var showSessionSorter: Boolean = false
-                var showSetsSorter: Boolean = false
-                var showDatesSorter: Boolean = false
-                if (state.showSessions && !state.showSets && !state.showDates) {
-                    showSessionSorter = true
-                } else {
-                    showSessionSorter = false
-                }
-                if (!state.showSessions && state.showSets && !state.showDates) {
-                    showSetsSorter = true
-                } else {
-                    showSetsSorter = false
-                }
-                if (!state.showSessions && !state.showSets && state.showDates) {
-                    showDatesSorter = true
-                } else {
-                    showDatesSorter = false
-                }
                 EntitySorter(
-                    showSessionSorter, spaceFromLeft, EventTypeEnum.SESSION, state, onEvent
+                    showAllSorter(state.showSessions, state.showSets, state.showDates),
+                    spaceFromLeft,
+                    EventTypeEnum.ALL,
+                    state,
+                    onEvent
                 )
                 EntitySorter(
-                    showSetsSorter, spaceFromLeft, EventTypeEnum.SET, state, onEvent
+                    showSessionSorter(state.showSessions, state.showSets, state.showDates),
+                    spaceFromLeft,
+                    EventTypeEnum.SESSION,
+                    state,
+                    onEvent
                 )
                 EntitySorter(
-                    showDatesSorter, spaceFromLeft, EventTypeEnum.DATE, state, onEvent
+                    showSetSorter(state.showSessions, state.showSets, state.showDates),
+                    spaceFromLeft, EventTypeEnum.SET, state, onEvent
+                )
+                EntitySorter(
+                    showDateSorter(state.showSessions, state.showSets, state.showDates),
+                    spaceFromLeft, EventTypeEnum.DATE, state, onEvent
                 )
             }
             items(state.allEvents) { sortableGameEvent ->
@@ -257,6 +252,50 @@ fun InputScreen(
             item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom * 2 + spaceFromLeft * 3)) {} }
         }
     }
+}
+
+private fun showAllSorter(
+    showSessions: Boolean,
+    showSets: Boolean,
+    showDates: Boolean
+): Boolean {
+    if ((showSessions && showSets) || (showSessions && showDates) || (showSets && showDates)) {
+        return true
+    }
+    return false
+}
+
+private fun showSessionSorter(
+    showSessions: Boolean,
+    showSets: Boolean,
+    showDates: Boolean
+): Boolean {
+    if (showSessions && !showSets && !showDates) {
+        return true
+    }
+    return false
+}
+
+private fun showSetSorter(
+    showSessions: Boolean,
+    showSets: Boolean,
+    showDates: Boolean
+): Boolean {
+    if (!showSessions && showSets && !showDates) {
+        return true
+    }
+    return false
+}
+
+private fun showDateSorter(
+    showSessions: Boolean,
+    showSets: Boolean,
+    showDates: Boolean
+): Boolean {
+    if (!showSessions && !showSets && showDates) {
+        return true
+    }
+    return false
 }
 
 @Composable
