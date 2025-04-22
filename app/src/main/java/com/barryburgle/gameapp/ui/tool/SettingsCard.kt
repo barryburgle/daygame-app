@@ -129,62 +129,61 @@ fun SettingsCard(
                         onEvent,
                         context
                     )
-                }
-                // TODO: align the following with below titles
-                RowTitle(
-                    "Sessions:", "", textFieldColumnWidth
-                )
-                Row(
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    InputCountComponent(
-                        inputTitle = "Average\nlast",
-                        modifier = Modifier,
-                        style = MaterialTheme.typography.bodySmall,
-                        onEvent = onEvent as (GenericEvent) -> Unit,
-                        countStart = state.lastSessionAverageQuantity,
-                        saveEvent = ToolEvent::SetLastSessionAverageQuantity
-                    )
-                    // TODO: do the same of the following for weeks and months
-                    InputCountComponent(
-                        inputTitle = "Show\nlast",
-                        modifier = Modifier,
-                        style = MaterialTheme.typography.bodySmall,
-                        onEvent = onEvent as (GenericEvent) -> Unit,
-                        countStart = state.lastSessionsShown,
-                        saveEvent = ToolEvent::SetLastSessionsShown
+                    RowTitle(
+                        "Sessions:", "", textFieldColumnWidth
                     )
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.padding(16.dp)
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.SpaceBetween
+                        InputCountComponent(
+                            inputTitle = "Average\nlast",
+                            modifier = Modifier,
+                            style = MaterialTheme.typography.bodySmall,
+                            onEvent = onEvent as (GenericEvent) -> Unit,
+                            countStart = state.lastSessionAverageQuantity,
+                            saveEvent = ToolEvent::SetLastSessionAverageQuantity
+                        )
+                        // TODO: do the same of the following for weeks and months
+                        InputCountComponent(
+                            inputTitle = "Show\nlast",
+                            modifier = Modifier,
+                            style = MaterialTheme.typography.bodySmall,
+                            onEvent = onEvent as (GenericEvent) -> Unit,
+                            countStart = state.lastSessionsShown,
+                            saveEvent = ToolEvent::SetLastSessionsShown
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(16.dp)
                         ) {
-                            Button(
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                                ),
-                                onClick = { notificationHourDialogState.show() }) {
-                                Icon(
-                                    imageVector = Icons.Default.Timer,
-                                    contentDescription = "Reminder",
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier
-                                        .height(25.dp)
-                                )
-                                Spacer(modifier = Modifier.width(7.dp))
-                                Text(
-                                    text = "Sticking Points",
-                                    textAlign = TextAlign.Center
-                                )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Button(
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                                    ),
+                                    onClick = { notificationHourDialogState.show() }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Timer,
+                                        contentDescription = "Reminder",
+                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                        modifier = Modifier
+                                            .height(25.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(7.dp))
+                                    Text(
+                                        text = "Sticking Points",
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
                             }
                         }
                     }
