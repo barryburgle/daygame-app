@@ -2,9 +2,10 @@ package com.barryburgle.gameapp.model.enums
 
 enum class SetSortType(private val field: String) : FieldEnum {
     DATE("Date"),
-    DURATION("Duration"),
-    SESSION("Session"),
+    START_HOUR("Hour"),
+    SET_TIME("Duration"),
     LOCATION("Location"),
+    LEAD("Lead"),
     CONVERSATION("Talk"),
     NO_CONVERSATION("No Talk"),
     CONTACT("Contact"),

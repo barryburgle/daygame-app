@@ -5,7 +5,7 @@ enum class SortType(private val field: String) : FieldEnum {
     SETS("Sets"),
     CONVOS("Conversations"),
     CONTACS("Contacts"),
-    SESSION_TIME("Session Time"),
+    SESSION_TIME("Duration"),
     APPROACH_TIME("Approach Time"),
     CONVO_RATIO("Conversation Ratio"),
     REJECTION_RATIO("Rejection Ratio"),
