@@ -58,7 +58,7 @@ fun EntitySorter(
                 }
             } else if (EventTypeEnum.SET.equals(eventType)) {
                 SetSortType.values().forEach { sortType ->
-                    state.sortType?.let {
+                    state.setSortType?.let {
                         SelectionRow(
                             it,
                             sortType,
@@ -71,7 +71,7 @@ fun EntitySorter(
                 }
             } else if (EventTypeEnum.DATE.equals(eventType)) {
                 DateSortType.values().forEach { sortType ->
-                    state.sortType?.let {
+                    state.dateSortType?.let {
                         SelectionRow(
                             it,
                             sortType,

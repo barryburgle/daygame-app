@@ -1,6 +1,8 @@
 package com.barryburgle.gameapp.ui.input.state
 
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.DateSortType
+import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.enums.SortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
@@ -22,6 +24,8 @@ data class InputState(
     var contacts: String = "",
     var stickingPoints: String = "",
     override val sortType: SortType = SortType.DATE,
+    val dateSortType: DateSortType = DateSortType.DATE,
+    val setSortType: SetSortType = SetSortType.DATE,
     val isAddingSession: Boolean = false,
     val isUpdatingSession: Boolean = false,
     val isAddingDate: Boolean = false,
