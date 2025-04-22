@@ -13,7 +13,7 @@ import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.SetSortType
-import com.barryburgle.gameapp.model.enums.SortType
+import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -52,21 +52,21 @@ class InputViewModel(
     private val _batchSessionService = BatchSessionService()
     private val _dateService = DateService()
     private val _setService = SetService()
-    private val _sortType = MutableStateFlow(SortType.DATE)
-    private val _allSessions = _sortType.flatMapLatest { sortType ->
+    private val _sessionSortType = MutableStateFlow(SessionSortType.DATE)
+    private val _allSessions = _sessionSortType.flatMapLatest { sortType ->
         when (sortType) {
-            SortType.DATE -> abstractSessionDao.getByDate()
-            SortType.SETS -> abstractSessionDao.getBySets()
-            SortType.CONVOS -> abstractSessionDao.getByConvos()
-            SortType.CONTACS -> abstractSessionDao.getByContacts()
-            SortType.SESSION_TIME -> abstractSessionDao.getBySessionTime()
-            SortType.APPROACH_TIME -> abstractSessionDao.getByApproachTime()
-            SortType.CONVO_RATIO -> abstractSessionDao.getByConvoRatio()
-            SortType.REJECTION_RATIO -> abstractSessionDao.getByRejectionRatio()
-            SortType.CONTACT_RATIO -> abstractSessionDao.getByContactRatio()
-            SortType.INDEX -> abstractSessionDao.getByIndex()
-            SortType.DAY_OF_WEEK -> abstractSessionDao.getByDayOfWeek()
-            SortType.WEEK_NUMBER -> abstractSessionDao.getByWeekNumber()
+            SessionSortType.DATE -> abstractSessionDao.getByDate()
+            SessionSortType.SETS -> abstractSessionDao.getBySets()
+            SessionSortType.CONVOS -> abstractSessionDao.getByConvos()
+            SessionSortType.CONTACS -> abstractSessionDao.getByContacts()
+            SessionSortType.SESSION_TIME -> abstractSessionDao.getBySessionTime()
+            SessionSortType.APPROACH_TIME -> abstractSessionDao.getByApproachTime()
+            SessionSortType.CONVO_RATIO -> abstractSessionDao.getByConvoRatio()
+            SessionSortType.REJECTION_RATIO -> abstractSessionDao.getByRejectionRatio()
+            SessionSortType.CONTACT_RATIO -> abstractSessionDao.getByContactRatio()
+            SessionSortType.INDEX -> abstractSessionDao.getByIndex()
+            SessionSortType.DAY_OF_WEEK -> abstractSessionDao.getByDayOfWeek()
+            SessionSortType.WEEK_NUMBER -> abstractSessionDao.getByWeekNumber()
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _allLeads = leadDao.getAll()
@@ -185,7 +185,7 @@ class InputViewModel(
         _allSessions,
         _allLeads,
         _allDates,
-        _sortType,
+        _sessionSortType,
         _dateSortType,
         _setSortType,
         _allSets,
@@ -202,14 +202,14 @@ class InputViewModel(
         _showSessions,
         _showSets,
         _showDates
-    ) { state, allSessions, allLeads, allDates, sortType, dateSortType, setSortType, allSets, allEvents, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, showSessions, showSets, showDates ->
+    ) { state, allSessions, allLeads, allDates, sessionSortType, dateSortType, setSortType, allSets, allEvents, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, showSessions, showSets, showDates ->
         state.copy(
             allSessions = allSessions,
             allLeads = allLeads,
             allDates = allDates,
             allSets = allSets,
             allEvents = allEvents,
-            sortType = sortType,
+            sessionSortType = sessionSortType,
             dateSortType = dateSortType,
             setSortType = setSortType,
             notificationTime = notificationTime,
@@ -346,7 +346,7 @@ class InputViewModel(
                             convos = "",
                             contacts = "",
                             stickingPoints = "",
-                            sortType = SortType.DATE,
+                            sessionSortType = SessionSortType.DATE,
                             isAddingSession = false,
                             isUpdatingSession = false,
                             isAddingLead = false,
@@ -456,7 +456,7 @@ class InputViewModel(
             }
 
             is GameEvent.SortSessions -> {
-                _sortType.value = event.sortType
+                _sessionSortType.value = event.sessionSortType
             }
 
             is GameEvent.SaveLead -> {

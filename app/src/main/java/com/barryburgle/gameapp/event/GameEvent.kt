@@ -4,7 +4,7 @@ import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.SetSortType
-import com.barryburgle.gameapp.model.enums.SortType
+import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -28,7 +28,7 @@ sealed interface GameEvent : GenericEvent {
     data class SetConvos(val convos: String) : GameEvent
     data class SetContacts(val contacts: String) : GameEvent
     data class SetStickingPoints(val stickingPoints: String) : GameEvent
-    data class SortSessions(val sortType: SortType) : GameEvent
+    data class SortSessions(val sessionSortType: SessionSortType) : GameEvent
     data class DeleteSession(val abstractSession: AbstractSession) : GameEvent
     data class DeleteLead(val lead: Lead) : GameEvent
     data class EditSession(val abstractSession: AbstractSession) : GameEvent

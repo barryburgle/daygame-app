@@ -1,6 +1,6 @@
 package com.barryburgle.gameapp.model.enums
 
-enum class SortType(private val field: String) : FieldEnum {
+enum class SessionSortType(private val field: String) : FieldEnum {
     DATE("Date"),
     SETS("Sets"),
     CONVOS("Conversations"),

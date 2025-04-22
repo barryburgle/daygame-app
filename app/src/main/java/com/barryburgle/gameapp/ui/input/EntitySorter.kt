@@ -16,7 +16,7 @@ import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.SetSortType
-import com.barryburgle.gameapp.model.enums.SortType
+import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.ScrollableSorter
@@ -44,8 +44,8 @@ fun EntitySorter(
             )
             Spacer(modifier = Modifier.width(spaceFromLeft))
             if (EventTypeEnum.SESSION.equals(eventType)) {
-                SortType.values().forEach { sortType ->
-                    state.sortType?.let {
+                SessionSortType.values().forEach { sortType ->
+                    state.sessionSortType?.let {
                         SelectionRow(
                             it,
                             sortType,

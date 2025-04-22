@@ -3,7 +3,7 @@ package com.barryburgle.gameapp.ui.input.state
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.SetSortType
-import com.barryburgle.gameapp.model.enums.SortType
+import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
@@ -23,7 +23,7 @@ data class InputState(
     var convos: String = "",
     var contacts: String = "",
     var stickingPoints: String = "",
-    override val sortType: SortType = SortType.DATE,
+    val sessionSortType: SessionSortType = SessionSortType.DATE,
     val dateSortType: DateSortType = DateSortType.DATE,
     val setSortType: SetSortType = SetSortType.DATE,
     val isAddingSession: Boolean = false,
@@ -77,7 +77,7 @@ data class InputState(
     var sessionId: Long? = 0L,
     var dateId: Long? = 0L
 ) : OrderState(
-    sortType,
+    sessionSortType,
     exportSessionsFileName,
     exportLeadsFileName,
     exportDatesFileName,
