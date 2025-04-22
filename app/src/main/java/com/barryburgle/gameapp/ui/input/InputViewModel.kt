@@ -12,8 +12,9 @@ import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
-import com.barryburgle.gameapp.model.enums.SetSortType
+import com.barryburgle.gameapp.model.enums.GameEventSortType
 import com.barryburgle.gameapp.model.enums.SessionSortType
+import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -23,8 +24,8 @@ import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
-import com.barryburgle.gameapp.ui.CombineSix
-import com.barryburgle.gameapp.ui.CombineTwentyOne
+import com.barryburgle.gameapp.ui.CombineSeven
+import com.barryburgle.gameapp.ui.CombineTwentyTwo
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -127,17 +128,19 @@ class InputViewModel(
     val _showSessions = MutableStateFlow(true)
     val _showSets = MutableStateFlow(true)
     val _showDates = MutableStateFlow(true)
-    val _allEvents: Flow<List<SortableGameEvent>> = CombineSix(
+    private val _gameEventSortType = MutableStateFlow(GameEventSortType.INSERT_TIME)
+    val _allEvents: Flow<List<SortableGameEvent>> = CombineSeven(
         _showSessions,
         _showSets,
         _showDates,
         _allSessions,
         _allDates,
-        _allSets
-    ) { showSessions, showSets, showDates, allSessions, allDates, allSets ->
+        _allSets,
+        _gameEventSortType
+    ) { showSessions, showSets, showDates, allSessions, allDates, allSets, gameEventSortType ->
         val flagsTriple = Triple(showSessions, showSets, showDates)
-        listOf(flagsTriple, allSessions, allDates, allSets)
-    }.flatMapLatest { (flagsTriple, allSessions, allDates, allSets) ->
+        listOf(flagsTriple, allSessions, allDates, allSets, gameEventSortType)
+    }.flatMapLatest { (flagsTriple, allSessions, allDates, allSets, gameEventSortType) ->
         val (showSessions, showSets, showDates) = flagsTriple as Triple<Boolean, Boolean, Boolean>
         val combinedList = mutableListOf<SortableGameEvent>().apply {
             if (showSessions) addAll((allSessions as List<AbstractSession>).map {
@@ -179,17 +182,55 @@ class InputViewModel(
                 combinedList
             )
         } else {
-            flowOf(
-                combinedList.sortedWith(
-                    compareByDescending<SortableGameEvent> { it.eventDate }
-                        .thenByDescending { it.insertTime }
-                )
-            )
+            when (gameEventSortType) {
+                GameEventSortType.INSERT_TIME -> {
+                    flowOf(combinedList.sortedWith(
+                        compareByDescending<SortableGameEvent> { it.insertTime }
+                    )
+                    )
+                }
+
+                GameEventSortType.DATE -> {
+                    flowOf(combinedList.sortedWith(
+                        compareByDescending<SortableGameEvent> { it.eventDate }
+                    )
+                    )
+                }
+
+                GameEventSortType.START_HOUR -> {
+                    flowOf(combinedList.sortedWith(
+                        compareByDescending<SortableGameEvent> { it.eventHour }
+                    )
+                    )
+                }
+
+                GameEventSortType.TIME_SPENT -> {
+                    flowOf(combinedList.sortedWith(
+                        compareByDescending<SortableGameEvent> { it.timeSpent }
+                    )
+                    )
+                }
+
+                GameEventSortType.DAY_OF_WEEK -> {
+                    flowOf(combinedList.sortedWith(
+                        compareByDescending<SortableGameEvent> { it.dayOfWeek }
+                    )
+                    )
+                }
+
+                else -> {
+                    flowOf(combinedList.sortedWith(
+                        compareByDescending<SortableGameEvent> { it.eventDate }
+                            .thenByDescending { it.insertTime }
+                    )
+                    )
+                }
+            }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _state = MutableStateFlow(InputState())
-    val state = CombineTwentyOne(
+    val state = CombineTwentyTwo(
         _state,
         _allSessions,
         _allLeads,
@@ -210,8 +251,9 @@ class InputViewModel(
         _lastBackup,
         _showSessions,
         _showSets,
-        _showDates
-    ) { state, allSessions, allLeads, allDates, sessionSortType, dateSortType, setSortType, allSets, allEvents, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, showSessions, showSets, showDates ->
+        _showDates,
+        _gameEventSortType
+    ) { state, allSessions, allLeads, allDates, sessionSortType, dateSortType, setSortType, allSets, allEvents, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, showSessions, showSets, showDates, gameEventSortType ->
         state.copy(
             allSessions = allSessions,
             allLeads = allLeads,
@@ -232,7 +274,8 @@ class InputViewModel(
             lastBackup = lastBackup.toInt(),
             showSessions = showSessions,
             showSets = showSets,
-            showDates = showDates
+            showDates = showDates,
+            gameEventSortType = gameEventSortType
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())
 
@@ -852,6 +895,10 @@ class InputViewModel(
 
             is GameEvent.SortSets -> {
                 _setSortType.value = event.sortType
+            }
+
+            is GameEvent.SortGameEvents -> {
+                _gameEventSortType.value = event.gameEventSortType
             }
 
             is GameEvent.DeleteSet -> {

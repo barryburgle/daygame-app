@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.event
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
+import com.barryburgle.gameapp.model.enums.GameEventSortType
 import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.model.lead.Lead
@@ -73,6 +74,7 @@ sealed interface GameEvent : GenericEvent {
     object SwitchContact : GameEvent
     object SwitchInstantDate : GameEvent
     data class SortSets(val sortType: SetSortType) : GameEvent
+    data class SortGameEvents(val gameEventSortType: GameEventSortType) : GameEvent
     data class DeleteSet(val set: SingleSet) : GameEvent
     data class EditSet(val set: SingleSet) : GameEvent
     data class SetConversation(val conversation: Boolean?) : GameEvent

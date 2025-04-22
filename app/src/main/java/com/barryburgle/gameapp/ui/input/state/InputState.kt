@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.ui.input.state
 
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
+import com.barryburgle.gameapp.model.enums.GameEventSortType
 import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
@@ -26,6 +27,7 @@ data class InputState(
     val sessionSortType: SessionSortType = SessionSortType.DATE,
     val dateSortType: DateSortType = DateSortType.DATE,
     val setSortType: SetSortType = SetSortType.DATE,
+    val gameEventSortType: GameEventSortType = GameEventSortType.INSERT_TIME,
     val isAddingSession: Boolean = false,
     val isUpdatingSession: Boolean = false,
     val isAddingDate: Boolean = false,
