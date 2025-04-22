@@ -23,9 +23,13 @@ interface SettingDao {
         const val BACKUP_NUMBER_ID: String = "backup_number"
         const val LAST_SESSION_AVERAGE_QUANTITY_ID: String = "average_last"
         const val LAST_SESSIONS_SHOWN_ID: String = "last_sessions"
+        const val LAST_WEEKS_SHOWN_ID: String = "last_weeks"
+        const val LAST_MONTHS_SHOWN_ID: String = "last_months"
         const val NOTIFICATION_TIME_ID: String = "notification_time"
         const val DEFAULT_MOVING_AVERAGE_WINDOW: Int = 4
         const val DEFAULT_LAST_SESSIONS_SHOWN: Int = 14
+        const val DEFAULT_LAST_WEEKS_SHOWN: Int = 8
+        const val DEFAULT_LAST_MONTHS_SHOWN: Int = 4
         const val EXPORT_SESSIONS_FILE_NAME_ID: String = "export_sessions_file_name"
         const val IMPORT_SESSIONS_FILE_NAME_ID: String = "import_sessions_file_name"
         const val DEFAULT_SESSIONS_EXPORT_FILE_NAME: String = "sessions_export"
@@ -56,6 +60,8 @@ interface SettingDao {
         const val DEFAULT_NOTIFICATION_TIME: String = "18:00"
 
         const val QUERY_LAST_SESSIONS_SHOWN = "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_SESSIONS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_SESSIONS_SHOWN_ID}'"
+        const val QUERY_LAST_WEEKS_SHOWN = "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_WEEKS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_WEEKS_SHOWN_ID}'"
+        const val QUERY_LAST_MONTHS_SHOWN = "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_MONTHS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_MONTHS_SHOWN_ID}'"
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -114,6 +120,12 @@ interface SettingDao {
 
     @Query(QUERY_LAST_SESSIONS_SHOWN)
     fun getLastSessionsShown(): Flow<Int>
+
+    @Query(QUERY_LAST_WEEKS_SHOWN)
+    fun getLastWeeksShown(): Flow<Int>
+
+    @Query(QUERY_LAST_MONTHS_SHOWN)
+    fun getLastMonthsShown(): Flow<Int>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_NOTIFICATION_TIME}' ELSE value END FROM setting WHERE id = '${NOTIFICATION_TIME_ID}'")
     fun getNotificationTime(): Flow<String>

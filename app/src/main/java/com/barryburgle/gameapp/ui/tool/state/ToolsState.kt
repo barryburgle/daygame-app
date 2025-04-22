@@ -24,6 +24,8 @@ data class ToolsState(
     override var allSets: List<SingleSet> = emptyList(),
     val lastSessionAverageQuantity: Int = 4,
     val lastSessionsShown: Int = 14,
+    val lastWeeksShown: Int = 8,
+    val lastMonthsShown: Int = 4,
     val notificationTime: String = "",
     var exportHeader: Boolean = true,
     var importHeader: Boolean = true,

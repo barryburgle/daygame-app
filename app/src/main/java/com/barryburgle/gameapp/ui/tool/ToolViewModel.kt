@@ -307,6 +307,34 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SetLastWeeksShown -> {
+                _state.update {
+                    it.copy(
+                        lastWeeksShown = event.lastWeeksShown.toInt()
+                    )
+                }
+                val lastWeeksShown = _state.value.lastWeeksShown
+                val setting = Setting(
+                    SettingDao.LAST_WEEKS_SHOWN_ID,
+                    lastWeeksShown.toString()
+                )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetLastMonthsShown -> {
+                _state.update {
+                    it.copy(
+                        lastMonthsShown = event.lastMonthsShown.toInt()
+                    )
+                }
+                val lastMonthsShown = _state.value.lastMonthsShown
+                val setting = Setting(
+                    SettingDao.LAST_MONTHS_SHOWN_ID,
+                    lastMonthsShown.toString()
+                )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetNotificationTime -> {
                 _state.update {
                     it.copy(

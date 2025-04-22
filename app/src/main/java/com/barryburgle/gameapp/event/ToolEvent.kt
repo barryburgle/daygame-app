@@ -23,6 +23,8 @@ sealed interface ToolEvent : GenericEvent {
     data class SetAllSets(val allSets: List<SingleSet>) : ToolEvent
     data class SetLastSessionAverageQuantity(val lastSessionAverageQuantity: String) : ToolEvent
     data class SetLastSessionsShown(val lastSessionsShown: String) : ToolEvent
+    data class SetLastWeeksShown(val lastWeeksShown: String) : ToolEvent
+    data class SetLastMonthsShown(val lastMonthsShown: String) : ToolEvent
     data class SetNotificationTime(val notificationTime: String) : ToolEvent
     data class SetExportHeader(val exportHeader: Boolean) : ToolEvent
     data class SetImportHeader(val importHeader: Boolean) : ToolEvent

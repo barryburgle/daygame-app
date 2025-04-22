@@ -133,7 +133,7 @@ fun SettingsCard(
                         "Sessions:", "", textFieldColumnWidth
                     )
                     Row(
-                        horizontalArrangement = Arrangement.SpaceAround,
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight()
@@ -141,49 +141,64 @@ fun SettingsCard(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         InputCountComponent(
-                            inputTitle = "Average\nlast",
+                            inputTitle = "Average",
                             modifier = Modifier,
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.displaySmall,
                             onEvent = onEvent as (GenericEvent) -> Unit,
                             countStart = state.lastSessionAverageQuantity,
                             saveEvent = ToolEvent::SetLastSessionAverageQuantity
                         )
-                        // TODO: do the same of the following for weeks and months
                         InputCountComponent(
-                            inputTitle = "Show\nlast",
+                            inputTitle = "Sessions",
                             modifier = Modifier,
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.displaySmall,
                             onEvent = onEvent as (GenericEvent) -> Unit,
                             countStart = state.lastSessionsShown,
                             saveEvent = ToolEvent::SetLastSessionsShown
                         )
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.padding(16.dp)
+                        InputCountComponent(
+                            inputTitle = "Weeks",
+                            modifier = Modifier,
+                            style = MaterialTheme.typography.displaySmall,
+                            onEvent = onEvent as (GenericEvent) -> Unit,
+                            countStart = state.lastWeeksShown,
+                            saveEvent = ToolEvent::SetLastWeeksShown
+                        )
+                        InputCountComponent(
+                            inputTitle = "Months",
+                            modifier = Modifier,
+                            style = MaterialTheme.typography.displaySmall,
+                            onEvent = onEvent as (GenericEvent) -> Unit,
+                            countStart = state.lastMonthsShown,
+                            saveEvent = ToolEvent::SetLastMonthsShown
+                        )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Button(
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                                    ),
-                                    onClick = { notificationHourDialogState.show() }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Timer,
-                                        contentDescription = "Reminder",
-                                        tint = MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier
-                                            .height(25.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(7.dp))
-                                    Text(
-                                        text = "Sticking Points",
-                                        textAlign = TextAlign.Center
-                                    )
-                                }
+                            Button(
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                                ),
+                                onClick = { notificationHourDialogState.show() }) {
+                                Icon(
+                                    imageVector = Icons.Default.Timer,
+                                    contentDescription = "Reminder",
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier
+                                        .height(25.dp)
+                                )
+                                Spacer(modifier = Modifier.width(7.dp))
+                                Text(
+                                    text = "Sticking Points",
+                                    textAlign = TextAlign.Center
+                                )
                             }
                         }
                     }
