@@ -1,10 +1,10 @@
 # Version 1.7.0 (2025-04-xx)
 
 **Features**
-- Unified Game events timeline (sessions, sets, dates) with sorting, event type selection
-- Insert single sets
-- Reload csv import filenames from last filename in import folder
-- Navigation bar restyle
+- Unified Game events timeline (sessions, sets, dates) with sorting, event type selection 📅
+- Insert single sets 🎾
+- Reload csv import filenames from last filename in import folder 🔃
+- Navigation bar restyle ✨
 
 **Bugs**
 - Insert dialog fields valued properly after insertion or deletion
