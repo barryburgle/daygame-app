@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -75,9 +74,6 @@ fun InputScreen(
 ) {
     // TODO: integrate on the right a scrollbar (mainly invisible) that allows to easily jump to a session around a certain date
     val spaceFromNavBar = 80.dp
-    val selectedOptions = remember {
-        mutableStateListOf(true, true, true)
-    }
     var isRotated by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(
@@ -85,67 +81,69 @@ fun InputScreen(
         animationSpec = tween(durationMillis = 650),
         label = "rotationAngle"
     )
-    Scaffold(floatingActionButton = {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Column(
-                modifier = Modifier
-                    .height(220.dp)
-                    .offset(y = -100.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceAround
-            ) {
-                AnimatedVisibility(
-                    visible = isExpanded,
-                    enter = floatingButtonEnterTransition(300),
-                    exit = floatingButtonExitTransition(300)
+    Scaffold(
+        topBar = { gameTopBar(state, onEvent, spaceFromLeft, spaceFromTop) },
+        floatingActionButton = {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier
+                        .height(220.dp)
+                        .offset(y = -100.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceAround
                 ) {
-                    floatingAddButton(Icons.Default.Favorite, "Date") {
-                        onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.DATE))
-                        isExpanded = false
-                        isRotated = false
+                    AnimatedVisibility(
+                        visible = isExpanded,
+                        enter = floatingButtonEnterTransition(300),
+                        exit = floatingButtonExitTransition(300)
+                    ) {
+                        floatingAddButton(Icons.Default.Favorite, "Date") {
+                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.DATE))
+                            isExpanded = false
+                            isRotated = false
+                        }
+                    }
+                    AnimatedVisibility(
+                        visible = isExpanded,
+                        enter = floatingButtonEnterTransition(500),
+                        exit = floatingButtonExitTransition(500)
+                    ) {
+                        floatingAddButton(Icons.Default.PersonAddAlt1, "Set") {
+                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SET))
+                            isExpanded = false
+                            isRotated = false
+                        }
+                    }
+                    AnimatedVisibility(
+                        visible = isExpanded,
+                        enter = floatingButtonEnterTransition(700),
+                        exit = floatingButtonExitTransition(700)
+                    ) {
+                        floatingAddButton(Icons.Default.GroupAdd, "Session") {
+                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SESSION))
+                            isExpanded = false
+                            isRotated = false
+                        }
                     }
                 }
-                AnimatedVisibility(
-                    visible = isExpanded,
-                    enter = floatingButtonEnterTransition(500),
-                    exit = floatingButtonExitTransition(500)
+                FloatingActionButton(
+                    onClick = {
+                        isRotated = !isRotated
+                        isExpanded = !isExpanded
+                    },
+                    modifier = Modifier
+                        .offset(y = -spaceFromNavBar)
+                        .rotate(rotationAngle),
+                    contentColor = MaterialTheme.colorScheme.inversePrimary,
+                    containerColor = MaterialTheme.colorScheme.onTertiary,
+                    shape = CircleShape
                 ) {
-                    floatingAddButton(Icons.Default.PersonAddAlt1, "Set") {
-                        onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SET))
-                        isExpanded = false
-                        isRotated = false
-                    }
-                }
-                AnimatedVisibility(
-                    visible = isExpanded,
-                    enter = floatingButtonEnterTransition(700),
-                    exit = floatingButtonExitTransition(700)
-                ) {
-                    floatingAddButton(Icons.Default.GroupAdd, "Session") {
-                        onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SESSION))
-                        isExpanded = false
-                        isRotated = false
-                    }
+                    Icon(
+                        imageVector = Icons.Default.Add, contentDescription = "Add an event"
+                    )
                 }
             }
-            FloatingActionButton(
-                onClick = {
-                    isRotated = !isRotated
-                    isExpanded = !isExpanded
-                },
-                modifier = Modifier
-                    .offset(y = -spaceFromNavBar)
-                    .rotate(rotationAngle),
-                contentColor = MaterialTheme.colorScheme.inversePrimary,
-                containerColor = MaterialTheme.colorScheme.onTertiary,
-                shape = CircleShape
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add, contentDescription = "Add an event"
-                )
-            }
-        }
-    }) { padding ->
+        }) { padding ->
         if (state.isAddingSession) {
             SessionDialog(state = state, onEvent = onEvent, "Add a session")
         }
@@ -186,53 +184,11 @@ fun InputScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .offset(
-                    y = spaceFromTop + spaceFromLeft
+                    y = spaceFromLeft
                 ), verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
         ) {
             item {
-                Spacer(modifier = Modifier.height(5.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    MultiChoiceButton(
-                        EventTypeEnum.getFieldsButAll(),
-                        listOf(state.allSessions.size, state.allSets.size, state.allDates.size),
-                        Modifier
-                            .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
-                            .fillMaxHeight()
-                            .shadow(
-                                elevation = 5.dp, shape = MaterialTheme.shapes.large
-                            ),
-                        selectedOptions
-                    ) {
-                        onEvent(GameEvent.SwitchShowFlag(it))
-                    }
-                }
-            }
-            item {
-                EntitySorter(
-                    showAllSorter(state.showSessions, state.showSets, state.showDates),
-                    spaceFromLeft,
-                    EventTypeEnum.ALL,
-                    state,
-                    onEvent
-                )
-                EntitySorter(
-                    showSessionSorter(state.showSessions, state.showSets, state.showDates),
-                    spaceFromLeft,
-                    EventTypeEnum.SESSION,
-                    state,
-                    onEvent
-                )
-                EntitySorter(
-                    showSetSorter(state.showSessions, state.showSets, state.showDates),
-                    spaceFromLeft, EventTypeEnum.SET, state, onEvent
-                )
-                EntitySorter(
-                    showDateSorter(state.showSessions, state.showSets, state.showDates),
-                    spaceFromLeft, EventTypeEnum.DATE, state, onEvent
-                )
+                Spacer(modifier = Modifier.height(100.dp))
             }
             items(state.allEvents) { sortableGameEvent ->
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -352,6 +308,59 @@ fun floatingAddButton(
             text = description,
             color = MaterialTheme.colorScheme.onPrimary,
             style = MaterialTheme.typography.bodySmall
+        )
+    }
+}
+
+@Composable
+fun gameTopBar(
+    state: InputState,
+    onEvent: (GameEvent) -> Unit,
+    spaceFromLeft: Dp,
+    spaceFromTop: Dp
+) {
+    val selectedOptions = remember {
+        mutableStateListOf(true, true, true)
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp)
+            .offset(y = spaceFromTop),
+        verticalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Spacer(modifier = Modifier.height(5.dp))
+        MultiChoiceButton(
+            EventTypeEnum.getFieldsButAll(),
+            listOf(state.allSessions.size, state.allSets.size, state.allDates.size),
+            Modifier
+                .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
+                .height(50.dp),
+            selectedOptions
+        ) {
+            onEvent(GameEvent.SwitchShowFlag(it))
+        }
+        EntitySorter(
+            showAllSorter(state.showSessions, state.showSets, state.showDates),
+            spaceFromLeft,
+            EventTypeEnum.ALL,
+            state,
+            onEvent
+        )
+        EntitySorter(
+            showSessionSorter(state.showSessions, state.showSets, state.showDates),
+            spaceFromLeft,
+            EventTypeEnum.SESSION,
+            state,
+            onEvent
+        )
+        EntitySorter(
+            showSetSorter(state.showSessions, state.showSets, state.showDates),
+            spaceFromLeft, EventTypeEnum.SET, state, onEvent
+        )
+        EntitySorter(
+            showDateSorter(state.showSessions, state.showSets, state.showDates),
+            spaceFromLeft, EventTypeEnum.DATE, state, onEvent
         )
     }
 }

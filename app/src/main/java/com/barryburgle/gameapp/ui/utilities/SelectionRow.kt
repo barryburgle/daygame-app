@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -29,7 +30,11 @@ fun SelectionRow(
     // TODO: create a tripe-state selection process where either don't sort, sort ascending or sort descending by field
     // TODO: put on the left of every button (animating similarly to MultiChoiceButton) text either [no-icon = no selection, up-arrow = sort ascending, down-arrow = sort descending]
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.shadow(
+            elevation = 15.dp,
+            spotColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f)
+        )
     ) {
         val textBackgroundColor =
             if (currentSort == sortType) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer
