@@ -412,10 +412,6 @@ private fun setState(
         if (state.location.isBlank()) {
             state.location = state.editSet.location!!
         }
-        state.conversation = state.editSet.conversation
-        state.contact = state.editSet.contact
-        state.instantDate = state.editSet.instantDate
-        state.recorded = state.editSet.recorded
         state.leadId = state.editSet.leadId!!
         // TODO: solve following
         // state.dateId = state.editSet.dateId!!
