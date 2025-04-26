@@ -1,4 +1,4 @@
-# Version 1.7.0 (2025-04-xx)
+# Version 1.7.0 (2025-04-26)
 
 **Features**
 - Unified Game events timeline (sessions, sets, dates) with sorting, event type selection 📅
