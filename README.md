@@ -31,9 +31,9 @@ All data are stored locally, on your device *only*. The app provides four tabs:
 - the Results Tab is where you can observe your overall statics
 - the Settings Tab is where you can manage data and customize your app experience
 
-| Sessions Tab                                                                                               | Dates Tab                                                                                               | Dashboard Tab                                                                                               | Results Tab                                                                                                | Settings Tab                                                                                               |
+| Game Tab                                                                                               | Dashboard Tab                                                                                               | Results Tab                                                                                                | Settings Tab                                                                                               |
 |------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
-| ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/sessions.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/dates.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/dashboard.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/results.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/game-app/blob/main/resources/screen/settings.jpg?raw=true) |
+| ![...loading...](https://github.com/barryburgle/daygame-app/blob/main/resources/screen/sessions.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/daygame-app/blob/main/resources/screen/dashboard.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/daygame-app/blob/main/resources/screen/results.jpg?raw=true) | ![...loading...](https://github.com/barryburgle/daygame-app/blob/main/resources/screen/settings.jpg?raw=true) |
 
 ## Download
 
@@ -103,7 +103,7 @@ You can download the app .apk installer on the release page clicking on the foll
   - sessions distribution with sessions histograms
   - leads distribution with leads histograms
 - [x] `Settings Tab` In it you can find:
-  - data import/export in .csv files with or without header ([file examples](https://github.com/barryburgle/game-app/blob/main/resources/files))
+  - data import/export in .csv files with or without header ([file examples](https://github.com/barryburgle/daygame-ap/blob/main/resources/files))
   - update checker & download button
   - settable chart average moving window
   - last session sticking points reminder time setter
