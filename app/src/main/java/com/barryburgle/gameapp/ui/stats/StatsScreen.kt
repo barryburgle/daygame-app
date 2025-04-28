@@ -51,6 +51,10 @@ fun StatsScreen(
                     ), verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
             ) {
                 if (state.abstractSessions.isNotEmpty()) {
+                    val sets: Int = GlobalStatsService.computeSets(state.abstractSessions)
+                    val conversations: Int =
+                        GlobalStatsService.computeConvos(state.abstractSessions)
+                    val contacts: Int = GlobalStatsService.computeContacts(state.abstractSessions)
                     item {
                         Row {
                             Spacer(
@@ -64,32 +68,28 @@ fun StatsScreen(
                                         state.abstractSessions
                                     )
                                 } minutes",
-                                firstQuantifierQuantity = "${GlobalStatsService.computeSets(state.abstractSessions)}",
+                                firstQuantifierQuantity = "${sets}",
                                 firstQuantifierDescription = "Sets",
-                                secondQuantifierQuantity = "${GlobalStatsService.computeConvos(state.abstractSessions)}",
+                                secondQuantifierQuantity = "${conversations}",
                                 secondQuantifierDescription = "Conversations",
-                                thirdQuantifierQuantity = "${
-                                    GlobalStatsService.computeContacts(
-                                        state.abstractSessions
-                                    )
-                                }",
+                                thirdQuantifierQuantity = "${contacts}",
                                 thirdQuantifierDescription = "Contacts",
                                 firstPerformanceQuantity = "${
-                                    GlobalStatsService.computeAvgConvoRatio(
-                                        state.abstractSessions
+                                    GlobalStatsService.computeGenericRatio(
+                                        sets,
+                                        conversations
                                     )
                                 } %",
                                 firstPerformanceDescription = "Conversation\nRatio",
                                 secondPerformanceQuantity = "${
-                                    GlobalStatsService.computeAvgRejectionRatio(
-                                        state.abstractSessions
+                                    GlobalStatsService.computeGenericRatio(
+                                        sets,
+                                        sets - conversations
                                     )
                                 } %",
                                 secondPerformanceDescription = "Rejection\nRatio",
                                 thirdPerformanceQuantity = "${
-                                    GlobalStatsService.computeAvgContactRatio(
-                                        state.abstractSessions
-                                    )
+                                    GlobalStatsService.computeGenericRatio(conversations, contacts)
                                 } %",
                                 thirdPerformanceDescription = "Contact\nRatio",
                                 fourthPerformanceQuantity = "${
@@ -108,19 +108,24 @@ fun StatsScreen(
                             Spacer(
                                 modifier = Modifier.width(spaceFromLeft)
                             )
-                            val conversations: Int = state.sets.filter { set -> set.conversation }.size
+                            val conversations: Int =
+                                state.sets.filter { set -> set.conversation }.size
                             val contacts: Int = state.sets.filter { set -> set.contact }.size
-                            val instantDates: Int = state.sets.filter { set -> set.instantDate }.size
+                            val instantDates: Int =
+                                state.sets.filter { set -> set.instantDate }.size
                             val recorded: Int = state.sets.filter { set -> set.recorded }.size
-                            val avgContactTime: Long = GlobalStatsService.computeAvgContactTime(state.sets, contacts)
+                            val avgContactTime: Long =
+                                GlobalStatsService.computeAvgContactTime(state.sets, contacts)
                             val contactSentence =
                                 if (avgContactTime != 0L) "on average a contact each ${avgContactTime} minutes" else "no contacts yet"
                             val setSpentHours = GlobalStatsService.computeSetsSpentHours(state.sets)
-                            val setSpentMinutes = GlobalStatsService.computeSetsSpentMinutes(state.sets)
+                            val setSpentMinutes =
+                                GlobalStatsService.computeSetsSpentMinutes(state.sets)
                             var timeSpentSentence = "${setSpentMinutes} minutes"
                             if (setSpentHours != 0L) {
                                 val minutesDifference = setSpentMinutes - setSpentHours * 60
-                                timeSpentSentence = "${setSpentHours} hours and " + "${minutesDifference} minutes"
+                                timeSpentSentence =
+                                    "${setSpentHours} hours and " + "${minutesDifference} minutes"
                             }
                             StatsCard(
                                 modifier = cardModifier,
@@ -145,8 +150,8 @@ fun StatsScreen(
                                 firstPerformanceDescription = "Conversation\nRatio",
                                 secondPerformanceQuantity = "${
                                     GlobalStatsService.computeGenericRatio(
-                                        state.sets.size,                                        
-                                        contacts                                        
+                                        state.sets.size,
+                                        contacts
                                     )
                                 } %",
                                 secondPerformanceDescription = "Contact\nRatio",
