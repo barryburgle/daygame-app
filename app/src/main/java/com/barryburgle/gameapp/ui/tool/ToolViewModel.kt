@@ -10,7 +10,7 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.ui.CombineEight
-import com.barryburgle.gameapp.ui.CombineEighteen
+import com.barryburgle.gameapp.ui.CombineTwentyOne
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,8 +65,11 @@ class ToolViewModel(
     private val _latestPublishDate = settingDao.getLatestPublishDate()
     private val _latestChangelog = settingDao.getLatestChangelog()
     private val _latestDownloadUrl = settingDao.getLatestDownloadUrl()
+    private val _lastSessionsShown = settingDao.getLastSessionsShown()
+    private val _lastWeeksShown = settingDao.getLastWeeksShown()
+    private val _lastMonthsShown = settingDao.getLastMonthsShown()
     val state =
-        CombineEighteen(
+        CombineTwentyOne(
             _state,
             _allSessions,
             _allLeads,
@@ -84,8 +87,11 @@ class ToolViewModel(
             _latestAvailable,
             _latestPublishDate,
             _latestChangelog,
-            _latestDownloadUrl
-        ) { state, allSessions, allLeads, allDates, allSets, importExportFilenames, exportFolder, importFolder, backupFolder, notificationTime, averageLast, exportHeader, importHeader, backupActive, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl ->
+            _latestDownloadUrl,
+            _lastSessionsShown,
+            _lastWeeksShown,
+            _lastMonthsShown
+        ) { state, allSessions, allLeads, allDates, allSets, importExportFilenames, exportFolder, importFolder, backupFolder, notificationTime, averageLast, exportHeader, importHeader, backupActive, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown ->
             state.copy(
                 exportSessionsFileName = importExportFilenames.exportSessionsFilename,
                 importSessionsFileName = importExportFilenames.importSessionsFilename,
@@ -111,6 +117,9 @@ class ToolViewModel(
                 latestPublishDate = latestPublishDate,
                 latestChangelog = latestChangelog,
                 latestDownloadUrl = latestDownloadUrl,
+                lastSessionsShown = lastSessionsShown,
+                lastWeeksShown = lastWeeksShown,
+                lastMonthsShown = lastMonthsShown
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ToolsState())
 
