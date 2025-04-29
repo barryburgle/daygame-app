@@ -130,7 +130,7 @@ fun SettingsCard(
                         context
                     )
                     RowTitle(
-                        "Sessions:", "", textFieldColumnWidth
+                        "Dashboard charts:", "", textFieldColumnWidth
                     )
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
