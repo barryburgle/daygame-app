@@ -11,7 +11,7 @@ import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.model.stat.AggregatedDates
 import com.barryburgle.gameapp.model.stat.AggregatedSessions
-import com.barryburgle.gameapp.ui.CombineEight
+import com.barryburgle.gameapp.ui.CombineTen
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -37,9 +37,11 @@ class OutputViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _datesByMonth = aggregatedDatesDao.groupStatsByMonth()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _lastWeeksShown = settingDao.getLastWeeksShown()
+    private val _lastMonthsShown = settingDao.getLastMonthsShown()
     private val _averageLast = settingDao.getAverageLast()
 
-    val state = CombineEight(
+    val state = CombineTen(
         _state,
         _abstractSessions,
         _leads,
@@ -47,16 +49,30 @@ class OutputViewModel(
         _sessionsByMonth,
         _datesByWeek,
         _datesByMonth,
+        _lastWeeksShown,
+        _lastMonthsShown,
         _averageLast
     )
-    { state, abstractSessions, leads, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast ->
+    { state, abstractSessions, leads, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, lastWeeksShown, lastMonthsShown, averageLast ->
         state.copy(
             abstractSessions = SessionManager.normalizeSessionsIds(abstractSessions),
             leads = leads,
-            sessionsByWeek = SessionManager.normalizeIds(sessionsByWeek) as List<AggregatedSessions>,
-            sessionsByMonth = SessionManager.normalizeIds(sessionsByMonth) as List<AggregatedSessions>,
-            datesByWeek = SessionManager.normalizeIds(datesByWeek) as List<AggregatedDates>,
-            datesByMonth = SessionManager.normalizeIds(datesByMonth) as List<AggregatedDates>,
+            sessionsByWeek = SessionManager.normalizeIds(
+                sessionsByWeek,
+                lastWeeksShown
+            ) as List<AggregatedSessions>,
+            sessionsByMonth = SessionManager.normalizeIds(
+                sessionsByMonth,
+                lastMonthsShown
+            ) as List<AggregatedSessions>,
+            datesByWeek = SessionManager.normalizeIds(
+                datesByWeek,
+                lastWeeksShown
+            ) as List<AggregatedDates>,
+            datesByMonth = SessionManager.normalizeIds(
+                datesByMonth,
+                lastMonthsShown
+            ) as List<AggregatedDates>,
             movingAverageWindow = averageLast
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), OutputState())

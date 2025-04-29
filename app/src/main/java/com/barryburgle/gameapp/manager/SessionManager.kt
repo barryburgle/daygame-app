@@ -16,12 +16,14 @@ class SessionManager {
         }
 
         fun normalizeIds(
-            periodAwareList: List<PeriodAware>
+            periodAwareList: List<PeriodAware>,
+            keepLast: Int
         ): List<PeriodAware> {
-            for (index in periodAwareList.indices) {
-                periodAwareList[index].periodNumber = index
+            var filteredList = periodAwareList.takeLast(keepLast)
+            for (index in filteredList.indices) {
+                filteredList[index].periodNumber = index
             }
-            return periodAwareList
+            return filteredList
         }
 
         fun computeAverageBarEntryList(barEntryList: List<BarEntry>): List<BarEntry> {
