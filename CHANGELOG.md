@@ -1,3 +1,9 @@
+# Version 1.7.1 (2025-04-30)
+
+**Bugs**
+- Last sessions/weeks/months shown fixed
+- Results ratio computations fixed
+
 # Version 1.7.0 (2025-04-26)
 
 **Features**
