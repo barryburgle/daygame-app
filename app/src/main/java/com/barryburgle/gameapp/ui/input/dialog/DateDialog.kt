@@ -513,7 +513,9 @@ private fun setState(
     state: InputState
 ) {
     if (state.editDate != null) {
-        state.leadId = state.editDate.leadId!!
+        if (state.leadId == 0L) {
+            state.leadId = state.editDate.leadId!!
+        }
         if (state.location.isBlank()) {
             state.location = state.editDate.location!!
         }
@@ -522,7 +524,9 @@ private fun setState(
         state.endHour = state.editDate.endHour.substring(11, 16)
         state.cost = state.editDate.cost.toString()
         state.dateNumber = state.editDate.dateNumber.toString()
-        state.dateType = state.editDate.dateType
+        if (state.dateType.isBlank()) {
+            state.dateType = state.editDate.dateType
+        }
         if (state.stickingPoints.isBlank()) {
             state.stickingPoints = state.editDate.stickingPoints!!
         }

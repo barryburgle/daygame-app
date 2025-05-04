@@ -2,6 +2,7 @@
 
 **Bugs**
 - Date edit crash when date lead deleted
+- Date lead and type changes when editing a date
 
 # Version 1.7.1 (2025-04-30)
 
