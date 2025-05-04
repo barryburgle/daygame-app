@@ -1,3 +1,8 @@
+# Version 1.7.2 (2025-05-dd)
+
+**Bugs**
+- Date edit crash when date lead deleted
+
 # Version 1.7.1 (2025-04-30)
 
 **Bugs**

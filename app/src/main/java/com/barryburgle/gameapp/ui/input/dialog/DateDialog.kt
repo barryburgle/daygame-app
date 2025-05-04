@@ -205,13 +205,16 @@ fun DateDialog(
                                     DialogConstant.DESCRIPTION_FONT_SIZE
                                 )
                             } else {
-                                val lead =
-                                    state.allLeads.filter { lead -> lead.id == state.leadId }.get(0)
-                                DialogFormSectionDescription(
-                                    CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age,
-                                    DialogConstant.DESCRIPTION_FONT_SIZE
-                                )
-                                leadIcon = Icons.Default.SwapHoriz
+                                val foundLead =
+                                    state.allLeads.filter { lead -> lead.id == state.leadId }
+                                if (foundLead.size != 0) {
+                                    val lead = foundLead.get(0)
+                                    DialogFormSectionDescription(
+                                        CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age,
+                                        DialogConstant.DESCRIPTION_FONT_SIZE
+                                    )
+                                    leadIcon = Icons.Default.SwapHoriz
+                                }
                             }
                         }
                         Column(
