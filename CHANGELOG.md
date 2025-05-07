@@ -1,4 +1,4 @@
-# Version 1.7.2 (2025-05-dd)
+# Version 1.7.2 (2025-05-08)
 
 **Features**
 - Added Date Ratio to Dashboard weeks and months charts
