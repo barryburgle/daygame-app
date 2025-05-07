@@ -9,8 +9,6 @@ import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.manager.SessionManager
-import com.barryburgle.gameapp.model.stat.AggregatedDates
-import com.barryburgle.gameapp.model.stat.AggregatedSessions
 import com.barryburgle.gameapp.ui.CombineTen
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,22 +55,12 @@ class OutputViewModel(
         state.copy(
             abstractSessions = SessionManager.normalizeSessionsIds(abstractSessions),
             leads = leads,
-            sessionsByWeek = SessionManager.normalizeIds(
-                sessionsByWeek,
-                lastWeeksShown
-            ) as List<AggregatedSessions>,
-            sessionsByMonth = SessionManager.normalizeIds(
-                sessionsByMonth,
-                lastMonthsShown
-            ) as List<AggregatedSessions>,
-            datesByWeek = SessionManager.normalizeIds(
-                datesByWeek,
-                lastWeeksShown
-            ) as List<AggregatedDates>,
-            datesByMonth = SessionManager.normalizeIds(
-                datesByMonth,
-                lastMonthsShown
-            ) as List<AggregatedDates>,
+            sessionsByWeek = sessionsByWeek,
+            sessionsByMonth = sessionsByMonth,
+            datesByWeek = datesByWeek,
+            datesByMonth = datesByMonth,
+            lastWeeksShown = lastWeeksShown,
+            lastMonthsShown = lastMonthsShown,
             movingAverageWindow = averageLast
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), OutputState())

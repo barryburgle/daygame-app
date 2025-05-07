@@ -14,5 +14,7 @@ data class OutputState(
     val datesByMonth: List<AggregatedDates> = emptyList(),
     val movingAverageWindow: Int = 4,
     val showLeadsLegend: Boolean = false,
-    val showIndexFormula: Boolean = false
+    val showIndexFormula: Boolean = false,
+    val lastWeeksShown: Int = 3,
+    val lastMonthsShown: Int = 3
 )
