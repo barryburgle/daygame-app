@@ -62,6 +62,9 @@ interface SettingDao {
         const val QUERY_LAST_SESSIONS_SHOWN = "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_SESSIONS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_SESSIONS_SHOWN_ID}'"
         const val QUERY_LAST_WEEKS_SHOWN = "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_WEEKS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_WEEKS_SHOWN_ID}'"
         const val QUERY_LAST_MONTHS_SHOWN = "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_MONTHS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_MONTHS_SHOWN_ID}'"
+
+        const val QUERY_LAST_WEEKS = "SELECT DISTINCT week_number FROM meeting UNION SELECT DISTINCT week_number FROM abstract_session ORDER BY week_number DESC LIMIT ($QUERY_LAST_WEEKS_SHOWN)"
+        const val QUERY_LAST_MONTHS = "SELECT DISTINCT strftime('%m', meeting_date) as month_number FROM meeting UNION SELECT DISTINCT strftime('%m', session_date) as month_number FROM abstract_session ORDER BY month_number DESC LIMIT ($QUERY_LAST_MONTHS_SHOWN)"
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
