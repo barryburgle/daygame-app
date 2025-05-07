@@ -21,12 +21,10 @@ fun LazyListScope.MonthSection(
             state.datesByMonth
         )
     val aggregatedMonthSessions = SessionManager.getAggregatedSessions(
-        aggregatedMonthPeriodsList,
-        state.lastMonthsShown
+        aggregatedMonthPeriodsList
     )
     val aggregatedMonthDates = SessionManager.getAggregatedDates(
-        aggregatedMonthPeriodsList,
-        state.lastMonthsShown
+        aggregatedMonthPeriodsList
     )
     item {
         aggregatedMonthSessions.map { singleMonth ->

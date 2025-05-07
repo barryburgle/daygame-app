@@ -11,7 +11,7 @@ class SessionManager {
 
         // TODO: do unit tests for getAggregatedSessions
         fun getAggregatedSessions(
-            aggregatedPeriodList: List<AggregatedPeriod>, takeLast: Int
+            aggregatedPeriodList: List<AggregatedPeriod>
         ): List<AggregatedSessions> {
             var aggregatedSessions: List<AggregatedSessions> = mutableListOf()
             var count: Int = 1
@@ -24,16 +24,15 @@ class SessionManager {
                 aggregatedSessions += addingAggregatedSessions
                 count++
             }
-            val filteredList = aggregatedSessions.takeLast(takeLast)
-            for (index in filteredList.indices) {
-                filteredList[index].periodNumber = index
+            for (index in aggregatedSessions.indices) {
+                aggregatedSessions[index].periodNumber = index
             }
-            return filteredList
+            return aggregatedSessions
         }
 
         // TODO: do unit tests for getAggregatedDates
         fun getAggregatedDates(
-            aggregatedPeriodList: List<AggregatedPeriod>, takeLast: Int
+            aggregatedPeriodList: List<AggregatedPeriod>
         ): List<AggregatedDates> {
             var aggregatedDates: List<AggregatedDates> = mutableListOf()
             var count: Int = 1
@@ -46,11 +45,10 @@ class SessionManager {
                 aggregatedDates += addingAggregatedDates
                 count++
             }
-            val filteredList = aggregatedDates.takeLast(takeLast)
-            for (index in filteredList.indices) {
-                filteredList[index].periodNumber = index
+            for (index in aggregatedDates.indices) {
+                aggregatedDates[index].periodNumber = index
             }
-            return filteredList
+            return aggregatedDates
         }
 
         // TODO: do unit tests for createAggregatedPeriodList

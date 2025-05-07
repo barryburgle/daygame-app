@@ -20,9 +20,9 @@ fun LazyListScope.WeekSection(
             state.datesByWeek
         )
     val aggregatedWeekSessions =
-        SessionManager.getAggregatedSessions(aggregatedWeekPeriodsList, state.lastWeeksShown)
+        SessionManager.getAggregatedSessions(aggregatedWeekPeriodsList)
     val aggregatedWeekDates =
-        SessionManager.getAggregatedDates(aggregatedWeekPeriodsList, state.lastWeeksShown)
+        SessionManager.getAggregatedDates(aggregatedWeekPeriodsList)
     item {
         aggregatedWeekSessions.map { singleWeek ->
             singleWeek.periodNumber?.let {
