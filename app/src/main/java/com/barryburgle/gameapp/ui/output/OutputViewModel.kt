@@ -2,14 +2,14 @@ package com.barryburgle.gameapp.ui.output
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.barryburgle.gameapp.dao.date.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
-import com.barryburgle.gameapp.dao.date.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.manager.SessionManager
-import com.barryburgle.gameapp.ui.CombineTen
+import com.barryburgle.gameapp.ui.CombineEight
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,11 +35,9 @@ class OutputViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _datesByMonth = aggregatedDatesDao.groupStatsByMonth()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    private val _lastWeeksShown = settingDao.getLastWeeksShown()
-    private val _lastMonthsShown = settingDao.getLastMonthsShown()
     private val _averageLast = settingDao.getAverageLast()
 
-    val state = CombineTen(
+    val state = CombineEight(
         _state,
         _abstractSessions,
         _leads,
@@ -47,11 +45,9 @@ class OutputViewModel(
         _sessionsByMonth,
         _datesByWeek,
         _datesByMonth,
-        _lastWeeksShown,
-        _lastMonthsShown,
         _averageLast
     )
-    { state, abstractSessions, leads, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, lastWeeksShown, lastMonthsShown, averageLast ->
+    { state, abstractSessions, leads, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast ->
         state.copy(
             abstractSessions = SessionManager.normalizeSessionsIds(abstractSessions),
             leads = leads,
@@ -59,8 +55,6 @@ class OutputViewModel(
             sessionsByMonth = sessionsByMonth,
             datesByWeek = datesByWeek,
             datesByMonth = datesByMonth,
-            lastWeeksShown = lastWeeksShown,
-            lastMonthsShown = lastMonthsShown,
             movingAverageWindow = averageLast
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), OutputState())
