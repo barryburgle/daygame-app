@@ -1,11 +1,88 @@
 package com.barryburgle.gameapp.manager
 
 import com.barryburgle.gameapp.model.session.AbstractSession
-import com.barryburgle.gameapp.model.stat.PeriodAware
+import com.barryburgle.gameapp.model.stat.AggregatedDates
+import com.barryburgle.gameapp.model.stat.AggregatedPeriod
+import com.barryburgle.gameapp.model.stat.AggregatedSessions
 import com.github.mikephil.charting.data.BarEntry
 
 class SessionManager {
     companion object {
+
+        // TODO: do unit tests for getAggregatedSessions
+        fun getAggregatedSessions(
+            aggregatedPeriodList: List<AggregatedPeriod>, takeLast: Int
+        ): List<AggregatedSessions> {
+            var aggregatedSessions: List<AggregatedSessions> = mutableListOf()
+            var count: Int = 1
+            for (aggregatedPeriod in aggregatedPeriodList) {
+                var addingAggregatedSessions = AggregatedSessions(0f, 0f, 0f, 0f, 0f, 0f, count, 0f)
+                if (aggregatedPeriod.aggregatedSessions != null) {
+                    addingAggregatedSessions = aggregatedPeriod.aggregatedSessions!!
+                    addingAggregatedSessions.periodNumber = count
+                }
+                aggregatedSessions += addingAggregatedSessions
+                count++
+            }
+            val filteredList = aggregatedSessions.takeLast(takeLast)
+            for (index in filteredList.indices) {
+                filteredList[index].periodNumber = index
+            }
+            return filteredList
+        }
+
+        // TODO: do unit tests for getAggregatedDates
+        fun getAggregatedDates(
+            aggregatedPeriodList: List<AggregatedPeriod>, takeLast: Int
+        ): List<AggregatedDates> {
+            var aggregatedDates: List<AggregatedDates> = mutableListOf()
+            var count: Int = 1
+            for (aggregatedPeriod in aggregatedPeriodList) {
+                var addingAggregatedDates = AggregatedDates(0f, count, 0f)
+                if (aggregatedPeriod.aggregatedDates != null) {
+                    addingAggregatedDates = aggregatedPeriod.aggregatedDates!!
+                    addingAggregatedDates.periodNumber = count
+                }
+                aggregatedDates += addingAggregatedDates
+                count++
+            }
+            val filteredList = aggregatedDates.takeLast(takeLast)
+            for (index in filteredList.indices) {
+                filteredList[index].periodNumber = index
+            }
+            return filteredList
+        }
+
+        // TODO: do unit tests for createAggregatedPeriodList
+        fun createAggregatedPeriodList(
+            aggregatedSessionsList: List<AggregatedSessions>,
+            aggregatedDatesList: List<AggregatedDates>
+        ): List<AggregatedPeriod> {
+            var aggregatedPeriodMap: Map<Int, AggregatedPeriod> = mutableMapOf()
+            for (aggregatedSessions in aggregatedSessionsList) {
+                var aggregatedPeriod: AggregatedPeriod? =
+                    aggregatedPeriodMap.get(aggregatedSessions.periodNumber)
+                if (aggregatedPeriod != null) {
+                    aggregatedPeriod.aggregatedSessions = aggregatedSessions
+                } else {
+                    aggregatedPeriod = AggregatedPeriod(aggregatedSessions, null)
+                }
+                aggregatedPeriodMap += aggregatedSessions.periodNumber to aggregatedPeriod
+            }
+            for (aggregatedDates in aggregatedDatesList) {
+                var aggregatedPeriod: AggregatedPeriod? =
+                    aggregatedPeriodMap.get(aggregatedDates.periodNumber)
+                if (aggregatedPeriod != null) {
+                    aggregatedPeriod.aggregatedDates = aggregatedDates
+                } else {
+                    aggregatedPeriod = AggregatedPeriod(null, aggregatedDates)
+                }
+                aggregatedPeriodMap += aggregatedDates.periodNumber to aggregatedPeriod
+            }
+            aggregatedPeriodMap = aggregatedPeriodMap.toSortedMap()
+            return aggregatedPeriodMap.entries.toList().map { it.value }
+        }
+
         fun normalizeSessionsIds(
             abstractSessions: List<AbstractSession>
         ): List<AbstractSession> {
@@ -13,17 +90,6 @@ class SessionManager {
                 abstractSessions[index].id = index.toLong()
             }
             return abstractSessions
-        }
-
-        fun normalizeIds(
-            periodAwareList: List<PeriodAware>,
-            keepLast: Int
-        ): List<PeriodAware> {
-            var filteredList = periodAwareList.takeLast(keepLast)
-            for (index in filteredList.indices) {
-                filteredList[index].periodNumber = index
-            }
-            return filteredList
         }
 
         fun computeAverageBarEntryList(barEntryList: List<BarEntry>): List<BarEntry> {
@@ -40,16 +106,14 @@ class SessionManager {
         }
 
         fun computeMovingAverage(
-            barEntryList: List<BarEntry>,
-            movingAverageWindow: Int
+            barEntryList: List<BarEntry>, movingAverageWindow: Int
         ): List<BarEntry> {
             val window = if (movingAverageWindow > 0) movingAverageWindow else 1
             var valuesList = ArrayList<Float>()
             barEntryList.map { barEntry -> valuesList.add(barEntry.y) }
             var averageList = ArrayList<Float>()
             for (windowSize in 0 until window - 1) {
-                val lastAverage =
-                    valuesList.windowed(windowSize + 1, 1) { it.average() }.get(0)
+                val lastAverage = valuesList.windowed(windowSize + 1, 1) { it.average() }.get(0)
                 averageList.add(lastAverage.toFloat())
             }
             val remainderAverage =
@@ -60,8 +124,7 @@ class SessionManager {
             averageList.map { average ->
                 avgBarEntryList.add(
                     BarEntry(
-                        (count++).toFloat(),
-                        average
+                        (count++).toFloat(), average
                     )
                 )
             }
@@ -96,8 +159,7 @@ class SessionManager {
         }
 
         private fun computePercentageFrequency(
-            histogramMap: MutableMap<Int, Double>,
-            totalSessions: Double
+            histogramMap: MutableMap<Int, Double>, totalSessions: Double
         ): Map<Int, Double> {
             for ((count, absoluteFrequency) in histogramMap) {
                 val percentageFrequency = absoluteFrequency / totalSessions * 100
