@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.dao.session
+package com.barryburgle.gameapp.dao.date
 
 import androidx.room.Dao
 import androidx.room.Query
