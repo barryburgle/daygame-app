@@ -2,6 +2,9 @@ package com.barryburgle.gameapp.ui.output.section
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.ui.unit.Dp
+import com.barryburgle.gameapp.manager.SessionManager
+import com.barryburgle.gameapp.model.stat.AggregatedPeriod
+import com.barryburgle.gameapp.service.GlobalStatsService
 import com.barryburgle.gameapp.ui.output.OutputCard
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.github.mikephil.charting.data.BarEntry
@@ -11,8 +14,17 @@ fun LazyListScope.WeekSection(
     height: Dp,
     width: Dp
 ) {
+    val aggregatedWeekPeriodsList: List<AggregatedPeriod> =
+        SessionManager.createAggregatedPeriodList(
+            state.sessionsByWeek,
+            state.datesByWeek
+        )
+    val aggregatedWeekSessions =
+        SessionManager.getAggregatedSessions(aggregatedWeekPeriodsList, state.lastWeeksShown)
+    val aggregatedWeekDates =
+        SessionManager.getAggregatedDates(aggregatedWeekPeriodsList, state.lastWeeksShown)
     item {
-        state.sessionsByWeek.map { singleWeek ->
+        aggregatedWeekSessions.map { singleWeek ->
             singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
@@ -31,7 +43,7 @@ fun LazyListScope.WeekSection(
         }
     }
     item {
-        state.sessionsByWeek.map { singleWeek ->
+        aggregatedWeekSessions.map { singleWeek ->
             singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
@@ -50,7 +62,7 @@ fun LazyListScope.WeekSection(
         }
     }
     item {
-        state.sessionsByWeek.map { singleWeek ->
+        aggregatedWeekSessions.map { singleWeek ->
             singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
@@ -69,7 +81,7 @@ fun LazyListScope.WeekSection(
         }
     }
     item {
-        state.datesByWeek.map { singleWeek ->
+        aggregatedWeekDates.map { singleWeek ->
             singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
@@ -88,7 +100,7 @@ fun LazyListScope.WeekSection(
         }
     }
     item {
-        state.sessionsByWeek.map { singleWeek ->
+        aggregatedWeekSessions.map { singleWeek ->
             singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
@@ -99,7 +111,7 @@ fun LazyListScope.WeekSection(
             OutputCard(
                 height = height,
                 width = width,
-                chartLabel = "Average Index",
+                chartLabel = "Average Session Index",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
                 movingAverageWindow = state.movingAverageWindow
@@ -107,7 +119,7 @@ fun LazyListScope.WeekSection(
         }
     }
     item {
-        state.sessionsByWeek.map { singleWeek ->
+        aggregatedWeekSessions.map { singleWeek ->
             singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
@@ -126,7 +138,7 @@ fun LazyListScope.WeekSection(
         }
     }
     item {
-        state.datesByWeek.map { singleWeek ->
+        aggregatedWeekDates.map { singleWeek ->
             singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
@@ -145,7 +157,7 @@ fun LazyListScope.WeekSection(
         }
     }
     item {
-        state.sessionsByWeek.map { singleWeek ->
+        aggregatedWeekSessions.map { singleWeek ->
             singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
@@ -164,7 +176,7 @@ fun LazyListScope.WeekSection(
         }
     }
     item {
-        state.sessionsByWeek.map { singleWeek ->
+        aggregatedWeekSessions.map { singleWeek ->
             singleWeek.periodNumber?.let {
                 BarEntry(
                     it.toFloat(),
@@ -176,6 +188,28 @@ fun LazyListScope.WeekSection(
                 height = height,
                 width = width,
                 chartLabel = "Average Contact Ratio [%]",
+                barEntryList = it as List<BarEntry>,
+                integerValues = true,
+                movingAverageWindow = state.movingAverageWindow
+            )
+        }
+    }
+    item {
+        aggregatedWeekSessions.map { singleMonth ->
+            singleMonth.periodNumber?.let {
+                BarEntry(
+                    it.toFloat(),
+                    GlobalStatsService.computeGenericRatio(
+                        singleMonth.sets.toInt(),
+                        aggregatedWeekDates.get(it).dates.toInt()
+                    ).toFloat()
+                )
+            }
+        }?.let { it ->
+            OutputCard(
+                height = height,
+                width = width,
+                chartLabel = "Date Ratio [%]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
                 movingAverageWindow = state.movingAverageWindow

@@ -1,6 +1,10 @@
 # Version 1.7.2 (2025-05-dd)
 
+**Features**
+- Added Date Ratio to Dashboard weeks and months charts
+
 **Bugs**
+- Sessions and dates timeseries in sync in Dashboard weeks and months charts 
 - Date edit crash when date lead deleted
 - Date lead and type changes when editing a date
 
