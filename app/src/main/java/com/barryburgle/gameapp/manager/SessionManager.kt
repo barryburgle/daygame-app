@@ -9,7 +9,7 @@ import com.github.mikephil.charting.data.BarEntry
 class SessionManager {
     companion object {
 
-        // TODO: do unit tests for getAggregatedSessions
+        // TODO: do unit tests for getAggregatedSessions [v1.7.3]
         fun getAggregatedSessions(
             aggregatedPeriodList: List<AggregatedPeriod>
         ): List<AggregatedSessions> {
@@ -30,7 +30,7 @@ class SessionManager {
             return aggregatedSessions
         }
 
-        // TODO: do unit tests for getAggregatedDates
+        // TODO: do unit tests for getAggregatedDates [v1.7.3]
         fun getAggregatedDates(
             aggregatedPeriodList: List<AggregatedPeriod>
         ): List<AggregatedDates> {
@@ -51,7 +51,7 @@ class SessionManager {
             return aggregatedDates
         }
 
-        // TODO: do unit tests for createAggregatedPeriodList
+        // TODO: do unit tests for createAggregatedPeriodList [v1.7.3]
         fun createAggregatedPeriodList(
             aggregatedSessionsList: List<AggregatedSessions>,
             aggregatedDatesList: List<AggregatedDates>

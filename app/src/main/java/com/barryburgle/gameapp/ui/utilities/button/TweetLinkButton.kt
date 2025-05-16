@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 fun TweetLinkButton(tweetUrl: String?) {
     val localContext = LocalContext.current.applicationContext
     val uriHandler = LocalUriHandler.current
-    // TODO: bring url on session model and cards body too
+    // TODO: bring url on session model and cards body too [v1.7.3]
     Column(
         modifier = Modifier.fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally

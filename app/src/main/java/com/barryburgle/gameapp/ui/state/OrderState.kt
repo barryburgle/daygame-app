@@ -8,7 +8,7 @@ import com.barryburgle.gameapp.model.set.SingleSet
 
 open class OrderState(
     open val sortType: FieldEnum? = null,
-    // TODO: remove this OrderState class and integrate fields in InputState after Date screen collapse in Input state
+    // TODO: remove this OrderState class and integrate fields in InputState after Date screen collapse in Input state [v1.7.3]
     // The following properties should be part of a BackupState.
     open var exportSessionsFileName: String = "",
     open var exportLeadsFileName: String = "",

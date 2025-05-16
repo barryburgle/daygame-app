@@ -300,7 +300,7 @@ fun DateDialog(
                     }
                 }
                 Spacer(modifier = Modifier.width(5.dp))
-                // TODO: make the date type button change value displayed after edit 
+                // TODO: make the date type button change value displayed after edit - SOLVED?
                 Column {
                     Button(colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer

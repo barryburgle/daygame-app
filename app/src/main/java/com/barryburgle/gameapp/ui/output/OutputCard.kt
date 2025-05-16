@@ -31,7 +31,7 @@ fun OutputCard(
     integerValues: Boolean,
     movingAverageWindow: Int
 ) {
-    // TODO: consider making cards a bit bigger and add a short description under each title to better describe what user is seeing, description can also be disappearing
+    // TODO: consider making cards a bit bigger and add a short description under each title to better describe what user is seeing, description can also be disappearing [v1.7.3]
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(

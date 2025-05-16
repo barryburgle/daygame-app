@@ -29,7 +29,7 @@ fun MultiChoiceButton(
     selectedOptions: SnapshotStateList<Boolean>,
     onCheckedChange: (Int) -> Unit
 ) {
-    // TODO: move all the selection composables in the .selection package
+    // TODO: move all the selection composables in the .selection package [v1.7.3]
     val selectedOptionsToDisplay = selectedOptions
     Row(
         modifier = Modifier

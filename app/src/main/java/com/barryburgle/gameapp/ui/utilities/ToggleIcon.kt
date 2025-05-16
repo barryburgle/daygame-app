@@ -31,7 +31,7 @@ fun ToggleIcon(
     @DrawableRes icon: Int,
     onCheckedChange: () -> Unit
 ) {
-    // TODO: instead of having descriptions with or without "Not", display a little badge (Icons.Filled.CheckCircle) with a tick on the bottom right of the icon
+    // TODO: instead of having descriptions with or without "Not", display a little badge (Icons.Filled.CheckCircle) with a tick on the bottom right of the icon [v1.7.3]
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         IconButton(
             onClick = {

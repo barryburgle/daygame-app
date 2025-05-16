@@ -26,8 +26,8 @@ fun SelectionRow(
     onEvent: (GenericEvent) -> Unit,
     genericEvent: GenericEvent
 ) {
-    // TODO: apply shades on every button on UI (but with less elevation wrt to now)
-    // TODO: create a tripe-state selection process where either don't sort, sort ascending or sort descending by field
+    // TODO: apply shades on every button on UI (but with less elevation wrt to now) [v1.7.3]
+    // TODO: create a tripe-state selection process where either don't sort, sort ascending or sort descending by field [v1.7.3]
     // TODO: put on the left of every button (animating similarly to MultiChoiceButton) text either [no-icon = no selection, up-arrow = sort ascending, down-arrow = sort descending]
     Row(
         verticalAlignment = Alignment.CenterVertically,

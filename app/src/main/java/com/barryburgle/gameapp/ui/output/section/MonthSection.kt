@@ -178,7 +178,7 @@ fun LazyListScope.MonthSection(
             )
         }
     }
-    // TODO: consider adding to average ratios precise ratios for the period and std of ratios in the period (do same for weeks)
+    // TODO: consider adding to average ratios precise ratios for the period and std of ratios in the period (do same for weeks) [v1.7.3]
     item {
         aggregatedMonthSessions.map { singleMonth ->
             singleMonth.periodNumber?.let {

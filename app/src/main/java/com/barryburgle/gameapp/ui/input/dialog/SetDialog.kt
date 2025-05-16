@@ -74,7 +74,7 @@ fun SetDialog(
     if (state.isUpdatingSet) {
         setState(state)
     }
-    // TODO: re-use common parts in an inheritable event dialog
+    // TODO: re-use common parts in an inheritable event dialog - SOLVED OR [v1.7.3]?
     MaterialDialog(
         dialogState = setDialogState, elevation = 10.dp, buttons = {
             positiveButton(
@@ -285,8 +285,8 @@ fun SetDialog(
                     Button(colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer
                     ), onClick = { locationTextFieldExpanded = !locationTextFieldExpanded }) {
-                        // TODO: insert here a button that allows to choose from a list of sessions to which the set belongs to
-                        // TODO: add a switch that allow to automatically create a date from a set, and a selector in case the idate has
+                        // TODO: insert here a button that allows to choose from a list of sessions to which the set belongs to  [v1.7.3]
+                        // TODO: add a switch that allow to automatically create a date from a set, and a selector in case the idate has [v1.7.3]
                         // already been recorded on table
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -407,13 +407,13 @@ private fun setState(
         state.date = state.editSet.date.substring(0, 10)
         state.startHour = state.editSet.startHour.substring(11, 16)
         state.endHour = state.editSet.endHour.substring(11, 16)
-        // TODO: solve following
+        // TODO: solve following [v1.7.3]
         // state.sessionId = state.editSet.sessionId!!
         if (state.location.isBlank()) {
             state.location = state.editSet.location!!
         }
         state.leadId = state.editSet.leadId!!
-        // TODO: solve following
+        // TODO: solve following [v1.7.3]
         // state.dateId = state.editSet.dateId!!
         if (state.stickingPoints.isBlank()) {
             state.stickingPoints = state.editSet.stickingPoints!!
