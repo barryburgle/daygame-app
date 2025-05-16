@@ -7,6 +7,7 @@ import com.barryburgle.gameapp.model.stat.AggregatedSessions
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.github.mikephil.charting.data.BarEntry
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
 import org.junit.Test
 import java.time.LocalDate
 import java.time.LocalTime
@@ -62,6 +63,21 @@ class SessionManagerTest {
         AggregatedPeriod(SECOND_AGGREGATED_SESSIONS, FIRST_AGGREGATED_DATES),
         AggregatedPeriod(null, SECOND_AGGREGATED_DATES)
     )
+
+    @Test
+    fun getAggregatedDatesTest() {
+        val aggregatedDatesList: List<AggregatedDates> =
+            SessionManager.getAggregatedDates(
+                AGGREGATED_PERIOD_LIST
+            )
+        assertNotNull(aggregatedDatesList.get(0))
+        val firstNormalizedAggregatedDates = FIRST_AGGREGATED_DATES
+        firstNormalizedAggregatedDates.periodNumber = 2
+        assertEquals(firstNormalizedAggregatedDates, aggregatedDatesList.get(1))
+        val secondNormalizedAggregatedDates = SECOND_AGGREGATED_DATES
+        secondNormalizedAggregatedDates.periodNumber = 3
+        assertEquals(secondNormalizedAggregatedDates, aggregatedDatesList.get(2))
+    }
 
     @Test
     fun createAggregatedPeriodListTest() {

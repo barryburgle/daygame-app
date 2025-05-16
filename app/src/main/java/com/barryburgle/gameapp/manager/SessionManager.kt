@@ -30,7 +30,6 @@ class SessionManager {
             return aggregatedSessions
         }
 
-        // TODO: do unit tests for getAggregatedDates [v1.7.3]
         fun getAggregatedDates(
             aggregatedPeriodList: List<AggregatedPeriod>
         ): List<AggregatedDates> {
