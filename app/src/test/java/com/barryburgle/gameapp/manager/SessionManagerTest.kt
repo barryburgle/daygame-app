@@ -1,6 +1,9 @@
 package com.barryburgle.gameapp.manager
 
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.stat.AggregatedDates
+import com.barryburgle.gameapp.model.stat.AggregatedPeriod
+import com.barryburgle.gameapp.model.stat.AggregatedSessions
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.github.mikephil.charting.data.BarEntry
 import junit.framework.TestCase.assertEquals
@@ -38,6 +41,60 @@ class SessionManagerTest {
         BarEntry(2f, 2f),
         BarEntry(3f, 2.5f),
     )
+    val FIRST_AGGREGATED_SESSIONS: AggregatedSessions =
+        AggregatedSessions(3f, 2f, 1f, 1.5f, 0.75f, 0.25f, 2, 120f)
+    val SECOND_AGGREGATED_SESSIONS: AggregatedSessions =
+        AggregatedSessions(6f, 4f, 2f, 1.5f, 0.75f, 0.25f, 3, 120f)
+    val AGGREGATED_SESSIONS_LIST: List<AggregatedSessions> = listOf(
+        FIRST_AGGREGATED_SESSIONS,
+        SECOND_AGGREGATED_SESSIONS
+    )
+    val FIRST_AGGREGATED_DATES: AggregatedDates =
+        AggregatedDates(3f, 3, 120f)
+    val SECOND_AGGREGATED_DATES: AggregatedDates =
+        AggregatedDates(6f, 4, 120f)
+    val AGGREGATED_DATES_LIST: List<AggregatedDates> = listOf(
+        FIRST_AGGREGATED_DATES,
+        SECOND_AGGREGATED_DATES
+    )
+    val AGGREGATED_PERIOD_LIST: List<AggregatedPeriod> = listOf(
+        AggregatedPeriod(FIRST_AGGREGATED_SESSIONS, null),
+        AggregatedPeriod(SECOND_AGGREGATED_SESSIONS, FIRST_AGGREGATED_DATES),
+        AggregatedPeriod(null, SECOND_AGGREGATED_DATES)
+    )
+
+    @Test
+    fun createAggregatedPeriodListTest() {
+        val aggregatedPeriodList: List<AggregatedPeriod> =
+            SessionManager.createAggregatedPeriodList(
+                AGGREGATED_SESSIONS_LIST,
+                AGGREGATED_DATES_LIST
+            )
+        assertEquals(
+            AGGREGATED_PERIOD_LIST.get(0).aggregatedSessions,
+            aggregatedPeriodList.get(0).aggregatedSessions
+        )
+        assertEquals(
+            AGGREGATED_PERIOD_LIST.get(0).aggregatedDates,
+            aggregatedPeriodList.get(0).aggregatedDates
+        )
+        assertEquals(
+            AGGREGATED_PERIOD_LIST.get(1).aggregatedSessions,
+            aggregatedPeriodList.get(1).aggregatedSessions
+        )
+        assertEquals(
+            AGGREGATED_PERIOD_LIST.get(1).aggregatedDates,
+            aggregatedPeriodList.get(1).aggregatedDates
+        )
+        assertEquals(
+            AGGREGATED_PERIOD_LIST.get(2).aggregatedSessions,
+            aggregatedPeriodList.get(2).aggregatedSessions
+        )
+        assertEquals(
+            AGGREGATED_PERIOD_LIST.get(2).aggregatedDates,
+            aggregatedPeriodList.get(2).aggregatedDates
+        )
+    }
 
     @Test
     fun normalizeSessionsIdsTest() {
