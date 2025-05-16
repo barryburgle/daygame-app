@@ -9,7 +9,6 @@ import com.github.mikephil.charting.data.BarEntry
 class SessionManager {
     companion object {
 
-        // TODO: do unit tests for getAggregatedSessions [v1.7.3]
         fun getAggregatedSessions(
             aggregatedPeriodList: List<AggregatedPeriod>
         ): List<AggregatedSessions> {

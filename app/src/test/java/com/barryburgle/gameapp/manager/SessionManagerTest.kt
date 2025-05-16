@@ -65,6 +65,21 @@ class SessionManagerTest {
     )
 
     @Test
+    fun getAggregatedSessionsTest() {
+        val aggregatedSessionsList: List<AggregatedSessions> =
+            SessionManager.getAggregatedSessions(
+                AGGREGATED_PERIOD_LIST
+            )
+        val firstNormalizedAggregatedSessions = FIRST_AGGREGATED_SESSIONS
+        firstNormalizedAggregatedSessions.periodNumber = 1
+        assertEquals(firstNormalizedAggregatedSessions, aggregatedSessionsList.get(0))
+        val secondNormalizedAggregatedSessions = SECOND_AGGREGATED_SESSIONS
+        secondNormalizedAggregatedSessions.periodNumber = 2
+        assertEquals(secondNormalizedAggregatedSessions, aggregatedSessionsList.get(1))
+        assertNotNull(aggregatedSessionsList.get(2))
+    }
+
+    @Test
     fun getAggregatedDatesTest() {
         val aggregatedDatesList: List<AggregatedDates> =
             SessionManager.getAggregatedDates(
