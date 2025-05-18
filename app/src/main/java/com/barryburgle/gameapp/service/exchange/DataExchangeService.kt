@@ -10,7 +10,7 @@ import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.service.csv.SetCsvService
-import com.barryburgle.gameapp.ui.state.OrderState
+import com.barryburgle.gameapp.ui.state.ExportState
 
 class DataExchangeService {
 
@@ -22,7 +22,7 @@ class DataExchangeService {
         val setCsvService: SetCsvService = SetCsvService()
 
         fun backup(
-            state: OrderState
+            state: ExportState
         ) {
             backupAll(state)
             validateAll(state)
@@ -30,7 +30,7 @@ class DataExchangeService {
         }
 
         fun cleanAllBackups(
-            state: OrderState
+            state: ExportState
         ) {
             sessionCsvService.cleanBackupFolder(
                 state.exportFolder + "/" + state.backupFolder,
@@ -51,7 +51,7 @@ class DataExchangeService {
         }
 
         fun validateAll(
-            state: OrderState
+            state: ExportState
         ) {
             sessionCsvService.validateExport(
                 state.exportFolder + "/" + state.backupFolder
@@ -105,7 +105,7 @@ class DataExchangeService {
         }
 
         fun backupAll(
-            state: OrderState
+            state: ExportState
         ) {
             export(
                 state.allSessions,
@@ -121,7 +121,7 @@ class DataExchangeService {
         }
 
         fun exportAll(
-            state: OrderState,
+            state: ExportState,
             localContext: Context
         ) {
             export(

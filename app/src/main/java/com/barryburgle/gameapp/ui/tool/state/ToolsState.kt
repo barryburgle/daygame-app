@@ -4,7 +4,7 @@ import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
-import com.barryburgle.gameapp.ui.state.OrderState
+import com.barryburgle.gameapp.ui.state.ExportState
 
 data class ToolsState(
     override var exportSessionsFileName: String = "",
@@ -37,7 +37,7 @@ data class ToolsState(
     val latestDownloadUrl: String = "",
     val showChangelog: Boolean = false,
     var backupBeforeUpdate: Boolean = true
-) : OrderState(
+) : ExportState(
     null,
     exportSessionsFileName,
     exportLeadsFileName,

@@ -9,7 +9,7 @@ import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
-import com.barryburgle.gameapp.ui.state.OrderState
+import com.barryburgle.gameapp.ui.state.ExportState
 
 data class InputState(
     override var allSessions: List<AbstractSession> = emptyList(),
@@ -78,7 +78,7 @@ data class InputState(
     var instantDate: Boolean = false,
     var sessionId: Long? = 0L,
     var dateId: Long? = 0L
-) : OrderState(
+) : ExportState(
     sessionSortType,
     exportSessionsFileName,
     exportLeadsFileName,
