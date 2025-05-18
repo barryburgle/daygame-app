@@ -7,7 +7,6 @@ import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
 
 open class OrderState(
-    open val sortType: FieldEnum? = null,
     // The following properties should be part of a BackupState.
     open var exportSessionsFileName: String = "",
     open var exportLeadsFileName: String = "",
