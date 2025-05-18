@@ -26,7 +26,6 @@ class SetService : SetInitializer, EntityService() {
         tweetUrl: String
     ): SingleSet {
         // TODO: Group the following under some methods common to all EntityService children
-        // TODO: Do unit tests [v1.7.3]
         val id: Long? = if (id.isNullOrBlank()) null else id.toLong()
         val parsedDate = if (date.isBlank()) getLocalDateTimeNow(15, "00:00:00.000Z") else
             LocalDateTime.parse(date + DATE_SUFFIX, savingFormatter)
