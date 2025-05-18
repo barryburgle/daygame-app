@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.ui.utilities
+package com.barryburgle.gameapp.ui.utilities.selection
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

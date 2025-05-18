@@ -20,8 +20,8 @@ import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
-import com.barryburgle.gameapp.ui.utilities.ScrollableSorter
-import com.barryburgle.gameapp.ui.utilities.SelectionRow
+import com.barryburgle.gameapp.ui.utilities.selection.ScrollableSorter
+import com.barryburgle.gameapp.ui.utilities.selection.SelectionRow
 
 @Composable
 fun EntitySorter(
