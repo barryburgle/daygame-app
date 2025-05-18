@@ -21,6 +21,57 @@ open class EntityService {
         val scale: Int = 3
 
         @JvmStatic
+        fun getId(
+            id: String?
+        ): Long? {
+            return if (id.isNullOrBlank()) null else id.toLong()
+        }
+
+        @JvmStatic
+        fun getParsedDate(
+            date: String
+        ): LocalDateTime {
+            return if (date.isBlank()) getLocalDateTimeNow(15, "00:00:00.000Z") else
+                LocalDateTime.parse(date + DATE_SUFFIX, savingFormatter)
+        }
+
+        @JvmStatic
+        fun getParsedHour(
+            date: String,
+            hour: String
+        ): LocalDateTime {
+            return if (date.isBlank() || hour.isBlank()) getLocalDateTimeNow(10, ":00.000Z") else
+                LocalDateTime.parse(date + SEPARATOR + hour + TIME_SUFFIX, savingFormatter)
+        }
+
+        @JvmStatic
+        fun getTime(
+            startHour: LocalDateTime,
+            endHour: LocalDateTime
+        ): Long {
+            return computeTime(
+                startHour.toLocalTime(),
+                endHour.toLocalTime()
+            )
+        }
+
+        @JvmStatic
+        fun getDayOfWeek(
+            date: LocalDateTime
+        ): DayOfWeek {
+            return computeDayOfWeek(
+                date.toLocalDate()
+            )
+        }
+
+        @JvmStatic
+        fun getWeekOfYear(
+            date: LocalDateTime
+        ): Int {
+            return computeWeekOfYear(date.toLocalDate())
+        }
+
+        @JvmStatic
         fun computeTime(
             startHour: LocalTime,
             endHour: LocalTime
