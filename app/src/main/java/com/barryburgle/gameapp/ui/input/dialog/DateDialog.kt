@@ -33,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
@@ -42,7 +41,6 @@ import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.DateType
 import com.barryburgle.gameapp.model.enums.TimeInputFormEnum
-import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
@@ -51,14 +49,6 @@ import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkImportButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
-import com.vanpra.composematerialdialogs.datetime.date.datepicker
-import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
-import com.vanpra.composematerialdialogs.datetime.time.timepicker
-import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import java.time.LocalDate
-import java.time.LocalTime
 
 @Composable
 fun DateDialog(
@@ -71,99 +61,11 @@ fun DateDialog(
     var latestDateValue = state.date
     var latestStartHour = state.startHour
     var latestEndHour = state.endHour
-    val dateDialogState = rememberMaterialDialogState()
-    val startHourDialogState = rememberMaterialDialogState()
-    val endHourDialogState = rememberMaterialDialogState()
     var leadsExpanded by remember { mutableStateOf(false) }
     var dateTypesExpanded by remember { mutableStateOf(false) }
     var locationTextFieldExpanded by remember { mutableStateOf(false) }
     if (state.isUpdatingDate) {
         setState(state)
-    }
-    MaterialDialog(
-        dialogState = dateDialogState, elevation = 10.dp, buttons = {
-            positiveButton(
-                "Ok", textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.surfaceVariant
-                )
-            )
-            negativeButton(
-                "Cancel", textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.surfaceVariant
-                )
-            )
-        }, shape = MaterialTheme.shapes.extraLarge
-    ) {
-        this.datepicker(
-            initialDate = if (state.isAddingDate || state.editDate == null) LocalDate.now() else FormatService.parseDate(
-                state.editDate.date!!
-            ), title = "Set date", colors = DatePickerDefaults.colors(
-                headerBackgroundColor = MaterialTheme.colorScheme.background,
-                headerTextColor = MaterialTheme.colorScheme.onPrimary,
-                dateActiveBackgroundColor = MaterialTheme.colorScheme.tertiary,
-                dateActiveTextColor = MaterialTheme.colorScheme.onPrimary,
-                dateInactiveBackgroundColor = MaterialTheme.colorScheme.onTertiary,
-                dateInactiveTextColor = MaterialTheme.colorScheme.background
-            )
-        ) {
-            onEvent(GameEvent.SetDate(it.toString()))
-        }
-    }
-    MaterialDialog(
-        dialogState = startHourDialogState, elevation = 10.dp, buttons = {
-            positiveButton(
-                "Ok", textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.surfaceVariant
-                )
-            )
-            negativeButton(
-                "Cancel", textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.surfaceVariant
-                )
-            )
-        }, shape = MaterialTheme.shapes.extraLarge
-    ) {
-        this.timepicker(
-            initialTime = if (state.isAddingDate || state.editDate == null) LocalTime.now() else FormatService.parseTime(
-                state.editDate.startHour!!
-            ), title = "Set start hour", colors = TimePickerDefaults.colors(
-                selectorColor = MaterialTheme.colorScheme.onPrimary,
-                activeBackgroundColor = MaterialTheme.colorScheme.tertiary,
-                activeTextColor = MaterialTheme.colorScheme.background,
-                inactiveBackgroundColor = MaterialTheme.colorScheme.primary,
-                inactiveTextColor = MaterialTheme.colorScheme.onPrimary
-            )
-        ) {
-            onEvent(GameEvent.SetStartHour(it.toString().substring(0, 5)))
-        }
-    }
-    MaterialDialog(
-        dialogState = endHourDialogState, elevation = 10.dp, buttons = {
-            positiveButton(
-                "Ok", textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.surfaceVariant
-                )
-            )
-            negativeButton(
-                "Cancel", textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.surfaceVariant
-                )
-            )
-        }, shape = MaterialTheme.shapes.extraLarge
-    ) {
-        this.timepicker(
-            initialTime = if (state.isAddingDate || state.editDate == null) LocalTime.now() else FormatService.parseTime(
-                state.editDate.endHour!!
-            ), title = "Set end hour", colors = TimePickerDefaults.colors(
-                selectorColor = MaterialTheme.colorScheme.onPrimary,
-                activeBackgroundColor = MaterialTheme.colorScheme.tertiary,
-                activeTextColor = MaterialTheme.colorScheme.background,
-                inactiveBackgroundColor = MaterialTheme.colorScheme.primary,
-                inactiveTextColor = MaterialTheme.colorScheme.onPrimary
-            )
-        ) {
-            onEvent(GameEvent.SetEndHour(it.toString().substring(0, 5)))
-        }
     }
     AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
         onEvent(GameEvent.HideDialog)
