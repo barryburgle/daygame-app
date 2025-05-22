@@ -36,7 +36,8 @@ data class ToolsState(
     val latestChangelog: String = "",
     val latestDownloadUrl: String = "",
     val showChangelog: Boolean = false,
-    var backupBeforeUpdate: Boolean = true
+    var backupBeforeUpdate: Boolean = true,
+    override var generateiDate: Boolean = true
 ) : ExportState(
     null,
     exportSessionsFileName,

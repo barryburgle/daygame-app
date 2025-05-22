@@ -40,6 +40,7 @@ interface SettingDao {
         const val IMPORT_DATES_FILE_NAME_ID: String = "import_dates_file_name"
         const val EXPORT_SETS_FILE_NAME_ID: String = "export_sets_file_name"
         const val IMPORT_SETS_FILE_NAME_ID: String = "import_sets_file_name"
+        const val GENERATE_IDATE_ID: String = "generate_idate"
         const val DEFAULT_LEADS_EXPORT_FILE_NAME: String = "leads_export"
         const val DEFAULT_LEADS_IMPORT_FILE_NAME: String = "leads_export_yyyy_mm_dd_hh_mm.csv"
         const val DEFAULT_DATES_EXPORT_FILE_NAME: String = "date_export"
@@ -56,6 +57,7 @@ interface SettingDao {
         const val DEFAULT_EXPORT_HEADER_FLAG: String = "false"
         const val DEFAULT_IMPORT_HEADER_FLAG: String = "false"
         const val DEFAULT_BACKUP_ACTIVE_FLAG: String = "true"
+        const val DEFAULT_GENERATE_IDATE_FLAG: String = "true"
         const val DEFAULT_BACKUP_NUMBER: String = "3"
         const val DEFAULT_NOTIFICATION_TIME: String = "18:00"
 
@@ -120,6 +122,9 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_MOVING_AVERAGE_WINDOW}' ELSE value END FROM setting WHERE id = '${LAST_SESSION_AVERAGE_QUANTITY_ID}'")
     fun getAverageLast(): Flow<Int>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_GENERATE_IDATE_FLAG}' ELSE value END FROM setting WHERE id = '${GENERATE_IDATE_ID}'")
+    fun getGenerateiDate(): Flow<String>
 
     @Query(QUERY_LAST_SESSIONS_SHOWN)
     fun getLastSessionsShown(): Flow<Int>

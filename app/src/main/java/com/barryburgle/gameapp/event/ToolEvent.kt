@@ -32,4 +32,5 @@ sealed interface ToolEvent : GenericEvent {
     data class SetLastBackup(val lastBackup: String) : ToolEvent
     object SwitchShowChangelog : ToolEvent
     object SwitchBackupBeforeUpdate : ToolEvent
+    object SwitchGenerateiDate : ToolEvent
 }

@@ -10,7 +10,7 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.ui.CombineEight
-import com.barryburgle.gameapp.ui.CombineTwentyOne
+import com.barryburgle.gameapp.ui.CombineTwentyTwo
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,6 +59,7 @@ class ToolViewModel(
     private val _exportHeader = settingDao.getExportHeaderFlag()
     private val _importHeader = settingDao.getImportHeaderFlag()
     private val _backupActive = settingDao.getBackupActiveFlag()
+    private val _generateiDate = settingDao.getGenerateiDate()
     private val _notificationTime = settingDao.getNotificationTime()
     private val _averageLast = settingDao.getAverageLast()
     private val _latestAvailable = settingDao.getLatestAvailable()
@@ -69,7 +70,7 @@ class ToolViewModel(
     private val _lastWeeksShown = settingDao.getLastWeeksShown()
     private val _lastMonthsShown = settingDao.getLastMonthsShown()
     val state =
-        CombineTwentyOne(
+        CombineTwentyTwo(
             _state,
             _allSessions,
             _allLeads,
@@ -84,6 +85,7 @@ class ToolViewModel(
             _exportHeader,
             _importHeader,
             _backupActive,
+            _generateiDate,
             _latestAvailable,
             _latestPublishDate,
             _latestChangelog,
@@ -91,7 +93,7 @@ class ToolViewModel(
             _lastSessionsShown,
             _lastWeeksShown,
             _lastMonthsShown
-        ) { state, allSessions, allLeads, allDates, allSets, importExportFilenames, exportFolder, importFolder, backupFolder, notificationTime, averageLast, exportHeader, importHeader, backupActive, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown ->
+        ) { state, allSessions, allLeads, allDates, allSets, importExportFilenames, exportFolder, importFolder, backupFolder, notificationTime, averageLast, exportHeader, importHeader, backupActive, generateiDate, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown ->
             state.copy(
                 exportSessionsFileName = importExportFilenames.exportSessionsFilename,
                 importSessionsFileName = importExportFilenames.importSessionsFilename,
@@ -113,6 +115,7 @@ class ToolViewModel(
                 exportHeader = exportHeader.toBoolean(),
                 importHeader = importHeader.toBoolean(),
                 backupActive = backupActive.toBoolean(),
+                generateiDate = generateiDate.toBoolean(),
                 latestAvailable = latestAvailable,
                 latestPublishDate = latestPublishDate,
                 latestChangelog = latestChangelog,
@@ -421,6 +424,17 @@ class ToolViewModel(
                         backupBeforeUpdate = _state.value.backupBeforeUpdate.not()
                     )
                 }
+            }
+
+            is ToolEvent.SwitchGenerateiDate -> {
+                _state.update {
+                    it.copy(
+                        generateiDate = _state.value.generateiDate.not()
+                    )
+                }
+                val generateiDate = _state.value.generateiDate
+                val setting = Setting(SettingDao.GENERATE_IDATE_ID, generateiDate.toString())
+                viewModelScope.launch { settingDao.insert(setting) }
             }
         }
     }

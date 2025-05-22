@@ -176,29 +176,76 @@ fun SettingsCard(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
                     ) {
                         Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(5.dp),
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Button(
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                                ),
-                                onClick = { notificationHourDialogState.show() }) {
-                                Icon(
-                                    imageVector = Icons.Default.Timer,
-                                    contentDescription = "Reminder",
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier
-                                        .height(25.dp)
-                                )
-                                Spacer(modifier = Modifier.width(7.dp))
+                            RowTitle(
+                                "Sessions insertion:", "", textFieldColumnWidth
+                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Button(
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                                        ),
+                                        onClick = { notificationHourDialogState.show() }) {
+                                        Icon(
+                                            imageVector = Icons.Default.Timer,
+                                            contentDescription = "Reminder",
+                                            tint = MaterialTheme.colorScheme.onPrimary,
+                                            modifier = Modifier
+                                                .height(25.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(7.dp))
+                                        Text(
+                                            text = "Sticking Points",
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(5.dp),
+                            verticalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            RowTitle(
+                                "Sets insertion:", "", textFieldColumnWidth
+                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
                                 Text(
-                                    text = "Sticking Points",
-                                    textAlign = TextAlign.Center
+                                    text = "Generate iDate",
+                                    style = MaterialTheme.typography.titleSmall
                                 )
+                                Spacer(modifier = Modifier.width(5.dp))
+                                com.barryburgle.gameapp.ui.tool.utils.Switch(state.generateiDate) {
+                                    onEvent(ToolEvent.SwitchGenerateiDate)
+                                }
                             }
                         }
                     }

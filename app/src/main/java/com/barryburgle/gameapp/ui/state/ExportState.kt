@@ -20,5 +20,6 @@ open class ExportState(
     open var allSets: List<SingleSet> = emptyList(),
     open var backupActive: Boolean = true,
     open var lastBackup: Int = 3,
-    open var justSaved: Boolean = false
+    open var justSaved: Boolean = false,
+    open var generateiDate: Boolean = true
 )
