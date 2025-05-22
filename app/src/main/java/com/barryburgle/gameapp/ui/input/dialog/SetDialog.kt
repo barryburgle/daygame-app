@@ -187,8 +187,6 @@ fun SetDialog(
                         containerColor = MaterialTheme.colorScheme.primaryContainer
                     ), onClick = { locationTextFieldExpanded = !locationTextFieldExpanded }) {
                         // TODO: insert here a button that allows to choose from a list of sessions to which the set belongs to  [v1.7.3]
-                        // TODO: add a switch that allow to automatically create a date from a set, and a selector in case the idate has [v1.7.3]
-                        // already been recorded on table
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceAround,
@@ -264,6 +262,10 @@ fun SetDialog(
                     R.drawable.idate_b
                 ) {
                     onEvent(GameEvent.SwitchInstantDate)
+                    if (!state.instantDate && state.generateiDate) {
+                        Toast.makeText(localContext, "Generating related iDate", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
                 ToggleIcon(
                     "recorded",

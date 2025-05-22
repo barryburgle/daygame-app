@@ -77,7 +77,8 @@ data class InputState(
     var contact: Boolean = false,
     var instantDate: Boolean = false,
     var sessionId: Long? = 0L,
-    var dateId: Long? = 0L
+    var dateId: Long? = 0L,
+    override var generateiDate: Boolean = true
 ) : ExportState(
     sessionSortType,
     exportSessionsFileName,

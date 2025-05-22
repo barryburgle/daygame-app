@@ -1,3 +1,11 @@
+# Version 1.7.3 (2025-06-dd)
+
+**Features**
+- Generate iDate from single set insertion
+
+**Bugs**
+- Code optimizations
+
 # Version 1.7.2 (2025-05-08)
 
 **Features**

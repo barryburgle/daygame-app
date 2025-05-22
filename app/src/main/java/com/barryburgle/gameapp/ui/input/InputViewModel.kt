@@ -11,6 +11,7 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
+import com.barryburgle.gameapp.model.enums.DateType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.GameEventSortType
 import com.barryburgle.gameapp.model.enums.SessionSortType
@@ -24,8 +25,10 @@ import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
+import com.barryburgle.gameapp.ui.CombineFourteen
 import com.barryburgle.gameapp.ui.CombineSeven
-import com.barryburgle.gameapp.ui.CombineTwentyTwo
+import com.barryburgle.gameapp.ui.CombineTen
+import com.barryburgle.gameapp.ui.input.state.InputSettingsState
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -124,6 +127,7 @@ class InputViewModel(
     private val _backupFolder = settingDao.getBackupFolder()
     private val _backupActive = settingDao.getBackupActiveFlag()
     private val _lastBackup = settingDao.getBackupNumber()
+    private val _generateiDate = settingDao.getGenerateiDate()
 
     val _showSessions = MutableStateFlow(true)
     val _showSets = MutableStateFlow(true)
@@ -230,16 +234,7 @@ class InputViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _state = MutableStateFlow(InputState())
-    val state = CombineTwentyTwo(
-        _state,
-        _allSessions,
-        _allLeads,
-        _allDates,
-        _sessionSortType,
-        _dateSortType,
-        _setSortType,
-        _allSets,
-        _allEvents,
+    val _combinedSettings = CombineTen(
         _notificationTime,
         _exportSessionsFileName,
         _exportLeadsFileName,
@@ -249,20 +244,9 @@ class InputViewModel(
         _backupFolder,
         _backupActive,
         _lastBackup,
-        _showSessions,
-        _showSets,
-        _showDates,
-        _gameEventSortType
-    ) { state, allSessions, allLeads, allDates, sessionSortType, dateSortType, setSortType, allSets, allEvents, notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, showSessions, showSets, showDates, gameEventSortType ->
-        state.copy(
-            allSessions = allSessions,
-            allLeads = allLeads,
-            allDates = allDates,
-            allSets = allSets,
-            allEvents = allEvents,
-            sessionSortType = sessionSortType,
-            dateSortType = dateSortType,
-            setSortType = setSortType,
+        _generateiDate
+    ) { notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, generateiDate ->
+        InputSettingsState(
             notificationTime = notificationTime,
             exportSessionsFileName = exportSessionsFileName,
             exportLeadsFileName = exportLeadsFileName,
@@ -272,10 +256,48 @@ class InputViewModel(
             backupFolder = backupFolder,
             backupActive = backupActive.toBoolean(),
             lastBackup = lastBackup.toInt(),
+            generateiDate = generateiDate.toBoolean()
+        )
+    }
+    val state = CombineFourteen(
+        _state,
+        _allSessions,
+        _allLeads,
+        _allDates,
+        _sessionSortType,
+        _dateSortType,
+        _setSortType,
+        _allSets,
+        _allEvents,
+        _showSessions,
+        _showSets,
+        _showDates,
+        _gameEventSortType,
+        _combinedSettings
+    ) { state, allSessions, allLeads, allDates, sessionSortType, dateSortType, setSortType, allSets, allEvents, showSessions, showSets, showDates, gameEventSortType, combinedSettings ->
+        state.copy(
+            allSessions = allSessions,
+            allLeads = allLeads,
+            allDates = allDates,
+            allSets = allSets,
+            allEvents = allEvents,
+            sessionSortType = sessionSortType,
+            dateSortType = dateSortType,
+            setSortType = setSortType,
+            notificationTime = combinedSettings.notificationTime,
+            exportSessionsFileName = combinedSettings.exportSessionsFileName,
+            exportLeadsFileName = combinedSettings.exportLeadsFileName,
+            exportDatesFileName = combinedSettings.exportDatesFileName,
+            exportSetsFileName = combinedSettings.exportSetsFileName,
+            exportFolder = combinedSettings.exportFolder,
+            backupFolder = combinedSettings.backupFolder,
+            backupActive = combinedSettings.backupActive,
+            lastBackup = combinedSettings.lastBackup,
             showSessions = showSessions,
             showSets = showSets,
             showDates = showDates,
-            gameEventSortType = gameEventSortType
+            gameEventSortType = gameEventSortType,
+            generateiDate = combinedSettings.generateiDate
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())
 
@@ -799,6 +821,30 @@ class InputViewModel(
 
             is GameEvent.SaveSet -> {
                 viewModelScope.launch {
+                    val isAddingSet = state.value.isAddingSet
+                    val isUpdatingSet = state.value.isUpdatingSet
+                    var dateId: Long? = null
+                    if (isAddingSet && !isUpdatingSet && _state.value.generateiDate && _state.value.instantDate) {
+                        val date = _dateService.init(
+                            id = null,
+                            leadId = if (_state.value.leadId == 0L) state.value.leadId else _state.value.leadId,
+                            location = if (_state.value.location.isBlank()) state.value.location else _state.value.location,
+                            date = if (_state.value.date.isBlank()) state.value.date else _state.value.date,
+                            startHour = if (_state.value.startHour.isBlank()) state.value.startHour else _state.value.startHour,
+                            endHour = if (_state.value.endHour.isBlank()) state.value.endHour else _state.value.endHour,
+                            cost = 0,
+                            dateNumber = 0,
+                            dateType = DateType.DRINK.getType(),
+                            pull = false,
+                            bounce = false,
+                            kiss = false,
+                            lay = false,
+                            recorded = if (!_state.value.recorded) state.value.recorded else _state.value.recorded,
+                            stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
+                            tweetUrl = if (_state.value.tweetUrl.isBlank()) state.value.tweetUrl else _state.value.tweetUrl
+                        )
+                        dateId = dateDao.insert(date)
+                    }
                     val set = _setService.init(
                         id = null,
                         date = if (_state.value.date.isBlank()) state.value.date else _state.value.date,
@@ -811,12 +857,12 @@ class InputViewModel(
                         instantDate = if (!_state.value.instantDate) state.value.instantDate else _state.value.instantDate,
                         recorded = if (!_state.value.recorded) state.value.recorded else _state.value.recorded,
                         leadId = if (_state.value.leadId == 0L) state.value.leadId else _state.value.leadId,
-                        dateId = if (_state.value.dateId == 0L) state.value.dateId else _state.value.dateId,
+                        dateId = dateId,
                         stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
                         tweetUrl = if (_state.value.tweetUrl.isBlank()) state.value.tweetUrl else _state.value.tweetUrl
                     )
-                    if (state.value.isAddingSet) {
-                        var leadId = 0L
+                    var leadId = 0L
+                    if (isAddingSet) {
                         if (!state.value.leads.isEmpty()) {
                             val lead = state.value.leads[0]
                             lead.insertTime = set.insertTime
@@ -825,11 +871,32 @@ class InputViewModel(
                         if (leadId != 0L) {
                             set.leadId = leadId
                         }
-                    } else if (state.value.isUpdatingSet) {
+                    } else if (isUpdatingSet) {
                         set.id = state.value.editSet!!.id
                         set.insertTime = state.value.editSet!!.insertTime
                     }
                     setDao.insert(set)
+                    if (isAddingSet && !isUpdatingSet && _state.value.generateiDate && _state.value.instantDate) {
+                        val date = _dateService.init(
+                            id = dateId.toString(),
+                            leadId = leadId,
+                            location = if (_state.value.location.isBlank()) state.value.location else _state.value.location,
+                            date = if (_state.value.date.isBlank()) state.value.date else _state.value.date,
+                            startHour = if (_state.value.startHour.isBlank()) state.value.startHour else _state.value.startHour,
+                            endHour = if (_state.value.endHour.isBlank()) state.value.endHour else _state.value.endHour,
+                            cost = 0,
+                            dateNumber = 0,
+                            dateType = DateType.DRINK.getType(),
+                            pull = false,
+                            bounce = false,
+                            kiss = false,
+                            lay = false,
+                            recorded = if (!_state.value.recorded) state.value.recorded else _state.value.recorded,
+                            stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
+                            tweetUrl = if (_state.value.tweetUrl.isBlank()) state.value.tweetUrl else _state.value.tweetUrl
+                        )
+                        dateDao.insert(date)
+                    }
                     _state.update {
                         it.copy(
                             date = "",
