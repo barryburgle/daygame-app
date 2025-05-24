@@ -316,8 +316,6 @@ private fun setState(
             state.location = state.editSet.location!!
         }
         state.leadId = state.editSet.leadId!!
-        // TODO: solve following [v1.7.3]
-        // state.dateId = state.editSet.dateId!!
         if (state.stickingPoints.isBlank()) {
             state.stickingPoints = state.editSet.stickingPoints!!
         }
