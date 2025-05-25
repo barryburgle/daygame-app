@@ -124,7 +124,8 @@ fun ToolsScreen(
                         cardSubtitle = csvFindService.getLastBackupDate(state.exportFolder + "/" + state.backupFolder),
                         state = state,
                         onEvent = onEvent,
-                        modifier = settingsCardModifier
+                        modifier = settingsCardModifier,
+                        csvFindService = csvFindService
                     )
                 }
             }

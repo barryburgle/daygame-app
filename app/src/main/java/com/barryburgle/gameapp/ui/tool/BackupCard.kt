@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backup
+import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
+import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
@@ -40,9 +42,9 @@ fun BackupCard(
     cardSubtitle: String,
     state: ToolsState,
     modifier: Modifier,
+    csvFindService: CSVFindService,
     onEvent: (ToolEvent) -> Unit
 ) {
-    // TODO: one tap button to import last backup for all tables [v1.7.3]
     var icon: ImageVector? = Icons.Default.Backup
     Card(
         modifier = modifier, colors = CardDefaults.cardColors(
@@ -155,6 +157,37 @@ fun BackupCard(
                                 verticalArrangement = Arrangement.SpaceBetween,
                                 modifier = Modifier.fillMaxWidth(0.6f)
                             ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Button(colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                                    ), onClick = {
+                                        DataExchangeService.importAll(
+                                            state,
+                                            true,
+                                            csvFindService,
+                                            localContext,
+                                            onEvent
+                                        )
+                                    }) {
+                                        if (icon != null) {
+                                            Icon(
+                                                imageVector = Icons.Default.CloudDownload,
+                                                contentDescription = cardTitle,
+                                                tint = MaterialTheme.colorScheme.onPrimary,
+                                                modifier = Modifier.height(25.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(7.dp))
+                                        }
+                                        Text(
+                                            text = "Import all", textAlign = TextAlign.Center
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.width(5.dp))
+                                }
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.SpaceBetween,
