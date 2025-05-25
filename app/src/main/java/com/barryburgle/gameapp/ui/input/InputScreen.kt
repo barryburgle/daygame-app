@@ -179,7 +179,7 @@ fun InputScreen(
             }
             onEvent(GameEvent.SwitchJustSaved)
         }
-        InsertInvite(state.allSessions, "Session", MaterialTheme.typography.titleLarge)
+        InsertInvite(state)
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
