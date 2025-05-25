@@ -12,7 +12,7 @@ fun LazyListScope.SessionSection(
     width: Dp
 ) {
     item {
-        state.abstractSessions.map { abstractSession ->
+        state.allSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
                 BarEntry(
                     it.toFloat(),
@@ -31,7 +31,7 @@ fun LazyListScope.SessionSection(
         }
     }
     item {
-        state.abstractSessions.map { abstractSession ->
+        state.allSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
                 BarEntry(
                     it.toFloat(),
@@ -50,7 +50,7 @@ fun LazyListScope.SessionSection(
         }
     }
     item {
-        state.abstractSessions.map { abstractSession ->
+        state.allSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
                 BarEntry(
                     it.toFloat(),
@@ -69,7 +69,7 @@ fun LazyListScope.SessionSection(
         }
     }
     item {
-        state.abstractSessions.map { abstractSession ->
+        state.allSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
                 BarEntry(
                     it.toFloat(),
@@ -88,7 +88,7 @@ fun LazyListScope.SessionSection(
         }
     }
     item {
-        state.abstractSessions.map { abstractSession ->
+        state.allSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
                 BarEntry(
                     it.toFloat(),
@@ -107,7 +107,7 @@ fun LazyListScope.SessionSection(
         }
     }
     item {
-        state.abstractSessions.map { abstractSession ->
+        state.allSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
                 BarEntry(
                     it.toFloat(),
@@ -126,7 +126,7 @@ fun LazyListScope.SessionSection(
         }
     }
     item {
-        state.abstractSessions.map { abstractSession ->
+        state.allSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
                 BarEntry(
                     it.toFloat(),
