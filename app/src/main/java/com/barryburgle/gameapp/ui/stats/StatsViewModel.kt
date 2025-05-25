@@ -20,10 +20,10 @@ class StatsViewModel(
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(StatsState())
-    private val _abstractSessions = abstractSessionDao.getAll()
-    private val _leads = leadDao.getAll()
-    private val _dates = dateDao.getAll()
-    private val _sets = setDao.getAll()
+    private val _allSessions = abstractSessionDao.getAll()
+    private val _allLeads = leadDao.getAll()
+    private val _allDates = dateDao.getAll()
+    private val _allSets = setDao.getAll()
     private val _setsHistogram = abstractSessionDao.getSetsHistogram()
     private val _convosHistogram = abstractSessionDao.getConvosHistogram()
     private val _contactsHistogram = abstractSessionDao.getContactsHistogram()
@@ -36,10 +36,10 @@ class StatsViewModel(
     val state =
         CombineThirteen(
             _state,
-            _abstractSessions,
-            _leads,
-            _dates,
-            _sets,
+            _allSessions,
+            _allLeads,
+            _allDates,
+            _allSets,
             _setsHistogram,
             _convosHistogram,
             _contactsHistogram,
@@ -48,12 +48,12 @@ class StatsViewModel(
             _datesAgeHistogram,
             _datesNumberHistogram,
             _datesNationalityHistogram
-        ) { state, abstractSessions, leads, dates, sets, setsHistogram, convosHistogram, contactsHistogram, leadsAgeHistogram, leadsNationalityHistogram, datesAgeHistogram, datesNumberHistogram, datesNationalityHistogram ->
+        ) { state, allSessions, allLeads, allDates, allSets, setsHistogram, convosHistogram, contactsHistogram, leadsAgeHistogram, leadsNationalityHistogram, datesAgeHistogram, datesNumberHistogram, datesNationalityHistogram ->
             state.copy(
-                abstractSessions = abstractSessions,
-                leads = leads,
-                dates = dates,
-                sets = sets,
+                allSessions = allSessions,
+                allLeads = allLeads,
+                allDates = allDates,
+                allSets = allSets,
                 setsHistogram = setsHistogram,
                 convosHistogram = convosHistogram,
                 contactsHistogram = contactsHistogram,

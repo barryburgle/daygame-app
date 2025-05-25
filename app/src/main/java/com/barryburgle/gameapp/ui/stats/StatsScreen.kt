@@ -36,8 +36,8 @@ fun StatsScreen(
     val heigh: Dp = 200.dp
     val width: Dp = 320.dp
     Scaffold { padding ->
-        InsertInvite(state.abstractSessions, "Session", MaterialTheme.typography.titleLarge)
-        if (state.abstractSessions.isNotEmpty()) {
+        InsertInvite(state)
+        if (state.allSessions.isNotEmpty()) {
             val cardModifier = Modifier
                 .shadow(
                     elevation = 5.dp, shape = MaterialTheme.shapes.large
@@ -50,11 +50,11 @@ fun StatsScreen(
                         y = spaceFromTop + spaceFromLeft
                     ), verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
             ) {
-                if (state.abstractSessions.isNotEmpty()) {
-                    val sets: Int = GlobalStatsService.computeSets(state.abstractSessions)
+                if (state.allSessions.isNotEmpty()) {
+                    val sets: Int = GlobalStatsService.computeSets(state.allSessions)
                     val conversations: Int =
-                        GlobalStatsService.computeConvos(state.abstractSessions)
-                    val contacts: Int = GlobalStatsService.computeContacts(state.abstractSessions)
+                        GlobalStatsService.computeConvos(state.allSessions)
+                    val contacts: Int = GlobalStatsService.computeContacts(state.allSessions)
                     item {
                         Row {
                             Spacer(
@@ -63,9 +63,9 @@ fun StatsScreen(
                             StatsCard(
                                 modifier = cardModifier,
                                 title = "Sessions",
-                                description = "${GlobalStatsService.computeSessionSpentHours(state.abstractSessions)} hours spent on sessions, on average a set each ${
+                                description = "${GlobalStatsService.computeSessionSpentHours(state.allSessions)} hours spent on sessions, on average a set each ${
                                     GlobalStatsService.computeAvgApproachTime(
-                                        state.abstractSessions
+                                        state.allSessions
                                     )
                                 } minutes",
                                 firstQuantifierQuantity = "${sets}",
@@ -94,7 +94,7 @@ fun StatsScreen(
                                 thirdPerformanceDescription = "Contact\nRatio",
                                 fourthPerformanceQuantity = "${
                                     GlobalStatsService.computeAvgIndex(
-                                        state.abstractSessions
+                                        state.allSessions
                                     )
                                 }",
                                 fourthPerformanceDescription = "Average\nIndex"
@@ -102,25 +102,26 @@ fun StatsScreen(
                         }
                     }
                 }
-                if (state.sets.isNotEmpty()) {
+                if (state.allSets.isNotEmpty()) {
                     item {
                         Row {
                             Spacer(
                                 modifier = Modifier.width(spaceFromLeft)
                             )
                             val conversations: Int =
-                                state.sets.filter { set -> set.conversation }.size
-                            val contacts: Int = state.sets.filter { set -> set.contact }.size
+                                state.allSets.filter { set -> set.conversation }.size
+                            val contacts: Int = state.allSets.filter { set -> set.contact }.size
                             val instantDates: Int =
-                                state.sets.filter { set -> set.instantDate }.size
-                            val recorded: Int = state.sets.filter { set -> set.recorded }.size
+                                state.allSets.filter { set -> set.instantDate }.size
+                            val recorded: Int = state.allSets.filter { set -> set.recorded }.size
                             val avgContactTime: Long =
-                                GlobalStatsService.computeAvgContactTime(state.sets, contacts)
+                                GlobalStatsService.computeAvgContactTime(state.allSets, contacts)
                             val contactSentence =
                                 if (avgContactTime != 0L) "on average a contact each ${avgContactTime} minutes" else "no contacts yet"
-                            val setSpentHours = GlobalStatsService.computeSetsSpentHours(state.sets)
+                            val setSpentHours =
+                                GlobalStatsService.computeSetsSpentHours(state.allSets)
                             val setSpentMinutes =
-                                GlobalStatsService.computeSetsSpentMinutes(state.sets)
+                                GlobalStatsService.computeSetsSpentMinutes(state.allSets)
                             var timeSpentSentence = "${setSpentMinutes} minutes"
                             if (setSpentHours != 0L) {
                                 val minutesDifference = setSpentMinutes - setSpentHours * 60
@@ -131,7 +132,7 @@ fun StatsScreen(
                                 modifier = cardModifier,
                                 title = "Single Sets",
                                 description = "${timeSpentSentence} spent on single sets, " + contactSentence,
-                                firstQuantifierQuantity = "${state.sets.size}",
+                                firstQuantifierQuantity = "${state.allSets.size}",
                                 firstQuantifierDescription = "Sets",
                                 secondQuantifierQuantity = "${conversations}",
                                 secondQuantifierDescription = "Conversations",
@@ -143,21 +144,21 @@ fun StatsScreen(
                                 fifthQuantifierDescription = "Recorded\nSets",
                                 firstPerformanceQuantity = "${
                                     GlobalStatsService.computeGenericRatio(
-                                        state.sets.size,
+                                        state.allSets.size,
                                         conversations
                                     ) //TODO: consider using always compute generic ratio and not other methods
                                 } %",
                                 firstPerformanceDescription = "Conversation\nRatio",
                                 secondPerformanceQuantity = "${
                                     GlobalStatsService.computeGenericRatio(
-                                        state.sets.size,
+                                        state.allSets.size,
                                         contacts
                                     )
                                 } %",
                                 secondPerformanceDescription = "Contact\nRatio",
                                 thirdPerformanceQuantity = "${
                                     GlobalStatsService.computeGenericRatio(
-                                        state.sets.size,
+                                        state.allSets.size,
                                         instantDates
                                     )
                                 } %",
@@ -166,25 +167,25 @@ fun StatsScreen(
                         }
                     }
                 }
-                if (state.leads.isNotEmpty()) {
+                if (state.allDates.isNotEmpty()) {
                     item {
                         Row {
                             Spacer(
                                 modifier = Modifier.width(spaceFromLeft)
                             )
                             val numbers: Int =
-                                state.leads.filter { lead -> lead.contact == ContactTypeEnum.NUMBER.getField() }.size
+                                state.allLeads.filter { lead -> lead.contact == ContactTypeEnum.NUMBER.getField() }.size
                             val socials: Int =
-                                state.leads.filter { lead -> lead.contact == ContactTypeEnum.SOCIAL.getField() }.size
+                                state.allLeads.filter { lead -> lead.contact == ContactTypeEnum.SOCIAL.getField() }.size
                             val avgLeadTime: Long = GlobalStatsService.computeAvgLeadTime(
-                                state.leads.size,
-                                state.abstractSessions
+                                state.allLeads.size,
+                                state.allSessions
                             )
                             StatsCard(
                                 modifier = cardModifier,
                                 title = "Leads",
                                 description = if (avgLeadTime != 0L) "On average a new lead each ${avgLeadTime} minutes" else "No leads acquired yet",
-                                firstQuantifierQuantity = "${state.leads.size}",
+                                firstQuantifierQuantity = "${state.allLeads.size}",
                                 firstQuantifierDescription = "Leads",
                                 secondQuantifierQuantity = "${numbers}",
                                 secondQuantifierDescription = "Numbers",
@@ -192,19 +193,19 @@ fun StatsScreen(
                                 thirdQuantifierDescription = "Social Medias",
                                 firstPerformanceQuantity = "${
                                     GlobalStatsService.computeGenericRatio(
-                                        state.leads.size, numbers
+                                        state.allLeads.size, numbers
                                     )
                                 } %",
                                 firstPerformanceDescription = "Number\nRatio",
                                 secondPerformanceQuantity = "${
                                     GlobalStatsService.computeGenericRatio(
-                                        state.leads.size, socials
+                                        state.allLeads.size, socials
                                     )
                                 } %",
                                 secondPerformanceDescription = "Social\nRatio",
                                 thirdPerformanceQuantity = "${
                                     GlobalStatsService.computeGenericRatio(
-                                        state.leads.size, state.dates.size
+                                        state.allLeads.size, state.allDates.size
                                     )
                                 } %",
                                 thirdPerformanceDescription = "Date to Lead\nRatio",
@@ -212,25 +213,25 @@ fun StatsScreen(
                         }
                     }
                 }
-                if (state.dates.isNotEmpty()) {
+                if (state.allDates.isNotEmpty()) {
                     item {
                         Row {
                             Spacer(
                                 modifier = Modifier.width(spaceFromLeft)
                             )
-                            val pulls: Int = state.dates.filter { date -> date.pull }.size
-                            val bounces: Int = state.dates.filter { date -> date.bounce }.size
-                            val kisses: Int = state.dates.filter { date -> date.kiss }.size
-                            val lays: Int = state.dates.filter { date -> date.lay }.size
+                            val pulls: Int = state.allDates.filter { date -> date.pull }.size
+                            val bounces: Int = state.allDates.filter { date -> date.bounce }.size
+                            val kisses: Int = state.allDates.filter { date -> date.kiss }.size
+                            val lays: Int = state.allDates.filter { date -> date.lay }.size
                             val avgLayTime: Long =
-                                GlobalStatsService.computeAvgLayTime(state.dates, lays)
+                                GlobalStatsService.computeAvgLayTime(state.allDates, lays)
                             val layTimeSentence =
                                 if (avgLayTime != 0L) "on average a lay each ${avgLayTime} minutes" else "no lays yet"
                             StatsCard(
                                 modifier = cardModifier,
                                 title = "Dates",
-                                description = "${GlobalStatsService.computeDateSpentHours(state.dates)} hours spent on dates, " + layTimeSentence,
-                                firstQuantifierQuantity = "${state.dates.size}",
+                                description = "${GlobalStatsService.computeDateSpentHours(state.allDates)} hours spent on dates, " + layTimeSentence,
+                                firstQuantifierQuantity = "${state.allDates.size}",
                                 firstQuantifierDescription = "Dates",
                                 secondQuantifierQuantity = "${pulls}",
                                 secondQuantifierDescription = "Pulls",
@@ -242,7 +243,7 @@ fun StatsScreen(
                                 fifthQuantifierDescription = "Lays",
                                 firstPerformanceQuantity = "${
                                     GlobalStatsService.computeGenericRatio(
-                                        state.dates.size, pulls
+                                        state.allDates.size, pulls
                                     )
                                 } %",
                                 firstPerformanceDescription = "Pull to Date\nRatio",
