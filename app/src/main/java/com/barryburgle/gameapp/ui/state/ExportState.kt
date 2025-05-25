@@ -14,12 +14,17 @@ open class ExportState(
     open var exportSetsFileName: String = "",
     open var exportFolder: String = "",
     open var backupFolder: String = "",
-    open var allSessions: List<AbstractSession> = emptyList(),
-    open var allLeads: List<Lead> = emptyList(),
-    open var allDates: List<Date> = emptyList(),
-    open var allSets: List<SingleSet> = emptyList(),
+    override var allSessions: List<AbstractSession> = emptyList(),
+    override var allLeads: List<Lead> = emptyList(),
+    override var allDates: List<Date> = emptyList(),
+    override var allSets: List<SingleSet> = emptyList(),
     open var backupActive: Boolean = true,
     open var lastBackup: Int = 3,
     open var justSaved: Boolean = false,
     open var generateiDate: Boolean = true
+) : AllEntityState(
+    allSessions,
+    allLeads,
+    allDates,
+    allSets,
 )
