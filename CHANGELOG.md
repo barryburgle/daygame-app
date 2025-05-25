@@ -2,6 +2,7 @@
 
 **Features**
 - Generate iDate from single set insertion
+- New "Insert new" screen and modular card load once entities inserted
 
 **Bugs**
 - Code optimizations
