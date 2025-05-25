@@ -56,16 +56,16 @@ fun OutputScreen(
     // TODO: make cards with injectable type of charts
     // TODO: make different types of charts injectable with arrays
     Scaffold { padding ->
-        InsertInvite(state.abstractSessions, "Session", MaterialTheme.typography.titleLarge)
-        if (state.abstractSessions.isNotEmpty()) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .offset(
-                        y = spaceFromTop + spaceFromLeft
-                    ),
-                verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
-            ) {
+        InsertInvite(state)
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(
+                    y = spaceFromTop + spaceFromLeft
+                ),
+            verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
+        ) {
+            if (state.allLeads.isNotEmpty()) {
                 item {
                     Row {
                         Spacer(
@@ -136,7 +136,7 @@ fun OutputScreen(
                                 modifier = Modifier.width(spaceFromLeft - 7.dp)
                             )
                         }
-                        for (lead in state.leads) {
+                        for (lead in state.allLeads) {
                             item {
                                 Row {
                                     leadName(
@@ -156,6 +156,8 @@ fun OutputScreen(
                         }
                     }
                 }
+            }
+            if (state.allSessions.isNotEmpty()) {
                 val heigh: Dp = 200.dp
                 val width: Dp = 320.dp
                 item {

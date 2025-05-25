@@ -79,7 +79,6 @@ fun OutputLineChart(
                         )
                     }
                 }
-                InsertInvite(barEntryList, description, MaterialTheme.typography.titleMedium)
                 AndroidView(
                     modifier = Modifier
                         .fillMaxSize(),
