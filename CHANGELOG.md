@@ -3,6 +3,7 @@
 **Features**
 - Generate iDate from single set insertion
 - New "Insert new" screen and modular card load once entities inserted
+- Import all tables from backup folder with one tap
 
 **Bugs**
 - Code optimizations
