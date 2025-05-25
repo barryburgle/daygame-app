@@ -101,13 +101,10 @@ fun DataExchangeCard(
                                     localContext
                                 )
                             } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                importAll(
-                                    cardTitle,
-                                    sessionCsvService,
+                                DataExchangeService.importAll(
                                     state,
-                                    leadCsvService,
-                                    dateCsvService,
-                                    setCsvService,
+                                    false,
+                                    csvFindService,
                                     localContext,
                                     onEvent
                                 )
@@ -456,66 +453,4 @@ fun DataExchangeCard(
             }
         }
     }
-}
-
-
-fun importAll(
-    cardTitle: String,
-    sessionCsvService: SessionCsvService,
-    state: ToolsState,
-    leadCsvService: LeadCsvService,
-    dateCsvService: DateCsvService,
-    setCsvService: SetCsvService,
-    localContext: Context,
-    onEvent: (ToolEvent) -> Unit
-) {
-    try {
-        onEvent(
-            ToolEvent.SetAllSessions(
-                sessionCsvService.importRows(
-                    state.importFolder,
-                    state.importSessionsFileName,
-                    state.importHeader
-                )
-            )
-        )
-        onEvent(
-            ToolEvent.SetAllLeads(
-                leadCsvService.importRows(
-                    state.importFolder,
-                    state.importLeadsFileName,
-                    state.importHeader
-                )
-            )
-        )
-        onEvent(
-            ToolEvent.SetAllDates(
-                dateCsvService.importRows(
-                    state.importFolder,
-                    state.importDatesFileName,
-                    state.importHeader
-                )
-            )
-        )
-        onEvent(
-            ToolEvent.SetAllSets(
-                setCsvService.importRows(
-                    state.importFolder,
-                    state.importSetsFileName,
-                    state.importHeader
-                )
-            )
-        )
-    } catch (fileNotFoundException: FileNotFoundException) {
-        Toast.makeText(
-            localContext,
-            fileNotFoundException.message,
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-    Toast.makeText(
-        localContext,
-        "Successfully ${cardTitle.lowercase()}ed all tables",
-        Toast.LENGTH_SHORT
-    ).show()
 }

@@ -2,15 +2,19 @@ package com.barryburgle.gameapp.service.exchange
 
 import android.content.Context
 import android.widget.Toast
+import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
+import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.service.csv.SetCsvService
 import com.barryburgle.gameapp.ui.state.ExportState
+import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import java.io.FileNotFoundException
 
 class DataExchangeService {
 
@@ -104,6 +108,53 @@ class DataExchangeService {
             )
         }
 
+        fun import(
+            importSessionsFileName: String,
+            importLeadsFileName: String,
+            importDatesFileName: String,
+            importSetsFileName: String,
+            importFolder: String,
+            importHeader: Boolean,
+            onEvent: (ToolEvent) -> Unit
+        ) {
+            onEvent(
+                ToolEvent.SetAllSessions(
+                    sessionCsvService.importRows(
+                        importFolder,
+                        importSessionsFileName,
+                        importHeader
+                    )
+                )
+            )
+            onEvent(
+                ToolEvent.SetAllLeads(
+                    leadCsvService.importRows(
+                        importFolder,
+                        importLeadsFileName,
+                        importHeader
+                    )
+                )
+            )
+            onEvent(
+                ToolEvent.SetAllDates(
+                    dateCsvService.importRows(
+                        importFolder,
+                        importDatesFileName,
+                        importHeader
+                    )
+                )
+            )
+            onEvent(
+                ToolEvent.SetAllSets(
+                    setCsvService.importRows(
+                        importFolder,
+                        importSetsFileName,
+                        importHeader
+                    )
+                )
+            )
+        }
+
         fun backupAll(
             state: ExportState
         ) {
@@ -138,6 +189,59 @@ class DataExchangeService {
             Toast.makeText(
                 localContext,
                 "Successfully exported all tables",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        fun importAll(
+            state: ToolsState,
+            fromBackupFolder: Boolean,
+            csvFindService: CSVFindService,
+            localContext: Context,
+            onEvent: (ToolEvent) -> Unit
+        ) {
+            try {
+                val importSessionsFileName =
+                    if (!fromBackupFolder) state.importSessionsFileName else csvFindService.getLastFilenameInFolder(
+                        state.importFolder + "/" + state.backupFolder,
+                        "session"
+                    )
+                val importLeadsFileName =
+                    if (!fromBackupFolder) state.importLeadsFileName else csvFindService.getLastFilenameInFolder(
+                        state.importFolder + "/" + state.backupFolder,
+                        "lead"
+                    )
+                val importDatesFileName =
+                    if (!fromBackupFolder) state.importDatesFileName else csvFindService.getLastFilenameInFolder(
+                        state.importFolder + "/" + state.backupFolder,
+                        "date"
+                    )
+                val importSetsFileName =
+                    if (!fromBackupFolder) state.importSetsFileName else csvFindService.getLastFilenameInFolder(
+                        state.importFolder + "/" + state.backupFolder,
+                        "set"
+                    )
+                val importFolder =
+                    if (!fromBackupFolder) state.importFolder else state.importFolder + "/" + state.backupFolder
+                import(
+                    importSessionsFileName,
+                    importLeadsFileName,
+                    importDatesFileName,
+                    importSetsFileName,
+                    importFolder,
+                    true,
+                    onEvent
+                )
+            } catch (fileNotFoundException: FileNotFoundException) {
+                Toast.makeText(
+                    localContext,
+                    fileNotFoundException.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            Toast.makeText(
+                localContext,
+                "Successfully imported all tables",
                 Toast.LENGTH_SHORT
             ).show()
         }
