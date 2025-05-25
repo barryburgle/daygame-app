@@ -3,13 +3,15 @@ package com.barryburgle.gameapp.ui.output
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.date.AggregatedDatesDao
+import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
+import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.manager.SessionManager
-import com.barryburgle.gameapp.ui.CombineEight
+import com.barryburgle.gameapp.ui.CombineTen
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,12 +23,16 @@ class OutputViewModel(
     private val aggregatedSessionsDao: AggregatedSessionsDao,
     private val aggregatedDatesDao: AggregatedDatesDao,
     private val settingDao: SettingDao,
-    private val leadDao: LeadDao
+    private val leadDao: LeadDao,
+    private val dateDao: DateDao,
+    private val setDao: SetDao
 ) : ViewModel() {
     private val _state = MutableStateFlow(OutputState())
 
-    private val _abstractSessions = abstractSessionDao.getAllLimit()
-    private val _leads = leadDao.getAll()
+    private val _allSessions = abstractSessionDao.getAllLimit()
+    private val _allLeads = leadDao.getAll()
+    private val _allDates = dateDao.getAll()
+    private val _allSet = setDao.getAll()
     private val _sessionsByWeek = aggregatedSessionsDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _sessionsByMonth = aggregatedSessionsDao.groupStatsByMonth()
@@ -37,20 +43,24 @@ class OutputViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _averageLast = settingDao.getAverageLast()
 
-    val state = CombineEight(
+    val state = CombineTen(
         _state,
-        _abstractSessions,
-        _leads,
+        _allSessions,
+        _allLeads,
+        _allDates,
+        _allSet,
         _sessionsByWeek,
         _sessionsByMonth,
         _datesByWeek,
         _datesByMonth,
         _averageLast
     )
-    { state, abstractSessions, leads, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast ->
+    { state, allSessions, allLeads, allDates, allSets, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast ->
         state.copy(
-            abstractSessions = SessionManager.normalizeSessionsIds(abstractSessions),
-            leads = leads,
+            allSessions = SessionManager.normalizeSessionsIds(allSessions),
+            allLeads = allLeads,
+            allDates = allDates,
+            allSets = allSets,
             sessionsByWeek = sessionsByWeek,
             sessionsByMonth = sessionsByMonth,
             datesByWeek = datesByWeek,

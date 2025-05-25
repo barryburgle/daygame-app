@@ -80,7 +80,9 @@ class MainActivity : ComponentActivity() {
                         it.aggregatedSessionsDao,
                         it.aggregatedDatesDao,
                         it.settingDao,
-                        it.leadDao
+                        it.leadDao,
+                        it.dateDao,
+                        it.setDao
                     )
                 } as T
             }
