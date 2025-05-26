@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.ui.state.AllEntityState
+import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 
 @Composable
 fun InsertInvite(state: AllEntityState) {
@@ -54,11 +56,7 @@ fun InsertInvite(state: AllEntityState) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = "Insert a new:",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                    LargeTitleText("Insert a new:")
                 }
                 entityDescription(
                     "Session",
@@ -101,11 +99,7 @@ private fun entityDescription(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = entityName,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleMedium
-            )
+            MediumTitleText(entityName)
             if (imageVector != null) {
                 Spacer(modifier = Modifier.width(12.dp))
                 Icon(

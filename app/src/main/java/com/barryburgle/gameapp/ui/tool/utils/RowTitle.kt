@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 
 @Composable
 fun RowTitle(leftTitle: String, rigthTitle: String, textFieldColumnWidth: Dp) {
@@ -23,21 +24,12 @@ fun RowTitle(leftTitle: String, rigthTitle: String, textFieldColumnWidth: Dp) {
             modifier = Modifier.width(textFieldColumnWidth),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = leftTitle, style = MaterialTheme.typography.titleSmall
-            )
+            SmallTitleText(leftTitle)
         }
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = rigthTitle,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .height(15.dp)
-                    .width(90.dp),
-                style = MaterialTheme.typography.titleSmall
-            )
+            SmallTitleText(rigthTitle)
         }
     }
 }
