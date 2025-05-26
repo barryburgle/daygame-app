@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +20,7 @@ import androidx.core.content.ContextCompat
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.ui.theme.Shapes
-import com.barryburgle.gameapp.ui.utilities.InsertInvite
+import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarEntry
@@ -38,7 +37,7 @@ fun OutputLineChart(
     movingAverageWindow: Int
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
-    val onSurfaceColor = MaterialTheme.colorScheme.onSurface.toArgb()
+    val onSurfaceColor = MaterialTheme.colorScheme.onPrimary.toArgb()
     val commonLineWidth = 1f
     val inChartTextSize = 12f
     Column(
@@ -67,16 +66,7 @@ fun OutputLineChart(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = description,
-                            style = MaterialTheme.typography.titleSmall,
-                            modifier = Modifier
-                                .background(
-                                    MaterialTheme.colorScheme.surface,
-                                    Shapes.large
-                                ),
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                        SmallTitleText(description)
                     }
                 }
                 AndroidView(

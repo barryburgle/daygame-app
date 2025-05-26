@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.barryburgle.gameapp.ui.theme.Shapes
+import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
@@ -35,7 +36,7 @@ fun OutputBarChart(
     categories: List<String>? = null
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
-    val onSurfaceColor = MaterialTheme.colorScheme.onSurface.toArgb()
+    val onSurfaceColor = MaterialTheme.colorScheme.onPrimary.toArgb()
     val inChartTextSize = 12f
     Column(
         modifier = Modifier.background(
@@ -60,16 +61,7 @@ fun OutputBarChart(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = description,
-                            style = MaterialTheme.typography.titleSmall,
-                            modifier = Modifier
-                                .background(
-                                    MaterialTheme.colorScheme.surface,
-                                    Shapes.large
-                                ),
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                        SmallTitleText(description)
                     }
                 }
                 AndroidView(modifier = Modifier.fillMaxSize(), factory = { context ->

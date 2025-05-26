@@ -41,6 +41,8 @@ import com.barryburgle.gameapp.ui.theme.AlertLow
 import com.barryburgle.gameapp.ui.theme.AlertMid
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 
@@ -86,11 +88,7 @@ fun OutputScreen(
                                 horizontalArrangement = Arrangement.End,
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                Text(
-                                    text = "Legend",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
+                                LittleBodyText("Legend")
                                 IconButton(onClick = {
                                     onEvent(OutputEvent.SwitchShowLeadLegend)
                                 }) {
@@ -180,11 +178,7 @@ fun OutputScreen(
                                 horizontalArrangement = Arrangement.End,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(
-                                    text = "Index Formula",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
+                                LittleBodyText("Index Formula")
                                 IconButton(onClick = {
                                     onEvent(OutputEvent.SwitchShowIndexFormula)
                                 }) {
@@ -217,22 +211,14 @@ fun OutputScreen(
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Text(
-                                        text = "Sets * (12 * Sets + 20 * Conversations + 30 * Contacts)",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
+                                    LittleBodyText("Sets * (12 * Sets + 20 * Conversations + 30 * Contacts)")
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth(0.85f)
                                             .height(1.dp)
                                             .background(color = MaterialTheme.colorScheme.onSurface)
                                     ) {}
-                                    Text(
-                                        text = "Session Time [minutes]",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
+                                    LittleBodyText("Session Time [minutes]")
                                 }
                             }
                         }
@@ -330,17 +316,9 @@ fun sectionTitleAndDescription(
     title: String, description: String
 ) {
     Column {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+        MediumTitleText(title)
         Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            text = description,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+        LittleBodyText(description)
         Spacer(modifier = Modifier.height(10.dp))
     }
 }
@@ -373,10 +351,6 @@ fun legendLead(legend: String, legendColor: Color) {
                 .background(legendColor, shape = RoundedCornerShape(10.dp))
         ) {}
         Spacer(modifier = Modifier.width(7.dp))
-        Text(
-            text = legend,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+        LittleBodyText(legend)
     }
 }
