@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,9 +14,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GenericEvent
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
 fun InputCountComponent(
@@ -34,7 +33,7 @@ fun InputCountComponent(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = inputTitle, textAlign = TextAlign.Center)
+        LittleBodyText(inputTitle)
         IconButton(
             onClick = {
                 count--
@@ -46,7 +45,7 @@ fun InputCountComponent(
                 )
                 .size(40.dp)
         ) {
-            Text(text = "-")
+            LittleBodyText("-")
         }
         InputCounter(count = count, style = style, modifier = modifier)
         IconButton(
@@ -60,7 +59,7 @@ fun InputCountComponent(
                 )
                 .size(40.dp)
         ) {
-            Text(text = "+")
+            LittleBodyText("+")
         }
     }
 }

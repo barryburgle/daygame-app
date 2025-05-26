@@ -30,7 +30,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -60,6 +59,7 @@ import com.barryburgle.gameapp.ui.input.dialog.SetDialog
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.selection.MultiChoiceButton
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 
@@ -304,11 +304,7 @@ fun floatingAddButton(
             )
         }
         Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            text = description,
-            color = MaterialTheme.colorScheme.onPrimary,
-            style = MaterialTheme.typography.bodySmall
-        )
+        LittleBodyText(description)
     }
 }
 

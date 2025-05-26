@@ -45,6 +45,8 @@ import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkImportButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @Composable
 fun SetDialog(
@@ -64,7 +66,7 @@ fun SetDialog(
     AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
         onEvent(GameEvent.HideDialog)
     }, title = {
-        Text(text = description)
+        LargeTitleText(text = description)
     }, text = {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -217,7 +219,7 @@ fun SetDialog(
                 OutlinedTextField(
                     value = state.location,
                     onValueChange = { onEvent(GameEvent.SetLocation(it)) },
-                    placeholder = { Text(text = "Location") },
+                    placeholder = { LittleBodyText("Location") },
                     shape = MaterialTheme.shapes.large,
                     modifier = Modifier.height(80.dp)
                 )
@@ -230,7 +232,7 @@ fun SetDialog(
                 OutlinedTextField(
                     value = state.stickingPoints,
                     onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
-                    placeholder = { Text(text = "Sticking Points") },
+                    placeholder = { LittleBodyText("Sticking Points") },
                     shape = MaterialTheme.shapes.large,
                     modifier = Modifier.height(80.dp)
                 )

@@ -47,6 +47,9 @@ import com.barryburgle.gameapp.ui.input.card.body.DateBody
 import com.barryburgle.gameapp.ui.input.card.body.SessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SetBody
 import com.barryburgle.gameapp.ui.input.dialog.leadName
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
+import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @ExperimentalMaterial3Api
 @Composable
@@ -74,13 +77,12 @@ fun EventCard(
                         .padding(5.dp)
                         .fillMaxWidth()
                 ) {
-                    Text(
-                        text = "${
+                    LittleBodyText(
+                        "${
                             FormatService.getDate(
                                 sortableGameEvent.event.getEventDate()
                             )
-                        }",
-                        style = MaterialTheme.typography.bodySmall
+                        }"
                     )
                     Spacer(modifier = Modifier.width(3.dp))
                     Row(
@@ -99,10 +101,7 @@ fun EventCard(
                                 modifier = Modifier.height(25.dp)
                             )
                             Spacer(modifier = Modifier.width(7.dp))
-                            Text(
-                                text = sortableGameEvent.event.getEventTitle(),
-                                style = MaterialTheme.typography.titleLarge
-                            )
+                            LargeTitleText(sortableGameEvent.event.getEventTitle())
                         }
                         Row(
                             modifier = Modifier.width(100.dp),
@@ -234,10 +233,7 @@ fun EventCard(
                             }
                         }
                     }
-                    Text(
-                        text = sortableGameEvent.event.getEventDescription(),
-                        style = MaterialTheme.typography.bodySmall
-                    )
+                    LittleBodyText(sortableGameEvent.event.getEventDescription())
                 }
                 Row(
                     modifier = Modifier
@@ -267,15 +263,9 @@ fun EventCard(
                         Spacer(modifier = Modifier.height(7.dp))
                         EventCardSection {
                             if (leads == null || leads.isEmpty()) {
-                                Text(
-                                    text = "No leads",
-                                    style = MaterialTheme.typography.bodySmall
-                                )
+                                LittleBodyText("No leads")
                             } else {
-                                Text(
-                                    text = "Leads:",
-                                    style = MaterialTheme.typography.bodySmall
-                                )
+                                LittleBodyText("Leads:")
                                 Spacer(modifier = Modifier.height(7.dp))
                                 LazyRow(
                                     modifier = Modifier.fillMaxWidth()
@@ -329,20 +319,11 @@ fun EventCard(
                                         .fillMaxHeight()
                                 ) {
                                     if (stickingPoints == null || stickingPoints.isBlank()) {
-                                        Text(
-                                            text = "No sticking points",
-                                            style = MaterialTheme.typography.bodySmall
-                                        )
+                                        LittleBodyText("No sticking points")
                                     } else {
-                                        Text(
-                                            text = "Sticking points:",
-                                            style = MaterialTheme.typography.bodySmall
-                                        )
+                                        LittleBodyText("Sticking points:")
                                         Spacer(modifier = Modifier.height(5.dp))
-                                        Text(
-                                            text = if (stickingPoints != null) stickingPoints else "No sticking points",
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
+                                        MediumBodyText(if (stickingPoints != null) stickingPoints else "No sticking points")
                                     }
                                 }
                                 if (stickingPoints != null && !stickingPoints.isBlank()) {

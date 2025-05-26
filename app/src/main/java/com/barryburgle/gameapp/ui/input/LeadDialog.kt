@@ -44,6 +44,8 @@ import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @Composable
 fun LeadDialog(
@@ -60,7 +62,7 @@ fun LeadDialog(
         .shadow(elevation = 10.dp), onDismissRequest = {
         onEvent(GameEvent.HideLeadDialog)
     }, title = {
-        Text(text = description)
+        LargeTitleText(description)
     }, text = {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -87,7 +89,7 @@ fun LeadDialog(
                     readOnly = state.isModifyingLead,
                     value = state.leadName,
                     onValueChange = { onEvent(GameEvent.SetLeadName(it)) },
-                    placeholder = { Text(text = "Name") },
+                    placeholder = { LittleBodyText("Name") },
                     shape = MaterialTheme.shapes.large,
                     modifier = textModifier
                 )
@@ -128,18 +130,14 @@ fun LeadDialog(
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = if (state.leadNationality.isBlank()) "Touch to choose a country" else CountryEnum.getFlagByAlpha3(
+                LittleBodyText(if (state.leadNationality.isBlank()) "Touch to choose a country" else CountryEnum.getFlagByAlpha3(
                         state.leadNationality
                     ) + "   " + CountryEnum.getCountryNameByAlpha3(
                         state.leadNationality
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center
+                    )
                 )
                 if (!state.leadNationality.isBlank()) {
-                    Text(text = CountryEnum.getFlagByAlpha3(state.leadNationality))
+                    LittleBodyText(CountryEnum.getFlagByAlpha3(state.leadNationality))
                 }
             }
             DropdownMenu(
@@ -151,7 +149,7 @@ fun LeadDialog(
             ) {
                 CountryEnum.getCountriesOrderedByName().forEach { country ->
                     DropdownMenuItem(
-                        text = { Text(text = country.flag + "  " + country.countryName) },
+                        text = { LittleBodyText(country.flag + "  " + country.countryName) },
                         onClick = {
                             onEvent(GameEvent.SetLeadNationality(country.alpha3))
                             expanded = false

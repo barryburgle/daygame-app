@@ -49,6 +49,8 @@ import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkImportButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @Composable
 fun DateDialog(
@@ -70,7 +72,7 @@ fun DateDialog(
     AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
         onEvent(GameEvent.HideDialog)
     }, title = {
-        Text(text = description)
+        LargeTitleText(text = description)
     }, text = {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -147,7 +149,7 @@ fun DateDialog(
                         ) {
                             state.allLeads.forEach { lead ->
                                 DropdownMenuItem(
-                                    text = { Text(text = CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age) },
+                                    text = { LittleBodyText(CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age) },
                                     onClick = {
                                         onEvent(GameEvent.SetLeadId(lead.id))
                                         leadsExpanded = false
@@ -221,12 +223,7 @@ fun DateDialog(
                                         .height(15.dp)
                                 )
                             }
-                            Text(
-                                text = if (state.dateType.isBlank()) "Date type" else state.dateType.replaceFirstChar { it.uppercase() },
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.fillMaxWidth()
-                            )
+                            LittleBodyText(if (state.dateType.isBlank()) "Date type" else state.dateType.replaceFirstChar { it.uppercase() })
                         }
                     }
                     DropdownMenu(
@@ -251,9 +248,8 @@ fun DateDialog(
                                             modifier = Modifier
                                                 .height(15.dp)
                                         )
-                                        Text(
-                                            text = dateType.getType()
-                                                .replaceFirstChar { it.uppercase() })
+                                        LittleBodyText(dateType.getType()
+                                            .replaceFirstChar { it.uppercase() })
                                     }
                                 },
                                 onClick = {
@@ -278,12 +274,7 @@ fun DateDialog(
                                 modifier = Modifier
                                     .height(15.dp)
                             )
-                            Text(
-                                text = "Location",
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.fillMaxWidth()
-                            )
+                            LittleBodyText("Location")
                         }
                     }
                     TweetLinkImportButton(onEvent)
@@ -296,7 +287,7 @@ fun DateDialog(
                 OutlinedTextField(
                     value = state.location,
                     onValueChange = { onEvent(GameEvent.SetLocation(it)) },
-                    placeholder = { Text(text = "Location") },
+                    placeholder = { LittleBodyText("Location") },
                     shape = MaterialTheme.shapes.large,
                     modifier = Modifier.height(80.dp)
                 )
@@ -309,7 +300,7 @@ fun DateDialog(
                 OutlinedTextField(
                     value = state.stickingPoints,
                     onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
-                    placeholder = { Text(text = "Sticking Points") },
+                    placeholder = { LittleBodyText("Sticking Points") },
                     shape = MaterialTheme.shapes.large,
                     modifier = Modifier.height(80.dp)
                 )

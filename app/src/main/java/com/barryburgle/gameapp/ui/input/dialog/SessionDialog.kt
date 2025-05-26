@@ -51,7 +51,9 @@ import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
-import java.time.LocalDateTime
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
+import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +73,7 @@ fun SessionDialog(
     AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
         onEvent(GameEvent.HideDialog)
     }, title = {
-        Text(text = description)
+        LargeTitleText(description)
     }, text = {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -246,7 +248,7 @@ fun SessionDialog(
             OutlinedTextField(
                 value = state.stickingPoints,
                 onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
-                placeholder = { Text(text = "Sticking Points") },
+                placeholder = { LittleBodyText("Sticking Points") },
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier.height(100.dp)
             )
@@ -268,7 +270,11 @@ fun SessionDialog(
                     onEvent(GameEvent.SaveAbstractSession)
                     onEvent(GameEvent.HideDialog)
                     onEvent(GameEvent.SwitchJustSaved)
-                    Toast.makeText(localContext, "Session saved", Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        localContext,
+                        "Session saved",
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 }) {
                     Text(text = "Save")
@@ -337,19 +343,15 @@ fun leadName(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = "${displayName}",
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
+                    MediumBodyText(displayName)
                 }
                 if (outputShow || cardShow) {
-                    Text(
-                        text = "${lead.age} ${
+                    MediumBodyText(
+                        "${lead.age} ${
                             CountryEnum.getFlagByAlpha3(
                                 lead.nationality
                             )
-                        }",
-                        style = MaterialTheme.typography.bodyMedium,
+                        }"
                     )
                     val isDarkTheme = isSystemInDarkTheme()
                     if (lead.contact == ContactTypeEnum.NUMBER.getField()) {
@@ -381,9 +383,8 @@ fun leadName(
                     }
                     if (!cardShow) {
                         if (lead.insertTime.isNotBlank()) {
-                            Text(
-                                style = MaterialTheme.typography.bodySmall,
-                                text = "${lead.insertTime.substring(8, 10)}/${
+                            LittleBodyText(
+                                "${lead.insertTime.substring(8, 10)}/${
                                     lead.insertTime.substring(5, 7)
                                 }"
                             )
