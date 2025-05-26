@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
 fun SessionBody(
@@ -23,10 +24,7 @@ fun SessionBody(
     descriptionFontSize: TextUnit,
     perfFontSize: TextUnit
 ) {
-    Text(
-        text = "Session stats:",
-        style = MaterialTheme.typography.bodySmall
-    )
+    LittleBodyText("Session stats:")
     Row(
         modifier = Modifier
             .fillMaxWidth()

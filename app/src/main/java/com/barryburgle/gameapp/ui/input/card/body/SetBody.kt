@@ -19,6 +19,7 @@ import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedIcon
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
 fun SetBody(
@@ -26,10 +27,7 @@ fun SetBody(
     descriptionFontSize: TextUnit,
     perfFontSize: TextUnit
 ) {
-    Text(
-        text = "Date recap:",
-        style = MaterialTheme.typography.bodySmall
-    )
+    LittleBodyText("Set recap:")
     Row(
         modifier = Modifier
             .padding(5.dp)
