@@ -43,6 +43,7 @@ import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.service.csv.SetCsvService
+import com.barryburgle.gameapp.ui.tool.dialog.DeleteDialog
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,6 +63,9 @@ fun ToolsScreen(
     val dateCsvService = DateCsvService()
     val setCsvService = SetCsvService()
     val csvFindService = CSVFindService()
+    if (state.isCleaning) {
+        DeleteDialog(state = state, onEvent = onEvent, "Clear data", csvFindService)
+    }
     Scaffold { padding ->
         val dataExchangeCardModifier = Modifier
             .height(580.dp)
@@ -126,6 +130,17 @@ fun ToolsScreen(
                         onEvent = onEvent,
                         modifier = settingsCardModifier,
                         csvFindService = csvFindService
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    DeleteCard (
+                        cardTitle = "Wipe out",
+                        state = state,
+                        onEvent = onEvent,
+                        modifier = settingsCardModifier
                     )
                 }
             }
