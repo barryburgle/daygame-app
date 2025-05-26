@@ -8,6 +8,7 @@
 
 **Bugs**
 - Code optimizations
+- Text font uniformed
 
 # Version 1.7.2 (2025-05-08)
 
