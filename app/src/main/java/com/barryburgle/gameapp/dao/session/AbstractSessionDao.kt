@@ -28,6 +28,9 @@ interface AbstractSessionDao {
     @Delete
     suspend fun delete(abstractSession: AbstractSession)
 
+    @Query("DELETE FROM abstract_session")
+    suspend fun deleteAll()
+
     @Query("SELECT contacts as metric, COUNT(*) as frequency from abstract_session GROUP By contacts ORDER BY contacts")
     fun getContactsHistogram(): Flow<List<Histogram>>
 

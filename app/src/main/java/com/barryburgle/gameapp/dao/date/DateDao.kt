@@ -22,6 +22,9 @@ interface DateDao {
     @Delete
     suspend fun delete(date: Date)
 
+    @Query("DELETE FROM meeting")
+    suspend fun deleteAll()
+
     @Query("SELECT * from meeting ORDER BY id DESC, meeting_date DESC, start_hour DESC")
     fun getAll(): Flow<List<Date>>
 

@@ -20,6 +20,9 @@ interface SetDao {
     @Delete
     suspend fun delete(singleSet: SingleSet)
 
+    @Query("DELETE FROM single_set")
+    suspend fun deleteAll()
+
     @Query("SELECT * from single_set ORDER BY id DESC, set_date DESC, start_hour DESC")
     fun getAll(): Flow<List<SingleSet>>
 
