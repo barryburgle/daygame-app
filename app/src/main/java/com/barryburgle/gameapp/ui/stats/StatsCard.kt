@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @ExperimentalMaterial3Api
 @Composable
@@ -75,15 +77,9 @@ fun StatsCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.titleLarge
-                        )
+                        LargeTitleText(title)
                     }
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodySmall
-                    )
+                    LittleBodyText(description)
                 }
                 Row(
                     modifier = Modifier
