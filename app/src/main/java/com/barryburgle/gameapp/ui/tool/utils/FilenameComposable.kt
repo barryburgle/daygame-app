@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
 fun FilenameComposable(
@@ -59,7 +60,7 @@ fun FilenameComposable(
                 onValueChange = {
                     filenameOnEvent(it)
                 },
-                placeholder = { Text(text = "Insert here the ${cardTitle.lowercase()} file name") },
+                placeholder = { LittleBodyText(text = "Insert here the ${cardTitle.lowercase()} file name") },
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier.height(textFieldHeight),
                 singleLine = true

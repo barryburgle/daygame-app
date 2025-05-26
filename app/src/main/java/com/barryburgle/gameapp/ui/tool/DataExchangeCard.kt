@@ -1,6 +1,5 @@
 package com.barryburgle.gameapp.ui.tool
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -44,6 +43,8 @@ import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.FilenameComposable
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import java.io.FileNotFoundException
 
 @Composable
@@ -89,9 +90,7 @@ fun DataExchangeCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = cardTitle, style = MaterialTheme.typography.titleLarge
-                        )
+                        LargeTitleText(cardTitle)
                         Button(colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer
                         ), onClick = {
@@ -135,9 +134,7 @@ fun DataExchangeCard(
                         horizontalAlignment = Alignment.Start,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(
-                            text = cardSubtitle, style = MaterialTheme.typography.bodySmall
-                        )
+                        LittleBodyText(cardSubtitle)
                         RowTitle(
                             "${cardTitle} folder:", "Header:", textFieldColumnWidth
                         )
@@ -165,7 +162,7 @@ fun DataExchangeCard(
                                             onEvent(ToolEvent.SetImportFolder(it))
                                         }
                                     },
-                                    placeholder = { Text(text = "Insert here the ${cardTitle.lowercase()} folder") },
+                                    placeholder = { LittleBodyText("Insert here the ${cardTitle.lowercase()} folder") },
                                     shape = MaterialTheme.shapes.large,
                                     modifier = Modifier.height(textFieldHeight),
                                     singleLine = true

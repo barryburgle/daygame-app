@@ -26,6 +26,9 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 
 @Composable
 fun DeleteCard(
@@ -56,9 +59,7 @@ fun DeleteCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = cardTitle, style = MaterialTheme.typography.titleLarge
-                        )
+                        LargeTitleText(cardTitle)
                         Button(colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer
                         ), onClick = {
@@ -106,10 +107,7 @@ fun DeleteCard(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Text(
-                                        text = "Archive backup folder:",
-                                        style = MaterialTheme.typography.titleSmall
-                                    )
+                                    SmallTitleText("Archive backup folder:")
                                     Spacer(modifier = Modifier.width(5.dp))
                                     com.barryburgle.gameapp.ui.tool.utils.Switch(state.archiveBackupFolder) {
                                         onEvent(ToolEvent.SwitchArchiveBackupFolder)
@@ -119,10 +117,7 @@ fun DeleteCard(
                                 var description =
                                     if (state.archiveBackupFolder) "The backup folder content will be to moved to /emulated/0/storage/${state.exportFolder}/${state.backupFolder}/${CSVFindService.ARCHIVE_FOLDER} before cleaning" else
                                         "The backup folder content will be progressively overwritten after ${state.lastBackup} data insertions. If you want to preserve backups from overwriting please enable the previous option"
-                                Text(
-                                    text = description,
-                                    style = MaterialTheme.typography.bodySmall
-                                )
+                                LittleBodyText(description)
                             }
                         }
                     }

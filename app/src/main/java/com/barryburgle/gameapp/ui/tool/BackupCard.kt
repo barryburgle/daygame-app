@@ -35,6 +35,9 @@ import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 
 @Composable
 fun BackupCard(
@@ -70,9 +73,7 @@ fun BackupCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = cardTitle, style = MaterialTheme.typography.titleLarge
-                        )
+                        LargeTitleText(cardTitle)
                         Button(colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer
                         ), onClick = {
@@ -108,9 +109,7 @@ fun BackupCard(
                         horizontalAlignment = Alignment.Start,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(
-                            text = cardSubtitle, style = MaterialTheme.typography.bodySmall
-                        )
+                        LittleBodyText(cardSubtitle)
                         RowTitle(
                             "Backup folder:", "", textFieldColumnWidth
                         )
@@ -124,15 +123,12 @@ fun BackupCard(
                             OutlinedTextField(
                                 value = state.backupFolder,
                                 onValueChange = { onEvent(ToolEvent.SetBackupFolder(it)) },
-                                placeholder = { Text(text = "Insert here the backup folder") },
+                                placeholder = { LittleBodyText(text = "Insert here the backup folder") },
                                 shape = MaterialTheme.shapes.large,
                                 modifier = Modifier.height(textFieldHeight)
                             )
                         }
-                        Text(
-                            text = "The backup folder will be created and managed directly under the export folder: /emulated/0/storage/${state.exportFolder}/${state.backupFolder}",
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                        LittleBodyText("The backup folder will be created and managed directly under the export folder: /emulated/0/storage/${state.exportFolder}/${state.backupFolder}")
                         RowTitle(
                             "Backups:", "", textFieldColumnWidth
                         )
@@ -185,6 +181,7 @@ fun BackupCard(
                                         Text(
                                             text = "Import all", textAlign = TextAlign.Center
                                         )
+                                        // TODO: if no files found toast
                                     }
                                     Spacer(modifier = Modifier.width(5.dp))
                                 }
@@ -193,10 +190,7 @@ fun BackupCard(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Text(
-                                        text = "After save",
-                                        style = MaterialTheme.typography.titleSmall
-                                    )
+                                    SmallTitleText("After save")
                                     Spacer(modifier = Modifier.width(5.dp))
                                     com.barryburgle.gameapp.ui.tool.utils.Switch(state.backupActive) {
                                         onEvent(ToolEvent.SwitchBackupActive)
@@ -208,10 +202,7 @@ fun BackupCard(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Text(
-                                        text = "Before update",
-                                        style = MaterialTheme.typography.titleSmall
-                                    )
+                                    SmallTitleText("Before update")
                                     Spacer(modifier = Modifier.width(5.dp))
                                     com.barryburgle.gameapp.ui.tool.utils.Switch(state.backupBeforeUpdate) {
                                         onEvent(ToolEvent.SwitchBackupBeforeUpdate)

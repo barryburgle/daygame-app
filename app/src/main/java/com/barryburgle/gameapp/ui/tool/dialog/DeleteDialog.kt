@@ -26,6 +26,9 @@ import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.Switch
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 
 @Composable
 fun DeleteDialog(
@@ -39,7 +42,7 @@ fun DeleteDialog(
     AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
         onEvent(ToolEvent.SwitchIsCleaning)
     }, title = {
-        Text(text = description)
+        LargeTitleText(text = description)
     }, text = {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -54,11 +57,7 @@ fun DeleteDialog(
                 Column(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        text = getDeleteDescription(state),
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.height(30.dp)
-                    )
+                    LittleBodyText(getDeleteDescription(state))
                 }
             }
             Row(
@@ -97,10 +96,7 @@ fun DeleteDialog(
                 value = state.deleteConfirmationPrompt,
                 onValueChange = { onEvent(ToolEvent.SetDeleteConfirmationPrompt(it)) },
                 placeholder = {
-                    Text(
-                        text = "Type here \"delete\" to confirm",
-                        style = MaterialTheme.typography.bodySmall
-                    )
+                    LittleBodyText("Type here \"delete\" to confirm")
                 },
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier.height(50.dp)
@@ -184,10 +180,7 @@ private fun deleteTableSwitch(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(
-            text = optionDescription,
-            style = MaterialTheme.typography.titleSmall
-        )
+        SmallTitleText(optionDescription)
         Spacer(modifier = Modifier.width(5.dp))
         Switch(flag) {
             onEvent(toolEvent)

@@ -41,6 +41,9 @@ import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
@@ -118,19 +121,13 @@ fun SettingsCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = "Settings",
-                            style = MaterialTheme.typography.titleLarge
-                        )
+                        LargeTitleText("Settings")
                     }
                     versionInfo(
                         state,
                         currentVersion,
                         onEvent,
                         context
-                    )
-                    RowTitle(
-                        "Dashboard charts:", "", textFieldColumnWidth
                     )
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -238,10 +235,7 @@ fun SettingsCard(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text(
-                                    text = "Generate iDate",
-                                    style = MaterialTheme.typography.titleSmall
-                                )
+                                SmallTitleText("Generate iDate")
                                 Spacer(modifier = Modifier.width(5.dp))
                                 com.barryburgle.gameapp.ui.tool.utils.Switch(state.generateiDate) {
                                     onEvent(ToolEvent.SwitchGenerateiDate)
@@ -316,12 +310,7 @@ fun versionInfo(
                     }
                 }
             } else {
-                Text(
-                    text = info,
-                    textAlign = TextAlign.Left,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.fillMaxWidth(0.65f)
-                )
+                LittleBodyText(info)
             }
         }
     }
@@ -364,11 +353,7 @@ fun changelog(
     ) {
         updateRedDot()
         Spacer(modifier = Modifier.width(5.dp))
-        Text(
-            text = "Update to $newVersion. Changelog:",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+        LittleBodyText("Update to $newVersion. Changelog:")
         IconButton(onClick = {
             onEvent(ToolEvent.SwitchShowChangelog)
         }) {
