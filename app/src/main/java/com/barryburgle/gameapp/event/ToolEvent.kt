@@ -33,4 +33,15 @@ sealed interface ToolEvent : GenericEvent {
     object SwitchShowChangelog : ToolEvent
     object SwitchBackupBeforeUpdate : ToolEvent
     object SwitchGenerateiDate : ToolEvent
+    object SwitchArchiveBackupFolder : ToolEvent
+    object SwitchDeleteSessions : ToolEvent
+    object SwitchDeleteLeads : ToolEvent
+    object SwitchDeleteDates : ToolEvent
+    object SwitchDeleteSets : ToolEvent
+    object SwitchIsCleaning : ToolEvent
+    data class SetDeleteConfirmationPrompt(val deleteConfirmationPrompt: String) : ToolEvent
+    object DeleteAllSessions : ToolEvent
+    object DeleteAllLeads : ToolEvent
+    object DeleteAllDates : ToolEvent
+    object DeleteAllSets : ToolEvent
 }

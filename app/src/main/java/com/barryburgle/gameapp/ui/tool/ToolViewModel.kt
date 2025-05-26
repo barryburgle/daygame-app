@@ -442,6 +442,86 @@ class ToolViewModel(
                 val setting = Setting(SettingDao.GENERATE_IDATE_ID, generateiDate.toString())
                 viewModelScope.launch { settingDao.insert(setting) }
             }
+
+            is ToolEvent.SwitchArchiveBackupFolder -> {
+                _state.update {
+                    it.copy(
+                        archiveBackupFolder = _state.value.archiveBackupFolder.not()
+                    )
+                }
+                val archiveBackupFolder = _state.value.archiveBackupFolder
+                val setting =
+                    Setting(SettingDao.ARCHIVE_BACKUP_FOLDER_ID, archiveBackupFolder.toString())
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SwitchDeleteSessions -> {
+                _state.update {
+                    it.copy(
+                        deleteSessions = _state.value.deleteSessions.not()
+                    )
+                }
+            }
+
+            is ToolEvent.SwitchDeleteLeads -> {
+                _state.update {
+                    it.copy(
+                        deleteLeads = _state.value.deleteLeads.not()
+                    )
+                }
+            }
+
+            is ToolEvent.SwitchDeleteDates -> {
+                _state.update {
+                    it.copy(
+                        deleteDates = _state.value.deleteDates.not()
+                    )
+                }
+            }
+
+            is ToolEvent.SwitchDeleteSets -> {
+                _state.update {
+                    it.copy(
+                        deleteSets = _state.value.deleteSets.not()
+                    )
+                }
+            }
+
+            is ToolEvent.SwitchIsCleaning -> {
+                _state.update {
+                    it.copy(
+                        isCleaning = _state.value.isCleaning.not()
+                    )
+                }
+                val isCleaning = _state.value.isCleaning
+                val setting =
+                    Setting(SettingDao.IS_CLEANING_ID, isCleaning.toString())
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetDeleteConfirmationPrompt -> {
+                _state.update {
+                    it.copy(
+                        deleteConfirmationPrompt = event.deleteConfirmationPrompt
+                    )
+                }
+            }
+
+            is ToolEvent.DeleteAllSessions -> {
+                viewModelScope.launch { abstractSessionDao.deleteAll() }
+            }
+
+            is ToolEvent.DeleteAllLeads -> {
+                viewModelScope.launch { leadDao.deleteAll() }
+            }
+
+            is ToolEvent.DeleteAllDates -> {
+                viewModelScope.launch { dateDao.deleteAll() }
+            }
+
+            is ToolEvent.DeleteAllSets -> {
+                viewModelScope.launch { setDao.deleteAll() }
+            }
         }
     }
 }

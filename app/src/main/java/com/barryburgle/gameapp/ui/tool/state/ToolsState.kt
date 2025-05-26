@@ -37,7 +37,14 @@ data class ToolsState(
     val latestDownloadUrl: String = "",
     val showChangelog: Boolean = false,
     var backupBeforeUpdate: Boolean = true,
-    override var generateiDate: Boolean = true
+    override var generateiDate: Boolean = true,
+    var archiveBackupFolder: Boolean = true,
+    var deleteSessions: Boolean = false,
+    var deleteLeads: Boolean = false,
+    var deleteDates: Boolean = false,
+    var deleteSets: Boolean = false,
+    var isCleaning: Boolean = false,
+    var deleteConfirmationPrompt: String = ""
 ) : ExportState(
     null,
     exportSessionsFileName,
