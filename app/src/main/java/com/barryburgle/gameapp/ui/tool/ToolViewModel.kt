@@ -9,7 +9,7 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
-import com.barryburgle.gameapp.ui.CombineEight
+import com.barryburgle.gameapp.ui.CombineTen
 import com.barryburgle.gameapp.ui.CombineTwentyTwo
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.Flow
@@ -32,7 +32,7 @@ class ToolViewModel(
     private val _allLeads = leadDao.getAll()
     private val _allDates = dateDao.getAll()
     private val _allSets = setDao.getAll()
-    val _importExportFilenames: Flow<ImportExportFilenames> = CombineEight(
+    val _importExportFilenames: Flow<ImportExportFilenames> = CombineTen(
         settingDao.getExportSessionsFilename(),
         settingDao.getImportSessionsFilename(),
         settingDao.getExportLeadsFilename(),
@@ -40,8 +40,10 @@ class ToolViewModel(
         settingDao.getExportDatesFilename(),
         settingDao.getImportDatesFilename(),
         settingDao.getExportSetsFilename(),
-        settingDao.getImportSetsFilename()
-    ) { exportSessions, importSessions, exportLeads, importLeads, exportDates, importDates, exportSets, importSets ->
+        settingDao.getImportSetsFilename(),
+        settingDao.getArchiveBackupFolder(),
+        settingDao.getIsCleaning()
+    ) { exportSessions, importSessions, exportLeads, importLeads, exportDates, importDates, exportSets, importSets, archiveBackupFolder, isCleaning ->
         ImportExportFilenames(
             exportSessionsFilename = exportSessions,
             importSessionsFilename = importSessions,
@@ -50,7 +52,9 @@ class ToolViewModel(
             exportDatesFilename = exportDates,
             importDatesFilename = importDates,
             exportSetsFilename = exportSets,
-            importSetsFilename = importSets
+            importSetsFilename = importSets,
+            archiveBackupFolder = archiveBackupFolder,
+            isCleaning = isCleaning
         )
     }
     private val _exportFolder = settingDao.getExportFolder()
@@ -103,6 +107,8 @@ class ToolViewModel(
                 importDatesFileName = importExportFilenames.importDatesFilename,
                 exportSetsFileName = importExportFilenames.exportSetsFilename,
                 importSetsFileName = importExportFilenames.importSetsFilename,
+                archiveBackupFolder = importExportFilenames.archiveBackupFolder.toBoolean(),
+                isCleaning = importExportFilenames.isCleaning.toBoolean(),
                 exportFolder = exportFolder,
                 importFolder = importFolder,
                 backupFolder = backupFolder,
@@ -449,4 +455,6 @@ data class ImportExportFilenames(
     val importDatesFilename: String,
     val exportSetsFilename: String,
     val importSetsFilename: String,
+    val archiveBackupFolder: String,
+    val isCleaning: String,
 )
