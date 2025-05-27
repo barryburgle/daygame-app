@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.ui.tool
 
 import android.content.pm.PackageInfo
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -82,10 +83,17 @@ fun ToolsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .offset(
-                    y = spaceFromTop + spaceFromLeft
+                    y = spaceFromTop - 20.dp
                 ),
             verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
         ) {
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.background)
+                        .height(20.dp)
+                )
+            }
             item {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
@@ -136,7 +144,7 @@ fun ToolsScreen(
             item {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
-                    DeleteCard (
+                    DeleteCard(
                         cardTitle = "Wipe out",
                         state = state,
                         onEvent = onEvent,

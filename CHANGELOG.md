@@ -9,6 +9,7 @@
 **Bugs**
 - Code optimizations
 - Text font uniformed
+- Spacing from status bar
 
 # Version 1.7.2 (2025-05-08)
 

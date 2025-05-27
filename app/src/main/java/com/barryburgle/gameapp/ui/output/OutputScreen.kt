@@ -63,12 +63,17 @@ fun OutputScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .offset(
-                    y = spaceFromTop + spaceFromLeft
+                    y = spaceFromTop - 20.dp
                 ),
             verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
         ) {
             if (state.allLeads.isNotEmpty()) {
                 item {
+                    Spacer(
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.background)
+                            .height(20.dp)
+                    )
                     Row {
                         Spacer(
                             modifier = Modifier

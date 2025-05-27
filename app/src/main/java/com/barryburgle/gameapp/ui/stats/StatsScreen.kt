@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.stats
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,9 +47,16 @@ fun StatsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .offset(
-                    y = spaceFromTop + spaceFromLeft
+                    y = spaceFromTop - 20.dp
                 ), verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
         ) {
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.background)
+                        .height(20.dp)
+                )
+            }
             if (state.allSessions.isNotEmpty()) {
                 val sets: Int = GlobalStatsService.computeSets(state.allSessions)
                 val conversations: Int =

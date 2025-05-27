@@ -184,11 +184,11 @@ fun InputScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .offset(
-                    y = spaceFromLeft
+                    y = spaceFromLeft - 20.dp
                 ), verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
         ) {
             item {
-                Spacer(modifier = Modifier.height(100.dp))
+                Spacer(modifier = Modifier.height(120.dp))
             }
             items(state.allEvents) { sortableGameEvent ->
                 Row(modifier = Modifier.fillMaxWidth()) {
