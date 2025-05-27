@@ -26,24 +26,20 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
-import com.barryburgle.gameapp.ui.tool.utils.RowTitle
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
-import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
@@ -182,16 +178,14 @@ fun SettingsCard(
                                 .padding(5.dp),
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
-                            RowTitle(
-                                "Sessions insertion:", "", textFieldColumnWidth
-                            )
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.SpaceBetween
+                                    verticalArrangement = Arrangement.SpaceBetween,
+                                    modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Button(
                                         colors = ButtonDefaults.buttonColors(
@@ -206,10 +200,7 @@ fun SettingsCard(
                                                 .height(25.dp)
                                         )
                                         Spacer(modifier = Modifier.width(7.dp))
-                                        Text(
-                                            text = "Sticking Points",
-                                            textAlign = TextAlign.Center
-                                        )
+                                        LittleBodyText("Set sticking points reminder")
                                     }
                                 }
                             }
@@ -227,15 +218,12 @@ fun SettingsCard(
                                 .padding(5.dp),
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
-                            RowTitle(
-                                "Sets insertion:", "", textFieldColumnWidth
-                            )
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                SmallTitleText("Generate iDate")
+                                LittleBodyText("Generate iDate on set creation")
                                 Spacer(modifier = Modifier.width(5.dp))
                                 com.barryburgle.gameapp.ui.tool.utils.Switch(state.generateiDate) {
                                     onEvent(ToolEvent.SwitchGenerateiDate)
