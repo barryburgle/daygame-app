@@ -9,7 +9,7 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
-import com.barryburgle.gameapp.ui.CombineTen
+import com.barryburgle.gameapp.ui.CombineTwelve
 import com.barryburgle.gameapp.ui.CombineTwentyTwo
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.Flow
@@ -32,7 +32,7 @@ class ToolViewModel(
     private val _allLeads = leadDao.getAll()
     private val _allDates = dateDao.getAll()
     private val _allSets = setDao.getAll()
-    val _importExportFilenames: Flow<ImportExportFilenames> = CombineTen(
+    val _importExportFilenames: Flow<ImportExportFilenames> = CombineTwelve(
         settingDao.getExportSessionsFilename(),
         settingDao.getImportSessionsFilename(),
         settingDao.getExportLeadsFilename(),
@@ -42,8 +42,10 @@ class ToolViewModel(
         settingDao.getExportSetsFilename(),
         settingDao.getImportSetsFilename(),
         settingDao.getArchiveBackupFolder(),
-        settingDao.getIsCleaning()
-    ) { exportSessions, importSessions, exportLeads, importLeads, exportDates, importDates, exportSets, importSets, archiveBackupFolder, isCleaning ->
+        settingDao.getIsCleaning(),
+        settingDao.getThemeSysFollow(),
+        settingDao.getTheme()
+    ) { exportSessions, importSessions, exportLeads, importLeads, exportDates, importDates, exportSets, importSets, archiveBackupFolder, isCleaning, themeSysFollow, themeId ->
         ImportExportFilenames(
             exportSessionsFilename = exportSessions,
             importSessionsFilename = importSessions,
@@ -54,7 +56,9 @@ class ToolViewModel(
             exportSetsFilename = exportSets,
             importSetsFilename = importSets,
             archiveBackupFolder = archiveBackupFolder,
-            isCleaning = isCleaning
+            isCleaning = isCleaning,
+            themeSysFollow = themeSysFollow,
+            themeId = themeId
         )
     }
     private val _exportFolder = settingDao.getExportFolder()
@@ -109,6 +113,8 @@ class ToolViewModel(
                 importSetsFileName = importExportFilenames.importSetsFilename,
                 archiveBackupFolder = importExportFilenames.archiveBackupFolder.toBoolean(),
                 isCleaning = importExportFilenames.isCleaning.toBoolean(),
+                themeSysFollow = importExportFilenames.themeSysFollow.toBoolean(),
+                theme = importExportFilenames.themeId,
                 exportFolder = exportFolder,
                 importFolder = importFolder,
                 backupFolder = backupFolder,
@@ -499,6 +505,29 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SwitchThemeSysFollow -> {
+                _state.update {
+                    it.copy(
+                        themeSysFollow = _state.value.themeSysFollow.not()
+                    )
+                }
+                val themeSysFollow = _state.value.themeSysFollow
+                val setting =
+                    Setting(SettingDao.THEME_SYS_FOLLOW_ID, themeSysFollow.toString())
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetTheme -> {
+                _state.update {
+                    it.copy(
+                        theme = event.themeId
+                    )
+                }
+                val setting =
+                    Setting(SettingDao.THEME_ID, _state.value.theme)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetDeleteConfirmationPrompt -> {
                 _state.update {
                     it.copy(
@@ -537,4 +566,6 @@ data class ImportExportFilenames(
     val importSetsFilename: String,
     val archiveBackupFolder: String,
     val isCleaning: String,
+    val themeSysFollow: String,
+    val themeId: String,
 )
