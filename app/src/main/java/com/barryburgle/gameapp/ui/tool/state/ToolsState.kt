@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.ui.tool.state
 
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.ThemeEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -44,6 +45,8 @@ data class ToolsState(
     var deleteDates: Boolean = false,
     var deleteSets: Boolean = false,
     var isCleaning: Boolean = false,
+    var themeSysFollow: Boolean = true,
+    var theme: String = ThemeEnum.LIGHT.type,
     var deleteConfirmationPrompt: String = ""
 ) : ExportState(
     null,

@@ -47,13 +47,18 @@ private val LightColorPalette = lightColorScheme(
 
 @Composable
 fun GameAppOriginalTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    theme: String = ThemeEnum.LIGHT.type,
+    themeSysFollow: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
+    val colors = if (themeSysFollow) {
+        if (isSystemInDarkTheme()) {
+            DarkColorPalette
+        } else {
+            LightColorPalette
+        }
     } else {
-        LightColorPalette
+        ThemeEnum.getTheme(theme)
     }
 
     MaterialTheme(

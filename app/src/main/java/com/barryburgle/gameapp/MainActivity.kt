@@ -129,11 +129,11 @@ class MainActivity : ComponentActivity() {
             requestPermission(applicationContext)
         }
         setContent {
-            GameAppOriginalTheme {
-                val inputState by inputViewModel.state.collectAsState()
-                val outputState by outputViewModel.state.collectAsState()
-                val statsState by statsViewModel.state.collectAsState()
-                val toolsState by toolViewModel.state.collectAsState()
+            val inputState by inputViewModel.state.collectAsState()
+            val outputState by outputViewModel.state.collectAsState()
+            val statsState by statsViewModel.state.collectAsState()
+            val toolsState by toolViewModel.state.collectAsState()
+            GameAppOriginalTheme(toolsState.theme, toolsState.themeSysFollow) {
                 Navigation(
                     inputState = inputState,
                     outputState = outputState,
