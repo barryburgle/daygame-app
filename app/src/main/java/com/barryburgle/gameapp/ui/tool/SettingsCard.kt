@@ -16,17 +16,24 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material.icons.filled.Brush
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -34,6 +41,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
+import com.barryburgle.gameapp.model.enums.ThemeEnum
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
@@ -57,6 +65,7 @@ fun SettingsCard(
     context: Context
 ) {
     val textFieldColumnWidth = 230.dp
+    var themesExpanded by remember { mutableStateOf(false) }
     val notificationHourDialogState = rememberMaterialDialogState()
     MaterialDialog(
         dialogState = notificationHourDialogState,
@@ -227,6 +236,87 @@ fun SettingsCard(
                                 Spacer(modifier = Modifier.width(5.dp))
                                 com.barryburgle.gameapp.ui.tool.utils.Switch(state.generateiDate) {
                                     onEvent(ToolEvent.SwitchGenerateiDate)
+                                }
+                            }
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                LittleBodyText("Follow system theme")
+                                Spacer(modifier = Modifier.width(5.dp))
+                                com.barryburgle.gameapp.ui.tool.utils.Switch(state.themeSysFollow) {
+                                    onEvent(ToolEvent.SwitchThemeSysFollow)
+                                }
+                            }
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(5.dp),
+                                    verticalArrangement = Arrangement.SpaceBetween,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            verticalArrangement = Arrangement.SpaceBetween,
+                                            modifier = Modifier.fillMaxWidth(0.6f)
+                                        ) {
+                                            Button(colors = ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.primaryContainer
+                                            ), onClick = { themesExpanded = true }) {
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.SpaceAround,
+                                                    modifier = Modifier.fillMaxWidth()
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Brush,
+                                                        contentDescription = "Reminder",
+                                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                                        modifier = Modifier
+                                                            .height(25.dp)
+                                                    )
+                                                    Spacer(modifier = Modifier.width(7.dp))
+                                                    LittleBodyText("Choose a theme")
+                                                }
+                                            }
+                                            DropdownMenu(
+                                                modifier = Modifier
+                                                    .width(175.dp)
+                                                    .height(280.dp),
+                                                expanded = themesExpanded,
+                                                onDismissRequest = { themesExpanded = false }
+                                            ) {
+                                                ThemeEnum.values().forEach { theme ->
+                                                    DropdownMenuItem(
+                                                        text = {
+                                                            Row(
+                                                                verticalAlignment = Alignment.CenterVertically,
+                                                                horizontalArrangement = Arrangement.SpaceAround,
+                                                                modifier = Modifier.fillMaxWidth()
+                                                            ) {
+                                                                LittleBodyText(theme.type.replaceFirstChar { it.uppercase() })
+                                                            }
+                                                        },
+                                                        onClick = {
+                                                            onEvent(ToolEvent.SetTheme(theme.type))
+                                                            themesExpanded = false
+                                                        }
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
