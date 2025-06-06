@@ -43,6 +43,8 @@ interface SettingDao {
         const val GENERATE_IDATE_ID: String = "generate_idate"
         const val ARCHIVE_BACKUP_FOLDER_ID: String = "archive_backup"
         const val IS_CLEANING_ID: String = "is_cleaning"
+        const val THEME_SYS_FOLLOW_ID: String = "theme_sys_follow"
+        const val THEME_ID: String = "theme_id"
         const val DEFAULT_LEADS_EXPORT_FILE_NAME: String = "leads_export"
         const val DEFAULT_LEADS_IMPORT_FILE_NAME: String = "leads_export_yyyy_mm_dd_hh_mm.csv"
         const val DEFAULT_DATES_EXPORT_FILE_NAME: String = "date_export"
@@ -62,6 +64,8 @@ interface SettingDao {
         const val DEFAULT_GENERATE_IDATE_FLAG: String = "true"
         const val DEFAULT_ARCHIVE_BACKUP_FOLDER_FLAG: String = "true"
         const val DEFAULT_IS_CLEANING_FLAG: String = "false"
+        const val THEME_SYS_FOLLOW_FLAG: String = "true"
+        const val THEME_VALUE: String = "light"
         const val DEFAULT_BACKUP_NUMBER: String = "3"
         const val DEFAULT_NOTIFICATION_TIME: String = "18:00"
 
@@ -135,6 +139,12 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_IS_CLEANING_FLAG}' ELSE value END FROM setting WHERE id = '${IS_CLEANING_ID}'")
     fun getIsCleaning(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${THEME_SYS_FOLLOW_FLAG}' ELSE value END FROM setting WHERE id = '${THEME_SYS_FOLLOW_ID}'")
+    fun getThemeSysFollow(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${THEME_VALUE}' ELSE value END FROM setting WHERE id = '${THEME_ID}'")
+    fun getTheme(): Flow<String>
 
     @Query(QUERY_LAST_SESSIONS_SHOWN)
     fun getLastSessionsShown(): Flow<Int>
