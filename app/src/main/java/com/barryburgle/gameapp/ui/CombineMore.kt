@@ -65,7 +65,7 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R> CombineTen(
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> CombineEleven(
+fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R> CombineTwelve(
     flow: Flow<T1>,
     flow2: Flow<T2>,
     flow3: Flow<T3>,
@@ -77,7 +77,8 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> CombineEleven(
     flow9: Flow<T9>,
     flow10: Flow<T10>,
     flow11: Flow<T11>,
-    transform: suspend (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) -> R
+    flow12: Flow<T12>,
+    transform: suspend (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) -> R
 ): Flow<R> = combine(
     flow,
     flow2,
@@ -89,7 +90,8 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> CombineEleven(
     flow8,
     flow9,
     flow10,
-    flow11
+    flow11,
+    flow12
 ) { args: Array<*> ->
     transform(
         args[0] as T1,
@@ -103,6 +105,7 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> CombineEleven(
         args[8] as T9,
         args[9] as T10,
         args[10] as T11,
+        args[11] as T12,
     )
 }
 
