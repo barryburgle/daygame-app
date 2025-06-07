@@ -132,13 +132,10 @@ fun LeadDialog(
             ) {
                 LittleBodyText(if (state.leadNationality.isBlank()) "Touch to choose a country" else CountryEnum.getFlagByAlpha3(
                         state.leadNationality
-                    ) + "   " + CountryEnum.getCountryNameByAlpha3(
+                    ) + " " + CountryEnum.getCountryNameByAlpha3(
                         state.leadNationality
                     )
                 )
-                if (!state.leadNationality.isBlank()) {
-                    LittleBodyText(CountryEnum.getFlagByAlpha3(state.leadNationality))
-                }
             }
             DropdownMenu(
                 modifier = Modifier
