@@ -37,10 +37,8 @@ fun DateMaterialDialog(
             colors = DatePickerDefaults.colors(
                 headerBackgroundColor = MaterialTheme.colorScheme.background,
                 headerTextColor = MaterialTheme.colorScheme.onPrimary,
-                dateActiveBackgroundColor = MaterialTheme.colorScheme.tertiary,
-                dateActiveTextColor = MaterialTheme.colorScheme.onPrimary,
-                dateInactiveBackgroundColor = MaterialTheme.colorScheme.onTertiary,
-                dateInactiveTextColor = MaterialTheme.colorScheme.background
+                dateActiveBackgroundColor = MaterialTheme.colorScheme.background,
+                dateInactiveBackgroundColor = MaterialTheme.colorScheme.secondary
 
             )
         ) {
