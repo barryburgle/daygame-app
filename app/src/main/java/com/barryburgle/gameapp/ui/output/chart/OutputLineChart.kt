@@ -1,8 +1,8 @@
 package com.barryburgle.gameapp.ui.output.chart
 
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,8 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
-import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.ui.theme.Shapes
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
@@ -47,7 +45,6 @@ fun OutputLineChart(
                 Shapes.large
             )
     ) {
-        val darkThemeEnabled = isSystemInDarkTheme()
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -69,6 +66,10 @@ fun OutputLineChart(
                         SmallTitleText(description)
                     }
                 }
+                val gradientColors = intArrayOf(
+                    MaterialTheme.colorScheme.onSurface.toArgb(),
+                    MaterialTheme.colorScheme.surface.toArgb()
+                )
                 AndroidView(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -105,19 +106,11 @@ fun OutputLineChart(
                                 circleHoleColor = onSurfaceColor
                                 mode = LineDataSet.Mode.HORIZONTAL_BEZIER
                                 setDrawFilled(true)
-                                if (darkThemeEnabled) {
-                                    fillDrawable =
-                                        ContextCompat.getDrawable(
-                                            context,
-                                            R.drawable.bg_output_line_b
-                                        )
-                                } else {
-                                    fillDrawable =
-                                        ContextCompat.getDrawable(
-                                            context,
-                                            R.drawable.bg_output_line_w
-                                        )
-                                }
+                                fillDrawable =
+                                    GradientDrawable(
+                                        GradientDrawable.Orientation.TOP_BOTTOM,
+                                        gradientColors
+                                    )
                             }
                         val averageDataset =
                             LineDataSet(
