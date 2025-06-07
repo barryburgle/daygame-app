@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -52,7 +52,6 @@ import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
-import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -343,17 +342,24 @@ fun leadName(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    MediumBodyText(displayName)
+                    // TODO: create MediumBodyText with variable injectable color
+                    Text(
+                        text = displayName,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
                 if (outputShow || cardShow) {
-                    MediumBodyText(
-                        "${lead.age} ${
+                    // TODO: create MediumBodyText with variable injectable color
+                    Text(
+                        text = "${lead.age} ${
                             CountryEnum.getFlagByAlpha3(
                                 lead.nationality
                             )
-                        }"
+                        }",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    val isDarkTheme = isSystemInDarkTheme()
                     if (lead.contact == ContactTypeEnum.NUMBER.getField()) {
                         Box(
                             modifier = Modifier
@@ -361,10 +367,11 @@ fun leadName(
                                 .aspectRatio(1f)
                         ) {
                             Image(
-                                painter = painterResource(if (isDarkTheme) R.drawable.whatsapp_w else R.drawable.whatsapp_b),
+                                painter = painterResource(R.drawable.whatsapp_w),
                                 contentDescription = "Whatsapp Icon",
                                 alignment = Alignment.Center,
-                                contentScale = ContentScale.Crop
+                                contentScale = ContentScale.Crop,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
                             )
                         }
                     } else {
@@ -374,10 +381,11 @@ fun leadName(
                                 .aspectRatio(1f)
                         ) {
                             Image(
-                                painter = painterResource(if (isDarkTheme) R.drawable.instagram_w else R.drawable.instagram_b),
+                                painter = painterResource(R.drawable.instagram_w),
                                 contentDescription = "Instagram Icon",
                                 alignment = Alignment.Center,
-                                contentScale = ContentScale.Crop
+                                contentScale = ContentScale.Crop,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
                             )
                         }
                     }
