@@ -59,7 +59,8 @@ fun InputCounter(
                         text = char.toString(),
                         style = style,
                         softWrap = false,
-                        fontSize = 35.sp
+                        fontSize = 35.sp,
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
