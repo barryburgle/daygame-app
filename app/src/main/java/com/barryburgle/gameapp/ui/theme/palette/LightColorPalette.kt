@@ -20,6 +20,8 @@ private val SixthColor = Color.White
 private val SeventhColor = Grey50
 private val EightColor = Grey30
 
+// TODO: use template of color like hustle color palette
+
 val LightColorPalette = lightColorScheme(
     primary = FirstColor,
     onPrimary = FourthColor,

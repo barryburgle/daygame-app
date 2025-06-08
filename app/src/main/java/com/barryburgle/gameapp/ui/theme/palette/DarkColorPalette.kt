@@ -9,6 +9,8 @@ import com.barryburgle.gameapp.ui.theme.Grey50
 import com.barryburgle.gameapp.ui.theme.Grey75
 import com.barryburgle.gameapp.ui.theme.Red30
 
+// TODO: use template of color like hustle color palette
+
 val DarkColorPalette = darkColorScheme(
     primary = Grey05,
     onPrimary = Grey75,
