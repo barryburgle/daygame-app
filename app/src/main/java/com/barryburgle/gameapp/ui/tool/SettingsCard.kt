@@ -316,7 +316,17 @@ fun SettingsCard(
                                                                         0.7f
                                                                     )
                                                                 ) {
-                                                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                                                    Row(
+                                                                        verticalAlignment = Alignment.CenterVertically,
+                                                                        modifier = Modifier
+                                                                            .background(
+                                                                                theme.getThirdHint(),
+                                                                                shape = RoundedCornerShape(
+                                                                                    20.dp
+                                                                                )
+                                                                            )
+                                                                            .padding(3.dp)
+                                                                    ) {
                                                                         Canvas(
                                                                             modifier = Modifier.size(
                                                                                 12.dp

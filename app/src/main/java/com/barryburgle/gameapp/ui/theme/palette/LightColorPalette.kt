@@ -39,4 +39,4 @@ val LightColorPalette = lightColorScheme(
     onTertiary = EightColor
 )
 
-val LightColorPaletteHint = ColorPaletteHint(Grey70, Color.White)
+val LightColorPaletteHint = ColorPaletteHint(Grey70, Color.White, Grey30)

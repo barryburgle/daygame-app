@@ -10,7 +10,9 @@ enum class ThemeEnum(val type: String) {
     INFINITE("infinite"),
     MASTERY("mastery"),
     HUSTLE("hustle"),
-    STEALTH("stealth");
+    STEALTH("stealth"),
+    CROWN("crown"),
+    BROODY("broody");
 
     companion object {
         fun getTheme(type: String): ColorScheme {
@@ -21,6 +23,8 @@ enum class ThemeEnum(val type: String) {
                 MASTERY.type -> MasteryColorScheme
                 HUSTLE.type -> HustleColorPalette
                 STEALTH.type -> StealthColorPalette
+                CROWN.type -> CrownColorPalette
+                BROODY.type -> BroodyColorPalette
                 else -> LightColorPalette
             }
         }
@@ -38,6 +42,8 @@ enum class ThemeEnum(val type: String) {
             MASTERY.type -> MasteryColorPaletteHint.firstColor
             HUSTLE.type -> HustleColorPaletteHint.firstColor
             STEALTH.type -> StealthColorPaletteHint.firstColor
+            CROWN.type -> CrownColorPaletteHint.firstColor
+            BROODY.type -> BroodyColorPaletteHint.firstColor
             else -> LightColorPaletteHint.firstColor
         }
     }
@@ -50,7 +56,23 @@ enum class ThemeEnum(val type: String) {
             MASTERY.type -> MasteryColorPaletteHint.secondColor
             HUSTLE.type -> HustleColorPaletteHint.secondColor
             STEALTH.type -> StealthColorPaletteHint.secondColor
+            CROWN.type -> CrownColorPaletteHint.secondColor
+            BROODY.type -> BroodyColorPaletteHint.secondColor
             else -> LightColorPaletteHint.secondColor
+        }
+    }
+
+    fun getThirdHint(): Color {
+        return when (type) {
+            DARK.type -> DarkColorPaletteHint.thirdColor
+            LIGHT.type -> LightColorPaletteHint.thirdColor
+            INFINITE.type -> InfiniteColorPaletteHint.thirdColor
+            MASTERY.type -> MasteryColorPaletteHint.thirdColor
+            HUSTLE.type -> HustleColorPaletteHint.thirdColor
+            STEALTH.type -> StealthColorPaletteHint.thirdColor
+            CROWN.type -> CrownColorPaletteHint.thirdColor
+            BROODY.type -> BroodyColorPaletteHint.thirdColor
+            else -> LightColorPaletteHint.thirdColor
         }
     }
 }

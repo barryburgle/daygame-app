@@ -35,4 +35,4 @@ val MasteryColorScheme = lightColorScheme(
     onTertiary = EightColor
 )
 
-val MasteryColorPaletteHint = ColorPaletteHint(SecondColor, FirstColor)
+val MasteryColorPaletteHint = ColorPaletteHint(SecondColor, FirstColor, ThirdColor)
