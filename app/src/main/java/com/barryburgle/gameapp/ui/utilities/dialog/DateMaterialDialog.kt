@@ -33,12 +33,12 @@ fun DateMaterialDialog(
     ) {
         this.datepicker(
             initialDate = initialDate,
-            title = "Set $description date",
+            title = "Set $description's date",
             colors = DatePickerDefaults.colors(
-                headerBackgroundColor = MaterialTheme.colorScheme.background,
+                headerBackgroundColor = MaterialTheme.colorScheme.surface,
                 headerTextColor = MaterialTheme.colorScheme.onPrimary,
-                dateActiveBackgroundColor = MaterialTheme.colorScheme.background,
-                dateInactiveBackgroundColor = MaterialTheme.colorScheme.secondary
+                dateActiveBackgroundColor = MaterialTheme.colorScheme.surface,
+                dateInactiveBackgroundColor = MaterialTheme.colorScheme.onPrimary
 
             )
         ) {

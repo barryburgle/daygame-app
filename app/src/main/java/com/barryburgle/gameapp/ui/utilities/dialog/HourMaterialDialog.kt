@@ -33,12 +33,12 @@ fun HourMaterialDialog(
     ) {
         this.timepicker(
             initialTime = initialTime,
-            title = "Set $description hour",
+            title = "Set $description's hour",
             colors = TimePickerDefaults.colors(
-                selectorColor = MaterialTheme.colorScheme.onPrimary,
-                activeBackgroundColor = MaterialTheme.colorScheme.tertiary,
-                activeTextColor = MaterialTheme.colorScheme.background,
-                inactiveBackgroundColor = MaterialTheme.colorScheme.primary,
+                selectorColor = MaterialTheme.colorScheme.background,
+                activeBackgroundColor = MaterialTheme.colorScheme.surface,
+                activeTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                inactiveBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
                 inactiveTextColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
