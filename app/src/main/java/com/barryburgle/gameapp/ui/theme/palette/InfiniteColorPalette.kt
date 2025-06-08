@@ -29,3 +29,5 @@ val InfiniteColorPalette = lightColorScheme(
     tertiary = TextColor,
     onTertiary = BackgroundColor
 )
+
+val InfiniteColorPaletteHint = ColorPaletteHint(InterestColor, BackgroundColor)

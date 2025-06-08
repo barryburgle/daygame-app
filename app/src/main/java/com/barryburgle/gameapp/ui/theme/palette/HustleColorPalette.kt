@@ -29,3 +29,5 @@ val HustleColorPalette = lightColorScheme(
     tertiary = TextColor,
     onTertiary = BackgroundColor
 )
+
+val HustleColorPaletteHint = ColorPaletteHint(ContainerColor, InterestColor)

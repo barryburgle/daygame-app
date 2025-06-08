@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.ui.tool
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,6 +31,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
@@ -297,15 +301,73 @@ fun SettingsCard(
                                                 expanded = themesExpanded,
                                                 onDismissRequest = { themesExpanded = false }
                                             ) {
-                                                ThemeEnum.values().forEach { theme ->
+                                                ThemeEnum.sortedValues().forEach { theme ->
                                                     DropdownMenuItem(
                                                         text = {
                                                             Row(
                                                                 verticalAlignment = Alignment.CenterVertically,
-                                                                horizontalArrangement = Arrangement.SpaceAround,
+                                                                horizontalArrangement = Arrangement.Center,
                                                                 modifier = Modifier.fillMaxWidth()
                                                             ) {
-                                                                LittleBodyText(theme.type.replaceFirstChar { it.uppercase() })
+                                                                Row(
+                                                                    verticalAlignment = Alignment.CenterVertically,
+                                                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                                                    modifier = Modifier.fillMaxWidth(
+                                                                        0.7f
+                                                                    )
+                                                                ) {
+                                                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                                                        Canvas(
+                                                                            modifier = Modifier.size(
+                                                                                12.dp
+                                                                            )
+                                                                        ) {
+                                                                            drawCircle(
+                                                                                color = theme.getFirstHint(),
+                                                                                radius = size.minDimension / 2f
+                                                                            )
+                                                                        }
+                                                                        Spacer(
+                                                                            modifier = Modifier.width(
+                                                                                2.dp
+                                                                            )
+                                                                        )
+                                                                        Canvas(
+                                                                            modifier = Modifier.size(
+                                                                                12.dp
+                                                                            )
+                                                                        ) {
+                                                                            drawCircle(
+                                                                                color = theme.getSecondHint(),
+                                                                                radius = size.minDimension / 2f
+                                                                            )
+                                                                        }
+                                                                    }
+                                                                    Row(
+                                                                        verticalAlignment = Alignment.CenterVertically,
+                                                                        horizontalArrangement = Arrangement.Center,
+                                                                        modifier = Modifier.fillMaxWidth()
+                                                                    ) {
+                                                                        var themeName =
+                                                                            theme.type.replaceFirstChar { it.uppercase() }
+                                                                        var currentStyle =
+                                                                            MaterialTheme.typography.bodySmall
+                                                                        if (state.theme == theme.type) {
+                                                                            currentStyle =
+                                                                                currentStyle.merge(
+                                                                                    TextStyle(
+                                                                                        textDecoration = TextDecoration.Underline
+                                                                                    )
+                                                                                )
+                                                                        }
+                                                                        // TODO: create LittleBodyText that manages underlying
+                                                                        Text(
+                                                                            text = themeName,
+                                                                            style = currentStyle,
+                                                                            color = MaterialTheme.colorScheme.onPrimary
+                                                                        )
+                                                                    }
+                                                                }
                                                             }
                                                         },
                                                         onClick = {
