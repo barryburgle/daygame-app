@@ -135,7 +135,7 @@ fun InputScreen(
                         .offset(y = -spaceFromNavBar)
                         .rotate(rotationAngle),
                     contentColor = MaterialTheme.colorScheme.inversePrimary,
-                    containerColor = MaterialTheme.colorScheme.onTertiary,
+                    containerColor = MaterialTheme.colorScheme.tertiary,
                     shape = CircleShape
                 ) {
                     Icon(
