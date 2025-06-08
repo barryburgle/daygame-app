@@ -4,6 +4,8 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 import com.barryburgle.gameapp.ui.theme.Red30
 
+// TODO: re-do theme with color structure similar to Hustle and rename colorscheme to color palette
+
 private val FirstColor = Color(0xFFD0B385)
 private val SecondColor = Color(0xFFB1825E)
 private val ThirdColor = Color(0xFFFDFCE2)
