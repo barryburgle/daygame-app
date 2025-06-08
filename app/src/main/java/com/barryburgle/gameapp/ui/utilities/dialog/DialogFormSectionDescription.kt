@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.utilities.dialog
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
@@ -14,6 +15,7 @@ fun DialogFormSectionDescription(
         text = text,
         fontSize = descriptionFontSize,
         fontWeight = FontWeight.W600,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.onPrimary
     )
 }
