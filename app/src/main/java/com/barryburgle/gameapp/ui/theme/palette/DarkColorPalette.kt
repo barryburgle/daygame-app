@@ -28,4 +28,4 @@ val DarkColorPalette = darkColorScheme(
     onTertiary = Grey50
 )
 
-val DarkColorPaletteHint = ColorPaletteHint(Grey10, Grey20)
+val DarkColorPaletteHint = ColorPaletteHint(Grey10, Grey20, Grey50)
