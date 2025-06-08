@@ -387,7 +387,7 @@ fun leadName(
                                 contentDescription = "Instagram Icon",
                                 alignment = Alignment.Center,
                                 contentScale = ContentScale.Crop,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
+                                colorFilter = ColorFilter.tint(textColor)
                             )
                         }
                     }

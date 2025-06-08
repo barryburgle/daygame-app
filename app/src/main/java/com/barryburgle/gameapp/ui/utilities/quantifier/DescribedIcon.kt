@@ -36,10 +36,10 @@ fun DescribedIcon(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(5.dp)
     ) {
-        var color: Color = MaterialTheme.colorScheme.onPrimary
+        var color: Color = MaterialTheme.colorScheme.secondaryContainer
         var flagDescription = trueFlagDescription
         if (!happened!!) {
-            color = MaterialTheme.colorScheme.secondaryContainer
+            color = MaterialTheme.colorScheme.inversePrimary
             flagDescription = falseFlagDescription
         }
         Column(
