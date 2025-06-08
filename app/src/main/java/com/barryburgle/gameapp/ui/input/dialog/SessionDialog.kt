@@ -329,7 +329,9 @@ fun leadName(
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                var textColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
                 if (outputShow && alertColor != null) {
+                    textColor = MaterialTheme.colorScheme.onPrimary
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -346,7 +348,7 @@ fun leadName(
                     Text(
                         text = displayName,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = textColor
                     )
                 }
                 if (outputShow || cardShow) {
@@ -358,7 +360,7 @@ fun leadName(
                             )
                         }",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = textColor
                     )
                     if (lead.contact == ContactTypeEnum.NUMBER.getField()) {
                         Box(
@@ -371,7 +373,7 @@ fun leadName(
                                 contentDescription = "Whatsapp Icon",
                                 alignment = Alignment.Center,
                                 contentScale = ContentScale.Crop,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
+                                colorFilter = ColorFilter.tint(textColor)
                             )
                         }
                     } else {
