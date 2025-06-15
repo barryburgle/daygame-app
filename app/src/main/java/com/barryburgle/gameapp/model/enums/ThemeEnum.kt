@@ -13,7 +13,8 @@ enum class ThemeEnum(val type: String) {
     STEALTH("stealth"),
     CROWN("crown"),
     BROODY("broody"),
-    JULIUS("julius");
+    JULIUS("julius"),
+    SOLTAN("soltan");
 
     companion object {
         fun getTheme(type: String): ColorScheme {
@@ -27,6 +28,7 @@ enum class ThemeEnum(val type: String) {
                 CROWN.type -> CrownColorPalette
                 BROODY.type -> BroodyColorPalette
                 JULIUS.type -> JuliusColorPalette
+                SOLTAN.type -> SoltanColorPalette
                 else -> LightColorPalette
             }
         }
@@ -47,6 +49,7 @@ enum class ThemeEnum(val type: String) {
             CROWN.type -> CrownColorPaletteHint.firstColor
             BROODY.type -> BroodyColorPaletteHint.firstColor
             JULIUS.type -> JuliusColorScheme.firstColor
+            SOLTAN.type -> SoltanColorScheme.firstColor
             else -> LightColorPaletteHint.firstColor
         }
     }
@@ -62,6 +65,7 @@ enum class ThemeEnum(val type: String) {
             CROWN.type -> CrownColorPaletteHint.secondColor
             BROODY.type -> BroodyColorPaletteHint.secondColor
             JULIUS.type -> JuliusColorScheme.secondColor
+            SOLTAN.type -> SoltanColorScheme.secondColor
             else -> LightColorPaletteHint.secondColor
         }
     }
@@ -77,6 +81,7 @@ enum class ThemeEnum(val type: String) {
             CROWN.type -> CrownColorPaletteHint.thirdColor
             BROODY.type -> BroodyColorPaletteHint.thirdColor
             JULIUS.type -> JuliusColorScheme.thirdColor
+            SOLTAN.type -> SoltanColorScheme.thirdColor
             else -> LightColorPaletteHint.thirdColor
         }
     }
