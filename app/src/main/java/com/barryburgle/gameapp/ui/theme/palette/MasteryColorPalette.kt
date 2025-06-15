@@ -16,7 +16,7 @@ private val SixthColor = Color.White
 private val SeventhColor = Color(0xFF6C4E37)
 private val EightColor = Color(0xFF2F2014)
 
-val MasteryColorScheme = lightColorScheme(
+val MasteryColorPalette = lightColorScheme(
     primary = FirstColor,
     onPrimary = FourthColor,
     primaryContainer = SecondColor,

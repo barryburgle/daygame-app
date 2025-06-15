@@ -30,4 +30,4 @@ val SoltanColorPalette = lightColorScheme(
     onTertiary = BackgroundColor
 )
 
-val SoltanColorScheme = ColorPaletteHint(InterestColor, TextColor, BackgroundColor)
+val SoltanColorPaletteHint = ColorPaletteHint(InterestColor, TextColor, BackgroundColor)

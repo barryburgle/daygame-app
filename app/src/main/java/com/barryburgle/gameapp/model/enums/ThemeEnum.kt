@@ -22,7 +22,7 @@ enum class ThemeEnum(val type: String) {
                 DARK.type -> DarkColorPalette
                 LIGHT.type -> LightColorPalette
                 INFINITE.type -> InfiniteColorPalette
-                MASTERY.type -> MasteryColorScheme
+                MASTERY.type -> MasteryColorPalette
                 HUSTLE.type -> HustleColorPalette
                 STEALTH.type -> StealthColorPalette
                 CROWN.type -> CrownColorPalette
@@ -48,8 +48,8 @@ enum class ThemeEnum(val type: String) {
             STEALTH.type -> StealthColorPaletteHint.firstColor
             CROWN.type -> CrownColorPaletteHint.firstColor
             BROODY.type -> BroodyColorPaletteHint.firstColor
-            JULIUS.type -> JuliusColorScheme.firstColor
-            SOLTAN.type -> SoltanColorScheme.firstColor
+            JULIUS.type -> JuliusColorPaletteHint.firstColor
+            SOLTAN.type -> SoltanColorPaletteHint.firstColor
             else -> LightColorPaletteHint.firstColor
         }
     }
@@ -64,8 +64,8 @@ enum class ThemeEnum(val type: String) {
             STEALTH.type -> StealthColorPaletteHint.secondColor
             CROWN.type -> CrownColorPaletteHint.secondColor
             BROODY.type -> BroodyColorPaletteHint.secondColor
-            JULIUS.type -> JuliusColorScheme.secondColor
-            SOLTAN.type -> SoltanColorScheme.secondColor
+            JULIUS.type -> JuliusColorPaletteHint.secondColor
+            SOLTAN.type -> SoltanColorPaletteHint.secondColor
             else -> LightColorPaletteHint.secondColor
         }
     }
@@ -80,8 +80,8 @@ enum class ThemeEnum(val type: String) {
             STEALTH.type -> StealthColorPaletteHint.thirdColor
             CROWN.type -> CrownColorPaletteHint.thirdColor
             BROODY.type -> BroodyColorPaletteHint.thirdColor
-            JULIUS.type -> JuliusColorScheme.thirdColor
-            SOLTAN.type -> SoltanColorScheme.thirdColor
+            JULIUS.type -> JuliusColorPaletteHint.thirdColor
+            SOLTAN.type -> SoltanColorPaletteHint.thirdColor
             else -> LightColorPaletteHint.thirdColor
         }
     }
