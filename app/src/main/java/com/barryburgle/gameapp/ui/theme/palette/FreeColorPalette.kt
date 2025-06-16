@@ -30,4 +30,4 @@ val FreeColorPalette = darkColorScheme(
     onTertiary = BackgroundColor
 )
 
-val FreeColorPaletteHint = ColorPaletteHint(ContainerColor, BackgroundColor, TappableColor)
+val FreeColorPaletteHint = ColorPaletteHint(ContainerColor, InterestColor, BackgroundColor)

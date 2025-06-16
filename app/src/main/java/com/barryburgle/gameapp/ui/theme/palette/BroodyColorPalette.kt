@@ -30,4 +30,4 @@ val BroodyColorPalette = darkColorScheme(
     onTertiary = BackgroundColor
 )
 
-val BroodyColorPaletteHint = ColorPaletteHint(ContainerColor, BackgroundColor, TappableColor)
+val BroodyColorPaletteHint = ColorPaletteHint(ContainerColor, InterestColor, BackgroundColor)

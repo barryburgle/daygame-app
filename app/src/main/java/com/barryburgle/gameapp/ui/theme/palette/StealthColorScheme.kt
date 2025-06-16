@@ -30,4 +30,4 @@ val StealthColorPalette = lightColorScheme(
     onTertiary = BackgroundColor
 )
 
-val StealthColorPaletteHint = ColorPaletteHint(ContainerColor, InterestColor, TappableColor)
+val StealthColorPaletteHint = ColorPaletteHint(ContainerColor, InterestColor, BackgroundColor)

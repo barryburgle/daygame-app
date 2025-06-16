@@ -30,4 +30,4 @@ val HustleColorPalette = lightColorScheme(
     onTertiary = BackgroundColor
 )
 
-val HustleColorPaletteHint = ColorPaletteHint(ContainerColor, InterestColor, TappableColor)
+val HustleColorPaletteHint = ColorPaletteHint(ContainerColor, InterestColor, BackgroundColor)

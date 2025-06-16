@@ -30,4 +30,4 @@ val InfiniteColorPalette = lightColorScheme(
     onTertiary = BackgroundColor
 )
 
-val InfiniteColorPaletteHint = ColorPaletteHint(InterestColor, BackgroundColor, TappableColor)
+val InfiniteColorPaletteHint = ColorPaletteHint(ContainerColor, InterestColor, BackgroundColor)

@@ -30,4 +30,4 @@ val JuliusColorPalette = lightColorScheme(
     onTertiary = BackgroundColor
 )
 
-val JuliusColorPaletteHint = ColorPaletteHint(InterestColor, TextColor, BackgroundColor)
+val JuliusColorPaletteHint = ColorPaletteHint(ContainerColor, InterestColor, BackgroundColor)

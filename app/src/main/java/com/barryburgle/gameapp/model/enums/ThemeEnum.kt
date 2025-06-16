@@ -15,7 +15,9 @@ enum class ThemeEnum(val type: String) {
     BROODY("broody"),
     JULIUS("julius"),
     SOLTAN("soltan"),
-    FREE("free");
+    FREE("free"),
+    PHOENIX("phoenix"),
+    BOURBON("bourbon");
 
     companion object {
         fun getTheme(type: String): ColorScheme {
@@ -31,6 +33,8 @@ enum class ThemeEnum(val type: String) {
                 JULIUS.type -> JuliusColorPalette
                 SOLTAN.type -> SoltanColorPalette
                 FREE.type -> FreeColorPalette
+                PHOENIX.type -> PhoenixColorPalette
+                BOURBON.type -> BourbonColorPalette
                 else -> LightColorPalette
             }
         }
@@ -42,52 +46,58 @@ enum class ThemeEnum(val type: String) {
 
     fun getFirstHint(): Color {
         return when (type) {
-            DARK.type -> DarkColorPaletteHint.firstColor
-            LIGHT.type -> LightColorPaletteHint.firstColor
-            INFINITE.type -> InfiniteColorPaletteHint.firstColor
-            MASTERY.type -> MasteryColorPaletteHint.firstColor
-            HUSTLE.type -> HustleColorPaletteHint.firstColor
-            STEALTH.type -> StealthColorPaletteHint.firstColor
-            CROWN.type -> CrownColorPaletteHint.firstColor
-            BROODY.type -> BroodyColorPaletteHint.firstColor
-            JULIUS.type -> JuliusColorPaletteHint.firstColor
-            SOLTAN.type -> SoltanColorPaletteHint.firstColor
-            FREE.type -> FreeColorPaletteHint.firstColor
-            else -> LightColorPaletteHint.firstColor
+            DARK.type -> DarkColorPaletteHint.containerColor
+            LIGHT.type -> LightColorPaletteHint.containerColor
+            INFINITE.type -> InfiniteColorPaletteHint.containerColor
+            MASTERY.type -> MasteryColorPaletteHint.containerColor
+            HUSTLE.type -> HustleColorPaletteHint.containerColor
+            STEALTH.type -> StealthColorPaletteHint.containerColor
+            CROWN.type -> CrownColorPaletteHint.containerColor
+            BROODY.type -> BroodyColorPaletteHint.containerColor
+            JULIUS.type -> JuliusColorPaletteHint.containerColor
+            SOLTAN.type -> SoltanColorPaletteHint.containerColor
+            FREE.type -> FreeColorPaletteHint.containerColor
+            PHOENIX.type -> PhoenixColorPaletteHint.containerColor
+            BOURBON.type -> BourbonColorPaletteHint.containerColor
+            else -> LightColorPaletteHint.containerColor
         }
     }
 
     fun getSecondHint(): Color {
         return when (type) {
-            DARK.type -> DarkColorPaletteHint.secondColor
-            LIGHT.type -> LightColorPaletteHint.secondColor
-            INFINITE.type -> InfiniteColorPaletteHint.secondColor
-            MASTERY.type -> MasteryColorPaletteHint.secondColor
-            HUSTLE.type -> HustleColorPaletteHint.secondColor
-            STEALTH.type -> StealthColorPaletteHint.secondColor
-            CROWN.type -> CrownColorPaletteHint.secondColor
-            BROODY.type -> BroodyColorPaletteHint.secondColor
-            JULIUS.type -> JuliusColorPaletteHint.secondColor
-            SOLTAN.type -> SoltanColorPaletteHint.secondColor
-            FREE.type -> FreeColorPaletteHint.secondColor
-            else -> LightColorPaletteHint.secondColor
+            DARK.type -> DarkColorPaletteHint.interestColor
+            LIGHT.type -> LightColorPaletteHint.interestColor
+            INFINITE.type -> InfiniteColorPaletteHint.interestColor
+            MASTERY.type -> MasteryColorPaletteHint.interestColor
+            HUSTLE.type -> HustleColorPaletteHint.interestColor
+            STEALTH.type -> StealthColorPaletteHint.interestColor
+            CROWN.type -> CrownColorPaletteHint.interestColor
+            BROODY.type -> BroodyColorPaletteHint.interestColor
+            JULIUS.type -> JuliusColorPaletteHint.interestColor
+            SOLTAN.type -> SoltanColorPaletteHint.interestColor
+            FREE.type -> FreeColorPaletteHint.interestColor
+            PHOENIX.type -> PhoenixColorPaletteHint.interestColor
+            BOURBON.type -> BourbonColorPaletteHint.interestColor
+            else -> LightColorPaletteHint.interestColor
         }
     }
 
     fun getThirdHint(): Color {
         return when (type) {
-            DARK.type -> DarkColorPaletteHint.thirdColor
-            LIGHT.type -> LightColorPaletteHint.thirdColor
-            INFINITE.type -> InfiniteColorPaletteHint.thirdColor
-            MASTERY.type -> MasteryColorPaletteHint.thirdColor
-            HUSTLE.type -> HustleColorPaletteHint.thirdColor
-            STEALTH.type -> StealthColorPaletteHint.thirdColor
-            CROWN.type -> CrownColorPaletteHint.thirdColor
-            BROODY.type -> BroodyColorPaletteHint.thirdColor
-            JULIUS.type -> JuliusColorPaletteHint.thirdColor
-            SOLTAN.type -> SoltanColorPaletteHint.thirdColor
-            FREE.type -> FreeColorPaletteHint.thirdColor
-            else -> LightColorPaletteHint.thirdColor
+            DARK.type -> DarkColorPaletteHint.backgroundColor
+            LIGHT.type -> LightColorPaletteHint.backgroundColor
+            INFINITE.type -> InfiniteColorPaletteHint.backgroundColor
+            MASTERY.type -> MasteryColorPaletteHint.backgroundColor
+            HUSTLE.type -> HustleColorPaletteHint.backgroundColor
+            STEALTH.type -> StealthColorPaletteHint.backgroundColor
+            CROWN.type -> CrownColorPaletteHint.backgroundColor
+            BROODY.type -> BroodyColorPaletteHint.backgroundColor
+            JULIUS.type -> JuliusColorPaletteHint.backgroundColor
+            SOLTAN.type -> SoltanColorPaletteHint.backgroundColor
+            FREE.type -> FreeColorPaletteHint.backgroundColor
+            PHOENIX.type -> PhoenixColorPaletteHint.backgroundColor
+            BOURBON.type -> BourbonColorPaletteHint.backgroundColor
+            else -> LightColorPaletteHint.backgroundColor
         }
     }
 }

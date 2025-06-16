@@ -30,4 +30,4 @@ val CrownColorPalette = lightColorScheme(
     onTertiary = BackgroundColor
 )
 
-val CrownColorPaletteHint = ColorPaletteHint(InterestColor, ContainerColor, TappableColor)
+val CrownColorPaletteHint = ColorPaletteHint(ContainerColor, InterestColor, BackgroundColor)
