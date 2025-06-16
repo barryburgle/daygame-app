@@ -17,7 +17,13 @@ enum class ThemeEnum(val type: String) {
     SOLTAN("soltan"),
     FREE("free"),
     PHOENIX("phoenix"),
-    BOURBON("bourbon");
+    BOURBON("bourbon"),
+    NORTH("north"),
+    RECOVER("recovering"),
+    VERST("verstappen"),
+    URBAN("urban"),
+    NIPLAV("niplav"),
+    BREEZE("breeze");
 
     companion object {
         fun getTheme(type: String): ColorScheme {
@@ -35,6 +41,12 @@ enum class ThemeEnum(val type: String) {
                 FREE.type -> FreeColorPalette
                 PHOENIX.type -> PhoenixColorPalette
                 BOURBON.type -> BourbonColorPalette
+                NORTH.type -> NorthColorPalette
+                RECOVER.type -> RecoverColorPalette
+                VERST.type -> VerstColorPalette
+                URBAN.type -> UrbanColorPalette
+                NIPLAV.type -> NiplavColorPalette
+                BREEZE.type -> BreezeColorPalette
                 else -> LightColorPalette
             }
         }
@@ -59,6 +71,12 @@ enum class ThemeEnum(val type: String) {
             FREE.type -> FreeColorPaletteHint.containerColor
             PHOENIX.type -> PhoenixColorPaletteHint.containerColor
             BOURBON.type -> BourbonColorPaletteHint.containerColor
+            NORTH.type -> NorthColorPaletteHint.containerColor
+            RECOVER.type -> RecoverColorPaletteHint.containerColor
+            VERST.type -> VerstColorPaletteHint.containerColor
+            URBAN.type -> UrbanColorPaletteHint.containerColor
+            NIPLAV.type -> NiplavColorPaletteHint.containerColor
+            BREEZE.type -> BreezeColorPaletteHint.containerColor
             else -> LightColorPaletteHint.containerColor
         }
     }
@@ -78,6 +96,12 @@ enum class ThemeEnum(val type: String) {
             FREE.type -> FreeColorPaletteHint.interestColor
             PHOENIX.type -> PhoenixColorPaletteHint.interestColor
             BOURBON.type -> BourbonColorPaletteHint.interestColor
+            NORTH.type -> NorthColorPaletteHint.interestColor
+            RECOVER.type -> RecoverColorPaletteHint.interestColor
+            VERST.type -> VerstColorPaletteHint.interestColor
+            URBAN.type -> UrbanColorPaletteHint.interestColor
+            NIPLAV.type -> NiplavColorPaletteHint.interestColor
+            BREEZE.type -> BreezeColorPaletteHint.interestColor
             else -> LightColorPaletteHint.interestColor
         }
     }
@@ -97,6 +121,12 @@ enum class ThemeEnum(val type: String) {
             FREE.type -> FreeColorPaletteHint.backgroundColor
             PHOENIX.type -> PhoenixColorPaletteHint.backgroundColor
             BOURBON.type -> BourbonColorPaletteHint.backgroundColor
+            NORTH.type -> NorthColorPaletteHint.backgroundColor
+            RECOVER.type -> RecoverColorPaletteHint.backgroundColor
+            VERST.type -> VerstColorPaletteHint.backgroundColor
+            URBAN.type -> UrbanColorPaletteHint.backgroundColor
+            NIPLAV.type -> NiplavColorPaletteHint.backgroundColor
+            BREEZE.type -> BreezeColorPaletteHint.backgroundColor
             else -> LightColorPaletteHint.backgroundColor
         }
     }
