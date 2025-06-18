@@ -164,6 +164,7 @@ fun ToolsScreen(
                     )
                 }
             }
+            // TODO: do a credits card with links written in proper text color inside
             item {
                 Row(
                     modifier = Modifier

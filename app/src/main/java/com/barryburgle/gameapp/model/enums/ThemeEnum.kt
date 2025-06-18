@@ -25,6 +25,8 @@ enum class ThemeEnum(val type: String) {
     NIPLAV("niplav"),
     BREEZE("breeze");
 
+    // TODO: review all themes and colors in all the screens to fix contrast in all spots
+
     companion object {
         fun getTheme(type: String): ColorScheme {
             return when (type) {
