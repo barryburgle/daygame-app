@@ -104,10 +104,12 @@ You can download the app .apk installer on the release page clicking on the foll
   - leads distribution with leads histograms
 - [x] `Settings Tab` In it you can find:
   - data import/export in .csv files with or without header ([file examples](https://github.com/barryburgle/daygame-ap/blob/main/resources/files))
+  - easy data backup management
   - update checker & download button
   - settable chart average moving window
   - last session sticking points reminder time setter
   - themes selector
+  - data wipe out with backup archiving
   - project page and credits
  
 ## Project Roadmap
@@ -187,7 +189,6 @@ The following list contains all the possible project advancements, divided in `D
 - `Dev Experience` Instrumentation tests
 - `Dev Experience` Security improvements
 - `User Experience` UI Animations
-- `User Experience` Themes
 - `User Experience` Language translations
 - `User Experience` Performance optimizations
 - `User Experience` Accessibility integrations
