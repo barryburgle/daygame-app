@@ -1,4 +1,4 @@
-# Version 1.7.3 (2025-06-20)
+# Version 1.8.0 (2025-06-20)
 
 **Features**
 - Featuring tribute themes 🖌️
