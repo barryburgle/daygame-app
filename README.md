@@ -1,4 +1,4 @@
-V<div align="center">
+<div align="center">
 <br />
 <img src="app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp" />
 </div>
