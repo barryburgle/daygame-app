@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +32,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,7 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
@@ -68,7 +70,6 @@ fun SettingsCard(
     currentVersion: String,
     context: Context
 ) {
-    val textFieldColumnWidth = 230.dp
     var themesExpanded by remember { mutableStateOf(false) }
     val notificationHourDialogState = rememberMaterialDialogState()
     MaterialDialog(
@@ -296,7 +297,7 @@ fun SettingsCard(
                                             }
                                             DropdownMenu(
                                                 modifier = Modifier
-                                                    .width(175.dp)
+                                                    .width(200.dp)
                                                     .height(280.dp),
                                                 expanded = themesExpanded,
                                                 onDismissRequest = { themesExpanded = false }
@@ -365,17 +366,39 @@ fun SettingsCard(
                                                                         if (state.theme == theme.type) {
                                                                             currentStyle =
                                                                                 currentStyle.merge(
-                                                                                    TextStyle(
-                                                                                        textDecoration = TextDecoration.Underline
-                                                                                    )
+                                                                                    fontWeight = FontWeight.Bold
                                                                                 )
                                                                         }
-                                                                        // TODO: create LittleBodyText that manages underlying
                                                                         Text(
                                                                             text = themeName,
                                                                             style = currentStyle,
                                                                             color = MaterialTheme.colorScheme.onPrimary
                                                                         )
+                                                                        if (state.theme == theme.type) {
+                                                                            Spacer(
+                                                                                modifier = Modifier.width(
+                                                                                    10.dp
+                                                                                )
+                                                                            )
+                                                                            Box(
+                                                                                contentAlignment = Alignment.Center,
+                                                                                modifier = Modifier.size(
+                                                                                    20.dp
+                                                                                )
+                                                                            ) {
+                                                                                val color =
+                                                                                    MaterialTheme.colorScheme.primaryContainer
+                                                                                Canvas(modifier = Modifier.matchParentSize()) {
+                                                                                    drawCircle(
+                                                                                        color = color,
+                                                                                        radius = size.minDimension / 2f
+                                                                                    )
+                                                                                }
+                                                                                SegmentedButtonDefaults.Icon(
+                                                                                    true
+                                                                                )
+                                                                            }
+                                                                        }
                                                                     }
                                                                 }
                                                             }
