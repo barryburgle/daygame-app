@@ -5,6 +5,7 @@
 
 **Bugs**
 - Shadow for delete and edit card buttons
+- Soltan palette color fix
 
 # Version 1.8.0 (2025-06-20)
 

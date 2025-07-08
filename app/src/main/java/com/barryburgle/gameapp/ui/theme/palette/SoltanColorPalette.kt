@@ -6,10 +6,10 @@ import com.barryburgle.gameapp.ui.theme.Red30
 
 private val InterestColor = Color(0xFF05147B)
 private val ContainerColor = Color(0xFF071DB0)
-private val SelectedColor = Color(0xFFFFFF01)
-private val TappableColor = Color(0xFFFFFF4D)
+private val SelectedColor = Color(0xFF7F8000)
+private val TappableColor = Color(0xFFA1901E)
 private val BackgroundColor = Color(0xFF030C4A)
-private val TextColor = Color(0xFF7F8000)
+private val TextColor = Color(0xFFFFFF01)
 
 val SoltanColorPalette = lightColorScheme(
     primary = InterestColor,
