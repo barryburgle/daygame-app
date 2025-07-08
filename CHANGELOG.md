@@ -1,3 +1,11 @@
+# Version 1.9.0 (2025-07-xx)
+
+**Features**
+- 
+
+**Bugs**
+- Shadow for delete and edit card buttons
+
 # Version 1.8.0 (2025-06-20)
 
 **Features**

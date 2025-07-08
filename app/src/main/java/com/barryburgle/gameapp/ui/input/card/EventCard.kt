@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
@@ -25,10 +26,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -109,126 +110,164 @@ fun EventCard(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Column(
-                                modifier = Modifier.background(
-                                    MaterialTheme.colorScheme.primaryContainer,
-                                    shape = RoundedCornerShape(50.dp)
-                                )
-                            ) {
-                                IconButton(onClick = {
-                                    if (AbstractSession::class.java.simpleName.equals(
-                                            sortableGameEvent.classType
-                                        )
-                                    ) {
-                                        onEvent(
-                                            GameEvent.DeleteSession(
-                                                sortableGameEvent.event as AbstractSession
-                                            )
-                                        )
-                                    }
-                                    if (SingleSet::class.java.simpleName.equals(sortableGameEvent.classType)) {
-                                        onEvent(
-                                            GameEvent.DeleteSet(
-                                                sortableGameEvent.event as SingleSet
-                                            )
-                                        )
-                                    }
-                                    if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
-                                        onEvent(
-                                            GameEvent.DeleteDate(
-                                                sortableGameEvent.event as Date
-                                            )
-                                        )
-                                    }
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Delete,
-                                        contentDescription = "Delete Event",
-                                        tint = MaterialTheme.colorScheme.onErrorContainer,
+                                modifier = Modifier
+                                    .shadow(
+                                        elevation = 10.dp,
+                                        shape = CircleShape
                                     )
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .background(
+                                            MaterialTheme.colorScheme.tertiary,
+                                            shape = RoundedCornerShape(50.dp)
+                                        )
+                                ) {
+                                    IconButton(
+                                        onClick = {
+                                            if (AbstractSession::class.java.simpleName.equals(
+                                                    sortableGameEvent.classType
+                                                )
+                                            ) {
+                                                onEvent(
+                                                    GameEvent.DeleteSession(
+                                                        sortableGameEvent.event as AbstractSession
+                                                    )
+                                                )
+                                            }
+                                            if (SingleSet::class.java.simpleName.equals(
+                                                    sortableGameEvent.classType
+                                                )
+                                            ) {
+                                                onEvent(
+                                                    GameEvent.DeleteSet(
+                                                        sortableGameEvent.event as SingleSet
+                                                    )
+                                                )
+                                            }
+                                            if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                                onEvent(
+                                                    GameEvent.DeleteDate(
+                                                        sortableGameEvent.event as Date
+                                                    )
+                                                )
+                                            }
+                                        }) {
+                                        Icon(
+                                            imageVector = Icons.Default.Delete,
+                                            contentDescription = "Delete Event",
+                                            tint = MaterialTheme.colorScheme.onErrorContainer,
+                                        )
+                                    }
                                 }
                             }
                             Column(
-                                modifier = Modifier.background(
-                                    MaterialTheme.colorScheme.primaryContainer,
-                                    shape = RoundedCornerShape(30.dp)
-                                )
-                            ) {
-                                IconButton(onClick = {
-                                    onEvent(GameEvent.EmptyLeads)
-                                    if (AbstractSession::class.java.simpleName.equals(
-                                            sortableGameEvent.classType
-                                        )
-                                    ) {
-                                        leads.forEach { lead ->
-                                            onEvent(
-                                                GameEvent.SetLead(
-                                                    lead
-                                                )
-                                            )
-                                        }
-                                        onEvent(
-                                            GameEvent.EditSession(
-                                                sortableGameEvent.event as AbstractSession
-                                            )
-                                        )
-                                        onEvent(
-                                            GameEvent.ShowDialog(false, true, EventTypeEnum.SESSION)
-                                        )
-                                    }
-                                    if (SingleSet::class.java.simpleName.equals(sortableGameEvent.classType)) {
-                                        onEvent(
-                                            GameEvent.SetConversation((sortableGameEvent.event as SingleSet).conversation)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetContact((sortableGameEvent.event as SingleSet).contact)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetInstantDate((sortableGameEvent.event as SingleSet).instantDate)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetRecorded((sortableGameEvent.event as SingleSet).recorded)
-                                        )
-                                        onEvent(
-                                            GameEvent.EditSet(
-                                                sortableGameEvent.event as SingleSet
-                                            )
-                                        )
-                                        onEvent(
-                                            GameEvent.ShowDialog(false, true, EventTypeEnum.SET)
-                                        )
-                                    }
-                                    if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
-                                        onEvent(
-                                            GameEvent.SetPull((sortableGameEvent.event as Date).pull)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetBounce((sortableGameEvent.event as Date).bounce)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetKiss((sortableGameEvent.event as Date).kiss)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetLay((sortableGameEvent.event as Date).lay)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetRecorded((sortableGameEvent.event as Date).recorded)
-                                        )
-                                        onEvent(
-                                            GameEvent.EditDate(
-                                                sortableGameEvent.event as Date
-                                            )
-                                        )
-                                        onEvent(
-                                            GameEvent.ShowDialog(false, true, EventTypeEnum.DATE)
-                                        )
-                                    }
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Edit,
-                                        contentDescription = "Edit Event",
-                                        tint = MaterialTheme.colorScheme.inversePrimary,
-                                        modifier = Modifier.height(20.dp)
+                                modifier = Modifier
+                                    .shadow(
+                                        elevation = 10.dp,
+                                        shape = CircleShape
                                     )
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .background(
+                                            MaterialTheme.colorScheme.tertiary,
+                                            shape = RoundedCornerShape(30.dp)
+                                        )
+                                ) {
+                                    IconButton(
+                                        onClick = {
+                                            onEvent(GameEvent.EmptyLeads)
+                                            if (AbstractSession::class.java.simpleName.equals(
+                                                    sortableGameEvent.classType
+                                                )
+                                            ) {
+                                                leads.forEach { lead ->
+                                                    onEvent(
+                                                        GameEvent.SetLead(
+                                                            lead
+                                                        )
+                                                    )
+                                                }
+                                                onEvent(
+                                                    GameEvent.EditSession(
+                                                        sortableGameEvent.event as AbstractSession
+                                                    )
+                                                )
+                                                onEvent(
+                                                    GameEvent.ShowDialog(
+                                                        false,
+                                                        true,
+                                                        EventTypeEnum.SESSION
+                                                    )
+                                                )
+                                            }
+                                            if (SingleSet::class.java.simpleName.equals(
+                                                    sortableGameEvent.classType
+                                                )
+                                            ) {
+                                                onEvent(
+                                                    GameEvent.SetConversation((sortableGameEvent.event as SingleSet).conversation)
+                                                )
+                                                onEvent(
+                                                    GameEvent.SetContact((sortableGameEvent.event as SingleSet).contact)
+                                                )
+                                                onEvent(
+                                                    GameEvent.SetInstantDate((sortableGameEvent.event as SingleSet).instantDate)
+                                                )
+                                                onEvent(
+                                                    GameEvent.SetRecorded((sortableGameEvent.event as SingleSet).recorded)
+                                                )
+                                                onEvent(
+                                                    GameEvent.EditSet(
+                                                        sortableGameEvent.event as SingleSet
+                                                    )
+                                                )
+                                                onEvent(
+                                                    GameEvent.ShowDialog(
+                                                        false,
+                                                        true,
+                                                        EventTypeEnum.SET
+                                                    )
+                                                )
+                                            }
+                                            if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                                onEvent(
+                                                    GameEvent.SetPull((sortableGameEvent.event as Date).pull)
+                                                )
+                                                onEvent(
+                                                    GameEvent.SetBounce((sortableGameEvent.event as Date).bounce)
+                                                )
+                                                onEvent(
+                                                    GameEvent.SetKiss((sortableGameEvent.event as Date).kiss)
+                                                )
+                                                onEvent(
+                                                    GameEvent.SetLay((sortableGameEvent.event as Date).lay)
+                                                )
+                                                onEvent(
+                                                    GameEvent.SetRecorded((sortableGameEvent.event as Date).recorded)
+                                                )
+                                                onEvent(
+                                                    GameEvent.EditDate(
+                                                        sortableGameEvent.event as Date
+                                                    )
+                                                )
+                                                onEvent(
+                                                    GameEvent.ShowDialog(
+                                                        false,
+                                                        true,
+                                                        EventTypeEnum.DATE
+                                                    )
+                                                )
+                                            }
+                                        }) {
+                                        Icon(
+                                            imageVector = Icons.Default.Edit,
+                                            contentDescription = "Edit Event",
+                                            tint = MaterialTheme.colorScheme.inversePrimary,
+                                            modifier = Modifier.height(20.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
