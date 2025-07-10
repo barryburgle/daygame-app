@@ -49,6 +49,7 @@ import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
+import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -110,21 +111,13 @@ fun SessionDialog(
                         Column(
                             modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                         ) {
-                            IconButton(onClick = {
-                                onEvent(GameEvent.ShowLeadDialog(true, false))
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "Add a lead",
-                                    tint = MaterialTheme.colorScheme.inversePrimary,
-                                    modifier = Modifier
-                                        .background(
-                                            MaterialTheme.colorScheme.secondaryContainer
-                                        )
-                                        .width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                                        .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                                )
-                            }
+                            ShadowButton(
+                                onClick = {
+                                    onEvent(GameEvent.ShowLeadDialog(true, false))
+                                },
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Add a lead"
+                            )
                         }
                     }
                 }

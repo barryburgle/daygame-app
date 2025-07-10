@@ -46,6 +46,7 @@ import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
+import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkImportButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
@@ -124,21 +125,13 @@ fun DateDialog(
                         Column(
                             modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                         ) {
-                            IconButton(onClick = {
-                                leadsExpanded = true
-                            }) {
-                                Icon(
-                                    imageVector = leadIcon,
-                                    contentDescription = "Add lead",
-                                    tint = MaterialTheme.colorScheme.inversePrimary,
-                                    modifier = Modifier
-                                        .background(
-                                            MaterialTheme.colorScheme.secondaryContainer
-                                        )
-                                        .width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                                        .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                                )
-                            }
+                            ShadowButton(
+                                onClick = {
+                                    leadsExpanded = true
+                                },
+                                imageVector = leadIcon,
+                                contentDescription = "Add lead"
+                            )
                         }
                         DropdownMenu(
                             modifier = Modifier

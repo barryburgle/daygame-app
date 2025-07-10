@@ -1,7 +1,6 @@
 package com.barryburgle.gameapp.ui.input.dialog
 
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -42,6 +40,7 @@ import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
+import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkImportButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
@@ -117,24 +116,16 @@ fun SetDialog(
                             Column(
                                 modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                             ) {
-                                IconButton(onClick = {
-                                    if (editLead) {
-                                        onEvent(GameEvent.EmptyLeads)
-                                    }
-                                    onEvent(GameEvent.ShowLeadDialog(true, false))
-                                }) {
-                                    Icon(
-                                        imageVector = leadIcon,
-                                        contentDescription = "Add a lead",
-                                        tint = MaterialTheme.colorScheme.inversePrimary,
-                                        modifier = Modifier
-                                            .background(
-                                                MaterialTheme.colorScheme.secondaryContainer
-                                            )
-                                            .width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                                            .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                                    )
-                                }
+                                ShadowButton(
+                                    onClick = {
+                                        if (editLead) {
+                                            onEvent(GameEvent.EmptyLeads)
+                                        }
+                                        onEvent(GameEvent.ShowLeadDialog(true, false))
+                                    },
+                                    imageVector = leadIcon,
+                                    contentDescription = "Add a lead"
+                                )
                             }
                         }
                     }
