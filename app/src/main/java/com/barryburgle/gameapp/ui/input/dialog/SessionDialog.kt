@@ -20,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,6 +47,8 @@ import com.barryburgle.gameapp.model.enums.TimeInputFormEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
+import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
@@ -246,34 +247,24 @@ fun SessionDialog(
             )
         }
     }, confirmButton = {
-        Box(
-            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd
-        ) {
-            Row(
-                modifier = Modifier.width(250.dp), horizontalArrangement = Arrangement.End
-            ) {
-                Button(onClick = {
-                    onEvent(GameEvent.HideDialog)
-                }) {
-                    Text(text = "Cancel")
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-                Button(onClick = {
-                    onEvent(GameEvent.SaveAbstractSession)
-                    onEvent(GameEvent.HideDialog)
-                    onEvent(GameEvent.SwitchJustSaved)
-                    Toast.makeText(
-                        localContext,
-                        "Session saved",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                }) {
-                    Text(text = "Save")
-                }
-            }
+        // TODO. use this everywhere in all te dialogs
+        ConfirmButton {
+            onEvent(GameEvent.SaveAbstractSession)
+            onEvent(GameEvent.HideDialog)
+            onEvent(GameEvent.SwitchJustSaved)
+            Toast.makeText(
+                localContext,
+                "Session saved",
+                Toast.LENGTH_SHORT
+            )
+                .show()
         }
-    })
+    }, dismissButton = {
+        DismissButton {
+            onEvent(GameEvent.HideDialog)
+        }
+    }
+    )
 }
 
 private fun setState(
