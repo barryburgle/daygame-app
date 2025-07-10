@@ -125,9 +125,6 @@ fun BackupCard(
                             )
                         }
                         LittleBodyText("The backup folder will be created and managed directly under the export folder: /emulated/0/storage/${state.exportFolder}/${state.backupFolder}")
-                        RowTitle(
-                            "Backups:", "", textFieldColumnWidth
-                        )
                         Row(
                             horizontalArrangement = Arrangement.SpaceAround,
                             modifier = Modifier
@@ -144,67 +141,29 @@ fun BackupCard(
                                 countStart = state.lastBackup,
                                 saveEvent = ToolEvent::SetLastBackup
                             )
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier.fillMaxWidth(0.6f)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Button(colors = ButtonDefaults.buttonColors(
-                                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                                    ), onClick = {
-                                        DataExchangeService.importAll(
-                                            state,
-                                            true,
-                                            csvFindService,
-                                            localContext,
-                                            onEvent
-                                        )
-                                    }) {
-                                        if (icon != null) {
-                                            Icon(
-                                                imageVector = Icons.Default.CloudDownload,
-                                                contentDescription = cardTitle,
-                                                tint = MaterialTheme.colorScheme.onPrimary,
-                                                modifier = Modifier.height(25.dp)
-                                            )
-                                            Spacer(modifier = Modifier.width(7.dp))
-                                        }
-                                        Text(
-                                            text = "Import all", textAlign = TextAlign.Center
-                                        )
-                                        // TODO: if no files found toast
-                                    }
-                                    Spacer(modifier = Modifier.width(5.dp))
-                                }
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    SmallTitleText("After save")
-                                    Spacer(modifier = Modifier.width(5.dp))
-                                    com.barryburgle.gameapp.ui.tool.utils.Switch(state.backupActive) {
-                                        onEvent(ToolEvent.SwitchBackupActive)
-                                    }
-                                }
-                                Spacer(modifier = Modifier.height(7.dp))
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    SmallTitleText("Before update")
-                                    Spacer(modifier = Modifier.width(5.dp))
-                                    com.barryburgle.gameapp.ui.tool.utils.Switch(state.backupBeforeUpdate) {
-                                        onEvent(ToolEvent.SwitchBackupBeforeUpdate)
-                                    }
-                                }
-                            }
+                        }
+                        ButtonSetting(text = "Import all backups",
+                            imageVector = Icons.Default.CloudDownload,
+                            contentDescription = "Import all",
+                            onClick = {
+                                DataExchangeService.importAll(
+                                    state,
+                                    true,
+                                    csvFindService,
+                                    localContext,
+                                    onEvent
+                                )
+                            })
+                        // TODO: if no files found toast
+                        SwitchSetting(
+                            "Backup after each save", state.backupActive
+                        ) {
+                            onEvent(ToolEvent.SwitchBackupActive)
+                        }
+                        SwitchSetting(
+                            "Backup before update", state.backupBeforeUpdate
+                        ) {
+                            onEvent(ToolEvent.SwitchBackupBeforeUpdate)
                         }
                     }
                 }
