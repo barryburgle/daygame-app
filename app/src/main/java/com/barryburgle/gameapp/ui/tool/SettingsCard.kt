@@ -22,8 +22,6 @@ import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.Brush
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -44,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
@@ -52,6 +51,8 @@ import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
+import com.barryburgle.gameapp.ui.utilities.setting.ButtonSetting
+import com.barryburgle.gameapp.ui.utilities.setting.SwitchSetting
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -192,226 +193,138 @@ fun SettingsCard(
                                 .padding(5.dp),
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
+                            ButtonSetting(text = "Set sticking points reminder",
+                                imageVector = Icons.Default.Timer,
+                                contentDescription = "Reminder",
+                                onClick = { notificationHourDialogState.show() })
+                            SwitchSetting(
+                                "Generate iDate on set creation", state.generateiDate
                             ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.SpaceBetween,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Button(
-                                        colors = ButtonDefaults.buttonColors(
-                                            containerColor = MaterialTheme.colorScheme.primaryContainer
-                                        ),
-                                        onClick = { notificationHourDialogState.show() }) {
-                                        Icon(
-                                            imageVector = Icons.Default.Timer,
-                                            contentDescription = "Reminder",
-                                            tint = MaterialTheme.colorScheme.onPrimary,
-                                            modifier = Modifier
-                                                .height(25.dp)
-                                        )
-                                        Spacer(modifier = Modifier.width(7.dp))
-                                        LittleBodyText("Set sticking points reminder")
-                                    }
-                                }
+                                onEvent(ToolEvent.SwitchGenerateiDate)
                             }
-                        }
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(5.dp),
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier.fillMaxWidth()
+                            SwitchSetting(
+                                "Follow system theme", state.themeSysFollow
                             ) {
-                                LittleBodyText("Generate iDate on set creation")
-                                Spacer(modifier = Modifier.width(5.dp))
-                                com.barryburgle.gameapp.ui.tool.utils.Switch(state.generateiDate) {
-                                    onEvent(ToolEvent.SwitchGenerateiDate)
-                                }
+                                onEvent(ToolEvent.SwitchThemeSysFollow)
                             }
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                LittleBodyText("Follow system theme")
-                                Spacer(modifier = Modifier.width(5.dp))
-                                com.barryburgle.gameapp.ui.tool.utils.Switch(state.themeSysFollow) {
-                                    onEvent(ToolEvent.SwitchThemeSysFollow)
-                                }
-                            }
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
+                            ButtonSetting(text = "Choose a theme",
+                                imageVector = Icons.Default.Brush,
+                                contentDescription = "Choose theme",
+                                onClick = { themesExpanded = true })
+                            DropdownMenu(
                                 modifier = Modifier
-                                    .fillMaxWidth()
+                                    .width(200.dp)
+                                    .height(280.dp),
+                                expanded = themesExpanded,
+                                onDismissRequest = { themesExpanded = false },
+                                offset = DpOffset(100.dp, 0.dp)
                             ) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(5.dp),
-                                    verticalArrangement = Arrangement.SpaceBetween,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.Center
-                                    ) {
-                                        Column(
-                                            horizontalAlignment = Alignment.CenterHorizontally,
-                                            verticalArrangement = Arrangement.SpaceBetween,
-                                            modifier = Modifier.fillMaxWidth(0.6f)
-                                        ) {
-                                            Button(colors = ButtonDefaults.buttonColors(
-                                                containerColor = MaterialTheme.colorScheme.primaryContainer
-                                            ), onClick = { themesExpanded = true }) {
+                                ThemeEnum.sortedValues().forEach { theme ->
+                                    DropdownMenuItem(
+                                        text = {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.Center,
+                                                modifier = Modifier.fillMaxWidth()
+                                            ) {
                                                 Row(
                                                     verticalAlignment = Alignment.CenterVertically,
-                                                    horizontalArrangement = Arrangement.SpaceAround,
-                                                    modifier = Modifier.fillMaxWidth()
+                                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                                    modifier = Modifier.fillMaxWidth(
+                                                        0.7f
+                                                    )
                                                 ) {
-                                                    Icon(
-                                                        imageVector = Icons.Default.Brush,
-                                                        contentDescription = "Reminder",
-                                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                                    Row(
+                                                        verticalAlignment = Alignment.CenterVertically,
                                                         modifier = Modifier
-                                                            .height(25.dp)
-                                                    )
-                                                    Spacer(modifier = Modifier.width(7.dp))
-                                                    LittleBodyText("Choose a theme")
-                                                }
-                                            }
-                                            DropdownMenu(
-                                                modifier = Modifier
-                                                    .width(200.dp)
-                                                    .height(280.dp),
-                                                expanded = themesExpanded,
-                                                onDismissRequest = { themesExpanded = false }
-                                            ) {
-                                                ThemeEnum.sortedValues().forEach { theme ->
-                                                    DropdownMenuItem(
-                                                        text = {
-                                                            Row(
-                                                                verticalAlignment = Alignment.CenterVertically,
-                                                                horizontalArrangement = Arrangement.Center,
-                                                                modifier = Modifier.fillMaxWidth()
-                                                            ) {
-                                                                Row(
-                                                                    verticalAlignment = Alignment.CenterVertically,
-                                                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                                                    modifier = Modifier.fillMaxWidth(
-                                                                        0.7f
-                                                                    )
-                                                                ) {
-                                                                    Row(
-                                                                        verticalAlignment = Alignment.CenterVertically,
-                                                                        modifier = Modifier
-                                                                            .background(
-                                                                                theme.getThirdHint(),
-                                                                                shape = RoundedCornerShape(
-                                                                                    20.dp
-                                                                                )
-                                                                            )
-                                                                            .padding(3.dp)
-                                                                    ) {
-                                                                        Canvas(
-                                                                            modifier = Modifier.size(
-                                                                                12.dp
-                                                                            )
-                                                                        ) {
-                                                                            drawCircle(
-                                                                                color = theme.getFirstHint(),
-                                                                                radius = size.minDimension / 2f
-                                                                            )
-                                                                        }
-                                                                        Spacer(
-                                                                            modifier = Modifier.width(
-                                                                                2.dp
-                                                                            )
-                                                                        )
-                                                                        Canvas(
-                                                                            modifier = Modifier.size(
-                                                                                12.dp
-                                                                            )
-                                                                        ) {
-                                                                            drawCircle(
-                                                                                color = theme.getSecondHint(),
-                                                                                radius = size.minDimension / 2f
-                                                                            )
-                                                                        }
-                                                                    }
-                                                                    Row(
-                                                                        verticalAlignment = Alignment.CenterVertically,
-                                                                        horizontalArrangement = Arrangement.Center,
-                                                                        modifier = Modifier.fillMaxWidth()
-                                                                    ) {
-                                                                        var themeName =
-                                                                            theme.type.replaceFirstChar { it.uppercase() }
-                                                                        var currentStyle =
-                                                                            MaterialTheme.typography.bodySmall
-                                                                        if (state.theme == theme.type) {
-                                                                            currentStyle =
-                                                                                currentStyle.merge(
-                                                                                    fontWeight = FontWeight.Bold
-                                                                                )
-                                                                        }
-                                                                        Text(
-                                                                            text = themeName,
-                                                                            style = currentStyle,
-                                                                            color = MaterialTheme.colorScheme.onPrimary
-                                                                        )
-                                                                        if (state.theme == theme.type) {
-                                                                            Spacer(
-                                                                                modifier = Modifier.width(
-                                                                                    10.dp
-                                                                                )
-                                                                            )
-                                                                            Box(
-                                                                                contentAlignment = Alignment.Center,
-                                                                                modifier = Modifier.size(
-                                                                                    20.dp
-                                                                                )
-                                                                            ) {
-                                                                                val color =
-                                                                                    MaterialTheme.colorScheme.primaryContainer
-                                                                                Canvas(modifier = Modifier.matchParentSize()) {
-                                                                                    drawCircle(
-                                                                                        color = color,
-                                                                                        radius = size.minDimension / 2f
-                                                                                    )
-                                                                                }
-                                                                                SegmentedButtonDefaults.Icon(
-                                                                                    true
-                                                                                )
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        },
-                                                        onClick = {
-                                                            onEvent(ToolEvent.SetTheme(theme.type))
-                                                            themesExpanded = false
+                                                            .background(
+                                                                theme.getThirdHint(),
+                                                                shape = RoundedCornerShape(
+                                                                    20.dp
+                                                                )
+                                                            )
+                                                            .padding(3.dp)
+                                                    ) {
+                                                        Canvas(
+                                                            modifier = Modifier.size(
+                                                                12.dp
+                                                            )
+                                                        ) {
+                                                            drawCircle(
+                                                                color = theme.getFirstHint(),
+                                                                radius = size.minDimension / 2f
+                                                            )
                                                         }
-                                                    )
+                                                        Spacer(
+                                                            modifier = Modifier.width(
+                                                                2.dp
+                                                            )
+                                                        )
+                                                        Canvas(
+                                                            modifier = Modifier.size(
+                                                                12.dp
+                                                            )
+                                                        ) {
+                                                            drawCircle(
+                                                                color = theme.getSecondHint(),
+                                                                radius = size.minDimension / 2f
+                                                            )
+                                                        }
+                                                    }
+                                                    Row(
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.Center,
+                                                        modifier = Modifier.fillMaxWidth()
+                                                    ) {
+                                                        var themeName =
+                                                            theme.type.replaceFirstChar { it.uppercase() }
+                                                        var currentStyle =
+                                                            MaterialTheme.typography.bodySmall
+                                                        if (state.theme == theme.type) {
+                                                            currentStyle =
+                                                                currentStyle.merge(
+                                                                    fontWeight = FontWeight.Bold
+                                                                )
+                                                        }
+                                                        Text(
+                                                            text = themeName,
+                                                            style = currentStyle,
+                                                            color = MaterialTheme.colorScheme.onPrimary
+                                                        )
+                                                        if (state.theme == theme.type) {
+                                                            Spacer(
+                                                                modifier = Modifier.width(
+                                                                    10.dp
+                                                                )
+                                                            )
+                                                            Box(
+                                                                contentAlignment = Alignment.Center,
+                                                                modifier = Modifier.size(
+                                                                    20.dp
+                                                                )
+                                                            ) {
+                                                                val color =
+                                                                    MaterialTheme.colorScheme.primaryContainer
+                                                                Canvas(modifier = Modifier.matchParentSize()) {
+                                                                    drawCircle(
+                                                                        color = color,
+                                                                        radius = size.minDimension / 2f
+                                                                    )
+                                                                }
+                                                                SegmentedButtonDefaults.Icon(
+                                                                    true
+                                                                )
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             }
+                                        },
+                                        onClick = {
+                                            onEvent(ToolEvent.SetTheme(theme.type))
+                                            themesExpanded = false
                                         }
-                                    }
+                                    )
                                 }
                             }
                         }
