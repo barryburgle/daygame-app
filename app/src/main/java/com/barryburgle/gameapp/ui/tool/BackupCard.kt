@@ -35,6 +35,9 @@ import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
+import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
+import com.barryburgle.gameapp.ui.utilities.setting.ButtonSetting
+import com.barryburgle.gameapp.ui.utilities.setting.SwitchSetting
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
@@ -74,29 +77,22 @@ fun BackupCard(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         LargeTitleText(cardTitle)
-                        Button(colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer
-                        ), onClick = {
-                            DataExchangeService.backup(state)
-                            Toast.makeText(
-                                localContext,
-                                "Successfully backed up all tables",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }) {
-                            if (icon != null) {
-                                Icon(
-                                    imageVector = icon,
-                                    contentDescription = cardTitle,
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier.height(25.dp)
-                                )
-                                Spacer(modifier = Modifier.width(7.dp))
-                            }
-                            Text(
-                                text = cardTitle + " all", textAlign = TextAlign.Center
-                            )
-                        }
+                        ShadowButton(
+                            onClick = {
+                                DataExchangeService.backup(state)
+                                Toast.makeText(
+                                    localContext,
+                                    "Successfully backed up all tables",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            },
+                            imageVector = icon!!,
+                            contentDescription = cardTitle,
+                            title = cardTitle + " all",
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.width(140.dp)
+                        )
                     }
                 }
                 Row(
