@@ -15,12 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun EventCardSection(sectionFunction: @Composable () -> Unit) {
+fun EventCardSection(width: Float = 1f, sectionFunction: @Composable () -> Unit) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxHeight()
+            .fillMaxWidth(width)
     ) {
         Column(
             modifier = Modifier
