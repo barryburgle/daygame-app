@@ -14,23 +14,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Upload
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
@@ -43,6 +38,7 @@ import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.FilenameComposable
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
+import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import java.io.FileNotFoundException
@@ -91,37 +87,30 @@ fun DataExchangeCard(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         LargeTitleText(cardTitle)
-                        Button(colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer
-                        ), onClick = {
-                            if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                DataExchangeService.exportAll(
-                                    state,
-                                    localContext
-                                )
-                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                DataExchangeService.importAll(
-                                    state,
-                                    false,
-                                    csvFindService,
-                                    localContext,
-                                    onEvent
-                                )
-                            }
-                        }) {
-                            if (icon != null) {
-                                Icon(
-                                    imageVector = icon,
-                                    contentDescription = cardTitle,
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier.height(25.dp)
-                                )
-                                Spacer(modifier = Modifier.width(7.dp))
-                            }
-                            Text(
-                                text = cardTitle + " all", textAlign = TextAlign.Center
-                            )
-                        }
+                        ShadowButton(
+                            onClick = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    DataExchangeService.exportAll(
+                                        state,
+                                        localContext
+                                    )
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    DataExchangeService.importAll(
+                                        state,
+                                        false,
+                                        csvFindService,
+                                        localContext,
+                                        onEvent
+                                    )
+                                }
+                            },
+                            imageVector = icon!!,
+                            contentDescription = cardTitle,
+                            title = cardTitle + " all",
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.width(120.dp)
+                        )
                     }
                 }
                 Row(
