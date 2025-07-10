@@ -5,10 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -43,6 +40,8 @@ import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
+import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
@@ -130,7 +129,8 @@ fun LeadDialog(
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                LittleBodyText(if (state.leadNationality.isBlank()) "Touch to choose a country" else CountryEnum.getFlagByAlpha3(
+                LittleBodyText(
+                    if (state.leadNationality.isBlank()) "Touch to choose a country" else CountryEnum.getFlagByAlpha3(
                         state.leadNationality
                     ) + " " + CountryEnum.getCountryNameByAlpha3(
                         state.leadNationality
@@ -197,59 +197,42 @@ fun LeadDialog(
             }
         }
     }, confirmButton = {
-        Box(
-            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd
-        ) {
-            Row(
-                modifier = Modifier
-                    .width(250.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                Button(
-                    onClick = {
-                        onEvent(GameEvent.HideLeadDialog)
-                    }
-                ) {
-                    Text(text = "Cancel")
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-                Button(
-                    onClick = {
-                        if (state.isUpdatingLead) {
-                            lead.id = state.leadId
-                            lead.insertTime = state.leadInsertTime
-                            lead.sessionId = state.leadSessionId
-                        }
-                        if (!state.isModifyingLead) {
-                            lead.name = state.leadName
-                        }
-                        lead.contact = state.leadContact
-                        lead.nationality = state.leadNationality
-                        lead.age = state.leadAge
-                        if (state.isModifyingLead) {
-                            onEvent(
-                                GameEvent.DeleteLead(
-                                    lead
-                                )
-                            )
-                        }
-                        if (state.isUpdatingLead) {
-                            onEvent(GameEvent.SaveLead(lead))
-                        } else {
-                            onEvent(GameEvent.SetLead(lead))
-                        }
-                        onEvent(GameEvent.HideLeadDialog)
-                        onEvent(GameEvent.SwitchJustSaved)
-                        if (state.isUpdatingLead) {
-                            Toast.makeText(localContext, "Lead saved", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(localContext, "Lead on hold", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                ) {
-                    Text(text = "Save")
-                }
+        ConfirmButton {
+            if (state.isUpdatingLead) {
+                lead.id = state.leadId
+                lead.insertTime = state.leadInsertTime
+                lead.sessionId = state.leadSessionId
+            }
+            if (!state.isModifyingLead) {
+                lead.name = state.leadName
+            }
+            lead.contact = state.leadContact
+            lead.nationality = state.leadNationality
+            lead.age = state.leadAge
+            if (state.isModifyingLead) {
+                onEvent(
+                    GameEvent.DeleteLead(
+                        lead
+                    )
+                )
+            }
+            if (state.isUpdatingLead) {
+                onEvent(GameEvent.SaveLead(lead))
+            } else {
+                onEvent(GameEvent.SetLead(lead))
+            }
+            onEvent(GameEvent.HideLeadDialog)
+            onEvent(GameEvent.SwitchJustSaved)
+            if (state.isUpdatingLead) {
+                Toast.makeText(localContext, "Lead saved", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(localContext, "Lead on hold", Toast.LENGTH_SHORT).show()
             }
         }
-    })
+    },
+        dismissButton = {
+            DismissButton {
+                onEvent(GameEvent.HideLeadDialog)
+            }
+        })
 }
