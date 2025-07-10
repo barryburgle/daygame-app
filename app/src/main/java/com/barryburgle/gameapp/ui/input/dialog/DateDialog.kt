@@ -1,9 +1,7 @@
 package com.barryburgle.gameapp.ui.input.dialog
 
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,10 +18,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
@@ -43,6 +38,8 @@ import com.barryburgle.gameapp.model.enums.DateType
 import com.barryburgle.gameapp.model.enums.TimeInputFormEnum
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
+import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
@@ -154,7 +151,8 @@ fun DateDialog(
                 }
             }
             Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
                     modifier = Modifier.fillMaxWidth(0.5f)
@@ -300,7 +298,8 @@ fun DateDialog(
                 Spacer(modifier = Modifier.height(7.dp))
             }
             Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
             ) {
                 InputCountComponent(
                     inputTitle = "Date Number",
@@ -320,7 +319,8 @@ fun DateDialog(
                 )
             }
             Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 ToggleIcon(
                     "pull",
@@ -365,34 +365,24 @@ fun DateDialog(
             }
         }
     }, confirmButton = {
-        Box(
-            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd
-        ) {
-            Row(
-                modifier = Modifier.width(250.dp), horizontalArrangement = Arrangement.End
-            ) {
-                Button(onClick = {
-                    onEvent(GameEvent.HideDialog)
-                }) {
-                    Text(text = "Cancel")
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-                Button(onClick = {
-                    if (state.leadId == 0L) {
-                        Toast.makeText(localContext, "Please choose a lead", Toast.LENGTH_SHORT)
-                            .show()
-                    } else {
-                        onEvent(GameEvent.SaveDate)
-                        onEvent(GameEvent.HideDialog)
-                        onEvent(GameEvent.SwitchJustSaved)
-                        Toast.makeText(localContext, "Date saved", Toast.LENGTH_SHORT).show()
-                    }
-                }) {
-                    Text(text = "Save")
-                }
+        ConfirmButton {
+            if (state.leadId == 0L) {
+                Toast.makeText(localContext, "Please choose a lead", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                onEvent(GameEvent.SaveDate)
+                onEvent(GameEvent.HideDialog)
+                onEvent(GameEvent.SwitchJustSaved)
+                Toast.makeText(localContext, "Date saved", Toast.LENGTH_SHORT).show()
             }
         }
-    })
+    },
+        dismissButton = {
+            DismissButton {
+                onEvent(GameEvent.HideDialog)
+            }
+        }
+    )
 }
 
 private fun setState(
