@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
@@ -58,6 +60,7 @@ import com.barryburgle.gameapp.ui.input.dialog.SessionDialog
 import com.barryburgle.gameapp.ui.input.dialog.SetDialog
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
+import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
 import com.barryburgle.gameapp.ui.utilities.selection.MultiChoiceButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import kotlinx.coroutines.async
@@ -126,22 +129,17 @@ fun InputScreen(
                         }
                     }
                 }
-                FloatingActionButton(
+                ShadowButton(
                     onClick = {
                         isRotated = !isRotated
                         isExpanded = !isExpanded
                     },
-                    modifier = Modifier
+                    boxModifier = Modifier
                         .offset(y = -spaceFromNavBar)
+                        .scale(1.3f)
                         .rotate(rotationAngle),
-                    contentColor = MaterialTheme.colorScheme.inversePrimary,
-                    containerColor = MaterialTheme.colorScheme.tertiary,
-                    shape = CircleShape
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add, contentDescription = "Add an event"
-                    )
-                }
+                    imageVector = Icons.Default.Add, contentDescription = "Add an event"
+                )
             }
         }) { padding ->
         if (state.isAddingSession) {
