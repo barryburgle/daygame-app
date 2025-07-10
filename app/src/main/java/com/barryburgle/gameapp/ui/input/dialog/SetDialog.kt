@@ -2,7 +2,6 @@ package com.barryburgle.gameapp.ui.input.dialog
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +36,8 @@ import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.enums.TimeInputFormEnum
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
+import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
@@ -132,7 +133,8 @@ fun SetDialog(
                 }
             }
             Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
                     modifier = Modifier.fillMaxWidth(0.5f)
@@ -230,7 +232,8 @@ fun SetDialog(
                 Spacer(modifier = Modifier.height(7.dp))
             }
             Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 ToggleIcon(
                     SetSortType.CONVERSATION.getField(),
@@ -256,7 +259,11 @@ fun SetDialog(
                 ) {
                     onEvent(GameEvent.SwitchInstantDate)
                     if (!state.instantDate && state.generateiDate) {
-                        Toast.makeText(localContext, "Generating related iDate", Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            localContext,
+                            "Generating related iDate",
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                     }
                 }
@@ -271,29 +278,18 @@ fun SetDialog(
             }
         }
     }, confirmButton = {
-        Box(
-            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd
-        ) {
-            Row(
-                modifier = Modifier.width(250.dp), horizontalArrangement = Arrangement.End
-            ) {
-                Button(onClick = {
-                    onEvent(GameEvent.HideDialog)
-                }) {
-                    Text(text = "Cancel")
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-                Button(onClick = {
-                    onEvent(GameEvent.SaveSet)
-                    onEvent(GameEvent.HideDialog)
-                    onEvent(GameEvent.SwitchJustSaved)
-                    Toast.makeText(localContext, "Set saved", Toast.LENGTH_SHORT).show()
-                }) {
-                    Text(text = "Save")
-                }
-            }
+        ConfirmButton {
+            onEvent(GameEvent.SaveSet)
+            onEvent(GameEvent.HideDialog)
+            onEvent(GameEvent.SwitchJustSaved)
+            Toast.makeText(localContext, "Set saved", Toast.LENGTH_SHORT).show()
         }
-    })
+    },
+        dismissButton = {
+            DismissButton {
+                onEvent(GameEvent.HideDialog)
+            }
+        })
 }
 
 private fun setState(
