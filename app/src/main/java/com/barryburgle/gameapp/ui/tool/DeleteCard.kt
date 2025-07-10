@@ -97,16 +97,10 @@ fun DeleteCard(
                                     .padding(5.dp),
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    modifier = Modifier.fillMaxWidth()
+                                SwitchSetting(
+                                    "Archive backup folder", state.archiveBackupFolder
                                 ) {
-                                    SmallTitleText("Archive backup folder:")
-                                    Spacer(modifier = Modifier.width(5.dp))
-                                    com.barryburgle.gameapp.ui.tool.utils.Switch(state.archiveBackupFolder) {
-                                        onEvent(ToolEvent.SwitchArchiveBackupFolder)
-                                    }
+                                    onEvent(ToolEvent.SwitchArchiveBackupFolder)
                                 }
                                 Spacer(modifier = Modifier.height(5.dp))
                                 var description =
