@@ -1,10 +1,9 @@
 package com.barryburgle.gameapp.ui.input
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,8 +13,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GenericEvent
+import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
@@ -34,32 +33,22 @@ fun InputCountComponent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LittleBodyText(inputTitle)
-        IconButton(
+        ShadowButton(
             onClick = {
                 count--
                 onEvent(saveEvent(count.toString()))
-            }, modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = RoundedCornerShape(20.dp)
-                )
-                .size(40.dp)
-        ) {
-            LittleBodyText("-")
-        }
+            },
+            imageVector = Icons.Default.Remove,
+            contentDescription = "Less"
+        )
         InputCounter(count = count, style = style, modifier = modifier)
-        IconButton(
+        ShadowButton(
             onClick = {
                 count++
                 onEvent(saveEvent(count.toString()))
-            }, modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = RoundedCornerShape(20.dp)
-                )
-                .size(40.dp)
-        ) {
-            LittleBodyText("+")
-        }
+            },
+            imageVector = Icons.Default.Add,
+            contentDescription = "More"
+        )
     }
 }
