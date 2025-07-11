@@ -60,7 +60,7 @@ import com.barryburgle.gameapp.ui.input.dialog.SessionDialog
 import com.barryburgle.gameapp.ui.input.dialog.SetDialog
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
-import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.selection.MultiChoiceButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import kotlinx.coroutines.async
@@ -129,7 +129,7 @@ fun InputScreen(
                         }
                     }
                 }
-                ShadowButton(
+                IconShadowButton(
                     onClick = {
                         isRotated = !isRotated
                         isExpanded = !isExpanded
