@@ -69,7 +69,7 @@ fun ToolsScreen(
     }
     Scaffold { padding ->
         val dataExchangeCardModifier = Modifier
-            .height(640.dp)
+            .height(580.dp)
             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
             .shadow(
                 elevation = 5.dp, shape = MaterialTheme.shapes.large
