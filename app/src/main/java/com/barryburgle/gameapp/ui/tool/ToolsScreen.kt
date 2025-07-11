@@ -158,6 +158,16 @@ fun ToolsScreen(
                     SettingsCard(
                         state = state,
                         onEvent = onEvent,
+                        modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    CreditsCard(
+                        state = state,
+                        onEvent = onEvent,
                         modifier = settingsCardModifier,
                         currentVersion = versionName,
                         context = context
