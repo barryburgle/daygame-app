@@ -15,7 +15,7 @@ import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 
 @Composable
-fun ButtonSetting(
+fun IconButtonSetting(
     text: String,
     imageVector: ImageVector,
     contentDescription: String?, onClick: () -> Unit

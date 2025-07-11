@@ -193,7 +193,7 @@ fun SettingsCard(
                                 .padding(5.dp),
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
-                            ButtonSetting(text = "Set sticking points reminder",
+                            IconButtonSetting(text = "Set sticking points reminder",
                                 imageVector = Icons.Default.Timer,
                                 contentDescription = "Reminder",
                                 onClick = { notificationHourDialogState.show() })
@@ -207,7 +207,7 @@ fun SettingsCard(
                             ) {
                                 onEvent(ToolEvent.SwitchThemeSysFollow)
                             }
-                            ButtonSetting(text = "Choose a theme",
+                            IconButtonSetting(text = "Choose a theme",
                                 imageVector = Icons.Default.Brush,
                                 contentDescription = "Choose theme",
                                 onClick = { themesExpanded = true })

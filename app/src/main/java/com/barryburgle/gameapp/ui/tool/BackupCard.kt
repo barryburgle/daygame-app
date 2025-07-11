@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,20 +12,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.CloudDownload
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
@@ -36,11 +30,10 @@ import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
-import com.barryburgle.gameapp.ui.utilities.setting.ButtonSetting
+import com.barryburgle.gameapp.ui.utilities.setting.IconButtonSetting
 import com.barryburgle.gameapp.ui.utilities.setting.SwitchSetting
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
-import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 
 @Composable
 fun BackupCard(
@@ -142,7 +135,7 @@ fun BackupCard(
                                 saveEvent = ToolEvent::SetLastBackup
                             )
                         }
-                        ButtonSetting(text = "Import all backups",
+                        IconButtonSetting(text = "Import all backups",
                             imageVector = Icons.Default.CloudDownload,
                             contentDescription = "Import all",
                             onClick = {
