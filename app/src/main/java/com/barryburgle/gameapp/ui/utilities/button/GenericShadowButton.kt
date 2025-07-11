@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -22,33 +20,29 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 
-enum class ShadowButtonState { PRESSED, IDLE }
+enum class IconShadowButtonState { PRESSED, IDLE }
 
 @Composable
-fun ShadowButton(
+fun GenericShadowButton(
     onClick: () -> Unit,
     boxModifier: Modifier = Modifier,
     modifier: Modifier = Modifier,
-    imageVector: ImageVector,
-    contentDescription: String?,
     title: String? = null,
     color: Color? = null,
-    iconColor: Color? = null
+    iconComposable: @Composable () -> Unit
 ) {
-    var buttonState by remember { mutableStateOf(ShadowButtonState.IDLE) }
+    var buttonState by remember { mutableStateOf(IconShadowButtonState.IDLE) }
     val scale by animateFloatAsState(
-        targetValue = if (buttonState == ShadowButtonState.PRESSED) 0.92f else 1f,
+        targetValue = if (buttonState == IconShadowButtonState.PRESSED) 0.92f else 1f,
         animationSpec = spring(
             dampingRatio = 0.7f,
             stiffness = 400f
@@ -60,10 +54,6 @@ fun ShadowButton(
     if (color != null) {
         backgroundColor = color
     }
-    var iconTint = MaterialTheme.colorScheme.inversePrimary
-    if (iconColor != null) {
-        iconTint = iconColor
-    }
     Box(
         modifier = boxModifier
             .pointerInput(Unit) {
@@ -71,9 +61,9 @@ fun ShadowButton(
                     awaitPointerEventScope {
                         awaitFirstDown(requireUnconsumed = false)
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        buttonState = ShadowButtonState.PRESSED
+                        buttonState = IconShadowButtonState.PRESSED
                         waitForUpOrCancellation()
-                        buttonState = ShadowButtonState.IDLE
+                        buttonState = IconShadowButtonState.IDLE
                     }
                 }
             }
@@ -102,14 +92,7 @@ fun ShadowButton(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = imageVector,
-                    contentDescription = contentDescription,
-                    tint = iconTint,
-                    modifier = Modifier
-                        .height(20.dp)
-                        .scale(1.2f)
-                )
+                iconComposable()
                 if (title != null && !title.isBlank()) {
                     SmallTitleText(title)
                 }
