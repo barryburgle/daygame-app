@@ -21,8 +21,8 @@ fun ImageShadowButton(
     @DrawableRes icon: Int,
     contentDescription: String?,
     title: String? = null,
-    color: Color,
-    iconColor: Color
+    color: Color? = null,
+    iconColor: Color? = null
 ) {
     GenericShadowButton(
         onClick = onClick,
@@ -32,12 +32,14 @@ fun ImageShadowButton(
         color = color
     ) {
         Image(
-            modifier = Modifier.fillMaxWidth().padding(3.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(3.dp),
             painter = painterResource(icon),
             contentDescription = contentDescription,
             alignment = Alignment.Center,
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(iconColor)
+            colorFilter = if (iconColor != null) ColorFilter.tint(iconColor) else null
         )
     }
 }
