@@ -50,7 +50,7 @@ import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
-import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -112,7 +112,7 @@ fun SessionDialog(
                         Column(
                             modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                         ) {
-                            ShadowButton(
+                            IconShadowButton(
                                 onClick = {
                                     onEvent(GameEvent.ShowLeadDialog(true, false))
                                 },

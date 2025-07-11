@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
-import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
@@ -73,7 +73,7 @@ fun FilenameComposable(
                 Spacer(modifier = Modifier.width(0.dp))
                 if (icon != null) {
                     if (DataExchangeTypeEnum.IMPORT.type.equals(cardTitle, ignoreCase = true)) {
-                        ShadowButton(
+                        IconShadowButton(
                             onClick = {
                                 reloadFunction()
                                 Toast.makeText(
@@ -87,7 +87,7 @@ fun FilenameComposable(
                         )
                         Spacer(modifier = Modifier.width(0.dp))
                     }
-                    ShadowButton(
+                    IconShadowButton(
                         onClick = {
                             buttonFunction()
                             Toast.makeText(

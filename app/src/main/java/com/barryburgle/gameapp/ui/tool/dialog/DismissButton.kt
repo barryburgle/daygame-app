@@ -7,13 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
-import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 
 @Composable
 fun DismissButton(
     onClick: () -> Unit
 ) {
-    ShadowButton(
+    IconShadowButton(
         onClick = onClick,
         imageVector = Icons.Default.Add,
         contentDescription = "Cancel",

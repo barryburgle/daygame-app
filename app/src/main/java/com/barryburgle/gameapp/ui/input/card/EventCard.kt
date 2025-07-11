@@ -42,7 +42,7 @@ import com.barryburgle.gameapp.ui.input.card.body.DateBody
 import com.barryburgle.gameapp.ui.input.card.body.SessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SetBody
 import com.barryburgle.gameapp.ui.input.dialog.leadName
-import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
@@ -104,7 +104,7 @@ fun EventCard(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            ShadowButton(
+                            IconShadowButton(
                                 onClick = {
                                     if (AbstractSession::class.java.simpleName.equals(
                                             sortableGameEvent.classType
@@ -138,7 +138,7 @@ fun EventCard(
                                 contentDescription = "Delete Event",
                                 iconColor = MaterialTheme.colorScheme.onErrorContainer
                             )
-                            ShadowButton(
+                            IconShadowButton(
                                 onClick = {
                                     onEvent(GameEvent.EmptyLeads)
                                     if (AbstractSession::class.java.simpleName.equals(
@@ -339,7 +339,7 @@ fun EventCard(
                                 }
                             }
                             if (validStickingPoints) {
-                                ShadowButton(
+                                IconShadowButton(
                                     onClick = {
                                         if (stickingPoints != null) {
                                             clipboardManager.setText(

@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import com.barryburgle.gameapp.event.GenericEvent
-import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
@@ -33,7 +33,7 @@ fun InputCountComponent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LittleBodyText(inputTitle)
-        ShadowButton(
+        IconShadowButton(
             onClick = {
                 count--
                 onEvent(saveEvent(count.toString()))
@@ -42,7 +42,7 @@ fun InputCountComponent(
             contentDescription = "Less"
         )
         InputCounter(count = count, style = style, modifier = modifier)
-        ShadowButton(
+        IconShadowButton(
             onClick = {
                 count++
                 onEvent(saveEvent(count.toString()))

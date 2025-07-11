@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
-import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.setting.SwitchSetting
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
@@ -62,7 +62,7 @@ fun DeleteCard(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         LargeTitleText(cardTitle)
-                        ShadowButton(
+                        IconShadowButton(
                             onClick = {
                                 onEvent(ToolEvent.SwitchIsCleaning)
                             },

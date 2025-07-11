@@ -38,7 +38,7 @@ import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.FilenameComposable
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
-import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import java.io.FileNotFoundException
@@ -87,7 +87,7 @@ fun DataExchangeCard(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         LargeTitleText(cardTitle)
-                        ShadowButton(
+                        IconShadowButton(
                             onClick = {
                                 if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                     DataExchangeService.exportAll(

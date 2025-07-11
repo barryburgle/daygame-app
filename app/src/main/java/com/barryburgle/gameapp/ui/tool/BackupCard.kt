@@ -35,7 +35,7 @@ import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
-import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.setting.ButtonSetting
 import com.barryburgle.gameapp.ui.utilities.setting.SwitchSetting
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -77,7 +77,7 @@ fun BackupCard(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         LargeTitleText(cardTitle)
-                        ShadowButton(
+                        IconShadowButton(
                             onClick = {
                                 DataExchangeService.backup(state)
                                 Toast.makeText(

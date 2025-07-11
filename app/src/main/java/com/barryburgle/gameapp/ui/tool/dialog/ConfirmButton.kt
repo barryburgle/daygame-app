@@ -6,13 +6,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 
 @Composable
 fun ConfirmButton(
     onClick: () -> Unit
 ) {
-    ShadowButton(
+    IconShadowButton(
         onClick = onClick,
         imageVector = Icons.Default.Check,
         contentDescription = "Save",

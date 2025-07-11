@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.barryburgle.gameapp.ui.utilities.button.ShadowButton
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 
 @Composable
@@ -37,7 +37,7 @@ fun ButtonSetting(
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ShadowButton(
+            IconShadowButton(
                 imageVector = imageVector,
                 contentDescription = contentDescription,
                 onClick = onClick
