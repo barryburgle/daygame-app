@@ -1,7 +1,5 @@
 package com.barryburgle.gameapp.ui.tool
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,18 +15,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.Brush
-import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
@@ -39,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
@@ -47,19 +39,15 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.ThemeEnum
-import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
-import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
-import com.barryburgle.gameapp.ui.utilities.setting.ButtonSetting
+import com.barryburgle.gameapp.ui.utilities.setting.IconButtonSetting
 import com.barryburgle.gameapp.ui.utilities.setting.SwitchSetting
-import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import dev.jeziellago.compose.markdowntext.MarkdownText
 import java.time.LocalTime
 
 @ExperimentalMaterial3Api
@@ -67,9 +55,7 @@ import java.time.LocalTime
 fun SettingsCard(
     state: ToolsState,
     modifier: Modifier,
-    onEvent: (ToolEvent) -> Unit,
-    currentVersion: String,
-    context: Context
+    onEvent: (ToolEvent) -> Unit
 ) {
     var themesExpanded by remember { mutableStateOf(false) }
     val notificationHourDialogState = rememberMaterialDialogState()
@@ -134,12 +120,6 @@ fun SettingsCard(
                     ) {
                         LargeTitleText("Settings")
                     }
-                    versionInfo(
-                        state,
-                        currentVersion,
-                        onEvent,
-                        context
-                    )
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
@@ -331,125 +311,6 @@ fun SettingsCard(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun updateRedDot() {
-    Row(
-        modifier = Modifier
-            .width(8.dp)
-            .height(8.dp)
-            .background(
-                MaterialTheme.colorScheme.error,
-                shape = RoundedCornerShape(5.dp)
-            )
-    ) {}
-}
-
-@Composable
-fun versionInfo(
-    state: ToolsState,
-    currentVersion: String,
-    onEvent: (ToolEvent) -> Unit,
-    context: Context
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        val latestVersion = state.latestAvailable
-        var info = "Daygame App $currentVersion"
-        val uriHandler = LocalUriHandler.current
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (state.latestAvailable != null && !state.latestAvailable.isEmpty()) {
-                changelog(latestVersion, state, onEvent)
-                Column(
-                    modifier = Modifier
-                        .background(
-                            MaterialTheme.colorScheme.primaryContainer,
-                            shape = RoundedCornerShape(50.dp)
-                        )
-                ) {
-                    IconButton(
-                        onClick = {
-                            if (state.backupBeforeUpdate) {
-                                DataExchangeService.backup(state)
-                                Toast.makeText(
-                                    context,
-                                    "Successfully backed up all tables",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                            uriHandler.openUri(state.latestDownloadUrl)
-                        }) {
-                        Icon(
-                            imageVector = Icons.Default.Download,
-                            contentDescription = "Update",
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                }
-            } else {
-                LittleBodyText(info)
-            }
-        }
-    }
-    if (state.showChangelog) {
-        Spacer(modifier = Modifier.height(12.dp))
-    }
-    BasicAnimatedVisibility(
-        visibilityFlag = state.showChangelog,
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                MarkdownText(
-                    markdown = state.latestChangelog
-                        .split("\n")
-                        .drop(2)
-                        .joinToString("\n"),
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun changelog(
-    newVersion: String,
-    state: ToolsState,
-    onEvent: (ToolEvent) -> Unit
-) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        updateRedDot()
-        Spacer(modifier = Modifier.width(5.dp))
-        LittleBodyText("Update to $newVersion. Changelog:")
-        IconButton(onClick = {
-            onEvent(ToolEvent.SwitchShowChangelog)
-        }) {
-            Icon(
-                imageVector = if (state.showChangelog) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
-                contentDescription = "Changelog",
-                tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier
-                    .height(50.dp)
-            )
         }
     }
 }
