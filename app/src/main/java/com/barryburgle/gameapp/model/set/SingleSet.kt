@@ -8,6 +8,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.EventModel
+import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
 import java.time.DayOfWeek
 import java.util.Locale
@@ -62,6 +63,22 @@ open class SingleSet(
 
     override fun getEventStickingPoints(): String {
         return stickingPoints
+    }
+
+    override fun shareReport(leads: List<Lead>): String {
+        return "${
+            reportLeads(
+                leads
+            ).drop(1)
+        } ${setTime}' set report:\n• talked${
+            checkmarkReport(
+                conversation
+            )
+        }\n• closed${checkmarkReport(contact)}\n• idated${checkmarkReport(instantDate)}\n• recorded${
+            checkmarkReport(
+                recorded
+            )
+        }${stickingPointsReport(stickingPoints)}"
     }
 
     constructor() : this(
