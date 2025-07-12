@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import com.barryburgle.gameapp.model.enums.DateType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.EventModel
+import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
 import java.time.DayOfWeek
 import java.util.Locale
@@ -63,6 +64,28 @@ open class Date(
 
     override fun getEventStickingPoints(): String? {
         return stickingPoints
+    }
+
+
+    override fun shareReport(leads: List<Lead>): String {
+        return "${
+            reportLeads(
+                leads
+            ).drop(1)
+        } ${dateTime}' ${DateType.getEmoji(dateType)} ${
+            DateType.getDateNumber(
+                dateNumber,
+                true
+            )
+        } report:\n• pulled${
+            checkmarkReport(
+                pull
+            )
+        }\n• bounced${checkmarkReport(bounce)}\n• kissed${checkmarkReport(kiss)}\n• laid${
+            checkmarkReport(
+                lay
+            )
+        }\n• recorded${checkmarkReport(recorded)}${stickingPointsReport(stickingPoints)}"
     }
 
     constructor() : this(
