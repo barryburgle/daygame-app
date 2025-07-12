@@ -8,6 +8,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.EventModel
+import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
 import java.time.DayOfWeek
 import java.util.Locale
@@ -61,5 +62,17 @@ open class AbstractSession(
 
     override fun getEventStickingPoints(): String {
         return stickingPoints
+    }
+
+    override fun shareReport(leads: List<Lead>): String {
+        return "\uD83D\uDCC5 ${date.dropLast(7)} ${sessionTime}' session report:\n•${sets} set${
+            pluralMaker(
+                sets
+            )
+        }\n•${convos} conversation${pluralMaker(convos)}\n•${contacts} contact${pluralMaker(contacts)}${
+            reportLeads(
+                leads
+            )
+        }${stickingPointsReport(stickingPoints)}"
     }
 }
