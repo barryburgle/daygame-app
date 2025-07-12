@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -100,10 +101,27 @@ fun EventCard(
                             LargeTitleText(sortableGameEvent.event.getEventTitle())
                         }
                         Row(
-                            modifier = Modifier.width(100.dp),
+                            modifier = Modifier
+                                .width(160.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
+                            IconShadowButton(
+                                onClick = {
+                                    clipboardManager.setText(
+                                        AnnotatedString(
+                                            sortableGameEvent.event.shareReport(leads)
+                                        )
+                                    )
+                                    Toast.makeText(
+                                        localContext,
+                                        "Report copied to clipboard",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                },
+                                imageVector = Icons.Default.Share,
+                                contentDescription = "Share Event"
+                            )
                             IconShadowButton(
                                 onClick = {
                                     if (AbstractSession::class.java.simpleName.equals(
