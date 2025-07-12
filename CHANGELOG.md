@@ -1,7 +1,9 @@
 # Version 1.9.0 (2025-07-xx)
 
 **Features**
-- 
+- New animated buttons and toggles 🔘
+- Credits card 🪪
+- Share events report ↗️
 
 **Bugs**
 - Shadow for delete and edit card buttons
