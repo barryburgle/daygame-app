@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
+import com.barryburgle.gameapp.model.enums.DateType
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedIcon
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
@@ -89,20 +90,8 @@ fun DateBody(
             description = "Cost",
             descriptionFontSize = descriptionFontSize
         )
-        var dateNumberSuffix = "th"
-        var dateNumberCount = date.dateNumber.toString()
-        if (date.dateNumber == 0) {
-            dateNumberCount = "Instant"
-            dateNumberSuffix = ""
-        } else if (date.dateNumber == 1) {
-            dateNumberSuffix = "st"
-        } else if (date.dateNumber == 2) {
-            dateNumberSuffix = "nd"
-        } else if (date.dateNumber == 3) {
-            dateNumberSuffix = "rd"
-        }
         DescribedQuantifier(
-            quantity = "${dateNumberCount}${dateNumberSuffix}",
+            quantity = DateType.getDateNumber(date.dateNumber, false),
             quantityFontSize = perfFontSize,
             description = "Date",
             descriptionFontSize = descriptionFontSize
