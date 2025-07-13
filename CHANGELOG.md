@@ -1,5 +1,10 @@
 # Version 1.9.0 (2025-07-xx)
 
+***WARNING*** ⚠️
+
+__If you have already installed a previous version of DayGame it will be necessary to backup all your data and uninstall the app, proceeding then with the installation of the new version and backup import.
+If you will not follow this procedure you will not be able to upgrade.__
+
 **Features**
 - New animated buttons and toggles 🔘
 - Credits card 🪪
