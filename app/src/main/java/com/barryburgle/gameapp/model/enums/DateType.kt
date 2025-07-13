@@ -59,7 +59,7 @@ enum class DateType(private val type: String) {
             }
             var dateDescription = dateNumberCount + dateNumberSuffix
             if (writeDate) {
-                dateDescription = dateDescription + "date"
+                dateDescription = dateDescription + " date"
             }
             return dateDescription
         }
