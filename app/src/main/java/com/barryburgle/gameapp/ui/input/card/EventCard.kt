@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.input.card
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -108,16 +109,27 @@ fun EventCard(
                         ) {
                             IconShadowButton(
                                 onClick = {
-                                    clipboardManager.setText(
-                                        AnnotatedString(
+                                    val sendIntent: Intent = Intent().apply {
+                                        action = Intent.ACTION_SEND
+                                        putExtra(
+                                            Intent.EXTRA_TEXT,
                                             sortableGameEvent.event.shareReport(leads)
                                         )
+                                        type = "text/plain"
+                                    }
+                                    var eventDescription =
+                                        when (sortableGameEvent.classType) {
+                                            AbstractSession::class.java.simpleName -> " session "
+                                            Date::class.java.simpleName -> " date "
+                                            SingleSet::class.java.simpleName -> " set "
+                                            else -> " "
+                                        }
+                                    val shareIntent = Intent.createChooser(
+                                        sendIntent,
+                                        "Share${eventDescription}report"
                                     )
-                                    Toast.makeText(
-                                        localContext,
-                                        "Report copied to clipboard",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    localContext.startActivity(shareIntent)
                                 },
                                 imageVector = Icons.Default.Share,
                                 contentDescription = "Share Event"
