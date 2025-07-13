@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowOutward
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,25 +38,22 @@ fun TweetLinkButton(tweetUrl: String?) {
                 )
                 .size(30.dp)
         ) {
-            IconButton(onClick = {
-                if (tweetUrl != null && tweetUrl!!.isNotBlank()) {
-                    uriHandler.openUri(tweetUrl!!)
-                } else {
-                    Toast.makeText(
-                        localContext,
-                        "No tweet url saved",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }) {
-                Icon(
-                    imageVector = Icons.Default.ArrowOutward,
-                    contentDescription = "Tweet",
-                    tint = MaterialTheme.colorScheme.inversePrimary,
-                    modifier = Modifier
-                        .height(20.dp)
-                )
-            }
+
+            IconShadowButton(
+                onClick = {
+                    if (tweetUrl != null && tweetUrl!!.isNotBlank()) {
+                        uriHandler.openUri(tweetUrl!!)
+                    } else {
+                        Toast.makeText(
+                            localContext,
+                            "No tweet url saved",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                },
+                imageVector = Icons.Default.ArrowOutward,
+                contentDescription = "Tweet"
+            )
         }
         Spacer(modifier = Modifier.height(5.dp))
         Text(
