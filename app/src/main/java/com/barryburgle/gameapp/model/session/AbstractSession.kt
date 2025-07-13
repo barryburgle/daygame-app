@@ -65,11 +65,11 @@ open class AbstractSession(
     }
 
     override fun shareReport(leads: List<Lead>): String {
-        return "\uD83D\uDCC5 ${date.dropLast(7)} ${sessionTime}' session report:\n•${sets} set${
+        return "\uD83D\uDCC5 ${date.dropLast(7)} ${sessionTime}' session report:\n• ${sets} set${
             pluralMaker(
                 sets
             )
-        }\n•${convos} conversation${pluralMaker(convos)}\n•${contacts} contact${pluralMaker(contacts)}${
+        }\n• ${convos} conversation${pluralMaker(convos)}\n• ${contacts} contact${pluralMaker(contacts)}${
             reportLeads(
                 leads
             )
