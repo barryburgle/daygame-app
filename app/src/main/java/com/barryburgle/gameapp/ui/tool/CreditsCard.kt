@@ -33,9 +33,10 @@ import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
+import com.barryburgle.gameapp.ui.utilities.setting.IconButtonSetting
 import com.barryburgle.gameapp.ui.utilities.setting.ImageButtonSetting
-import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @ExperimentalMaterial3Api
@@ -49,19 +50,15 @@ fun CreditsCard(
 ) {
     val uriHandler = LocalUriHandler.current
     Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(
+        modifier = modifier, colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
-        ),
-        shape = MaterialTheme.shapes.large
+        ), shape = MaterialTheme.shapes.large
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
-                modifier = Modifier
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.SpaceEvenly
+                modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Column(
                     modifier = Modifier
@@ -79,8 +76,7 @@ fun CreditsCard(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(
                             modifier = Modifier
@@ -90,13 +86,27 @@ fun CreditsCard(
                         ) {
                             Spacer(modifier = Modifier.height(10.dp))
                             versionInfo(
-                                state,
-                                currentVersion,
-                                onEvent,
-                                context
+                                state, currentVersion, onEvent, context
                             )
-                            ImageButtonSetting(
-                                text = "Daygame App Github repository",
+                            Spacer(modifier = Modifier.height(5.dp))
+                            if (state.latestAvailable != null && !state.latestAvailable.isEmpty()) {
+                                IconButtonSetting(text = "Update to version ${state.latestAvailable}",
+                                    imageVector = Icons.Default.Download,
+                                    contentDescription = "Update",
+                                    onClick = {
+                                        if (state.backupBeforeUpdate) {
+                                            DataExchangeService.backup(state)
+                                            Toast.makeText(
+                                                context,
+                                                "Successfully backed up all tables",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                        uriHandler.openUri(state.latestDownloadUrl)
+                                    })
+                            }
+                            Spacer(modifier = Modifier.height(5.dp))
+                            ImageButtonSetting(text = "Daygame App Github repository",
                                 icon = R.drawable.ic_launcher_round,
                                 contentDescription = "Project repository",
                                 color = Color.Black,
@@ -104,8 +114,7 @@ fun CreditsCard(
                                     uriHandler.openUri("https://github.com/barryburgle/daygame-app")
                                 })
                             Spacer(modifier = Modifier.height(5.dp))
-                            ImageButtonSetting(
-                                text = "Barry Burgle's blog",
+                            ImageButtonSetting(text = "Barry Burgle's blog",
                                 icon = R.drawable.bb_v3b,
                                 contentDescription = "Barry Blog",
                                 color = Color.Black,
@@ -127,26 +136,20 @@ fun updateRedDot() {
             .width(8.dp)
             .height(8.dp)
             .background(
-                MaterialTheme.colorScheme.error,
-                shape = RoundedCornerShape(5.dp)
+                MaterialTheme.colorScheme.error, shape = RoundedCornerShape(5.dp)
             )
     ) {}
 }
 
 @Composable
 fun versionInfo(
-    state: ToolsState,
-    currentVersion: String,
-    onEvent: (ToolEvent) -> Unit,
-    context: Context
+    state: ToolsState, currentVersion: String, onEvent: (ToolEvent) -> Unit, context: Context
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
     ) {
         val latestVersion = state.latestAvailable
         var info = "Daygame App v$currentVersion"
-        val uriHandler = LocalUriHandler.current
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -154,34 +157,9 @@ fun versionInfo(
         ) {
             if (state.latestAvailable != null && !state.latestAvailable.isEmpty()) {
                 changelog(latestVersion, state, onEvent)
-                Column(
-                    modifier = Modifier
-                        .background(
-                            MaterialTheme.colorScheme.primaryContainer,
-                            shape = RoundedCornerShape(50.dp)
-                        )
-                ) {
-                    IconButton(
-                        onClick = {
-                            if (state.backupBeforeUpdate) {
-                                DataExchangeService.backup(state)
-                                Toast.makeText(
-                                    context,
-                                    "Successfully backed up all tables",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                            uriHandler.openUri(state.latestDownloadUrl)
-                        }) {
-                        Icon(
-                            imageVector = Icons.Default.Download,
-                            contentDescription = "Update",
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                }
+
             } else {
-                LittleBodyText(info)
+                SmallTitleText(info)
             }
         }
     }
@@ -192,8 +170,7 @@ fun versionInfo(
         visibilityFlag = state.showChangelog,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -201,10 +178,7 @@ fun versionInfo(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MarkdownText(
-                    markdown = state.latestChangelog
-                        .split("\n")
-                        .drop(2)
-                        .joinToString("\n"),
+                    markdown = state.latestChangelog.split("\n").drop(2).joinToString("\n"),
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -214,9 +188,7 @@ fun versionInfo(
 
 @Composable
 fun changelog(
-    newVersion: String,
-    state: ToolsState,
-    onEvent: (ToolEvent) -> Unit
+    newVersion: String, state: ToolsState, onEvent: (ToolEvent) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
@@ -224,7 +196,7 @@ fun changelog(
     ) {
         updateRedDot()
         Spacer(modifier = Modifier.width(5.dp))
-        LittleBodyText("Update to $newVersion. Changelog:")
+        SmallTitleText("New version $newVersion available. Changelog:")
         IconButton(onClick = {
             onEvent(ToolEvent.SwitchShowChangelog)
         }) {
@@ -232,8 +204,7 @@ fun changelog(
                 imageVector = if (state.showChangelog) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
                 contentDescription = "Changelog",
                 tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier
-                    .height(50.dp)
+                modifier = Modifier.height(50.dp)
             )
         }
     }
