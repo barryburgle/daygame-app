@@ -43,7 +43,6 @@ import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
-import com.barryburgle.gameapp.model.enums.TimeInputFormEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
@@ -52,7 +51,7 @@ import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
-import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
+import com.barryburgle.gameapp.ui.utilities.dialog.DialogTimeFormSection
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
@@ -126,46 +125,7 @@ fun SessionDialog(
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(
-                    modifier = Modifier.width(DialogConstant.TIME_COLUMN_WIDTH)
-                ) {
-                    TimeInputFormButton(
-                        state.date,
-                        latestDateValue,
-                        TimeInputFormEnum.DATE,
-                        state.isAddingSession,
-                        state.editAbstractSession,
-                        if (state.editAbstractSession != null) state.editAbstractSession!!.date else "",
-                        "session",
-                        ""
-                    ) {
-                        onEvent(GameEvent.SetDate(it))
-                    }
-                    TimeInputFormButton(
-                        state.startHour,
-                        latestStartHour,
-                        TimeInputFormEnum.HOUR,
-                        state.isAddingSession,
-                        state.editAbstractSession,
-                        if (state.editAbstractSession != null) state.editAbstractSession!!.startHour else "",
-                        "session",
-                        "Start"
-                    ) {
-                        onEvent(GameEvent.SetStartHour(it.substring(0, 5)))
-                    }
-                    TimeInputFormButton(
-                        state.endHour,
-                        latestEndHour,
-                        TimeInputFormEnum.HOUR,
-                        state.isAddingSession,
-                        state.editAbstractSession,
-                        if (state.editAbstractSession != null) state.editAbstractSession!!.endHour else "",
-                        "session",
-                        "End"
-                    ) {
-                        onEvent(GameEvent.SetEndHour(it.substring(0, 5)))
-                    }
-                }
+                DialogTimeFormSection(state, onEvent, latestDateValue, latestStartHour, latestEndHour)
                 Column(
                     modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH)
                 ) {
@@ -299,7 +259,7 @@ fun leadName(
         Column(
             modifier = Modifier
                 .shadow(
-                    elevation = 5.dp,
+                    elevation = 10.dp,
                     shape = MaterialTheme.shapes.large
                 ),
         ) {
