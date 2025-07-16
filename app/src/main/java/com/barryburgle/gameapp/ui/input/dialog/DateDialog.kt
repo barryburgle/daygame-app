@@ -10,11 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -28,6 +27,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
@@ -35,7 +36,6 @@ import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.DateType
-import com.barryburgle.gameapp.model.enums.TimeInputFormEnum
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
@@ -44,9 +44,8 @@ import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
-import com.barryburgle.gameapp.ui.utilities.button.TweetLinkImportButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
-import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
+import com.barryburgle.gameapp.ui.utilities.dialog.DialogTimeFormSection
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
@@ -154,69 +153,15 @@ fun DateDialog(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(0.5f)
-                ) {
-                    TimeInputFormButton(
-                        state.date,
-                        latestDateValue,
-                        TimeInputFormEnum.DATE,
-                        state.isAddingDate,
-                        state.editDate,
-                        if (state.editDate != null && state.editDate!!.date != null) state.editDate!!.date!! else "",
-                        "session",
-                        ""
-                    ) {
-                        onEvent(GameEvent.SetDate(it))
-                    }
-                    TimeInputFormButton(
-                        state.startHour,
-                        latestStartHour,
-                        TimeInputFormEnum.HOUR,
-                        state.isAddingDate,
-                        state.editDate,
-                        if (state.editDate != null) state.editDate!!.startHour else "",
-                        "session",
-                        "Start"
-                    ) {
-                        onEvent(GameEvent.SetStartHour(it.substring(0, 5)))
-                    }
-                    TimeInputFormButton(
-                        state.endHour,
-                        latestEndHour,
-                        TimeInputFormEnum.HOUR,
-                        state.isAddingDate,
-                        state.editDate,
-                        if (state.editDate != null) state.editDate!!.endHour else "",
-                        "session",
-                        "End"
-                    ) {
-                        onEvent(GameEvent.SetEndHour(it.substring(0, 5)))
-                    }
-                }
+                DialogTimeFormSection(state, onEvent, latestDateValue, latestStartHour, latestEndHour)
                 Spacer(modifier = Modifier.width(5.dp))
-                // TODO: make the date type button change value displayed after edit - SOLVED?
-                Column {
-                    Button(colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    ), onClick = { dateTypesExpanded = true }) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceAround,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            if (!state.dateType.isBlank()) {
-                                Icon(
-                                    imageVector = DateType.getIcon(state.dateType),
-                                    contentDescription = state.dateType,
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier
-                                        .height(15.dp)
-                                )
-                            }
-                            LittleBodyText(if (state.dateType.isBlank()) "Date type" else state.dateType.replaceFirstChar { it.uppercase() })
-                        }
-                    }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(135.dp),
+                    verticalArrangement = Arrangement.SpaceAround
+                ) {
+                    // TODO: align the buttons in the column in the right with column on the left
                     DropdownMenu(
                         modifier = Modifier
                             .width(175.dp)
@@ -250,25 +195,55 @@ fun DateDialog(
                             )
                         }
                     }
-                    Button(colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    ), onClick = { locationTextFieldExpanded = !locationTextFieldExpanded }) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceAround,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.PinDrop,
-                                contentDescription = state.dateType,
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier
-                                    .height(15.dp)
-                            )
-                            LittleBodyText("Location")
-                        }
-                    }
-                    TweetLinkImportButton(onEvent)
+                    IconShadowButton(
+                        onClick = {
+                            dateTypesExpanded = true
+                        },
+                        imageVector = DateType.getIcon(state.dateType),
+                        contentDescription = "Date type",
+                        title = if (state.dateType.isBlank()) "Date type" else state.dateType.replaceFirstChar { it.uppercase() },
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(35.dp)
+                    )
+                    IconShadowButton(
+                        onClick = {
+                            locationTextFieldExpanded = !locationTextFieldExpanded
+                        },
+                        imageVector = Icons.Default.PinDrop,
+                        contentDescription = "Location",
+                        title = "Location",
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(35.dp)
+                    )
+                    val clipboardManager: ClipboardManager = LocalClipboardManager.current
+                    val localContext = LocalContext.current.applicationContext
+                    IconShadowButton(
+                        onClick = {
+                            var tweetUrl: String = clipboardManager.getText()!!.toString()
+                            if (tweetUrl.startsWith("https://x.com/")) {
+                                onEvent(GameEvent.SetTweetUrl(tweetUrl))
+                                Toast.makeText(
+                                    localContext,
+                                    "Copied tweet url",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
+                        imageVector = Icons.Default.ContentPaste,
+                        contentDescription = "Tweet Url",
+                        title = "Tweet Url",
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(35.dp)
+                    )
                 }
             }
             BasicAnimatedVisibility(
