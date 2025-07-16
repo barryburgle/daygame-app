@@ -13,12 +13,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,13 +24,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.SetSortType
-import com.barryburgle.gameapp.model.enums.TimeInputFormEnum
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
@@ -44,7 +38,7 @@ import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkImportButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
-import com.barryburgle.gameapp.ui.utilities.dialog.TimeInputFormButton
+import com.barryburgle.gameapp.ui.utilities.dialog.DialogTimeFormSection
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
@@ -136,72 +130,23 @@ fun SetDialog(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(0.5f)
-                ) {
-                    TimeInputFormButton(
-                        state.date,
-                        latestDateValue,
-                        TimeInputFormEnum.DATE,
-                        state.isAddingSet,
-                        state.editSet,
-                        if (state.editSet != null) state.editSet!!.date else "",
-                        "session",
-                        ""
-                    ) {
-                        onEvent(GameEvent.SetDate(it))
-                    }
-                    TimeInputFormButton(
-                        state.startHour,
-                        latestStartHour,
-                        TimeInputFormEnum.HOUR,
-                        state.isAddingSet,
-                        state.editSet,
-                        if (state.editSet != null) state.editSet!!.startHour else "",
-                        "session",
-                        "Start"
-                    ) {
-                        onEvent(GameEvent.SetStartHour(it.substring(0, 5)))
-                    }
-                    TimeInputFormButton(
-                        state.endHour,
-                        latestEndHour,
-                        TimeInputFormEnum.HOUR,
-                        state.isAddingSet,
-                        state.editSet,
-                        if (state.editSet != null) state.editSet!!.endHour else "",
-                        "session",
-                        "End"
-                    ) {
-                        onEvent(GameEvent.SetEndHour(it.substring(0, 5)))
-                    }
-                }
+                DialogTimeFormSection(state, onEvent, latestDateValue, latestStartHour, latestEndHour)
                 Spacer(modifier = Modifier.width(5.dp))
                 Column {
-                    Button(colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    ), onClick = { locationTextFieldExpanded = !locationTextFieldExpanded }) {
-                        // TODO: insert here a button that allows to choose from a list of sessions to which the set belongs to  [v1.7.3]
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceAround,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.PinDrop,
-                                contentDescription = state.dateType,
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier
-                                    .height(15.dp)
-                            )
-                            Text(
-                                text = "Location",
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-                    }
+                    // TODO: insert here a button that allows to choose from a list of sessions to which the set belongs to  [v1.10.0]
+                    IconShadowButton(
+                        onClick = {
+                            locationTextFieldExpanded = !locationTextFieldExpanded
+                        },
+                        imageVector = Icons.Default.PinDrop,
+                        contentDescription = "Location",
+                        title = "Location",
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(35.dp)
+                    )
                     TweetLinkImportButton(onEvent)
                 }
             }
