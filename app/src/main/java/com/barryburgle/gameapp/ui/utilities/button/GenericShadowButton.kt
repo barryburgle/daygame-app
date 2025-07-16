@@ -38,7 +38,7 @@ fun GenericShadowButton(
     modifier: Modifier = Modifier,
     title: String? = null,
     color: Color? = null,
-    iconComposable: @Composable () -> Unit
+    iconComposable: (@Composable () -> Unit)? = null
 ) {
     var buttonState by remember { mutableStateOf(IconShadowButtonState.IDLE) }
     val scale by animateFloatAsState(
@@ -92,7 +92,9 @@ fun GenericShadowButton(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                iconComposable()
+                if (iconComposable != null) {
+                    iconComposable()
+                }
                 if (title != null && !title.isBlank()) {
                     SmallTitleText(title)
                 }
