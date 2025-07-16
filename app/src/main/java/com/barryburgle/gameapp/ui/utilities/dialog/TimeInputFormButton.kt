@@ -1,15 +1,14 @@
 package com.barryburgle.gameapp.ui.utilities.dialog
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.model.enums.TimeInputFormEnum
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.ui.utilities.button.GenericShadowButton
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalDateTime
 
@@ -41,18 +40,16 @@ fun TimeInputFormButton(
         }
     }
     val displayValue = passStateValue(stateValue, latestDateValue)
-    Button(colors = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.primaryContainer
-    ), onClick = { dialogState.show() }) {
-        Text(
-            text = getButtonTitle(
-                timeInputFormEnum, buttonTextPrefix, displayValue
-            ),
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
+    GenericShadowButton(
+        onClick = {
+            dialogState.show()
+        },
+        title = getButtonTitle(
+            timeInputFormEnum, buttonTextPrefix, displayValue
+        ),
+        color = MaterialTheme.colorScheme.primaryContainer,
+        modifier = Modifier.fillMaxWidth().height(35.dp)
+    )
 }
 
 private fun getEmptyButtonTitle(
