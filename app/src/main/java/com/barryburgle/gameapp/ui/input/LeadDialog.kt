@@ -52,7 +52,7 @@ fun LeadDialog(
     onEvent: (GameEvent) -> Unit,
     description: String,
     modifier: Modifier = Modifier
-        .height(460.dp)
+        .height(470.dp)
 ) {
     val lead = Lead()
     val localContext = LocalContext.current.applicationContext
