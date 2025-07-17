@@ -354,7 +354,7 @@ fun EventCard(
                                 stickingPoints != null && !stickingPoints.isBlank()
                             var width = 1f
                             if (validStickingPoints) {
-                                width = 0.85f
+                                width = 0.8f
                             }
                             EventCardSection(width = width) {
                                 Row(
@@ -380,6 +380,7 @@ fun EventCard(
                                 }
                             }
                             if (validStickingPoints) {
+                                Spacer(modifier = Modifier.width(10.dp))
                                 IconShadowButton(
                                     onClick = {
                                         if (stickingPoints != null) {
