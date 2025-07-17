@@ -307,6 +307,17 @@ fun SettingsCard(
                                     )
                                 }
                             }
+                            // TODO: create a "Share" setting card in future, and divide the settings in the current "Setting" card across different cards
+                            SwitchSetting(
+                                "Share simpler report for +1s", state.simplePlusOneReport
+                            ) {
+                                onEvent(ToolEvent.SwitchSimplePlusOneReport)
+                            }
+                            SwitchSetting(
+                                "Never share lead info", state.neverShareLeadInfo
+                            ) {
+                                onEvent(ToolEvent.SwitchNeverShareLeadInfo)
+                            }
                         }
                     }
                 }

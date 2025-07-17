@@ -517,6 +517,30 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SwitchSimplePlusOneReport -> {
+                _state.update {
+                    it.copy(
+                        simplePlusOneReport = _state.value.simplePlusOneReport.not()
+                    )
+                }
+                val simplePlusOneReport = _state.value.simplePlusOneReport
+                val setting =
+                    Setting(SettingDao.SIMPLE_PLUS_ONE_REPORT_ID, simplePlusOneReport.toString())
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SwitchNeverShareLeadInfo -> {
+                _state.update {
+                    it.copy(
+                        neverShareLeadInfo = _state.value.neverShareLeadInfo.not()
+                    )
+                }
+                val neverShareLeadInfo = _state.value.neverShareLeadInfo
+                val setting =
+                    Setting(SettingDao.NEVER_SHARE_LEAD_INFO_ID, neverShareLeadInfo.toString())
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetTheme -> {
                 _state.update {
                     it.copy(

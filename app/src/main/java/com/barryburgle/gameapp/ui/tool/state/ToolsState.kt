@@ -46,6 +46,8 @@ data class ToolsState(
     var deleteSets: Boolean = false,
     var isCleaning: Boolean = false,
     var themeSysFollow: Boolean = true,
+    var simplePlusOneReport: Boolean = true,
+    var neverShareLeadInfo: Boolean = false,
     var theme: String = ThemeEnum.LIGHT.type,
     var deleteConfirmationPrompt: String = ""
 ) : ExportState(
