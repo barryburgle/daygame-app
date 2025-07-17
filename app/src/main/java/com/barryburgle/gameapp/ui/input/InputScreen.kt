@@ -199,7 +199,9 @@ fun InputScreen(
                             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
                             .shadow(
                                 elevation = 5.dp, shape = MaterialTheme.shapes.large
-                            )
+                            ),
+                        state.simplePlusOneReport,
+                        state.neverShareLeadInfo
                     )
                 }
             }

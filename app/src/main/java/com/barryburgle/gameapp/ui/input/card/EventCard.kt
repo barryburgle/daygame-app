@@ -55,7 +55,9 @@ fun EventCard(
     sortableGameEvent: SortableGameEvent,
     leads: List<Lead>,
     onEvent: (GameEvent) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    simplePlusOneReport: Boolean,
+    neverShareLeadInfo: Boolean
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val localContext = LocalContext.current.applicationContext
@@ -109,11 +111,20 @@ fun EventCard(
                         ) {
                             IconShadowButton(
                                 onClick = {
+                                    var leadsToShare = leads
+                                    if (neverShareLeadInfo) {
+                                        leadsToShare = listOf()
+                                    }
+                                    var report = sortableGameEvent.event.shareReport(leadsToShare)
+                                    if(sortableGameEvent.classType.equals(Date::class.java.simpleName)){
+                                        var eventDate: Date = sortableGameEvent.event as Date
+                                        report = eventDate.shareDateReport(leadsToShare, simplePlusOneReport)
+                                    }
                                     val sendIntent: Intent = Intent().apply {
                                         action = Intent.ACTION_SEND
                                         putExtra(
                                             Intent.EXTRA_TEXT,
-                                            sortableGameEvent.event.shareReport(leads)
+                                            report
                                         )
                                         type = "text/plain"
                                     }
