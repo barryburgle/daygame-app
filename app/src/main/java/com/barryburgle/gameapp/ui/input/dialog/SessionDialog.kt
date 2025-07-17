@@ -127,12 +127,12 @@ fun SessionDialog(
             ) {
                 DialogTimeFormSection(state, onEvent, latestDateValue, latestStartHour, latestEndHour)
                 Column(
-                    modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH)
+                    modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH),
+                    verticalArrangement = Arrangement.Top
                 ) {
-                    Spacer(modifier = Modifier.height(5.dp))
                     for (lead in state.leads) {
                         Row(
-                            verticalAlignment = Alignment.CenterVertically,
+                            verticalAlignment = Alignment.Top,
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Box(modifier = Modifier.clickable {

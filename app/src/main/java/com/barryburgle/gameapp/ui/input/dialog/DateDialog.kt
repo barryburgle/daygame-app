@@ -151,7 +151,8 @@ fun DateDialog(
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 DialogTimeFormSection(state, onEvent, latestDateValue, latestStartHour, latestEndHour)
                 Spacer(modifier = Modifier.width(5.dp))
@@ -159,9 +160,8 @@ fun DateDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(135.dp),
-                    verticalArrangement = Arrangement.SpaceAround
+                    verticalArrangement = Arrangement.Top
                 ) {
-                    // TODO: align the buttons in the column in the right with column on the left
                     DropdownMenu(
                         modifier = Modifier
                             .width(175.dp)
@@ -208,6 +208,7 @@ fun DateDialog(
                             .fillMaxWidth()
                             .height(35.dp)
                     )
+                    Spacer(modifier = Modifier.height(10.dp))
                     IconShadowButton(
                         onClick = {
                             locationTextFieldExpanded = !locationTextFieldExpanded
@@ -221,6 +222,7 @@ fun DateDialog(
                             .fillMaxWidth()
                             .height(35.dp)
                     )
+                    Spacer(modifier = Modifier.height(10.dp))
                     val clipboardManager: ClipboardManager = LocalClipboardManager.current
                     val localContext = LocalContext.current.applicationContext
                     IconShadowButton(

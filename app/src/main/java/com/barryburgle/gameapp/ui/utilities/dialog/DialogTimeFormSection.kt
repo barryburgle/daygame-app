@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.ui.utilities.dialog
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -23,7 +24,7 @@ fun DialogTimeFormSection(
         modifier = Modifier
             .fillMaxWidth(0.5f)
             .height(135.dp),
-        verticalArrangement = Arrangement.SpaceAround
+        verticalArrangement = Arrangement.Top
     ) {
         TimeInputFormButton(
             state.date,
@@ -37,6 +38,7 @@ fun DialogTimeFormSection(
         ) {
             onEvent(GameEvent.SetDate(it))
         }
+        Spacer(modifier = Modifier.height(10.dp))
         TimeInputFormButton(
             state.startHour,
             latestStartHour,
@@ -49,6 +51,7 @@ fun DialogTimeFormSection(
         ) {
             onEvent(GameEvent.SetStartHour(it.substring(0, 5)))
         }
+        Spacer(modifier = Modifier.height(10.dp))
         TimeInputFormButton(
             state.endHour,
             latestEndHour,
