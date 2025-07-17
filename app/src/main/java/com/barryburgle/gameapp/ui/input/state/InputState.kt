@@ -78,7 +78,9 @@ data class InputState(
     var instantDate: Boolean = false,
     var sessionId: Long? = 0L,
     var dateId: Long? = 0L,
-    override var generateiDate: Boolean = true
+    override var generateiDate: Boolean = true,
+    var simplePlusOneReport: Boolean = true,
+    var neverShareLeadInfo: Boolean = false
 ) : ExportState(
     sessionSortType,
     exportSessionsFileName,

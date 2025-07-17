@@ -11,5 +11,7 @@ data class InputSettingsState(
     var backupFolder: String = "",
     var backupActive: Boolean = true,
     var lastBackup: Int = 3,
-    var generateiDate: Boolean = true
+    var generateiDate: Boolean = true,
+    var simplePlusOneReport: Boolean = true,
+    var neverShareLeadInfo: Boolean = false
 )

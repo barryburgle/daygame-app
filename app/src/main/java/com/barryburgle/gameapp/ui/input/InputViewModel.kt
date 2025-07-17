@@ -27,7 +27,7 @@ import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
 import com.barryburgle.gameapp.ui.CombineFourteen
 import com.barryburgle.gameapp.ui.CombineSeven
-import com.barryburgle.gameapp.ui.CombineTen
+import com.barryburgle.gameapp.ui.CombineTwelve
 import com.barryburgle.gameapp.ui.input.state.InputSettingsState
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -128,6 +128,8 @@ class InputViewModel(
     private val _backupActive = settingDao.getBackupActiveFlag()
     private val _lastBackup = settingDao.getBackupNumber()
     private val _generateiDate = settingDao.getGenerateiDate()
+    private val _simplePlusOneReport = settingDao.getSimplePlusOneReport()
+    private val _neverShareLeadInfo = settingDao.getNeverShareLeadInfo()
 
     val _showSessions = MutableStateFlow(true)
     val _showSets = MutableStateFlow(true)
@@ -234,7 +236,7 @@ class InputViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _state = MutableStateFlow(InputState())
-    val _combinedSettings = CombineTen(
+    val _combinedSettings = CombineTwelve(
         _notificationTime,
         _exportSessionsFileName,
         _exportLeadsFileName,
@@ -244,8 +246,10 @@ class InputViewModel(
         _backupFolder,
         _backupActive,
         _lastBackup,
-        _generateiDate
-    ) { notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, generateiDate ->
+        _generateiDate,
+        _simplePlusOneReport,
+        _neverShareLeadInfo
+    ) { notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, generateiDate, simplePlusOneReport, neverShareLeadInfo ->
         InputSettingsState(
             notificationTime = notificationTime,
             exportSessionsFileName = exportSessionsFileName,
@@ -256,7 +260,9 @@ class InputViewModel(
             backupFolder = backupFolder,
             backupActive = backupActive.toBoolean(),
             lastBackup = lastBackup.toInt(),
-            generateiDate = generateiDate.toBoolean()
+            generateiDate = generateiDate.toBoolean(),
+            simplePlusOneReport = simplePlusOneReport.toBoolean(),
+            neverShareLeadInfo = neverShareLeadInfo.toBoolean()
         )
     }
     val state = CombineFourteen(
@@ -297,7 +303,9 @@ class InputViewModel(
             showSets = showSets,
             showDates = showDates,
             gameEventSortType = gameEventSortType,
-            generateiDate = combinedSettings.generateiDate
+            generateiDate = combinedSettings.generateiDate,
+            simplePlusOneReport = combinedSettings.simplePlusOneReport,
+            neverShareLeadInfo = combinedSettings.neverShareLeadInfo
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())
 
