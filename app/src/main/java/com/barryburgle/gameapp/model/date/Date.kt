@@ -68,24 +68,41 @@ open class Date(
 
 
     override fun shareReport(leads: List<Lead>): String {
-        return "${
+        var sharedDateNumber = DateType.getDateNumber(
+            dateNumber,
+            true
+        )
+        if (dateNumber == 0 && lay) {
+            sharedDateNumber = "SDL"
+        }
+        var dateDuration = ""
+        if (!lay) {
+            dateDuration = " ${dateTime}'"
+        }
+        var plusOnePrefix = ""
+        if (lay) {
+            plusOnePrefix = "+1 "
+        }
+        var dateReport = "${plusOnePrefix}${
             reportLeads(
                 leads
             ).drop(1)
-        } ${dateTime}' ${DateType.getEmoji(dateType)} ${
-            DateType.getDateNumber(
-                dateNumber,
-                true
-            )
-        } report:\n• pulled${
-            checkmarkReport(
-                pull
-            )
-        }\n• bounced${checkmarkReport(bounce)}\n• kissed${checkmarkReport(kiss)}\n• laid${
-            checkmarkReport(
-                lay
-            )
-        }\n• recorded${checkmarkReport(recorded)}${stickingPointsReport(stickingPoints)}"
+        }${dateDuration} ${DateType.getEmoji(dateType)} ${
+            sharedDateNumber
+        }"
+        if (!lay) {
+            dateReport = dateReport +
+                    " report:\n• pulled${
+                        checkmarkReport(
+                            pull
+                        )
+                    }\n• bounced${checkmarkReport(bounce)}\n• kissed${checkmarkReport(kiss)}\n• laid${
+                        checkmarkReport(
+                            lay
+                        )
+                    }\n• recorded${checkmarkReport(recorded)}${stickingPointsReport(stickingPoints)}"
+        }
+        return dateReport
     }
 
     constructor() : this(
