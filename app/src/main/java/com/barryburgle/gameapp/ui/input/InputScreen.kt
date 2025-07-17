@@ -63,6 +63,7 @@ import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.selection.MultiChoiceButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 
@@ -326,15 +327,23 @@ fun gameTopBar(
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Spacer(modifier = Modifier.height(5.dp))
-        MultiChoiceButton(
-            EventTypeEnum.getFieldsButAll(),
-            listOf(state.allSessions.size, state.allSets.size, state.allDates.size),
-            Modifier
-                .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
-                .height(50.dp),
-            selectedOptions
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            onEvent(GameEvent.SwitchShowFlag(it))
+            Spacer(modifier = Modifier.width(spaceFromLeft))
+            MediumTitleText("Events:")
+            MultiChoiceButton(
+                EventTypeEnum.getFieldsButAll(),
+                listOf(state.allSessions.size, state.allSets.size, state.allDates.size),
+                Modifier
+                    .height(50.dp),
+                selectedOptions
+            ) {
+                onEvent(GameEvent.SwitchShowFlag(it))
+            }
         }
         EntitySorter(
             showAllSorter(state.showSessions, state.showSets, state.showDates),
