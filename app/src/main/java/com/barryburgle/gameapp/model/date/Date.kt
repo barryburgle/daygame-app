@@ -68,6 +68,11 @@ open class Date(
 
 
     override fun shareReport(leads: List<Lead>): String {
+        return shareDateReport(leads, false)
+    }
+
+
+    fun shareDateReport(leads: List<Lead>, simplePlusOneReport: Boolean): String {
         var sharedDateNumber = DateType.getDateNumber(
             dateNumber,
             true
@@ -90,18 +95,19 @@ open class Date(
         }${dateDuration} ${DateType.getEmoji(dateType)} ${
             sharedDateNumber
         }"
-        if (!lay) {
-            dateReport = dateReport +
-                    " report:\n• pulled${
-                        checkmarkReport(
-                            pull
-                        )
-                    }\n• bounced${checkmarkReport(bounce)}\n• kissed${checkmarkReport(kiss)}\n• laid${
-                        checkmarkReport(
-                            lay
-                        )
-                    }\n• recorded${checkmarkReport(recorded)}${stickingPointsReport(stickingPoints)}"
+        if (simplePlusOneReport) {
+            return dateReport
         }
+        dateReport = dateReport +
+                " report:\n• pulled${
+                    checkmarkReport(
+                        pull
+                    )
+                }\n• bounced${checkmarkReport(bounce)}\n• kissed${checkmarkReport(kiss)}\n• laid${
+                    checkmarkReport(
+                        lay
+                    )
+                }\n• recorded${checkmarkReport(recorded)}${stickingPointsReport(stickingPoints)}"
         return dateReport
     }
 
