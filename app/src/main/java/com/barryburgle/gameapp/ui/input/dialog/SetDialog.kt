@@ -36,7 +36,6 @@ import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
-import com.barryburgle.gameapp.ui.utilities.button.TweetLinkImportButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogTimeFormSection
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -147,7 +146,6 @@ fun SetDialog(
                             .fillMaxWidth()
                             .height(35.dp)
                     )
-                    TweetLinkImportButton(onEvent)
                 }
             }
             BasicAnimatedVisibility(
