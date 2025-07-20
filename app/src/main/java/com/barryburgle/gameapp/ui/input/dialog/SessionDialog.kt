@@ -125,7 +125,13 @@ fun SessionDialog(
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                DialogTimeFormSection(state, onEvent, latestDateValue, latestStartHour, latestEndHour)
+                DialogTimeFormSection(
+                    state,
+                    onEvent,
+                    latestDateValue,
+                    latestStartHour,
+                    latestEndHour
+                )
                 Column(
                     modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH),
                     verticalArrangement = Arrangement.Top
@@ -170,34 +176,10 @@ fun SessionDialog(
                     }
                 }
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                InputCountComponent(
-                    inputTitle = "Sets",
-                    modifier = Modifier,
-                    style = MaterialTheme.typography.titleSmall,
-                    onEvent = onEvent as (GenericEvent) -> Unit,
-                    countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.sets,
-                    saveEvent = GameEvent::SetSets
-                )
-                InputCountComponent(
-                    inputTitle = "Conversations",
-                    modifier = Modifier,
-                    style = MaterialTheme.typography.titleSmall,
-                    onEvent = onEvent as (GenericEvent) -> Unit,
-                    countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.convos,
-                    saveEvent = GameEvent::SetConvos
-                )
-                InputCountComponent(
-                    inputTitle = "Contacts",
-                    modifier = Modifier,
-                    style = MaterialTheme.typography.titleSmall,
-                    onEvent = onEvent as (GenericEvent) -> Unit,
-                    countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.contacts,
-                    saveEvent = GameEvent::SetContacts
-                )
-            }
+            SessionCountComponent(
+                state,
+                onEvent
+            )
             OutlinedTextField(
                 value = state.stickingPoints,
                 onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
