@@ -178,7 +178,8 @@ fun SettingsCard(
                                 contentDescription = "Reminder",
                                 onClick = { notificationHourDialogState.show() })
                             SwitchSetting(
-                                "Generate iDate on set creation", state.generateiDate
+                                "Generate iDate on set creation", state.generateiDate,
+                                description = "A new iDate will be generated when a set is inserted with the iDate flag set to true"
                             ) {
                                 onEvent(ToolEvent.SwitchGenerateiDate)
                             }
@@ -316,7 +317,8 @@ fun SettingsCard(
                             }
                             // TODO: create a "Share" setting card in future, and divide the settings in the current "Setting" card across different cards
                             SwitchSetting(
-                                "Share simpler report for +1s", state.simplePlusOneReport
+                                "Share simpler report for +1s", state.simplePlusOneReport,
+                                description = "Report without sticking points and date flags is generated for dates that ended up in a lay"
                             ) {
                                 onEvent(ToolEvent.SwitchSimplePlusOneReport)
                             }

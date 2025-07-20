@@ -10,10 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 
 @Composable
-fun SwitchSetting(text: String, flag: Boolean, onCheckedChange: () -> Unit) {
+fun SwitchSetting(text: String, flag: Boolean, description: String? = null, onCheckedChange: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -24,6 +25,9 @@ fun SwitchSetting(text: String, flag: Boolean, onCheckedChange: () -> Unit) {
                 .fillMaxWidth(0.75f)
         ) {
             SmallTitleText(text)
+            if(description!=null){
+                LittleBodyText(description)
+            }
         }
         Spacer(modifier = Modifier.width(5.dp))
         Column(
