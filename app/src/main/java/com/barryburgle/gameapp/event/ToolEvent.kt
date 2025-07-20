@@ -33,6 +33,7 @@ sealed interface ToolEvent : GenericEvent {
     object SwitchShowChangelog : ToolEvent
     object SwitchBackupBeforeUpdate : ToolEvent
     object SwitchGenerateiDate : ToolEvent
+    object SwitchFollowCount : ToolEvent
     object SwitchArchiveBackupFolder : ToolEvent
     object SwitchDeleteSessions : ToolEvent
     object SwitchDeleteLeads : ToolEvent

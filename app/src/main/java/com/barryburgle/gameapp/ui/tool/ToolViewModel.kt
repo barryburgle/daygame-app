@@ -449,6 +449,17 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SwitchFollowCount -> {
+                _state.update {
+                    it.copy(
+                        followCount = _state.value.followCount.not()
+                    )
+                }
+                val followCount = _state.value.followCount
+                val setting = Setting(SettingDao.FOLLOW_COUNT_ID, followCount.toString())
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SwitchArchiveBackupFolder -> {
                 _state.update {
                     it.copy(
