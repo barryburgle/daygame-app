@@ -9,8 +9,9 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
-import com.barryburgle.gameapp.ui.CombineTwelve
-import com.barryburgle.gameapp.ui.CombineTwentyTwo
+import com.barryburgle.gameapp.ui.CombineFifteen
+import com.barryburgle.gameapp.ui.CombineSeven
+import com.barryburgle.gameapp.ui.CombineSixteen
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +33,13 @@ class ToolViewModel(
     private val _allLeads = leadDao.getAll()
     private val _allDates = dateDao.getAll()
     private val _allSets = setDao.getAll()
-    val _importExportFilenames: Flow<ImportExportFilenames> = CombineTwelve(
+    val _importExportSettingState: Flow<ImportExportSettingState> = CombineSixteen(
+        settingDao.getExportFolder(),
+        settingDao.getImportFolder(),
+        settingDao.getBackupFolder(),
+        settingDao.getExportHeaderFlag(),
+        settingDao.getImportHeaderFlag(),
+        settingDao.getBackupActiveFlag(),
         settingDao.getExportSessionsFilename(),
         settingDao.getImportSessionsFilename(),
         settingDao.getExportLeadsFilename(),
@@ -42,11 +49,15 @@ class ToolViewModel(
         settingDao.getExportSetsFilename(),
         settingDao.getImportSetsFilename(),
         settingDao.getArchiveBackupFolder(),
-        settingDao.getIsCleaning(),
-        settingDao.getThemeSysFollow(),
-        settingDao.getTheme()
-    ) { exportSessions, importSessions, exportLeads, importLeads, exportDates, importDates, exportSets, importSets, archiveBackupFolder, isCleaning, themeSysFollow, themeId ->
-        ImportExportFilenames(
+        settingDao.getIsCleaning()
+    ) { exportFolder, importFolder, backupFolder, exportHeader, importHeader, backupActive, exportSessions, importSessions, exportLeads, importLeads, exportDates, importDates, exportSets, importSets, archiveBackupFolder, isCleaning ->
+        ImportExportSettingState(
+            exportFolder = exportFolder,
+            importFolder = importFolder,
+            backupFolder = backupFolder,
+            exportHeader = exportHeader,
+            importHeader = importHeader,
+            backupActive = backupActive,
             exportSessionsFilename = exportSessions,
             importSessionsFilename = importSessions,
             exportLeadsFilename = exportLeads,
@@ -56,19 +67,28 @@ class ToolViewModel(
             exportSetsFilename = exportSets,
             importSetsFilename = importSets,
             archiveBackupFolder = archiveBackupFolder,
-            isCleaning = isCleaning,
-            themeSysFollow = themeSysFollow,
-            themeId = themeId
+            isCleaning = isCleaning
         )
     }
-    private val _exportFolder = settingDao.getExportFolder()
-    private val _importFolder = settingDao.getImportFolder()
-    private val _backupFolder = settingDao.getBackupFolder()
-    private val _exportHeader = settingDao.getExportHeaderFlag()
-    private val _importHeader = settingDao.getImportHeaderFlag()
-    private val _backupActive = settingDao.getBackupActiveFlag()
-    private val _generateiDate = settingDao.getGenerateiDate()
-    private val _notificationTime = settingDao.getNotificationTime()
+    val _generalSettingState: Flow<GeneralSettingState> = CombineSeven(
+        settingDao.getGenerateiDate(),
+        settingDao.getNotificationTime(),
+        settingDao.getFollowCount(),
+        settingDao.getThemeSysFollow(),
+        settingDao.getTheme(),
+        settingDao.getSimplePlusOneReport(),
+        settingDao.getNeverShareLeadInfo()
+    ) { generateiDate, notificationTime, followCount, themeSysFollow, themeId, simplePlusOneReport, neverShareLead ->
+        GeneralSettingState(
+            generateiDate = generateiDate,
+            notificationTime = notificationTime,
+            followCount = followCount,
+            themeSysFollow = themeSysFollow,
+            themeId = themeId,
+            simplePlusOneReport = simplePlusOneReport,
+            neverShareLeadInfo = neverShareLead
+        )
+    }
     private val _averageLast = settingDao.getAverageLast()
     private val _latestAvailable = settingDao.getLatestAvailable()
     private val _latestPublishDate = settingDao.getLatestPublishDate()
@@ -78,22 +98,15 @@ class ToolViewModel(
     private val _lastWeeksShown = settingDao.getLastWeeksShown()
     private val _lastMonthsShown = settingDao.getLastMonthsShown()
     val state =
-        CombineTwentyTwo(
+        CombineFifteen(
             _state,
             _allSessions,
             _allLeads,
             _allDates,
             _allSets,
-            _importExportFilenames,
-            _exportFolder,
-            _importFolder,
-            _backupFolder,
-            _notificationTime,
+            _importExportSettingState,
+            _generalSettingState,
             _averageLast,
-            _exportHeader,
-            _importHeader,
-            _backupActive,
-            _generateiDate,
             _latestAvailable,
             _latestPublishDate,
             _latestChangelog,
@@ -101,40 +114,43 @@ class ToolViewModel(
             _lastSessionsShown,
             _lastWeeksShown,
             _lastMonthsShown
-        ) { state, allSessions, allLeads, allDates, allSets, importExportFilenames, exportFolder, importFolder, backupFolder, notificationTime, averageLast, exportHeader, importHeader, backupActive, generateiDate, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown ->
+        ) { state, allSessions, allLeads, allDates, allSets, importExportSettingState, generalSettingState, averageLast, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown ->
             state.copy(
-                exportSessionsFileName = importExportFilenames.exportSessionsFilename,
-                importSessionsFileName = importExportFilenames.importSessionsFilename,
-                exportLeadsFileName = importExportFilenames.exportLeadsFilename,
-                importLeadsFileName = importExportFilenames.importLeadsFilename,
-                exportDatesFileName = importExportFilenames.exportDatesFilename,
-                importDatesFileName = importExportFilenames.importDatesFilename,
-                exportSetsFileName = importExportFilenames.exportSetsFilename,
-                importSetsFileName = importExportFilenames.importSetsFilename,
-                archiveBackupFolder = importExportFilenames.archiveBackupFolder.toBoolean(),
-                isCleaning = importExportFilenames.isCleaning.toBoolean(),
-                themeSysFollow = importExportFilenames.themeSysFollow.toBoolean(),
-                theme = importExportFilenames.themeId,
-                exportFolder = exportFolder,
-                importFolder = importFolder,
-                backupFolder = backupFolder,
-                notificationTime = notificationTime,
+                exportSessionsFileName = importExportSettingState.exportSessionsFilename,
+                importSessionsFileName = importExportSettingState.importSessionsFilename,
+                exportLeadsFileName = importExportSettingState.exportLeadsFilename,
+                importLeadsFileName = importExportSettingState.importLeadsFilename,
+                exportDatesFileName = importExportSettingState.exportDatesFilename,
+                importDatesFileName = importExportSettingState.importDatesFilename,
+                exportSetsFileName = importExportSettingState.exportSetsFilename,
+                importSetsFileName = importExportSettingState.importSetsFilename,
+                archiveBackupFolder = importExportSettingState.archiveBackupFolder.toBoolean(),
+                isCleaning = importExportSettingState.isCleaning.toBoolean(),
+                themeSysFollow = generalSettingState.themeSysFollow.toBoolean(),
+                theme = generalSettingState.themeId,
+                exportFolder = importExportSettingState.exportFolder,
+                importFolder = importExportSettingState.importFolder,
+                backupFolder = importExportSettingState.backupFolder,
+                notificationTime = generalSettingState.notificationTime,
                 allSessions = allSessions,
                 allLeads = allLeads,
                 allDates = allDates,
                 allSets = allSets,
                 lastSessionAverageQuantity = averageLast,
-                exportHeader = exportHeader.toBoolean(),
-                importHeader = importHeader.toBoolean(),
-                backupActive = backupActive.toBoolean(),
-                generateiDate = generateiDate.toBoolean(),
+                exportHeader = importExportSettingState.exportHeader.toBoolean(),
+                importHeader = importExportSettingState.importHeader.toBoolean(),
+                backupActive = importExportSettingState.backupActive.toBoolean(),
+                generateiDate = generalSettingState.generateiDate.toBoolean(),
                 latestAvailable = latestAvailable,
                 latestPublishDate = latestPublishDate,
                 latestChangelog = latestChangelog,
                 latestDownloadUrl = latestDownloadUrl,
                 lastSessionsShown = lastSessionsShown,
                 lastWeeksShown = lastWeeksShown,
-                lastMonthsShown = lastMonthsShown
+                lastMonthsShown = lastMonthsShown,
+                followCount = generalSettingState.followCount.toBoolean(),
+                simplePlusOneReport = generalSettingState.simplePlusOneReport.toBoolean(),
+                neverShareLeadInfo = generalSettingState.neverShareLeadInfo.toBoolean()
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ToolsState())
 
@@ -590,7 +606,13 @@ class ToolViewModel(
     }
 }
 
-data class ImportExportFilenames(
+data class ImportExportSettingState(
+    val exportFolder: String,
+    val importFolder: String,
+    val backupFolder: String,
+    val exportHeader: String,
+    val importHeader: String,
+    val backupActive: String,
     val exportSessionsFilename: String,
     val importSessionsFilename: String,
     val exportLeadsFilename: String,
@@ -600,7 +622,15 @@ data class ImportExportFilenames(
     val exportSetsFilename: String,
     val importSetsFilename: String,
     val archiveBackupFolder: String,
-    val isCleaning: String,
+    val isCleaning: String
+)
+
+data class GeneralSettingState(
+    val generateiDate: String,
+    val notificationTime: String,
+    val followCount: String,
     val themeSysFollow: String,
     val themeId: String,
+    val simplePlusOneReport: String,
+    val neverShareLeadInfo: String
 )
