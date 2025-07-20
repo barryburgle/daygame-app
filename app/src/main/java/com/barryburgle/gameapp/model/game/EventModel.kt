@@ -14,6 +14,8 @@ interface EventModel {
 
     fun getEventDescription(): String
 
+    fun getEventDuration(): String
+
     fun getEventStickingPoints(): String?
 
     fun shareReport(leads: List<Lead>): String

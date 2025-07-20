@@ -49,7 +49,7 @@ open class AbstractSession(
         return "${
             DayOfWeek.of(dayOfWeek).toString().lowercase()
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-        } ${
+        } ${FormatService.getDate(date)} ${
             FormatService.getTime(
                 startHour
             )
@@ -57,7 +57,11 @@ open class AbstractSession(
             FormatService.getTime(
                 endHour
             )
-        } : ${sessionTime} minutes"
+        }"
+    }
+
+    override fun getEventDuration(): String {
+        return "${sessionTime} minutes"
     }
 
     override fun getEventStickingPoints(): String {

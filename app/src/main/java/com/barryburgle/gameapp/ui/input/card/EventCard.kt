@@ -77,13 +77,7 @@ fun EventCard(
                         .padding(5.dp)
                         .fillMaxWidth()
                 ) {
-                    LittleBodyText(
-                        "${
-                            FormatService.getDate(
-                                sortableGameEvent.event.getEventDate()
-                            )
-                        }"
-                    )
+                    LittleBodyText(sortableGameEvent.event.getEventDescription())
                     Spacer(modifier = Modifier.width(3.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -270,7 +264,7 @@ fun EventCard(
                             )
                         }
                     }
-                    LittleBodyText(sortableGameEvent.event.getEventDescription())
+                    LittleBodyText(sortableGameEvent.event.getEventDuration())
                 }
                 Row(
                     modifier = Modifier
