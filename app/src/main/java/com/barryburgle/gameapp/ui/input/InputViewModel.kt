@@ -27,7 +27,7 @@ import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
 import com.barryburgle.gameapp.ui.CombineFourteen
 import com.barryburgle.gameapp.ui.CombineSeven
-import com.barryburgle.gameapp.ui.CombineTwelve
+import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.input.state.InputSettingsState
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -128,6 +128,7 @@ class InputViewModel(
     private val _backupActive = settingDao.getBackupActiveFlag()
     private val _lastBackup = settingDao.getBackupNumber()
     private val _generateiDate = settingDao.getGenerateiDate()
+    private val _followCount = settingDao.getFollowCount()
     private val _simplePlusOneReport = settingDao.getSimplePlusOneReport()
     private val _neverShareLeadInfo = settingDao.getNeverShareLeadInfo()
 
@@ -236,7 +237,7 @@ class InputViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _state = MutableStateFlow(InputState())
-    val _combinedSettings = CombineTwelve(
+    val _combinedSettings = CombineThirteen(
         _notificationTime,
         _exportSessionsFileName,
         _exportLeadsFileName,
@@ -247,9 +248,10 @@ class InputViewModel(
         _backupActive,
         _lastBackup,
         _generateiDate,
+        _followCount,
         _simplePlusOneReport,
         _neverShareLeadInfo
-    ) { notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, generateiDate, simplePlusOneReport, neverShareLeadInfo ->
+    ) { notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, generateiDate, followCount, simplePlusOneReport, neverShareLeadInfo ->
         InputSettingsState(
             notificationTime = notificationTime,
             exportSessionsFileName = exportSessionsFileName,
@@ -261,6 +263,7 @@ class InputViewModel(
             backupActive = backupActive.toBoolean(),
             lastBackup = lastBackup.toInt(),
             generateiDate = generateiDate.toBoolean(),
+            followCount = followCount.toBoolean(),
             simplePlusOneReport = simplePlusOneReport.toBoolean(),
             neverShareLeadInfo = neverShareLeadInfo.toBoolean()
         )
@@ -304,6 +307,7 @@ class InputViewModel(
             showDates = showDates,
             gameEventSortType = gameEventSortType,
             generateiDate = combinedSettings.generateiDate,
+            followCount = combinedSettings.followCount,
             simplePlusOneReport = combinedSettings.simplePlusOneReport,
             neverShareLeadInfo = combinedSettings.neverShareLeadInfo
         )
@@ -480,6 +484,22 @@ class InputViewModel(
                         convos = event.convos
                     )
                 }
+                if (state.value.followCount) {
+                    var sets = 0
+                    if (_state.value.sets.isEmpty()) {
+                        if (_state.value.editAbstractSession != null) {
+                            sets = _state.value.editAbstractSession!!.sets
+                        }
+                    } else {
+                        sets = _state.value.sets.toInt()
+                    }
+                    sets++
+                    _state.update {
+                        it.copy(
+                            sets = sets.toString()
+                        )
+                    }
+                }
             }
 
             is GameEvent.SetContacts -> {
@@ -487,6 +507,36 @@ class InputViewModel(
                     it.copy(
                         contacts = event.contacts
                     )
+                }
+                if (state.value.followCount) {
+                    var sets = 0
+                    if (_state.value.sets.isEmpty()) {
+                        if (_state.value.editAbstractSession != null) {
+                            sets = _state.value.editAbstractSession!!.sets
+                        }
+                    } else {
+                        sets = _state.value.sets.toInt()
+                    }
+                    sets++
+                    _state.update {
+                        it.copy(
+                            sets = sets.toString()
+                        )
+                    }
+                    var convos = 0
+                    if (_state.value.convos.isEmpty()) {
+                        if (_state.value.editAbstractSession != null) {
+                            convos = _state.value.editAbstractSession!!.convos
+                        }
+                    } else {
+                        convos = _state.value.convos.toInt()
+                    }
+                    convos++
+                    _state.update {
+                        it.copy(
+                            convos = convos.toString()
+                        )
+                    }
                 }
             }
 

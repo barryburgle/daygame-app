@@ -79,6 +79,7 @@ data class InputState(
     var sessionId: Long? = 0L,
     var dateId: Long? = 0L,
     override var generateiDate: Boolean = true,
+    var followCount: Boolean = false,
     var simplePlusOneReport: Boolean = true,
     var neverShareLeadInfo: Boolean = false
 ) : ExportState(

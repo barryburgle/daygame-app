@@ -12,6 +12,7 @@ data class InputSettingsState(
     var backupActive: Boolean = true,
     var lastBackup: Int = 3,
     var generateiDate: Boolean = true,
+    var followCount: Boolean = false,
     var simplePlusOneReport: Boolean = true,
     var neverShareLeadInfo: Boolean = false
 )
