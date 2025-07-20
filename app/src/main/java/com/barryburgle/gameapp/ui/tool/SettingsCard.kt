@@ -183,6 +183,13 @@ fun SettingsCard(
                                 onEvent(ToolEvent.SwitchGenerateiDate)
                             }
                             SwitchSetting(
+                                "Follow count",
+                                state.followCount,
+                                description = "When inserting a session increase sets if conversations is increased and increase sets and conversations if contacts is increased"
+                            ) {
+                                onEvent(ToolEvent.SwitchFollowCount)
+                            }
+                            SwitchSetting(
                                 "Follow system theme", state.themeSysFollow
                             ) {
                                 onEvent(ToolEvent.SwitchThemeSysFollow)

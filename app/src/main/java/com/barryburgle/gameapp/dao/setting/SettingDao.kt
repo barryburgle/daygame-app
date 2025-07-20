@@ -41,6 +41,7 @@ interface SettingDao {
         const val EXPORT_SETS_FILE_NAME_ID: String = "export_sets_file_name"
         const val IMPORT_SETS_FILE_NAME_ID: String = "import_sets_file_name"
         const val GENERATE_IDATE_ID: String = "generate_idate"
+        const val FOLLOW_COUNT_ID: String = "follow_count"
         const val ARCHIVE_BACKUP_FOLDER_ID: String = "archive_backup"
         const val IS_CLEANING_ID: String = "is_cleaning"
         const val THEME_SYS_FOLLOW_ID: String = "theme_sys_follow"
@@ -64,6 +65,7 @@ interface SettingDao {
         const val DEFAULT_IMPORT_HEADER_FLAG: String = "false"
         const val DEFAULT_BACKUP_ACTIVE_FLAG: String = "true"
         const val DEFAULT_GENERATE_IDATE_FLAG: String = "true"
+        const val DEFAULT_FOLLOW_COUNT_FLAG: String = "false"
         const val DEFAULT_ARCHIVE_BACKUP_FOLDER_FLAG: String = "true"
         const val DEFAULT_IS_CLEANING_FLAG: String = "false"
         const val THEME_SYS_FOLLOW_FLAG: String = "true"
@@ -137,6 +139,9 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_GENERATE_IDATE_FLAG}' ELSE value END FROM setting WHERE id = '${GENERATE_IDATE_ID}'")
     fun getGenerateiDate(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_FOLLOW_COUNT_FLAG}' ELSE value END FROM setting WHERE id = '${FOLLOW_COUNT_ID}'")
+    fun getFollowCount(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_ARCHIVE_BACKUP_FOLDER_FLAG}' ELSE value END FROM setting WHERE id = '${ARCHIVE_BACKUP_FOLDER_ID}'")
     fun getArchiveBackupFolder(): Flow<String>
