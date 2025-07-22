@@ -1,5 +1,7 @@
 package com.barryburgle.gameapp.model.enums
 
+import com.barryburgle.gameapp.model.stat.CategoryHistogram
+
 enum class CountryEnum(val flag: String, val alpha3: String, val countryName: String) {
     ABW("🇦🇼", "ABW", "Aruba"),
     AFG("🇦🇫", "AFG", "Afghanistan"),
@@ -273,8 +275,23 @@ enum class CountryEnum(val flag: String, val alpha3: String, val countryName: St
             return foundCountryName
         }
 
-        fun getCountriesOrderedByName(): List<CountryEnum> {
-            return orderedEnum
+        fun getCountriesOrderedByName(
+            mostPopularLeadsNationalities: List<CategoryHistogram>,
+            showMostPopular: Boolean
+        ): List<CountryEnum> {
+            if (!showMostPopular) {
+                return orderedEnum
+            }
+            val mostPopularOrderedEnum: MutableList<CountryEnum> = mutableListOf()
+            for(nationality in mostPopularLeadsNationalities) {
+                for (country in values()) {
+                    if (country.alpha3 == nationality.category) {
+                        mostPopularOrderedEnum.add(country)
+                    }
+                }
+            }
+            mostPopularOrderedEnum.addAll(orderedEnum)
+            return mostPopularOrderedEnum
         }
     }
 }
