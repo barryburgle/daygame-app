@@ -40,6 +40,7 @@ data class ToolsState(
     var backupBeforeUpdate: Boolean = true,
     override var generateiDate: Boolean = true,
     var followCount: Boolean = false,
+    var suggestLeadsNationality: Boolean = true,
     var archiveBackupFolder: Boolean = true,
     var deleteSessions: Boolean = false,
     var deleteLeads: Boolean = false,

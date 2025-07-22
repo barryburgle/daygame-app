@@ -9,8 +9,8 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
+import com.barryburgle.gameapp.ui.CombineEigth
 import com.barryburgle.gameapp.ui.CombineFifteen
-import com.barryburgle.gameapp.ui.CombineSeven
 import com.barryburgle.gameapp.ui.CombineSixteen
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.Flow
@@ -70,19 +70,21 @@ class ToolViewModel(
             isCleaning = isCleaning
         )
     }
-    val _generalSettingState: Flow<GeneralSettingState> = CombineSeven(
+    val _generalSettingState: Flow<GeneralSettingState> = CombineEigth(
         settingDao.getGenerateiDate(),
         settingDao.getNotificationTime(),
         settingDao.getFollowCount(),
+        settingDao.getSuggestLeadsNationality(),
         settingDao.getThemeSysFollow(),
         settingDao.getTheme(),
         settingDao.getSimplePlusOneReport(),
         settingDao.getNeverShareLeadInfo()
-    ) { generateiDate, notificationTime, followCount, themeSysFollow, themeId, simplePlusOneReport, neverShareLead ->
+    ) { generateiDate, notificationTime, followCount, suggestLeadsNationality, themeSysFollow, themeId, simplePlusOneReport, neverShareLead ->
         GeneralSettingState(
             generateiDate = generateiDate,
             notificationTime = notificationTime,
             followCount = followCount,
+            suggestLeadsNationality = suggestLeadsNationality,
             themeSysFollow = themeSysFollow,
             themeId = themeId,
             simplePlusOneReport = simplePlusOneReport,
@@ -149,6 +151,7 @@ class ToolViewModel(
                 lastWeeksShown = lastWeeksShown,
                 lastMonthsShown = lastMonthsShown,
                 followCount = generalSettingState.followCount.toBoolean(),
+                suggestLeadsNationality = generalSettingState.suggestLeadsNationality.toBoolean(),
                 simplePlusOneReport = generalSettingState.simplePlusOneReport.toBoolean(),
                 neverShareLeadInfo = generalSettingState.neverShareLeadInfo.toBoolean()
             )
@@ -476,6 +479,17 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SwitchSuggestLeadsNationality -> {
+                _state.update {
+                    it.copy(
+                        suggestLeadsNationality = _state.value.suggestLeadsNationality.not()
+                    )
+                }
+                val suggestLeadsNationality = _state.value.suggestLeadsNationality
+                val setting = Setting(SettingDao.SUGGEST_LEADS_NATIONALITY_ID, suggestLeadsNationality.toString())
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SwitchArchiveBackupFolder -> {
                 _state.update {
                     it.copy(
@@ -629,6 +643,7 @@ data class GeneralSettingState(
     val generateiDate: String,
     val notificationTime: String,
     val followCount: String,
+    val suggestLeadsNationality: String,
     val themeSysFollow: String,
     val themeId: String,
     val simplePlusOneReport: String,

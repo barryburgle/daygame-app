@@ -34,6 +34,7 @@ sealed interface ToolEvent : GenericEvent {
     object SwitchBackupBeforeUpdate : ToolEvent
     object SwitchGenerateiDate : ToolEvent
     object SwitchFollowCount : ToolEvent
+    object SwitchSuggestLeadsNationality : ToolEvent
     object SwitchArchiveBackupFolder : ToolEvent
     object SwitchDeleteSessions : ToolEvent
     object SwitchDeleteLeads : ToolEvent

@@ -191,6 +191,12 @@ fun SettingsCard(
                                 onEvent(ToolEvent.SwitchFollowCount)
                             }
                             SwitchSetting(
+                                "Suggest leads nationality",
+                                state.suggestLeadsNationality,
+                            ) {
+                                onEvent(ToolEvent.SwitchSuggestLeadsNationality)
+                            }
+                            SwitchSetting(
                                 "Follow system theme", state.themeSysFollow
                             ) {
                                 onEvent(ToolEvent.SwitchThemeSysFollow)
