@@ -1,6 +1,6 @@
 package com.barryburgle.gameapp.ui.input
 
-import android.content.Context
+    import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.date.DateDao
@@ -25,9 +25,9 @@ import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
+import com.barryburgle.gameapp.ui.CombineFifteen
 import com.barryburgle.gameapp.ui.CombineFourteen
 import com.barryburgle.gameapp.ui.CombineSeven
-import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.input.state.InputSettingsState
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -129,6 +129,7 @@ class InputViewModel(
     private val _lastBackup = settingDao.getBackupNumber()
     private val _generateiDate = settingDao.getGenerateiDate()
     private val _followCount = settingDao.getFollowCount()
+    private val _suggestLeadsNationality = settingDao.getSuggestLeadsNationality()
     private val _simplePlusOneReport = settingDao.getSimplePlusOneReport()
     private val _neverShareLeadInfo = settingDao.getNeverShareLeadInfo()
 
@@ -237,7 +238,7 @@ class InputViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _state = MutableStateFlow(InputState())
-    val _combinedSettings = CombineThirteen(
+    val _combinedSettings = CombineFourteen(
         _notificationTime,
         _exportSessionsFileName,
         _exportLeadsFileName,
@@ -249,9 +250,10 @@ class InputViewModel(
         _lastBackup,
         _generateiDate,
         _followCount,
+        _suggestLeadsNationality,
         _simplePlusOneReport,
         _neverShareLeadInfo
-    ) { notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, generateiDate, followCount, simplePlusOneReport, neverShareLeadInfo ->
+    ) { notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, generateiDate, followCount, suggestLeadsNationality, simplePlusOneReport, neverShareLeadInfo ->
         InputSettingsState(
             notificationTime = notificationTime,
             exportSessionsFileName = exportSessionsFileName,
@@ -264,11 +266,13 @@ class InputViewModel(
             lastBackup = lastBackup.toInt(),
             generateiDate = generateiDate.toBoolean(),
             followCount = followCount.toBoolean(),
+            suggestLeadsNationality = suggestLeadsNationality.toBoolean(),
             simplePlusOneReport = simplePlusOneReport.toBoolean(),
             neverShareLeadInfo = neverShareLeadInfo.toBoolean()
         )
     }
-    val state = CombineFourteen(
+    val _mostPopularLeadsNationalities = leadDao.getNationalityHistogram()
+    val state = CombineFifteen(
         _state,
         _allSessions,
         _allLeads,
@@ -282,8 +286,9 @@ class InputViewModel(
         _showSets,
         _showDates,
         _gameEventSortType,
-        _combinedSettings
-    ) { state, allSessions, allLeads, allDates, sessionSortType, dateSortType, setSortType, allSets, allEvents, showSessions, showSets, showDates, gameEventSortType, combinedSettings ->
+        _combinedSettings,
+        _mostPopularLeadsNationalities
+    ) { state, allSessions, allLeads, allDates, sessionSortType, dateSortType, setSortType, allSets, allEvents, showSessions, showSets, showDates, gameEventSortType, combinedSettings, mostPopularLeadsNationalities ->
         state.copy(
             allSessions = allSessions,
             allLeads = allLeads,
@@ -308,8 +313,10 @@ class InputViewModel(
             gameEventSortType = gameEventSortType,
             generateiDate = combinedSettings.generateiDate,
             followCount = combinedSettings.followCount,
+            suggestLeadsNationality = combinedSettings.suggestLeadsNationality,
             simplePlusOneReport = combinedSettings.simplePlusOneReport,
-            neverShareLeadInfo = combinedSettings.neverShareLeadInfo
+            neverShareLeadInfo = combinedSettings.neverShareLeadInfo,
+            mostPopularLeadsNationalities = mostPopularLeadsNationalities
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())
 

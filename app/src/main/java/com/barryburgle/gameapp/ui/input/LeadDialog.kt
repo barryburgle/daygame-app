@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
@@ -144,15 +145,48 @@ fun LeadDialog(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                CountryEnum.getCountriesOrderedByName().forEach { country ->
-                    DropdownMenuItem(
-                        text = { LittleBodyText(country.flag + "  " + country.countryName) },
-                        onClick = {
-                            onEvent(GameEvent.SetLeadNationality(country.alpha3))
-                            expanded = false
+                var count = 0
+                CountryEnum.getCountriesOrderedByName(
+                    state.mostPopularLeadsNationalities,
+                    state.suggestLeadsNationality
+                )
+                    .forEach { country ->
+                        count++
+                        DropdownMenuItem(
+                            text = {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    LittleBodyText(
+                                        country.flag + "  " + country.countryName
+                                    )
+                                    if (count <= 7 && state.suggestLeadsNationality) {
+                                        Icon(
+                                            imageVector = Icons.Default.BarChart,
+                                            contentDescription = "Suggested country",
+                                            tint = MaterialTheme.colorScheme.inversePrimary,
+                                            modifier = Modifier
+                                                .height(50.dp)
+                                        )
+                                    }
+                                }
+                            },
+                            onClick = {
+                                onEvent(GameEvent.SetLeadNationality(country.alpha3))
+                                expanded = false
+                            }
+                        )
+                        if (count == 7 && state.suggestLeadsNationality) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(0.5.dp)
+                                    .background(color = MaterialTheme.colorScheme.inversePrimary)
+                            ) {}
                         }
-                    )
-                }
+                    }
             }
             Row(
                 modifier = Modifier

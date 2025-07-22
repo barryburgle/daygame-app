@@ -10,6 +10,7 @@ If you will not follow this procedure you will not be able to upgrade.__
 - Credits card 🪪
 - Share events report ↗️
 - Follow count️: increase multiple session stats just with one tap 🧮
+- Suggest lead nationalities based on past leads 🇦🇶
 
 **Bugs**
 - Shadow for delete and edit card buttons

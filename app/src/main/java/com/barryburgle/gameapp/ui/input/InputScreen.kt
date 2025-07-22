@@ -335,6 +335,7 @@ fun gameTopBar(
         ) {
             Spacer(modifier = Modifier.width(spaceFromLeft))
             MediumTitleText("Events:")
+            Spacer(modifier = Modifier.width(10.dp))
             MultiChoiceButton(
                 EventTypeEnum.getFieldsButAll(),
                 listOf(state.allSessions.size, state.allSets.size, state.allDates.size),
@@ -344,6 +345,7 @@ fun gameTopBar(
             ) {
                 onEvent(GameEvent.SwitchShowFlag(it))
             }
+            Spacer(modifier = Modifier.width(10.dp))
         }
         EntitySorter(
             showAllSorter(state.showSessions, state.showSets, state.showDates),

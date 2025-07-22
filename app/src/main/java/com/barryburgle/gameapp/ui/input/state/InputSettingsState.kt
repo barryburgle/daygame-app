@@ -13,6 +13,7 @@ data class InputSettingsState(
     var lastBackup: Int = 3,
     var generateiDate: Boolean = true,
     var followCount: Boolean = false,
+    var suggestLeadsNationality: Boolean = true,
     var simplePlusOneReport: Boolean = true,
     var neverShareLeadInfo: Boolean = false
 )

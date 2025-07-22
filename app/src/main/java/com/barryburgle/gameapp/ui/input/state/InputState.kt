@@ -9,6 +9,7 @@ import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
+import com.barryburgle.gameapp.model.stat.CategoryHistogram
 import com.barryburgle.gameapp.ui.state.ExportState
 
 data class InputState(
@@ -80,8 +81,10 @@ data class InputState(
     var dateId: Long? = 0L,
     override var generateiDate: Boolean = true,
     var followCount: Boolean = false,
+    var suggestLeadsNationality: Boolean = true,
     var simplePlusOneReport: Boolean = true,
-    var neverShareLeadInfo: Boolean = false
+    var neverShareLeadInfo: Boolean = false,
+    val mostPopularLeadsNationalities: List<CategoryHistogram> = emptyList()
 ) : ExportState(
     sessionSortType,
     exportSessionsFileName,
