@@ -9,6 +9,7 @@ If you will not follow this procedure you will not be able to upgrade.__
 - New animated buttons and toggles 🔘
 - Credits card 🪪
 - Share events report ↗️
+- Follow count️: increase multiple session stats just with one tap 🧮
 
 **Bugs**
 - Shadow for delete and edit card buttons
