@@ -186,7 +186,7 @@ fun SettingsCard(
                             SwitchSetting(
                                 "Follow count",
                                 state.followCount,
-                                description = "When inserting a session increase sets if conversations is increased and increase sets and conversations if contacts is increased"
+                                description = "When inserting a session increase sets if conversations is increased, increase sets and conversations if contacts is increased, increase sets conversations and contacts if a new lead is inserted"
                             ) {
                                 onEvent(ToolEvent.SwitchFollowCount)
                             }
