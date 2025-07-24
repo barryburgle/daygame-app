@@ -41,6 +41,7 @@ data class ToolsState(
     override var generateiDate: Boolean = true,
     var followCount: Boolean = false,
     var suggestLeadsNationality: Boolean = true,
+    val shownNationalities: Int = 6,
     var archiveBackupFolder: Boolean = true,
     var deleteSessions: Boolean = false,
     var deleteLeads: Boolean = false,

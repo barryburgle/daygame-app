@@ -43,6 +43,7 @@ interface SettingDao {
         const val GENERATE_IDATE_ID: String = "generate_idate"
         const val FOLLOW_COUNT_ID: String = "follow_count"
         const val SUGGEST_LEADS_NATIONALITY_ID: String = "suggest_leads_nationality"
+        const val SHOWN_NATIONALITIES_ID: String = "shown_nationalities"
         const val ARCHIVE_BACKUP_FOLDER_ID: String = "archive_backup"
         const val IS_CLEANING_ID: String = "is_cleaning"
         const val THEME_SYS_FOLLOW_ID: String = "theme_sys_follow"
@@ -68,6 +69,7 @@ interface SettingDao {
         const val DEFAULT_GENERATE_IDATE_FLAG: String = "true"
         const val DEFAULT_FOLLOW_COUNT_FLAG: String = "false"
         const val DEFAULT_SUGGEST_LEADS_NATIONALITY_FLAG: String = "true"
+        const val DEFAULT_SHOWN_NATIONALITIES: String = "6"
         const val DEFAULT_ARCHIVE_BACKUP_FOLDER_FLAG: String = "true"
         const val DEFAULT_IS_CLEANING_FLAG: String = "false"
         const val THEME_SYS_FOLLOW_FLAG: String = "true"
@@ -147,6 +149,9 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SUGGEST_LEADS_NATIONALITY_FLAG}' ELSE value END FROM setting WHERE id = '${SUGGEST_LEADS_NATIONALITY_ID}'")
     fun getSuggestLeadsNationality(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SHOWN_NATIONALITIES}' ELSE value END FROM setting WHERE id = '${SHOWN_NATIONALITIES_ID}'")
+    fun getShownNationalities(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_ARCHIVE_BACKUP_FOLDER_FLAG}' ELSE value END FROM setting WHERE id = '${ARCHIVE_BACKUP_FOLDER_ID}'")
     fun getArchiveBackupFolder(): Flow<String>
