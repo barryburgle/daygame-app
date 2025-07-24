@@ -85,6 +85,7 @@ interface SettingDao {
 
         const val QUERY_LAST_WEEKS = "SELECT DISTINCT week_number FROM meeting UNION SELECT DISTINCT week_number FROM abstract_session ORDER BY week_number DESC LIMIT ($QUERY_LAST_WEEKS_SHOWN)"
         const val QUERY_LAST_MONTHS = "SELECT DISTINCT strftime('%m', meeting_date) as month_number FROM meeting UNION SELECT DISTINCT strftime('%m', session_date) as month_number FROM abstract_session ORDER BY month_number DESC LIMIT ($QUERY_LAST_MONTHS_SHOWN)"
+        const val QUERY_SHOWN_NATIONALITIES = "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SHOWN_NATIONALITIES}' ELSE value END FROM setting WHERE id = '${SHOWN_NATIONALITIES_ID}'"
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -150,7 +151,7 @@ interface SettingDao {
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SUGGEST_LEADS_NATIONALITY_FLAG}' ELSE value END FROM setting WHERE id = '${SUGGEST_LEADS_NATIONALITY_ID}'")
     fun getSuggestLeadsNationality(): Flow<String>
 
-    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SHOWN_NATIONALITIES}' ELSE value END FROM setting WHERE id = '${SHOWN_NATIONALITIES_ID}'")
+    @Query(QUERY_SHOWN_NATIONALITIES)
     fun getShownNationalities(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_ARCHIVE_BACKUP_FOLDER_FLAG}' ELSE value END FROM setting WHERE id = '${ARCHIVE_BACKUP_FOLDER_ID}'")

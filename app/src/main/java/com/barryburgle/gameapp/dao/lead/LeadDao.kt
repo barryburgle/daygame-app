@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
+import com.barryburgle.gameapp.dao.setting.SettingDao.Companion.QUERY_SHOWN_NATIONALITIES
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.stat.CategoryHistogram
 import com.barryburgle.gameapp.model.stat.Histogram
@@ -28,7 +29,7 @@ interface LeadDao {
     @Query("SELECT * from lead ORDER BY session_id DESC, insert_time DESC")
     fun getAll(): Flow<List<Lead>>
 
-    @Query("SELECT nationality as category, COUNT(*) as frequency from lead GROUP BY nationality ORDER BY frequency DESC LIMIT (SELECT value FROM setting WHERE id='shown_nationalities')")
+    @Query("SELECT nationality as category, COUNT(*) as frequency from lead GROUP BY nationality ORDER BY frequency DESC LIMIT ($QUERY_SHOWN_NATIONALITIES)")
     fun getNationalityHistogram(): Flow<List<CategoryHistogram>>
 
     @Query("SELECT age as metric, COUNT(*) as frequency from lead GROUP BY age ORDER BY age")
