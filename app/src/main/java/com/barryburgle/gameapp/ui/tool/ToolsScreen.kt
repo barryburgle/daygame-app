@@ -155,7 +155,37 @@ fun ToolsScreen(
             item {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
-                    SettingsCard(
+                    DashboardCard(
+                        state = state,
+                        onEvent = onEvent,
+                        modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    DataEntryCard(
+                        state = state,
+                        onEvent = onEvent,
+                        modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    ThemeCard(
+                        state = state,
+                        onEvent = onEvent,
+                        modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    ShareCard(
                         state = state,
                         onEvent = onEvent,
                         modifier = settingsCardModifier
