@@ -28,7 +28,7 @@ interface LeadDao {
     @Query("SELECT * from lead ORDER BY session_id DESC, insert_time DESC")
     fun getAll(): Flow<List<Lead>>
 
-    @Query("SELECT nationality as category, COUNT(*) as frequency from lead GROUP BY nationality ORDER BY frequency DESC LIMIT 8")
+    @Query("SELECT nationality as category, COUNT(*) as frequency from lead GROUP BY nationality ORDER BY frequency DESC LIMIT (SELECT value FROM setting WHERE id='shown_nationalities')")
     fun getNationalityHistogram(): Flow<List<CategoryHistogram>>
 
     @Query("SELECT age as metric, COUNT(*) as frequency from lead GROUP BY age ORDER BY age")

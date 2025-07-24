@@ -91,7 +91,7 @@ interface DateDao {
     @Query("SELECT * from meeting ORDER BY week_number DESC, meeting_date DESC")
     fun getByWeekNumber(): Flow<List<Date>>
 
-    @Query("SELECT nationality as category, COUNT(*) as frequency FROM lead where lead.id IN (SELECT DISTINCT(lead_id) FROM meeting) GROUP BY nationality ORDER BY frequency DESC LIMIT 8")
+    @Query("SELECT nationality as category, COUNT(*) as frequency FROM lead where lead.id IN (SELECT DISTINCT(lead_id) FROM meeting) GROUP BY nationality ORDER BY frequency DESC LIMIT (SELECT value FROM setting WHERE id='shown_nationalities')")
     fun getNationalityHistogram(): Flow<List<CategoryHistogram>>
 
     @Query("SELECT age as metric, COUNT(*) as frequency FROM lead where lead.id IN (SELECT DISTINCT(lead_id) FROM meeting) GROUP BY age ORDER BY age")
