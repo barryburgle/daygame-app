@@ -328,7 +328,11 @@ class ToolViewModel(
             is ToolEvent.SetLastSessionAverageQuantity -> {
                 _state.update {
                     it.copy(
-                        lastSessionAverageQuantity = event.lastSessionAverageQuantity.toInt()
+                        lastSessionAverageQuantity = minMaxLimiter(
+                            event.lastSessionAverageQuantity.toInt(),
+                            1,
+                            10
+                        )
                     )
                 }
                 val lastSessionAverageQuantity = _state.value.lastSessionAverageQuantity
@@ -342,7 +346,7 @@ class ToolViewModel(
             is ToolEvent.SetLastSessionsShown -> {
                 _state.update {
                     it.copy(
-                        lastSessionsShown = event.lastSessionsShown.toInt()
+                        lastSessionsShown = minMaxLimiter(event.lastSessionsShown.toInt(), 1, 15)
                     )
                 }
                 val lastSessionsShown = _state.value.lastSessionsShown
@@ -356,7 +360,7 @@ class ToolViewModel(
             is ToolEvent.SetLastWeeksShown -> {
                 _state.update {
                     it.copy(
-                        lastWeeksShown = event.lastWeeksShown.toInt()
+                        lastWeeksShown = minMaxLimiter(event.lastWeeksShown.toInt(), 1, 12)
                     )
                 }
                 val lastWeeksShown = _state.value.lastWeeksShown
@@ -370,7 +374,7 @@ class ToolViewModel(
             is ToolEvent.SetLastMonthsShown -> {
                 _state.update {
                     it.copy(
-                        lastMonthsShown = event.lastMonthsShown.toInt()
+                        lastMonthsShown = minMaxLimiter(event.lastMonthsShown.toInt(), 1, 12)
                     )
                 }
                 val lastMonthsShown = _state.value.lastMonthsShown
@@ -436,7 +440,7 @@ class ToolViewModel(
             is ToolEvent.SetLastBackup -> {
                 _state.update {
                     it.copy(
-                        lastBackup = event.lastBackup.toInt()
+                        lastBackup = minMaxLimiter(event.lastBackup.toInt(), 1, 10)
                     )
                 }
                 val lastBackup = _state.value.lastBackup
@@ -498,14 +502,8 @@ class ToolViewModel(
 
             is ToolEvent.SetShownNationalities -> {
                 _state.update {
-                    var newShownNationalities = event.shownNationalities.toInt()
-                    if (newShownNationalities < 1) {
-                        newShownNationalities = 1
-                    } else if (newShownNationalities > 8) {
-                        newShownNationalities = 8
-                    }
                     it.copy(
-                        shownNationalities = newShownNationalities
+                        shownNationalities = minMaxLimiter(event.shownNationalities.toInt(), 1, 8)
                     )
                 }
                 val shownNationalities = _state.value.shownNationalities
@@ -643,6 +641,16 @@ class ToolViewModel(
                 viewModelScope.launch { setDao.deleteAll() }
             }
         }
+    }
+
+    fun minMaxLimiter(count: Int, min: Int, max: Int): Int {
+        var newCount = count
+        if (newCount < min) {
+            newCount = min
+        } else if (newCount > max) {
+            newCount = max
+        }
+        return newCount
     }
 }
 
