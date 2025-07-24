@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,10 +25,10 @@ import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
-import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.setting.CountSetting
 import com.barryburgle.gameapp.ui.utilities.setting.IconButtonSetting
 import com.barryburgle.gameapp.ui.utilities.setting.SwitchSetting
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -118,23 +117,13 @@ fun BackupCard(
                             )
                         }
                         LittleBodyText("The backup folder will be created and managed directly under the export folder: /emulated/0/storage/${state.exportFolder}/${state.backupFolder}")
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceAround,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            InputCountComponent(
-                                inputTitle = "Keep\nlast",
-                                modifier = Modifier,
-                                style = MaterialTheme.typography.bodySmall,
-                                onEvent = onEvent as (GenericEvent) -> Unit,
-                                countStart = state.lastBackup,
-                                saveEvent = ToolEvent::SetLastBackup
-                            )
-                        }
+                        CountSetting(
+                            text = "Keep last ${state.lastBackup} backups",
+                            count = state.lastBackup,
+                            description = "The app will keep only the last ${state.lastBackup} backups in the backup folder for all the backed up tables (min 1 to max 10)",
+                            onEvent = onEvent as (GenericEvent) -> Unit,
+                            saveEvent = ToolEvent::SetLastBackup
+                        )
                         IconButtonSetting(text = "Import all backups",
                             imageVector = Icons.Default.CloudDownload,
                             contentDescription = "Import all",
