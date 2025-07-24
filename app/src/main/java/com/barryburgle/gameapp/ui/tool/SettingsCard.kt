@@ -41,6 +41,7 @@ import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.ThemeEnum
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import com.barryburgle.gameapp.ui.utilities.setting.CountSetting
 import com.barryburgle.gameapp.ui.utilities.setting.IconButtonSetting
 import com.barryburgle.gameapp.ui.utilities.setting.SwitchSetting
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
@@ -196,6 +197,13 @@ fun SettingsCard(
                             ) {
                                 onEvent(ToolEvent.SwitchSuggestLeadsNationality)
                             }
+                            CountSetting(
+                                text = "Show ${state.shownNationalities} nationalities",
+                                count = state.shownNationalities,
+                                description = "Show only ${state.shownNationalities} countries in nationalities bar charts and country selector on lead insertion (min 1 to max 8)",
+                                onEvent = onEvent as (GenericEvent) -> Unit,
+                                saveEvent = ToolEvent::SetShownNationalities
+                            )
                             SwitchSetting(
                                 "Follow system theme", state.themeSysFollow
                             ) {
