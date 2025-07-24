@@ -14,6 +14,7 @@ data class InputSettingsState(
     var generateiDate: Boolean = true,
     var followCount: Boolean = false,
     var suggestLeadsNationality: Boolean = true,
+    var shownNationalities: Int = 3,
     var simplePlusOneReport: Boolean = true,
     var neverShareLeadInfo: Boolean = false
 )

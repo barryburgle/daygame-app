@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -162,9 +162,9 @@ fun LeadDialog(
                                     LittleBodyText(
                                         country.flag + "  " + country.countryName
                                     )
-                                    if (count <= 7 && state.suggestLeadsNationality) {
+                                    if (count <= state.shownNationalities && state.suggestLeadsNationality) {
                                         Icon(
-                                            imageVector = Icons.Default.BarChart,
+                                            imageVector = Icons.Default.Star,
                                             contentDescription = "Suggested country",
                                             tint = MaterialTheme.colorScheme.inversePrimary,
                                             modifier = Modifier
@@ -178,7 +178,7 @@ fun LeadDialog(
                                 expanded = false
                             }
                         )
-                        if (count == 7 && state.suggestLeadsNationality) {
+                        if (count == state.shownNationalities && state.suggestLeadsNationality) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()

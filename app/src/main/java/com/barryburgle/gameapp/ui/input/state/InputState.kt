@@ -82,6 +82,7 @@ data class InputState(
     override var generateiDate: Boolean = true,
     var followCount: Boolean = false,
     var suggestLeadsNationality: Boolean = true,
+    var shownNationalities: Int = 6,
     var simplePlusOneReport: Boolean = true,
     var neverShareLeadInfo: Boolean = false,
     val mostPopularLeadsNationalities: List<CategoryHistogram> = emptyList()
