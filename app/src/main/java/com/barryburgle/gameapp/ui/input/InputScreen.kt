@@ -1,17 +1,18 @@
 package com.barryburgle.gameapp.ui.input
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
@@ -80,13 +82,31 @@ fun InputScreen(
     val spaceFromNavBar = 80.dp
     var isRotated by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(false) }
+    val blurBackground by animateDpAsState(
+        targetValue = if (isExpanded) 10.dp else 0.dp,
+        animationSpec = tween(durationMillis = 350),
+        label = "blurBackground"
+    )
     val rotationAngle by animateFloatAsState(
         targetValue = if (isRotated) -225f else 0f,
         animationSpec = tween(durationMillis = 650),
         label = "rotationAngle"
     )
     Scaffold(
-        topBar = { gameTopBar(state, onEvent, spaceFromLeft, spaceFromTop) },
+        topBar = {
+            Row(
+                modifier = Modifier
+                    .blur(blurBackground)
+                    .fillMaxHeight()
+            ) {
+                gameTopBar(
+                    state,
+                    onEvent,
+                    spaceFromLeft,
+                    spaceFromTop
+                )
+            }
+        },
         floatingActionButton = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Column(
@@ -182,6 +202,7 @@ fun InputScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .blur(blurBackground)
                 .offset(
                     y = spaceFromLeft - 20.dp
                 ), verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
