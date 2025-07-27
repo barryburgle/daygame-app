@@ -51,7 +51,11 @@ open class Date(
         return "${
             DayOfWeek.of(dayOfWeek).toString().lowercase()
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-        } ${FormatService.getDate(date)} ${
+        } ${FormatService.getDate(date)}"
+    }
+
+    override fun getEventDuration(): String {
+        return "${
             FormatService.getTime(
                 startHour
             )
@@ -59,11 +63,7 @@ open class Date(
             FormatService.getTime(
                 endHour
             )
-        }"
-    }
-
-    override fun getEventDuration(): String {
-        return "${dateTime} minutes"
+        }: ${dateTime} minutes"
     }
 
     override fun getEventStickingPoints(): String? {

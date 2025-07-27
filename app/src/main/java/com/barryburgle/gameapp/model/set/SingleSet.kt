@@ -50,7 +50,11 @@ open class SingleSet(
         return "${
             DayOfWeek.of(dayOfWeek).toString().lowercase()
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-        } ${FormatService.getDate(date)} ${
+        } ${FormatService.getDate(date)}"
+    }
+
+    override fun getEventDuration(): String {
+        return "${
             FormatService.getTime(
                 startHour
             )
@@ -58,11 +62,7 @@ open class SingleSet(
             FormatService.getTime(
                 endHour
             )
-        }"
-    }
-
-    override fun getEventDuration(): String {
-        return "${setTime} minutes"
+        }: ${setTime} minutes"
     }
 
     override fun getEventStickingPoints(): String {

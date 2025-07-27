@@ -49,7 +49,11 @@ open class AbstractSession(
         return "${
             DayOfWeek.of(dayOfWeek).toString().lowercase()
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-        } ${FormatService.getDate(date)} ${
+        } ${FormatService.getDate(date)}"
+    }
+
+    override fun getEventDuration(): String {
+        return "${
             FormatService.getTime(
                 startHour
             )
@@ -57,11 +61,7 @@ open class AbstractSession(
             FormatService.getTime(
                 endHour
             )
-        }"
-    }
-
-    override fun getEventDuration(): String {
-        return "${sessionTime} minutes"
+        }: ${sessionTime} minutes"
     }
 
     override fun getEventStickingPoints(): String {
@@ -73,7 +73,11 @@ open class AbstractSession(
             pluralMaker(
                 sets
             )
-        }\n• ${convos} conversation${pluralMaker(convos)}\n• ${contacts} contact${pluralMaker(contacts)}${
+        }\n• ${convos} conversation${pluralMaker(convos)}\n• ${contacts} contact${
+            pluralMaker(
+                contacts
+            )
+        }${
             reportLeads(
                 leads
             )
