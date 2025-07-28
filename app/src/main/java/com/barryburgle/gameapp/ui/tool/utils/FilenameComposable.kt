@@ -47,7 +47,7 @@ fun FilenameComposable(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
-            modifier = Modifier.width(textFieldColumnWidth),
+            modifier = Modifier.fillMaxWidth(0.65f),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             OutlinedTextField(
