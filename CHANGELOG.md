@@ -1,4 +1,4 @@
-# Version 1.9.0 (2025-07-xx)
+# Version 1.9.0 (2025-07-29)
 
 ***WARNING*** ⚠️
 
@@ -6,14 +6,13 @@ __If you have already installed a previous version of DayGame it will be necessa
 If you will not follow this procedure you will not be able to upgrade.__
 
 **Features**
-- New animated buttons and toggles 🔘
-- Credits card 🪪
-- Share events report ↗️
 - Follow count️: increase multiple session stats just with one tap 🧮
 - Suggest lead nationalities based on past leads 🇦🇶
+- Share events report ↗️
+- Better settings cards 🪪
+- New animated buttons and toggles 🔘
 
 **Bugs**
-- Shadow for delete and edit card buttons
 - Soltan palette color fix
 - Theme selector fix
 
