@@ -326,7 +326,12 @@ fun floatingAddButton(
             )
         }
         Spacer(modifier = Modifier.height(5.dp))
-        LittleBodyText(description)
+        Text(
+            text = description,
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
     }
 }
 
