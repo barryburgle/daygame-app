@@ -28,7 +28,7 @@ data class InputState(
     val sessionSortType: SessionSortType = SessionSortType.DATE,
     val dateSortType: DateSortType = DateSortType.DATE,
     val setSortType: SetSortType = SetSortType.DATE,
-    val gameEventSortType: GameEventSortType = GameEventSortType.INSERT_TIME,
+    val gameEventSortType: GameEventSortType = GameEventSortType.DATE,
     val isAddingSession: Boolean = false,
     val isUpdatingSession: Boolean = false,
     val isAddingDate: Boolean = false,

@@ -1,7 +1,6 @@
 package com.barryburgle.gameapp.model.enums
 
 enum class GameEventSortType(private val field: String) : FieldEnum {
-    INSERT_TIME("Insertion"),
     DATE("Date"),
     START_HOUR("Hour"),
     TIME_SPENT("Duration"),

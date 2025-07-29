@@ -136,7 +136,7 @@ class InputViewModel(
     val _showSessions = MutableStateFlow(true)
     val _showSets = MutableStateFlow(true)
     val _showDates = MutableStateFlow(true)
-    private val _gameEventSortType = MutableStateFlow(GameEventSortType.INSERT_TIME)
+    private val _gameEventSortType = MutableStateFlow(GameEventSortType.DATE)
     val _allEvents: Flow<List<SortableGameEvent>> = CombineSeven(
         _showSessions,
         _showSets,
@@ -191,13 +191,6 @@ class InputViewModel(
             )
         } else {
             when (gameEventSortType) {
-                GameEventSortType.INSERT_TIME -> {
-                    flowOf(combinedList.sortedWith(
-                        compareByDescending<SortableGameEvent> { it.insertTime }
-                    )
-                    )
-                }
-
                 GameEventSortType.DATE -> {
                     flowOf(combinedList.sortedWith(
                         compareByDescending<SortableGameEvent> { it.eventDate }
