@@ -32,7 +32,7 @@ fun MultiChoiceButton(
     val selectedOptionsToDisplay = selectedOptions
     Row(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth(0.9f),
         horizontalArrangement = Arrangement.Center
     ) {
         MultiChoiceSegmentedButtonRow(
