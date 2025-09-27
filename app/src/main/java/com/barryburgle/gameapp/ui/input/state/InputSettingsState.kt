@@ -16,5 +16,6 @@ data class InputSettingsState(
     var suggestLeadsNationality: Boolean = true,
     var shownNationalities: Int = 3,
     var simplePlusOneReport: Boolean = true,
-    var neverShareLeadInfo: Boolean = false
+    var neverShareLeadInfo: Boolean = false,
+    var copyReportOnClipboard: Boolean = true
 )

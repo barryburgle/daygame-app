@@ -85,6 +85,7 @@ data class InputState(
     var shownNationalities: Int = 6,
     var simplePlusOneReport: Boolean = true,
     var neverShareLeadInfo: Boolean = false,
+    var copyReportOnClipboard: Boolean = true,
     val mostPopularLeadsNationalities: List<CategoryHistogram> = emptyList()
 ) : ExportState(
     sessionSortType,

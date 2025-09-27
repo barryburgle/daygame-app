@@ -606,6 +606,21 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SwitchCopyReportOnClipboard -> {
+                _state.update {
+                    it.copy(
+                        copyReportOnClipboard = _state.value.copyReportOnClipboard.not()
+                    )
+                }
+                val copyReportOnClipboard = _state.value.copyReportOnClipboard
+                val setting =
+                    Setting(
+                        SettingDao.COPY_REPORT_ON_CLIPBOARD_ID,
+                        copyReportOnClipboard.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetTheme -> {
                 _state.update {
                     it.copy(

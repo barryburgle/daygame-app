@@ -39,7 +39,6 @@ import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
-import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.card.body.DateBody
 import com.barryburgle.gameapp.ui.input.card.body.SessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SetBody
@@ -57,7 +56,8 @@ fun EventCard(
     onEvent: (GameEvent) -> Unit,
     modifier: Modifier = Modifier,
     simplePlusOneReport: Boolean,
-    neverShareLeadInfo: Boolean
+    neverShareLeadInfo: Boolean,
+    copyReportOnClipboard: Boolean
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val localContext = LocalContext.current.applicationContext
@@ -110,9 +110,24 @@ fun EventCard(
                                         leadsToShare = listOf()
                                     }
                                     var report = sortableGameEvent.event.shareReport(leadsToShare)
-                                    if(sortableGameEvent.classType.equals(Date::class.java.simpleName)){
+                                    if (sortableGameEvent.classType.equals(Date::class.java.simpleName)) {
                                         var eventDate: Date = sortableGameEvent.event as Date
-                                        report = eventDate.shareDateReport(leadsToShare, simplePlusOneReport)
+                                        report = eventDate.shareDateReport(
+                                            leadsToShare,
+                                            simplePlusOneReport
+                                        )
+                                    }
+                                    if (copyReportOnClipboard) {
+                                        clipboardManager.setText(
+                                            AnnotatedString(
+                                                report
+                                            )
+                                        )
+                                        Toast.makeText(
+                                            localContext,
+                                            "${sortableGameEvent.event.getEventTitle()} report copied",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                                     val sendIntent: Intent = Intent().apply {
                                         action = Intent.ACTION_SEND

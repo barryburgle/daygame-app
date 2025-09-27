@@ -51,6 +51,7 @@ data class ToolsState(
     var themeSysFollow: Boolean = true,
     var simplePlusOneReport: Boolean = true,
     var neverShareLeadInfo: Boolean = false,
+    var copyReportOnClipboard: Boolean = true,
     var theme: String = ThemeEnum.LIGHT.type,
     var deleteConfirmationPrompt: String = ""
 ) : ExportState(

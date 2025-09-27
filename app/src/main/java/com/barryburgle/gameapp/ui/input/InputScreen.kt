@@ -225,7 +225,8 @@ fun InputScreen(
                                 elevation = 5.dp, shape = MaterialTheme.shapes.large
                             ),
                         state.simplePlusOneReport,
-                        state.neverShareLeadInfo
+                        state.neverShareLeadInfo,
+                        state.copyReportOnClipboard
                     )
                 }
             }

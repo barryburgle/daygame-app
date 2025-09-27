@@ -26,5 +26,10 @@ fun ShareCard(
         ) {
             onEvent(ToolEvent.SwitchNeverShareLeadInfo)
         }
+        SwitchSetting(
+            "Copy report on clipboard on share tap", state.copyReportOnClipboard
+        ) {
+            onEvent(ToolEvent.SwitchCopyReportOnClipboard)
+        }
     }
 }
