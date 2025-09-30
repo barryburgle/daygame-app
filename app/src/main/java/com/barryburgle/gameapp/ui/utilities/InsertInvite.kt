@@ -57,6 +57,7 @@ fun InsertInvite(state: AllEntityState) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     LargeTitleText("Insert a new:")
+                    // TODO: make the following tappable buttons that open the corresponding insert dialog
                 }
                 entityDescription(
                     "Session",
