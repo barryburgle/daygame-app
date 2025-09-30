@@ -11,7 +11,7 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
-import com.barryburgle.gameapp.model.enums.DateType
+import com.barryburgle.gameapp.model.enums.DateTypeEnum
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.GameEventSortType
 import com.barryburgle.gameapp.model.enums.SessionSortType
@@ -900,7 +900,7 @@ class InputViewModel(
                             endHour = if (_state.value.endHour.isBlank()) state.value.endHour else _state.value.endHour,
                             cost = 0,
                             dateNumber = 0,
-                            dateType = DateType.DRINK.getType(),
+                            dateType = DateTypeEnum.DRINK.getType(),
                             pull = false,
                             bounce = false,
                             kiss = false,
@@ -952,7 +952,7 @@ class InputViewModel(
                             endHour = if (_state.value.endHour.isBlank()) state.value.endHour else _state.value.endHour,
                             cost = 0,
                             dateNumber = 0,
-                            dateType = DateType.DRINK.getType(),
+                            dateType = DateTypeEnum.DRINK.getType(),
                             pull = false,
                             bounce = false,
                             kiss = false,

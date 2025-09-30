@@ -35,7 +35,7 @@ import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
-import com.barryburgle.gameapp.model.enums.DateType
+import com.barryburgle.gameapp.model.enums.DateTypeEnum
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
@@ -169,7 +169,7 @@ fun DateDialog(
                         expanded = dateTypesExpanded,
                         onDismissRequest = { dateTypesExpanded = false }
                     ) {
-                        DateType.values().forEach { dateType ->
+                        DateTypeEnum.values().forEach { dateType ->
                             DropdownMenuItem(
                                 text = {
                                     Row(
@@ -178,7 +178,7 @@ fun DateDialog(
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
                                         Icon(
-                                            imageVector = DateType.getIcon(dateType.getType()),
+                                            imageVector = DateTypeEnum.getIcon(dateType.getType()),
                                             contentDescription = state.dateType,
                                             tint = MaterialTheme.colorScheme.onPrimary,
                                             modifier = Modifier
@@ -199,7 +199,7 @@ fun DateDialog(
                         onClick = {
                             dateTypesExpanded = true
                         },
-                        imageVector = DateType.getIcon(state.dateType),
+                        imageVector = DateTypeEnum.getIcon(state.dateType),
                         contentDescription = "Date type",
                         title = if (state.dateType.isBlank()) "Date type" else state.dateType.replaceFirstChar { it.uppercase() },
                         color = MaterialTheme.colorScheme.primaryContainer,

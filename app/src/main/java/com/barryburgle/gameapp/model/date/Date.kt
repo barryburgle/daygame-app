@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.barryburgle.gameapp.model.enums.DateType
+import com.barryburgle.gameapp.model.enums.DateTypeEnum
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.EventModel
 import com.barryburgle.gameapp.model.lead.Lead
@@ -44,7 +44,7 @@ open class Date(
     }
 
     override fun getEventIcon(): ImageVector {
-        return DateType.getIcon(dateType)
+        return DateTypeEnum.getIcon(dateType)
     }
 
     override fun getEventDescription(): String {
@@ -77,7 +77,7 @@ open class Date(
 
 
     fun shareDateReport(leads: List<Lead>, simplePlusOneReport: Boolean): String {
-        var sharedDateNumber = DateType.getDateNumber(
+        var sharedDateNumber = DateTypeEnum.getDateNumber(
             dateNumber,
             true
         )
@@ -96,7 +96,7 @@ open class Date(
             reportLeads(
                 leads
             ).drop(1)
-        }${dateDuration} ${DateType.getEmoji(dateType)} ${
+        }${dateDuration} ${DateTypeEnum.getEmoji(dateType)} ${
             sharedDateNumber
         }"
         if (simplePlusOneReport) {

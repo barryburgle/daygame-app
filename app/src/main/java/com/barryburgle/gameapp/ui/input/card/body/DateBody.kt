@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
@@ -16,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
-import com.barryburgle.gameapp.model.enums.DateType
+import com.barryburgle.gameapp.model.enums.DateTypeEnum
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedIcon
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
@@ -91,7 +89,7 @@ fun DateBody(
             descriptionFontSize = descriptionFontSize
         )
         DescribedQuantifier(
-            quantity = DateType.getDateNumber(date.dateNumber, false),
+            quantity = DateTypeEnum.getDateNumber(date.dateNumber, false),
             quantityFontSize = perfFontSize,
             description = "Date",
             descriptionFontSize = descriptionFontSize

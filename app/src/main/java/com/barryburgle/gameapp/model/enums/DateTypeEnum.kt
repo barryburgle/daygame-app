@@ -9,8 +9,7 @@ import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.WineBar
 import androidx.compose.ui.graphics.vector.ImageVector
 
-enum class DateType(private val type: String) {
-    // TODO: rename enum to DateTypeEnum
+enum class DateTypeEnum(private val type: String) {
     DRINK("drink"),
     COFFEE("coffee"),
     WALK("walk"),
