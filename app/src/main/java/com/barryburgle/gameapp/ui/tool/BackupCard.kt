@@ -136,7 +136,6 @@ fun BackupCard(
                                     onEvent
                                 )
                             })
-                        // TODO: if no files found toast
                         SwitchSetting(
                             "Backup after each save", state.backupActive
                         ) {

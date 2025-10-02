@@ -232,18 +232,24 @@ class DataExchangeService {
                     true,
                     onEvent
                 )
+                Toast.makeText(
+                    localContext,
+                    "Successfully imported all tables",
+                    Toast.LENGTH_SHORT
+                ).show()
             } catch (fileNotFoundException: FileNotFoundException) {
                 Toast.makeText(
                     localContext,
                     fileNotFoundException.message,
                     Toast.LENGTH_SHORT
                 ).show()
+            } catch (indexOutOfBoundsException: IndexOutOfBoundsException) {
+                Toast.makeText(
+                    localContext,
+                    "Impossible to import backup: no files in backup folder",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-            Toast.makeText(
-                localContext,
-                "Successfully imported all tables",
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
 }
