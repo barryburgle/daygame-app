@@ -297,7 +297,6 @@ fun SessionDialog(
             )
         }
     }, confirmButton = {
-        // TODO. use this everywhere in all te dialogs
         ConfirmButton {
             onEvent(GameEvent.SaveAbstractSession)
             onEvent(GameEvent.HideDialog)

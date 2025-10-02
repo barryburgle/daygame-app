@@ -3,7 +3,6 @@ package com.barryburgle.gameapp.ui.tool.dialog
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,10 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -103,52 +100,40 @@ fun DeleteDialog(
             )
         }
     }, confirmButton = {
-        Box(
-            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd
-        ) {
-            Row(
-                modifier = Modifier.width(250.dp), horizontalArrangement = Arrangement.End
+        ConfirmButton {
+            if (state.deleteConfirmationPrompt.isNotBlank() && state.deleteConfirmationPrompt.equals(
+                    "delete"
+                )
             ) {
-                Button(onClick = {
-                    onEvent(ToolEvent.SwitchIsCleaning)
-                }) {
-                    Text(text = "Cancel")
+                var deletionMessage = "Cleaned"
+                if (state.archiveBackupFolder) {
+                    csvFindService.archiveBackups(state.exportFolder, state.backupFolder)
+                    deletionMessage = deletionMessage + " and archived backups"
                 }
-                Spacer(modifier = Modifier.width(10.dp))
-                Button(onClick = {
-                    if (state.deleteConfirmationPrompt.isNotBlank() && state.deleteConfirmationPrompt.equals(
-                            "delete"
-                        )
-                    ) {
-                        var deletionMessage = "Cleaned"
-                        if (state.archiveBackupFolder) {
-                            csvFindService.archiveBackups(state.exportFolder, state.backupFolder)
-                            deletionMessage = deletionMessage + " and archived backups"
-                        }
-                        if (state.deleteSessions) {
-                            onEvent(ToolEvent.DeleteAllSessions)
-                        }
-                        if (state.deleteLeads) {
-                            onEvent(ToolEvent.DeleteAllLeads)
-                        }
-                        if (state.deleteDates) {
-                            onEvent(ToolEvent.DeleteAllDates)
-                        }
-                        if (state.deleteSets) {
-                            onEvent(ToolEvent.DeleteAllSets)
-                        }
-                        onEvent(ToolEvent.SetDeleteConfirmationPrompt(""))
-                        Toast.makeText(localContext, deletionMessage, Toast.LENGTH_SHORT)
-                            .show()
-                        onEvent(ToolEvent.SwitchIsCleaning)
-                    } else {
-                        Toast.makeText(localContext, "Misspelled \"delete\"", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }) {
-                    Text(text = "Clean")
+                if (state.deleteSessions) {
+                    onEvent(ToolEvent.DeleteAllSessions)
                 }
+                if (state.deleteLeads) {
+                    onEvent(ToolEvent.DeleteAllLeads)
+                }
+                if (state.deleteDates) {
+                    onEvent(ToolEvent.DeleteAllDates)
+                }
+                if (state.deleteSets) {
+                    onEvent(ToolEvent.DeleteAllSets)
+                }
+                onEvent(ToolEvent.SetDeleteConfirmationPrompt(""))
+                Toast.makeText(localContext, deletionMessage, Toast.LENGTH_SHORT)
+                    .show()
+                onEvent(ToolEvent.SwitchIsCleaning)
+            } else {
+                Toast.makeText(localContext, "Misspelled \"delete\"", Toast.LENGTH_SHORT)
+                    .show()
             }
+        }
+    }, dismissButton = {
+        DismissButton {
+            onEvent(ToolEvent.SwitchIsCleaning)
         }
     })
 }
