@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -45,10 +44,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
+import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
-import com.barryburgle.gameapp.ui.input.InputCounter
+import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
@@ -202,91 +202,30 @@ fun SessionDialog(
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    LittleBodyText("Sets")
-                    IconShadowButton(
-                        onClick = {
-                            setsCount--
-                            onEvent(GameEvent.SetSets(setsCount.toString()))
-                        },
-                        imageVector = Icons.Default.Remove,
-                        contentDescription = "Less"
-                    )
-                    InputCounter(
-                        count = setsCount,
-                        style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier
-                    )
-                    IconShadowButton(
-                        onClick = {
-                            setsCount++
-                            onEvent(GameEvent.SetSets(setsCount.toString()))
-                        },
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "More"
-                    )
-                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    LittleBodyText("Conversations")
-                    IconShadowButton(
-                        onClick = {
-                            convosCount--
-                            onEvent(GameEvent.SetConvos(convosCount.toString()))
-                        },
-                        imageVector = Icons.Default.Remove,
-                        contentDescription = "Less"
-                    )
-                    InputCounter(
-                        count = convosCount,
-                        style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier
-                    )
-                    IconShadowButton(
-                        onClick = {
-                            convosCount++
-                            onEvent(GameEvent.SetConvos(convosCount.toString()))
-                            if (state.followCount) {
-                                setsCount++
-                            }
-                        },
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "More"
-                    )
-                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    LittleBodyText("Contacts")
-                    IconShadowButton(
-                        onClick = {
-                            contactsCount--
-                            onEvent(GameEvent.SetContacts(contactsCount.toString()))
-                        },
-                        imageVector = Icons.Default.Remove,
-                        contentDescription = "Less"
-                    )
-                    InputCounter(
-                        count = contactsCount,
-                        style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier
-                    )
-                    IconShadowButton(
-                        onClick = {
-                            contactsCount++
-                            onEvent(GameEvent.SetContacts(contactsCount.toString()))
-                            if (state.followCount) {
-                                setsCount++
-                                convosCount++
-                            }
-                        },
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "More"
-                    )
-                }
+                InputCountComponent(
+                    inputTitle = "Sets",
+                    modifier = Modifier,
+                    style = MaterialTheme.typography.titleSmall,
+                    onEvent = onEvent as (GenericEvent) -> Unit,
+                    countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.sets,
+                    saveEvent = GameEvent::SetSets
+                )
+                InputCountComponent(
+                    inputTitle = "Conversations",
+                    modifier = Modifier,
+                    style = MaterialTheme.typography.titleSmall,
+                    onEvent = onEvent as (GenericEvent) -> Unit,
+                    countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.convos,
+                    saveEvent = GameEvent::SetConvos
+                )
+                InputCountComponent(
+                    inputTitle = "Contacts",
+                    modifier = Modifier,
+                    style = MaterialTheme.typography.titleSmall,
+                    onEvent = onEvent as (GenericEvent) -> Unit,
+                    countStart = if (state.isAddingSession) 0 else state.editAbstractSession?.contacts,
+                    saveEvent = GameEvent::SetContacts
+                )
             }
             OutlinedTextField(
                 value = state.stickingPoints,
