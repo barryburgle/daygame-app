@@ -22,6 +22,8 @@ fun InputCounter(
     count: Int,
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
+    zeroValue: String? = "None",
+    stringZero: Boolean? = false
 ) {
     var oldCount by remember {
         mutableStateOf(count)
@@ -32,12 +34,13 @@ fun InputCounter(
     Row(modifier = modifier) {
         var countString = count.toString()
         val oldCountString = oldCount.toString()
-        if (count < 0) {
+        if (count <= 0) {
             Text(
-                text = "0",
+                text = if (stringZero!!) zeroValue!! else "0",
                 style = style,
                 softWrap = false,
-                fontSize = 35.sp
+                fontSize = 35.sp,
+                color = MaterialTheme.colorScheme.onPrimary
             )
         } else {
             for (charIndex in countString.indices) {
@@ -53,7 +56,7 @@ fun InputCounter(
                 AnimatedContent(
                     targetState = char,
                     transitionSpec = {
-                        transitionSpec(newDigit, oldDigit!!)
+                        integerTransitionSpec(newDigit, oldDigit!!)
                     }) { char ->
                     Text(
                         text = char.toString(),
@@ -68,7 +71,7 @@ fun InputCounter(
     }
 }
 
-fun transitionSpec(newDigit: Int, oldDigit: Int): ContentTransform {
+fun integerTransitionSpec(newDigit: Int, oldDigit: Int): ContentTransform {
     if (newDigit > oldDigit) {
         return ContentTransform(
             targetContentEnter = slideInVertically { it },

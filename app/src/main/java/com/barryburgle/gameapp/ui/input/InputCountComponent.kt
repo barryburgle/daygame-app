@@ -24,6 +24,7 @@ fun InputCountComponent(
     style: TextStyle = MaterialTheme.typography.bodyMedium,
     onEvent: (GenericEvent) -> Unit,
     countStart: Int? = 0,
+    zeroValue: String? = "",
     saveEvent: (input: String) -> GenericEvent
 ) {
     var count by remember {
@@ -37,18 +38,24 @@ fun InputCountComponent(
             onClick = {
                 count--
                 onEvent(saveEvent(count.toString()))
-            },
-            imageVector = Icons.Default.Remove,
-            contentDescription = "Less"
+            }, imageVector = Icons.Default.Remove, contentDescription = "Less"
         )
-        InputCounter(count = count, style = style, modifier = modifier)
+        if (!zeroValue!!.isEmpty()) {
+            InputCounter(
+                count = count,
+                style = style,
+                modifier = modifier,
+                zeroValue = zeroValue,
+                stringZero = true
+            )
+        } else {
+            InputCounter(count = count, style = style, modifier = modifier)
+        }
         IconShadowButton(
             onClick = {
                 count++
                 onEvent(saveEvent(count.toString()))
-            },
-            imageVector = Icons.Default.Add,
-            contentDescription = "More"
+            }, imageVector = Icons.Default.Add, contentDescription = "More"
         )
     }
 }
