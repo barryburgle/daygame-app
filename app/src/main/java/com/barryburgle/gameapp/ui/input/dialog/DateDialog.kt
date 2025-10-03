@@ -284,7 +284,8 @@ fun DateDialog(
                     style = MaterialTheme.typography.titleSmall,
                     onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingDate) 0 else state.editDate?.dateNumber,
-                    saveEvent = GameEvent::SetDateNumber
+                    saveEvent = GameEvent::SetDateNumber,
+                    zeroValue = "iDate"
                 )
                 InputCountComponent(
                     inputTitle = "Cost [€]",
