@@ -26,6 +26,7 @@ import com.barryburgle.gameapp.ui.stats.section.DatesHistogramsSection
 import com.barryburgle.gameapp.ui.stats.section.LeadsHistogramsSection
 import com.barryburgle.gameapp.ui.stats.section.SessionsHistogramsSection
 import com.barryburgle.gameapp.ui.stats.state.StatsState
+import com.barryburgle.gameapp.ui.utilities.BlurStatusBar
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,7 +37,11 @@ fun StatsScreen(
     // TODO: for each one of the cards "Sessions", "Leads" and "Dates" the default version that should be displayed should be a contracted one with only absolute counts, leading to showing performances on a dropdown arrow touch
     val heigh: Dp = 200.dp
     val width: Dp = 320.dp
-    Scaffold { padding ->
+    Scaffold(
+        topBar = {
+            BlurStatusBar()
+        },
+    ) { padding ->
         InsertInvite(state)
         val cardModifier = Modifier
             .shadow(

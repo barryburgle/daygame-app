@@ -29,6 +29,7 @@ import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.service.csv.SetCsvService
 import com.barryburgle.gameapp.ui.tool.dialog.DeleteDialog
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import com.barryburgle.gameapp.ui.utilities.BlurStatusBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +51,11 @@ fun ToolsScreen(
     if (state.isCleaning) {
         DeleteDialog(state = state, onEvent = onEvent, "Clear data", csvFindService)
     }
-    Scaffold { padding ->
+    Scaffold(
+        topBar = {
+            BlurStatusBar()
+        },
+    ) { padding ->
         val dataExchangeCardModifier = Modifier
             .height(580.dp)
             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)

@@ -21,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +39,7 @@ import com.barryburgle.gameapp.ui.theme.AlertHigh
 import com.barryburgle.gameapp.ui.theme.AlertLow
 import com.barryburgle.gameapp.ui.theme.AlertMid
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
+import com.barryburgle.gameapp.ui.utilities.BlurStatusBar
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
@@ -57,7 +57,11 @@ fun OutputScreen(
 ) {
     // TODO: make cards with injectable type of charts
     // TODO: make different types of charts injectable with arrays
-    Scaffold { padding ->
+    Scaffold(
+        topBar = {
+            BlurStatusBar()
+        },
+    ) { padding ->
         InsertInvite(state)
         LazyColumn(
             modifier = Modifier

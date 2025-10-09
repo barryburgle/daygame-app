@@ -108,8 +108,7 @@ fun InputScreen(
                 gameTopBar(
                     state,
                     onEvent,
-                    spaceFromLeft,
-                    spaceFromTop
+                    spaceFromLeft
                 )
             }
         },
@@ -346,8 +345,7 @@ fun floatingAddButton(
 fun gameTopBar(
     state: InputState,
     onEvent: (GameEvent) -> Unit,
-    spaceFromLeft: Dp,
-    spaceFromTop: Dp
+    spaceFromLeft: Dp
 ) {
     val selectedOptions = remember {
         mutableStateListOf(true, true, true)
@@ -356,52 +354,75 @@ fun gameTopBar(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
-            .offset(y = spaceFromTop),
+            .height(120.dp),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        Spacer(modifier = Modifier.height(5.dp))
+        val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth()
+                .height(statusBarHeight)
+                .background(color = MaterialTheme.colorScheme.background)
+        ) {}
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
         ) {
-            Spacer(modifier = Modifier.width(spaceFromLeft))
-            MediumTitleText("Events:")
-            Spacer(modifier = Modifier.width(10.dp))
-            MultiChoiceButton(
-                EventTypeEnum.getFieldsButAll(),
-                listOf(state.allSessions.size, state.allSets.size, state.allDates.size),
-                Modifier
-                    .height(50.dp),
-                selectedOptions
+            Column(
+                modifier = Modifier
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                semiOpaqueBackground,
+                                semiOpaqueBackground.copy(alpha = 0.7f),
+                                androidx.compose.ui.graphics.Color.Transparent
+                            ),
+                        )
+                    ),
+                verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                onEvent(GameEvent.SwitchShowFlag(it))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    MediumTitleText("Events:")
+                    Spacer(modifier = Modifier.width(10.dp))
+                    MultiChoiceButton(
+                        EventTypeEnum.getFieldsButAll(),
+                        listOf(state.allSessions.size, state.allSets.size, state.allDates.size),
+                        Modifier
+                            .height(50.dp),
+                        selectedOptions
+                    ) {
+                        onEvent(GameEvent.SwitchShowFlag(it))
+                    }
+                }
+                EntitySorter(
+                    showAllSorter(state.showSessions, state.showSets, state.showDates),
+                    spaceFromLeft,
+                    EventTypeEnum.ALL,
+                    state,
+                    onEvent
+                )
+                EntitySorter(
+                    showSessionSorter(state.showSessions, state.showSets, state.showDates),
+                    spaceFromLeft,
+                    EventTypeEnum.SESSION,
+                    state,
+                    onEvent
+                )
+                EntitySorter(
+                    showSetSorter(state.showSessions, state.showSets, state.showDates),
+                    spaceFromLeft, EventTypeEnum.SET, state, onEvent
+                )
+                EntitySorter(
+                    showDateSorter(state.showSessions, state.showSets, state.showDates),
+                    spaceFromLeft, EventTypeEnum.DATE, state, onEvent
+                )
             }
-            Spacer(modifier = Modifier.width(10.dp))
         }
-        EntitySorter(
-            showAllSorter(state.showSessions, state.showSets, state.showDates),
-            spaceFromLeft,
-            EventTypeEnum.ALL,
-            state,
-            onEvent
-        )
-        EntitySorter(
-            showSessionSorter(state.showSessions, state.showSets, state.showDates),
-            spaceFromLeft,
-            EventTypeEnum.SESSION,
-            state,
-            onEvent
-        )
-        EntitySorter(
-            showSetSorter(state.showSessions, state.showSets, state.showDates),
-            spaceFromLeft, EventTypeEnum.SET, state, onEvent
-        )
-        EntitySorter(
-            showDateSorter(state.showSessions, state.showSets, state.showDates),
-            spaceFromLeft, EventTypeEnum.DATE, state, onEvent
-        )
     }
 }
