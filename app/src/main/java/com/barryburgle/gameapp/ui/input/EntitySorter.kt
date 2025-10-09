@@ -16,12 +16,12 @@ import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.GameEventSortType
-import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.enums.SessionSortType
+import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
+import com.barryburgle.gameapp.ui.utilities.selection.GenericSortingButton
 import com.barryburgle.gameapp.ui.utilities.selection.ScrollableSorter
-import com.barryburgle.gameapp.ui.utilities.selection.SelectionRow
 
 @Composable
 fun EntitySorter(
@@ -47,7 +47,7 @@ fun EntitySorter(
             if (EventTypeEnum.SESSION.equals(eventType)) {
                 SessionSortType.values().forEach { sortType ->
                     state.sessionSortType?.let {
-                        SelectionRow(
+                        GenericSortingButton(
                             it,
                             sortType,
                             onEvent as (GenericEvent) -> Unit,
@@ -55,12 +55,13 @@ fun EntitySorter(
                                 sortType
                             )
                         )
+                        Spacer(modifier = Modifier.width(10.dp))
                     }
                 }
             } else if (EventTypeEnum.SET.equals(eventType)) {
                 SetSortType.values().forEach { sortType ->
                     state.setSortType?.let {
-                        SelectionRow(
+                        GenericSortingButton(
                             it,
                             sortType,
                             onEvent as (GenericEvent) -> Unit,
@@ -68,12 +69,13 @@ fun EntitySorter(
                                 sortType
                             )
                         )
+                        Spacer(modifier = Modifier.width(10.dp))
                     }
                 }
             } else if (EventTypeEnum.DATE.equals(eventType)) {
                 DateSortType.values().forEach { sortType ->
                     state.dateSortType?.let {
-                        SelectionRow(
+                        GenericSortingButton(
                             it,
                             sortType,
                             onEvent as (GenericEvent) -> Unit,
@@ -81,12 +83,13 @@ fun EntitySorter(
                                 sortType
                             )
                         )
+                        Spacer(modifier = Modifier.width(10.dp))
                     }
                 }
             } else if (EventTypeEnum.ALL.equals(eventType)) {
                 GameEventSortType.values().forEach { sortType ->
                     state.gameEventSortType?.let {
-                        SelectionRow(
+                        GenericSortingButton(
                             it,
                             sortType,
                             onEvent as (GenericEvent) -> Unit,
@@ -94,6 +97,7 @@ fun EntitySorter(
                                 sortType
                             )
                         )
+                        Spacer(modifier = Modifier.width(10.dp))
                     }
                 }
             }

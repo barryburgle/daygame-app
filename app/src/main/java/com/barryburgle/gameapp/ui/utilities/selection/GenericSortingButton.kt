@@ -33,7 +33,7 @@ import com.barryburgle.gameapp.model.enums.FieldEnum
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButtonState
 
 @Composable
-fun SelectionRow(
+fun GenericSortingButton(
     currentSort: FieldEnum,
     sortType: FieldEnum,
     onEvent: (GenericEvent) -> Unit,
