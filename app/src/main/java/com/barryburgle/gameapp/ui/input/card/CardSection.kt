@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun EventCardSection(width: Float = 1f, sectionFunction: @Composable () -> Unit) {
+fun CardSection(width: Float = 1f, sectionFunction: @Composable () -> Unit) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,

@@ -290,7 +290,7 @@ fun EventCard(
                     Column(
                         modifier = Modifier.fillMaxHeight()
                     ) {
-                        EventCardSection {
+                        CardSection {
                             if (AbstractSession::class.java.simpleName.equals(sortableGameEvent.classType)) {
                                 SessionBody(
                                     sortableGameEvent.event as AbstractSession,
@@ -307,7 +307,7 @@ fun EventCard(
                             }
                         }
                         Spacer(modifier = Modifier.height(7.dp))
-                        EventCardSection {
+                        CardSection {
                             if (leads == null || leads.isEmpty()) {
                                 LittleBodyText("No leads")
                             } else {
@@ -365,7 +365,7 @@ fun EventCard(
                             if (validStickingPoints) {
                                 width = 0.8f
                             }
-                            EventCardSection(width = width) {
+                            CardSection(width = width) {
                                 Row(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically,
