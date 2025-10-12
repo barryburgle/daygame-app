@@ -14,6 +14,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LeadDao {
 
+    companion object {
+        const val QUERY_ALL_LEADS_NATIONALITIES =
+            "SELECT nationality as category, COUNT(*) as frequency from lead GROUP BY nationality ORDER BY frequency DESC"
+    }
+
     @Insert(onConflict = REPLACE)
     suspend fun batchInsert(leads: List<Lead>)
 
@@ -29,7 +34,10 @@ interface LeadDao {
     @Query("SELECT * from lead ORDER BY session_id DESC, insert_time DESC")
     fun getAll(): Flow<List<Lead>>
 
-    @Query("SELECT nationality as category, COUNT(*) as frequency from lead GROUP BY nationality ORDER BY frequency DESC LIMIT ($QUERY_SHOWN_NATIONALITIES)")
+    @Query(QUERY_ALL_LEADS_NATIONALITIES)
+    fun getAllNationalityHistogram(): Flow<List<CategoryHistogram>>
+
+    @Query("$QUERY_ALL_LEADS_NATIONALITIES LIMIT ($QUERY_SHOWN_NATIONALITIES)")
     fun getNationalityHistogram(): Flow<List<CategoryHistogram>>
 
     @Query("SELECT age as metric, COUNT(*) as frequency from lead GROUP BY age ORDER BY age")
