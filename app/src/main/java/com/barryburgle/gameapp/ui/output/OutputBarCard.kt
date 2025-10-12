@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.event.StatsEvent
+import com.barryburgle.gameapp.model.enums.StatsLoadInfoEnum
 import com.barryburgle.gameapp.ui.output.chart.OutputBarChart
 import com.github.mikephil.charting.data.BarEntry
 
@@ -19,7 +21,6 @@ import com.github.mikephil.charting.data.BarEntry
 fun OutputBarCard(
     height: Dp,
     width: Dp,
-    chartLabel: String,
     modifier: Modifier = Modifier
         .height(height)
         .width(width)
@@ -30,7 +31,9 @@ fun OutputBarCard(
     barEntryList: List<BarEntry>,
     integerValues: Boolean,
     ratio: Boolean,
-    categories: List<String>? = null
+    categories: List<String>? = null,
+    statsLoadInfo: StatsLoadInfoEnum,
+    onEvent: (StatsEvent) -> Unit
 ) {
     Card(
         modifier = modifier,
@@ -42,10 +45,12 @@ fun OutputBarCard(
         Row {
             OutputBarChart(
                 barEntryList = barEntryList,
-                description = chartLabel,
+                description = statsLoadInfo.getTracker(),
                 integerValues = integerValues,
                 ratio = ratio,
-                categories = categories
+                categories = categories,
+                statsLoadInfo = statsLoadInfo,
+                onEvent = onEvent
             )
         }
     }

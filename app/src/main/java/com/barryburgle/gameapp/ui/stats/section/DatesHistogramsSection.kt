@@ -2,7 +2,9 @@ package com.barryburgle.gameapp.ui.stats.section
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.ui.unit.Dp
+import com.barryburgle.gameapp.event.StatsEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
+import com.barryburgle.gameapp.model.enums.StatsLoadInfoEnum
 import com.barryburgle.gameapp.ui.output.OutputBarCard
 import com.barryburgle.gameapp.ui.stats.state.StatsState
 import com.github.mikephil.charting.data.BarEntry
@@ -10,7 +12,8 @@ import com.github.mikephil.charting.data.BarEntry
 fun LazyListScope.DatesHistogramsSection(
     state: StatsState,
     height: Dp,
-    width: Dp
+    width: Dp,
+    onEvent: (StatsEvent) -> Unit
 ) {
     item {
         state.datesAgeHistogram.map { ageHistogram ->
@@ -23,10 +26,11 @@ fun LazyListScope.DatesHistogramsSection(
             OutputBarCard(
                 height = height,
                 width = width,
-                chartLabel = "Ages",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false
+                ratio = false,
+                statsLoadInfo = StatsLoadInfoEnum.DATE_AGES,
+                onEvent = onEvent
             )
         }
     }
@@ -41,10 +45,11 @@ fun LazyListScope.DatesHistogramsSection(
             OutputBarCard(
                 height = height,
                 width = width,
-                chartLabel = "Number",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                ratio = false
+                ratio = false,
+                statsLoadInfo = StatsLoadInfoEnum.DATE_NUMBER,
+                onEvent = onEvent
             )
         }
     }
@@ -57,11 +62,12 @@ fun LazyListScope.DatesHistogramsSection(
             OutputBarCard(
                 height = height,
                 width = width,
-                chartLabel = "Countries",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
                 ratio = false,
-                categories = state.datesNationalityHistogram.map { CountryEnum.getFlagByAlpha3(it.category) }
+                categories = state.datesNationalityHistogram.map { CountryEnum.getFlagByAlpha3(it.category) },
+                statsLoadInfo = StatsLoadInfoEnum.DATE_COUNTRIES,
+                onEvent = onEvent
             )
         }
     }

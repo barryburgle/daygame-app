@@ -7,15 +7,19 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.barryburgle.gameapp.event.StatsEvent
+import com.barryburgle.gameapp.model.enums.StatsLoadInfoEnum
 import com.barryburgle.gameapp.ui.theme.Shapes
+import com.barryburgle.gameapp.ui.utilities.button.LittleIconButton
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.BarChart
@@ -33,7 +37,9 @@ fun OutputBarChart(
     description: String,
     integerValues: Boolean,
     ratio: Boolean,
-    categories: List<String>? = null
+    categories: List<String>? = null,
+    statsLoadInfo: StatsLoadInfoEnum,
+    onEvent: (StatsEvent) -> Unit
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
     val onSurfaceColor = MaterialTheme.colorScheme.onPrimary.toArgb()
@@ -59,9 +65,21 @@ fun OutputBarChart(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, end = 10.dp)
                     ) {
                         SmallTitleText(description)
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth(0.2f),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            LittleIconButton(
+                                imageVector = Icons.Filled.Info,
+                                onClick = { onEvent(StatsEvent.ShowInfo(statsLoadInfo)) }
+                            )
+                        }
                     }
                 }
                 AndroidView(modifier = Modifier.fillMaxSize(), factory = { context ->
