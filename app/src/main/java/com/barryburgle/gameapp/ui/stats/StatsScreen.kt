@@ -19,9 +19,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.event.StatsEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.service.GlobalStatsService
 import com.barryburgle.gameapp.ui.output.sectionTitleAndDescription
+import com.barryburgle.gameapp.ui.stats.dialog.InfoDialog
 import com.barryburgle.gameapp.ui.stats.section.DatesHistogramsSection
 import com.barryburgle.gameapp.ui.stats.section.LeadsHistogramsSection
 import com.barryburgle.gameapp.ui.stats.section.SessionsHistogramsSection
@@ -32,7 +34,8 @@ import com.barryburgle.gameapp.ui.utilities.InsertInvite
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatsScreen(
-    state: StatsState, spaceFromLeft: Dp, spaceFromTop: Dp, spaceFromBottom: Dp
+    state: StatsState, spaceFromLeft: Dp, spaceFromTop: Dp, spaceFromBottom: Dp,
+    onEvent: (StatsEvent) -> Unit
 ) {
     // TODO: for each one of the cards "Sessions", "Leads" and "Dates" the default version that should be displayed should be a contracted one with only absolute counts, leading to showing performances on a dropdown arrow touch
     val heigh: Dp = 200.dp
@@ -42,6 +45,11 @@ fun StatsScreen(
             BlurStatusBar()
         },
     ) { padding ->
+        if (state.isShowingInfo) {
+            InfoDialog(
+                state = state, onEvent = onEvent
+            )
+        }
         InsertInvite(state)
         val cardModifier = Modifier
             .shadow(
@@ -289,7 +297,7 @@ fun StatsScreen(
                         )
                         sectionTitleAndDescription(
                             "Sessions Histograms",
-                            "Number of sessions in which you reached a certain amount of:"
+                            "Number of sessions with:"
                         )
                     }
                     LazyRow(
@@ -300,7 +308,7 @@ fun StatsScreen(
                                 modifier = Modifier.width(spaceFromLeft - 7.dp)
                             )
                         }
-                        SessionsHistogramsSection(state, heigh, width)
+                        SessionsHistogramsSection(state, heigh, width, onEvent)
                         item {
                             Spacer(
                                 modifier = Modifier.width(spaceFromLeft - 7.dp)
@@ -316,7 +324,7 @@ fun StatsScreen(
                             modifier = Modifier.width(spaceFromLeft)
                         )
                         sectionTitleAndDescription(
-                            "Leads Histograms", "Number of leads with specific characteristics:"
+                            "Leads Histograms", "Number of leads with:"
                         )
                     }
                     LazyRow(
@@ -327,7 +335,7 @@ fun StatsScreen(
                                 modifier = Modifier.width(spaceFromLeft - 7.dp)
                             )
                         }
-                        LeadsHistogramsSection(state, heigh, width)
+                        LeadsHistogramsSection(state, heigh, width, onEvent)
                         item {
                             Spacer(
                                 modifier = Modifier.width(spaceFromLeft - 7.dp)
@@ -343,7 +351,7 @@ fun StatsScreen(
                             modifier = Modifier.width(spaceFromLeft)
                         )
                         sectionTitleAndDescription(
-                            "Dates Histograms", "Number of dates with specific characteristics:"
+                            "Dates Histograms", "Number of dates with:"
                         )
                     }
                     LazyRow(
@@ -355,7 +363,7 @@ fun StatsScreen(
                             )
                         }
                         DatesHistogramsSection(
-                            state, heigh, width
+                            state, heigh, width, onEvent
                         )
                         item {
                             Spacer(

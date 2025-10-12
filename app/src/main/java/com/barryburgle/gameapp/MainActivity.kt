@@ -97,7 +97,8 @@ class MainActivity : ComponentActivity() {
                         it.abstractSessionDao,
                         it.leadDao,
                         it.dateDao,
-                        it.setDao
+                        it.setDao,
+                        it.settingDao
                     )
                 } as T
             }
@@ -141,6 +142,7 @@ class MainActivity : ComponentActivity() {
                     toolState = toolsState,
                     inputOnEvent = inputViewModel::onEvent,
                     outputOnEvent = outputViewModel::onEvent,
+                    statsOnEvent = statsViewModel::onEvent,
                     toolOnEvent = toolViewModel::onEvent
                 )
             }
