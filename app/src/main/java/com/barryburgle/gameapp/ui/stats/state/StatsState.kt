@@ -20,7 +20,12 @@ data class StatsState(
     val leadsAgeHistogram: List<Histogram> = emptyList(),
     val datesNationalityHistogram: List<CategoryHistogram> = emptyList(),
     val datesAgeHistogram: List<Histogram> = emptyList(),
-    val datesNumberHistogram: List<Histogram> = emptyList()
+    val datesNumberHistogram: List<Histogram> = emptyList(),
+    val infoDialogTitle: String = "",
+    val trackedEntity: String = "",
+    val completeHistogram: List<Any> = emptyList(),
+    val isShowingInfo: Boolean = false,
+    val copyReportOnClipboard: Boolean = false
 ) : AllEntityState(
     allSessions,
     allLeads,
