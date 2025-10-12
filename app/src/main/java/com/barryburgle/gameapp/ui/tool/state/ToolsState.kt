@@ -52,6 +52,7 @@ data class ToolsState(
     var simplePlusOneReport: Boolean = true,
     var neverShareLeadInfo: Boolean = false,
     var copyReportOnClipboard: Boolean = true,
+    var showSummaryCard: Boolean = false,
     var theme: String = ThemeEnum.LIGHT.type,
     var deleteConfirmationPrompt: String = ""
 ) : ExportState(

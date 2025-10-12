@@ -143,6 +143,16 @@ fun ToolsScreen(
             item {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
+                    GameCard(
+                        state = state,
+                        onEvent = onEvent,
+                        modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
                     DashboardCard(
                         state = state,
                         onEvent = onEvent,

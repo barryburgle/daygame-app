@@ -9,7 +9,7 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
-import com.barryburgle.gameapp.ui.CombineNine
+import com.barryburgle.gameapp.ui.CombineEleven
 import com.barryburgle.gameapp.ui.CombineFifteen
 import com.barryburgle.gameapp.ui.CombineSixteen
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
@@ -70,7 +70,7 @@ class ToolViewModel(
             isCleaning = isCleaning
         )
     }
-    val _generalSettingState: Flow<GeneralSettingState> = CombineNine(
+    val _generalSettingState: Flow<GeneralSettingState> = CombineEleven(
         settingDao.getGenerateiDate(),
         settingDao.getNotificationTime(),
         settingDao.getFollowCount(),
@@ -79,8 +79,10 @@ class ToolViewModel(
         settingDao.getThemeSysFollow(),
         settingDao.getTheme(),
         settingDao.getSimplePlusOneReport(),
-        settingDao.getNeverShareLeadInfo()
-    ) { generateiDate, notificationTime, followCount, suggestLeadsNationality, shownNationalities, themeSysFollow, themeId, simplePlusOneReport, neverShareLead ->
+        settingDao.getNeverShareLeadInfo(),
+        settingDao.getCopyReportOnClipboard(),
+        settingDao.getShowSummaryCard()
+    ) { generateiDate, notificationTime, followCount, suggestLeadsNationality, shownNationalities, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showSummaryCard ->
         GeneralSettingState(
             generateiDate = generateiDate,
             notificationTime = notificationTime,
@@ -90,7 +92,9 @@ class ToolViewModel(
             themeSysFollow = themeSysFollow,
             themeId = themeId,
             simplePlusOneReport = simplePlusOneReport,
-            neverShareLeadInfo = neverShareLead
+            neverShareLeadInfo = neverShareLead,
+            copyReportOnClipboard = copyReportOnClipboard,
+            showSummaryCard = showSummaryCard
         )
     }
     private val _averageLast = settingDao.getAverageLast()
@@ -156,7 +160,9 @@ class ToolViewModel(
                 suggestLeadsNationality = generalSettingState.suggestLeadsNationality.toBoolean(),
                 shownNationalities = generalSettingState.shownNationalities.toInt(),
                 simplePlusOneReport = generalSettingState.simplePlusOneReport.toBoolean(),
-                neverShareLeadInfo = generalSettingState.neverShareLeadInfo.toBoolean()
+                neverShareLeadInfo = generalSettingState.neverShareLeadInfo.toBoolean(),
+                copyReportOnClipboard = generalSettingState.copyReportOnClipboard.toBoolean(),
+                showSummaryCard = generalSettingState.showSummaryCard.toBoolean()
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ToolsState())
 
@@ -621,6 +627,21 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SwitchShowSummaryCard -> {
+                _state.update {
+                    it.copy(
+                        showSummaryCard = _state.value.showSummaryCard.not()
+                    )
+                }
+                val showSummaryCard = _state.value.showSummaryCard
+                val setting =
+                    Setting(
+                        SettingDao.SHOW_SUMMARY_CARD_ID,
+                        showSummaryCard.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetTheme -> {
                 _state.update {
                     it.copy(
@@ -697,5 +718,7 @@ data class GeneralSettingState(
     val themeSysFollow: String,
     val themeId: String,
     val simplePlusOneReport: String,
-    val neverShareLeadInfo: String
+    val neverShareLeadInfo: String,
+    val copyReportOnClipboard: String,
+    val showSummaryCard: String
 )

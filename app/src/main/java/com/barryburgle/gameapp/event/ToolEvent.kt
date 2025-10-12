@@ -46,6 +46,7 @@ sealed interface ToolEvent : GenericEvent {
     object SwitchSimplePlusOneReport : ToolEvent
     object SwitchNeverShareLeadInfo : ToolEvent
     object SwitchCopyReportOnClipboard : ToolEvent
+    object SwitchShowSummaryCard : ToolEvent
     data class SetTheme(val themeId: String) : ToolEvent
     data class SetDeleteConfirmationPrompt(val deleteConfirmationPrompt: String) : ToolEvent
     object DeleteAllSessions : ToolEvent

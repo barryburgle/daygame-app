@@ -27,7 +27,7 @@ import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
 import com.barryburgle.gameapp.ui.CombineFifteen
 import com.barryburgle.gameapp.ui.CombineSeven
-import com.barryburgle.gameapp.ui.CombineSixteen
+import com.barryburgle.gameapp.ui.CombineSeventeen
 import com.barryburgle.gameapp.ui.input.state.InputSettingsState
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -134,6 +134,7 @@ class InputViewModel(
     private val _simplePlusOneReport = settingDao.getSimplePlusOneReport()
     private val _neverShareLeadInfo = settingDao.getNeverShareLeadInfo()
     private val _copyReportOnClipboard = settingDao.getCopyReportOnClipboard()
+    private val _showSummaryCard = settingDao.getShowSummaryCard()
 
     val _showSessions = MutableStateFlow(true)
     val _showSets = MutableStateFlow(true)
@@ -233,7 +234,7 @@ class InputViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _state = MutableStateFlow(InputState())
-    val _combinedSettings = CombineSixteen(
+    val _combinedSettings = CombineSeventeen(
         _notificationTime,
         _exportSessionsFileName,
         _exportLeadsFileName,
@@ -249,8 +250,9 @@ class InputViewModel(
         _shownNationalities,
         _simplePlusOneReport,
         _neverShareLeadInfo,
-        _copyReportOnClipboard
-    ) { notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, generateiDate, followCount, suggestLeadsNationality, shownNationalities, simplePlusOneReport, neverShareLeadInfo, copyReportOnClipboard ->
+        _copyReportOnClipboard,
+        _showSummaryCard
+    ) { notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, generateiDate, followCount, suggestLeadsNationality, shownNationalities, simplePlusOneReport, neverShareLeadInfo, copyReportOnClipboard, showSummaryCard ->
         InputSettingsState(
             notificationTime = notificationTime,
             exportSessionsFileName = exportSessionsFileName,
@@ -267,7 +269,8 @@ class InputViewModel(
             shownNationalities = shownNationalities.toInt(),
             simplePlusOneReport = simplePlusOneReport.toBoolean(),
             neverShareLeadInfo = neverShareLeadInfo.toBoolean(),
-            copyReportOnClipboard = copyReportOnClipboard.toBoolean()
+            copyReportOnClipboard = copyReportOnClipboard.toBoolean(),
+            showSummaryCard = showSummaryCard.toBoolean()
         )
     }
     val _mostPopularLeadsNationalities = leadDao.getNationalityHistogram()
@@ -317,6 +320,7 @@ class InputViewModel(
             simplePlusOneReport = combinedSettings.simplePlusOneReport,
             neverShareLeadInfo = combinedSettings.neverShareLeadInfo,
             copyReportOnClipboard = combinedSettings.copyReportOnClipboard,
+            showSummaryCard = combinedSettings.showSummaryCard,
             mostPopularLeadsNationalities = mostPopularLeadsNationalities
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())

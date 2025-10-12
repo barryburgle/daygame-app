@@ -50,6 +50,7 @@ interface SettingDao {
         const val SIMPLE_PLUS_ONE_REPORT_ID: String = "simple_plus_one_report"
         const val NEVER_SHARE_LEAD_INFO_ID: String = "never_share_lead_info"
         const val COPY_REPORT_ON_CLIPBOARD_ID: String = "copy_report_on_clipboard"
+        const val SHOW_SUMMARY_CARD_ID: String = "show_summary_card"
         const val THEME_ID: String = "theme_id"
         const val DEFAULT_LEADS_EXPORT_FILE_NAME: String = "leads_export"
         const val DEFAULT_LEADS_IMPORT_FILE_NAME: String = "leads_export_yyyy_mm_dd_hh_mm.csv"
@@ -77,6 +78,7 @@ interface SettingDao {
         const val SIMPLE_PLUS_ONE_REPORT_FLAG: String = "true"
         const val NEVER_SHARE_LEAD_INFO_FLAG: String = "true"
         const val COPY_REPORT_ON_CLIPBOARD_FLAG: String = "true"
+        const val SHOW_SUMMARY_CARD_FLAG: String = "false"
         const val THEME_VALUE: String = "light"
         const val DEFAULT_BACKUP_NUMBER: String = "3"
         const val DEFAULT_NOTIFICATION_TIME: String = "18:00"
@@ -173,6 +175,9 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${COPY_REPORT_ON_CLIPBOARD_FLAG}' ELSE value END FROM setting WHERE id = '${COPY_REPORT_ON_CLIPBOARD_ID}'")
     fun getCopyReportOnClipboard(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${SHOW_SUMMARY_CARD_FLAG}' ELSE value END FROM setting WHERE id = '${SHOW_SUMMARY_CARD_ID}'")
+    fun getShowSummaryCard(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${THEME_VALUE}' ELSE value END FROM setting WHERE id = '${THEME_ID}'")
     fun getTheme(): Flow<String>
