@@ -1,3 +1,11 @@
+# Version 1.10.0 (2025-11-xx)
+
+**Features**
+- Info button to inspect and export data from Results histograms
+
+**Bugs**
+- Months chart bugfix
+
 # Version 1.9.0 (2025-07-30)
 
 ***WARNING*** ⚠️
