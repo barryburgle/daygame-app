@@ -179,18 +179,30 @@ fun InfoDialog(
                                         ),
                                     horizontalArrangement = Arrangement.SpaceAround
                                 ) {
-                                    DescribedQuantifier(
-                                        quantity = pair.first,
-                                        quantityFontSize = perfFontSize,
-                                        description = state.infoDialogTitle,
-                                        descriptionFontSize = descriptionFontSize
-                                    )
-                                    DescribedQuantifier(
-                                        quantity = pair.second,
-                                        quantityFontSize = perfFontSize,
-                                        description = state.trackedEntity,
-                                        descriptionFontSize = descriptionFontSize
-                                    )
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth(0.7f),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        DescribedQuantifier(
+                                            quantity = pair.first,
+                                            quantityFontSize = perfFontSize,
+                                            description = state.infoDialogTitle,
+                                            descriptionFontSize = descriptionFontSize
+                                        )
+                                    }
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        DescribedQuantifier(
+                                            quantity = pair.second,
+                                            quantityFontSize = perfFontSize,
+                                            description = state.trackedEntity,
+                                            descriptionFontSize = descriptionFontSize
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -220,14 +232,24 @@ fun exportHistogramDataPoints(
 
 fun getHistogramDataPoints(completeHistogram: List<Any>): List<Pair<String, String>> {
     var descriptionFrequencyPairs: List<Pair<String, String>> = emptyList()
+    val maxCountryNameLength = 13
     for (histogramDataPoint in completeHistogram) {
         var description = ""
         var frequency = ""
         when (histogramDataPoint) {
             is CategoryHistogram -> {
                 var tempHistogramDataPoint = histogramDataPoint as CategoryHistogram
+                var countryName =
+                    CountryEnum.getCountryNameByAlpha3(tempHistogramDataPoint.category)
+                var extreme = countryName.length
+                var suffix = ""
+                if (countryName.length > maxCountryNameLength) {
+                    extreme = maxCountryNameLength
+                    suffix = "..."
+                }
+                countryName = countryName.substring(0, extreme) + suffix
                 description =
-                    CountryEnum.getFlagByAlpha3(tempHistogramDataPoint.category) + " " + tempHistogramDataPoint.category
+                    CountryEnum.getFlagByAlpha3(tempHistogramDataPoint.category) + " " + countryName
                 frequency = tempHistogramDataPoint.frequency.toInt().toString()
             }
 
