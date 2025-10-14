@@ -9,6 +9,8 @@ import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
+import com.barryburgle.gameapp.model.stat.AggregatedDates
+import com.barryburgle.gameapp.model.stat.AggregatedSessions
 import com.barryburgle.gameapp.model.stat.CategoryHistogram
 import com.barryburgle.gameapp.ui.state.ExportState
 
@@ -87,7 +89,11 @@ data class InputState(
     var neverShareLeadInfo: Boolean = false,
     var copyReportOnClipboard: Boolean = true,
     var showSummaryCard: Boolean = false,
-    val mostPopularLeadsNationalities: List<CategoryHistogram> = emptyList()
+    val mostPopularLeadsNationalities: List<CategoryHistogram> = emptyList(),
+    val sessionsByWeek: List<AggregatedSessions> = emptyList(),
+    val sessionsByMonth: List<AggregatedSessions> = emptyList(),
+    val datesByWeek: List<AggregatedDates> = emptyList(),
+    val datesByMonth: List<AggregatedDates> = emptyList()
 ) : ExportState(
     sessionSortType,
     exportSessionsFileName,

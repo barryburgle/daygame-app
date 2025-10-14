@@ -3,9 +3,11 @@ package com.barryburgle.gameapp.ui.input
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.barryburgle.gameapp.dao.date.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
+import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
 import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.GameEvent
@@ -25,7 +27,7 @@ import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
-import com.barryburgle.gameapp.ui.CombineFifteen
+import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.CombineSeven
 import com.barryburgle.gameapp.ui.CombineSeventeen
 import com.barryburgle.gameapp.ui.input.state.InputSettingsState
@@ -47,7 +49,9 @@ class InputViewModel(
     private val settingDao: SettingDao,
     private val leadDao: LeadDao,
     private val dateDao: DateDao,
-    private val setDao: SetDao
+    private val setDao: SetDao,
+    private val aggregatedSessionsDao: AggregatedSessionsDao,
+    private val aggregatedDatesDao: AggregatedDatesDao
 ) : ViewModel() {
 
     val notificationScheduler = AndroidNotificationScheduler(context)
@@ -135,6 +139,14 @@ class InputViewModel(
     private val _neverShareLeadInfo = settingDao.getNeverShareLeadInfo()
     private val _copyReportOnClipboard = settingDao.getCopyReportOnClipboard()
     private val _showSummaryCard = settingDao.getShowSummaryCard()
+    private val _sessionsByWeek = aggregatedSessionsDao.groupStatsByWeekNumber()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _sessionsByMonth = aggregatedSessionsDao.groupStatsByMonth()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _datesByWeek = aggregatedDatesDao.groupStatsByWeekNumber()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _datesByMonth = aggregatedDatesDao.groupStatsByMonth()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     val _showSessions = MutableStateFlow(true)
     val _showSets = MutableStateFlow(true)
@@ -274,7 +286,7 @@ class InputViewModel(
         )
     }
     val _mostPopularLeadsNationalities = leadDao.getNationalityHistogram()
-    val state = CombineFifteen(
+    val state = CombineNineteen(
         _state,
         _allSessions,
         _allLeads,
@@ -289,8 +301,12 @@ class InputViewModel(
         _showDates,
         _gameEventSortType,
         _combinedSettings,
-        _mostPopularLeadsNationalities
-    ) { state, allSessions, allLeads, allDates, sessionSortType, dateSortType, setSortType, allSets, allEvents, showSessions, showSets, showDates, gameEventSortType, combinedSettings, mostPopularLeadsNationalities ->
+        _mostPopularLeadsNationalities,
+        _sessionsByWeek,
+        _sessionsByMonth,
+        _datesByWeek,
+        _datesByMonth
+    ) { state, allSessions, allLeads, allDates, sessionSortType, dateSortType, setSortType, allSets, allEvents, showSessions, showSets, showDates, gameEventSortType, combinedSettings, mostPopularLeadsNationalities, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth ->
         state.copy(
             allSessions = allSessions,
             allLeads = allLeads,
@@ -321,7 +337,11 @@ class InputViewModel(
             neverShareLeadInfo = combinedSettings.neverShareLeadInfo,
             copyReportOnClipboard = combinedSettings.copyReportOnClipboard,
             showSummaryCard = combinedSettings.showSummaryCard,
-            mostPopularLeadsNationalities = mostPopularLeadsNationalities
+            mostPopularLeadsNationalities = mostPopularLeadsNationalities,
+            sessionsByWeek = sessionsByWeek,
+            sessionsByMonth = sessionsByMonth,
+            datesByWeek = datesByWeek,
+            datesByMonth = datesByMonth
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())
 
