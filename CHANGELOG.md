@@ -2,6 +2,7 @@
 
 **Features**
 - Info button to inspect and export data from Results histograms
+- Enable the Summary card to get a summary of you last week and month on the app open
 
 **Bugs**
 - Months chart bugfix
