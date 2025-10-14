@@ -64,6 +64,7 @@ import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.card.EventCard
+import com.barryburgle.gameapp.ui.input.card.SummaryCard
 import com.barryburgle.gameapp.ui.input.dialog.DateDialog
 import com.barryburgle.gameapp.ui.input.dialog.SessionDialog
 import com.barryburgle.gameapp.ui.input.dialog.SetDialog
@@ -214,6 +215,26 @@ fun InputScreen(
         ) {
             item {
                 Spacer(modifier = Modifier.height(120.dp))
+            }
+            if (state.showSummaryCard &&
+                state.sessionsByWeek.isNotEmpty() &&
+                state.sessionsByMonth.isNotEmpty() &&
+                state.datesByWeek.isNotEmpty() &&
+                state.datesByMonth.isNotEmpty()
+            ) {
+                item {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Spacer(modifier = Modifier.width(spaceFromLeft))
+                        SummaryCard(
+                            state,
+                            Modifier
+                                .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
+                                .shadow(
+                                    elevation = 5.dp, shape = MaterialTheme.shapes.large
+                                )
+                        )
+                    }
+                }
             }
             items(state.allEvents) { sortableGameEvent ->
                 Row(modifier = Modifier.fillMaxWidth()) {
