@@ -44,8 +44,8 @@ fun SummaryBody(
                     .background(
                         brush = Brush.linearGradient(
                             colors = listOf(
-                                MaterialTheme.colorScheme.secondaryContainer,
-                                MaterialTheme.colorScheme.primary
+                                MaterialTheme.colorScheme.primary.copy(0.2f),
+                                MaterialTheme.colorScheme.secondaryContainer.copy(0.2f)
                             ),
                         ),
                         shape = RoundedCornerShape(25.dp)
@@ -66,8 +66,8 @@ fun SummaryBody(
                     .background(
                         brush = Brush.linearGradient(
                             colors = listOf(
-                                MaterialTheme.colorScheme.secondaryContainer,
-                                MaterialTheme.colorScheme.primary
+                                MaterialTheme.colorScheme.primary.copy(0.2f),
+                                MaterialTheme.colorScheme.secondaryContainer.copy(0.2f)
                             ),
                         ),
                         shape = RoundedCornerShape(25.dp)
@@ -88,8 +88,8 @@ fun SummaryBody(
                     .background(
                         brush = Brush.linearGradient(
                             colors = listOf(
-                                MaterialTheme.colorScheme.secondaryContainer,
-                                MaterialTheme.colorScheme.primary
+                                MaterialTheme.colorScheme.primary.copy(0.2f),
+                                MaterialTheme.colorScheme.secondaryContainer.copy(0.2f)
                             ),
                         ),
                         shape = RoundedCornerShape(25.dp)

@@ -36,7 +36,7 @@ fun CardSection(width: Float = 1f, sectionFunction: @Composable () -> Unit) {
                         .fillMaxWidth()
                         .fillMaxHeight()
                         .background(
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.primary.copy(0.05f),
                             shape = RoundedCornerShape(10.dp)
                         )
                         .padding(7.dp)
