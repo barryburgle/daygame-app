@@ -1,8 +1,9 @@
 # Version 1.10.0 (2025-11-xx)
 
 **Features**
-- Info button to inspect and export data from Results histograms
-- Enable the Summary card to get a summary of you last week and month on the app open
+- Info button to inspect and export data from Results histograms 📊
+- Enable the Summary card to get a summary of you last week and month on the app open 📌
+- Share Summary, Sessions, Single Sets, Leads and Dates result cards with one tap ✨
 
 **Bugs**
 - Months chart bugfix
