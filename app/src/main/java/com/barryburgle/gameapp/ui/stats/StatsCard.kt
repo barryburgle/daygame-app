@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.barryburgle.gameapp.ui.input.card.CardSection
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -190,89 +191,93 @@ fun StatsCard(
                         modifier = Modifier
                             .fillMaxHeight()
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            DescribedQuantifier(
-                                quantity = firstQuantifierQuantity,
-                                quantityFontSize = countFontSize,
-                                description = firstQuantifierDescription,
-                                descriptionFontSize = descriptionFontSize
-                            )
-                            DescribedQuantifier(
-                                quantity = secondQuantifierQuantity,
-                                quantityFontSize = countFontSize,
-                                description = secondQuantifierDescription,
-                                descriptionFontSize = descriptionFontSize
-                            )
-                            DescribedQuantifier(
-                                quantity = thirdQuantifierQuantity,
-                                quantityFontSize = countFontSize,
-                                description = thirdQuantifierDescription,
-                                descriptionFontSize = descriptionFontSize
-                            )
-                            if (fourthQuantifierQuantity != null && fourthQuantifierDescription != null) {
+                        CardSection {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
                                 DescribedQuantifier(
-                                    quantity = fourthQuantifierQuantity,
+                                    quantity = firstQuantifierQuantity,
                                     quantityFontSize = countFontSize,
-                                    description = fourthQuantifierDescription,
+                                    description = firstQuantifierDescription,
                                     descriptionFontSize = descriptionFontSize
                                 )
-                            }
-                            if (fifthQuantifierQuantity != null && fifthQuantifierDescription != null) {
                                 DescribedQuantifier(
-                                    quantity = fifthQuantifierQuantity,
+                                    quantity = secondQuantifierQuantity,
                                     quantityFontSize = countFontSize,
-                                    description = fifthQuantifierDescription,
+                                    description = secondQuantifierDescription,
                                     descriptionFontSize = descriptionFontSize
                                 )
+                                DescribedQuantifier(
+                                    quantity = thirdQuantifierQuantity,
+                                    quantityFontSize = countFontSize,
+                                    description = thirdQuantifierDescription,
+                                    descriptionFontSize = descriptionFontSize
+                                )
+                                if (fourthQuantifierQuantity != null && fourthQuantifierDescription != null) {
+                                    DescribedQuantifier(
+                                        quantity = fourthQuantifierQuantity,
+                                        quantityFontSize = countFontSize,
+                                        description = fourthQuantifierDescription,
+                                        descriptionFontSize = descriptionFontSize
+                                    )
+                                }
+                                if (fifthQuantifierQuantity != null && fifthQuantifierDescription != null) {
+                                    DescribedQuantifier(
+                                        quantity = fifthQuantifierQuantity,
+                                        quantityFontSize = countFontSize,
+                                        description = fifthQuantifierDescription,
+                                        descriptionFontSize = descriptionFontSize
+                                    )
+                                }
                             }
                         }
                         Spacer(modifier = Modifier.height(12.dp))
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            DescribedQuantifier(
-                                quantity = firstPerformanceQuantity,
-                                quantityFontSize = perfFontSize,
-                                description = firstPerformanceDescription,
-                                descriptionFontSize = descriptionFontSize
-                            )
-                            DescribedQuantifier(
-                                quantity = secondPerformanceQuantity,
-                                quantityFontSize = perfFontSize,
-                                description = secondPerformanceDescription,
-                                descriptionFontSize = descriptionFontSize
-                            )
-                            if (thirdPerformanceQuantity != null && thirdPerformanceDescription != null) {
+                        CardSection {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
                                 DescribedQuantifier(
-                                    quantity = thirdPerformanceQuantity,
+                                    quantity = firstPerformanceQuantity,
                                     quantityFontSize = perfFontSize,
-                                    description = thirdPerformanceDescription,
+                                    description = firstPerformanceDescription,
                                     descriptionFontSize = descriptionFontSize
                                 )
-                            }
-                            if (fourthPerformanceQuantity != null && fourthPerformanceDescription != null) {
                                 DescribedQuantifier(
-                                    quantity = fourthPerformanceQuantity,
+                                    quantity = secondPerformanceQuantity,
                                     quantityFontSize = perfFontSize,
-                                    description = fourthPerformanceDescription,
+                                    description = secondPerformanceDescription,
                                     descriptionFontSize = descriptionFontSize
                                 )
-                            }
-                            if (fifthPerformanceQuantity != null && fifthPerformanceDescription != null) {
-                                DescribedQuantifier(
-                                    quantity = fifthPerformanceQuantity,
-                                    quantityFontSize = perfFontSize,
-                                    description = fifthPerformanceDescription,
-                                    descriptionFontSize = descriptionFontSize
-                                )
+                                if (thirdPerformanceQuantity != null && thirdPerformanceDescription != null) {
+                                    DescribedQuantifier(
+                                        quantity = thirdPerformanceQuantity,
+                                        quantityFontSize = perfFontSize,
+                                        description = thirdPerformanceDescription,
+                                        descriptionFontSize = descriptionFontSize
+                                    )
+                                }
+                                if (fourthPerformanceQuantity != null && fourthPerformanceDescription != null) {
+                                    DescribedQuantifier(
+                                        quantity = fourthPerformanceQuantity,
+                                        quantityFontSize = perfFontSize,
+                                        description = fourthPerformanceDescription,
+                                        descriptionFontSize = descriptionFontSize
+                                    )
+                                }
+                                if (fifthPerformanceQuantity != null && fifthPerformanceDescription != null) {
+                                    DescribedQuantifier(
+                                        quantity = fifthPerformanceQuantity,
+                                        quantityFontSize = perfFontSize,
+                                        description = fifthPerformanceDescription,
+                                        descriptionFontSize = descriptionFontSize
+                                    )
+                                }
                             }
                         }
                     }
@@ -321,8 +326,10 @@ fun exportStats(
         fifthQuantifierQuantity
     )
     quantifierResult += "\n" +
-            firstPerformanceDescription.split("\n").joinToString(" ") + ": " + firstPerformanceQuantity + "\n" +
-            secondPerformanceDescription.split("\n").joinToString(" ") + ": " + secondPerformanceQuantity + "\n"
+            firstPerformanceDescription.split("\n")
+                .joinToString(" ") + ": " + firstPerformanceQuantity + "\n" +
+            secondPerformanceDescription.split("\n")
+                .joinToString(" ") + ": " + secondPerformanceQuantity + "\n"
     quantifierResult = addDescriptionAndQuantifierIfNotNull(
         quantifierResult,
         thirdPerformanceDescription,
