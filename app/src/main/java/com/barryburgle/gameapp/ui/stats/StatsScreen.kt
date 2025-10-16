@@ -10,6 +10,11 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Contacts
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.GroupAdd
+import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -83,11 +88,13 @@ fun StatsScreen(
                         StatsCard(
                             modifier = cardModifier,
                             title = "Sessions",
+                            statCardIcon = Icons.Default.GroupAdd,
                             description = "${GlobalStatsService.computeSessionSpentHours(state.allSessions)} hours spent on sessions, on average a set each ${
                                 GlobalStatsService.computeAvgApproachTime(
                                     state.allSessions
                                 )
                             } minutes",
+                            copyReportOnClipboard = state.copyReportOnClipboard,
                             firstQuantifierQuantity = "${sets}",
                             firstQuantifierDescription = "Sets",
                             secondQuantifierQuantity = "${conversations}",
@@ -151,7 +158,9 @@ fun StatsScreen(
                         StatsCard(
                             modifier = cardModifier,
                             title = "Single Sets",
+                            statCardIcon = Icons.Default.PersonAddAlt1,
                             description = "${timeSpentSentence} spent on single sets, " + contactSentence,
+                            copyReportOnClipboard = state.copyReportOnClipboard,
                             firstQuantifierQuantity = "${state.allSets.size}",
                             firstQuantifierDescription = "Sets",
                             secondQuantifierQuantity = "${conversations}",
@@ -204,7 +213,9 @@ fun StatsScreen(
                         StatsCard(
                             modifier = cardModifier,
                             title = "Leads",
+                            statCardIcon = Icons.Default.Contacts,
                             description = if (avgLeadTime != 0L) "On average a new lead each ${avgLeadTime} minutes" else "No leads acquired yet",
+                            copyReportOnClipboard = state.copyReportOnClipboard,
                             firstQuantifierQuantity = "${state.allLeads.size}",
                             firstQuantifierDescription = "Leads",
                             secondQuantifierQuantity = "${numbers}",
@@ -250,7 +261,9 @@ fun StatsScreen(
                         StatsCard(
                             modifier = cardModifier,
                             title = "Dates",
+                            statCardIcon = Icons.Default.Favorite,
                             description = "${GlobalStatsService.computeDateSpentHours(state.allDates)} hours spent on dates, " + layTimeSentence,
+                            copyReportOnClipboard = state.copyReportOnClipboard,
                             firstQuantifierQuantity = "${state.allDates.size}",
                             firstQuantifierDescription = "Dates",
                             secondQuantifierQuantity = "${pulls}",
