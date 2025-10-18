@@ -342,7 +342,7 @@ fun leadName(
 ) {
     var displayName = lead.name
     if (displayName != null && !displayName.isBlank()) {
-        if (displayName.length > 7) {
+        if (displayName.length >= 7) {
             displayName = displayName.substring(0, 5) + "... "
         }
         Column(

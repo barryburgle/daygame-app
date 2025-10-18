@@ -7,6 +7,7 @@
 
 **Bugs**
 - Months chart bugfix
+- Leads name cut bugfix
 
 # Version 1.9.0 (2025-07-30)
 
