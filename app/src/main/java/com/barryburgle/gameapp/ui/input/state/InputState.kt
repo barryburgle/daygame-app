@@ -93,7 +93,8 @@ data class InputState(
     val sessionsByWeek: List<AggregatedSessions> = emptyList(),
     val sessionsByMonth: List<AggregatedSessions> = emptyList(),
     val datesByWeek: List<AggregatedDates> = emptyList(),
-    val datesByMonth: List<AggregatedDates> = emptyList()
+    val datesByMonth: List<AggregatedDates> = emptyList(),
+    var isInOverlay: Boolean = false
 ) : ExportState(
     sessionSortType,
     exportSessionsFileName,

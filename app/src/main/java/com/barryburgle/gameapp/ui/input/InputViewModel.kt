@@ -1095,6 +1095,14 @@ class InputViewModel(
                     )
                 }
             }
+
+            is GameEvent.SwitchIsInOverlay -> {
+                _state.update {
+                    it.copy(
+                        isInOverlay = _state.value.isInOverlay.not()
+                    )
+                }
+            }
         }
     }
 }
