@@ -88,6 +88,7 @@ fun SessionDialog(
         setState(state)
     }
     AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
+        onEvent(GameEvent.SwitchIsInOverlay)
         onEvent(GameEvent.HideDialog)
     }, title = {
         LargeTitleText(description)
@@ -299,6 +300,7 @@ fun SessionDialog(
     }, confirmButton = {
         ConfirmButton {
             onEvent(GameEvent.SaveAbstractSession)
+            onEvent(GameEvent.SwitchIsInOverlay)
             onEvent(GameEvent.HideDialog)
             onEvent(GameEvent.SwitchJustSaved)
             Toast.makeText(
@@ -310,6 +312,7 @@ fun SessionDialog(
         }
     }, dismissButton = {
         DismissButton {
+            onEvent(GameEvent.SwitchIsInOverlay)
             onEvent(GameEvent.HideDialog)
         }
     }

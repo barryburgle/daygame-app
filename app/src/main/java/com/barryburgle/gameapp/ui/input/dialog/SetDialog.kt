@@ -57,6 +57,7 @@ fun SetDialog(
         setState(state)
     }
     AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
+        onEvent(GameEvent.SwitchIsInOverlay)
         onEvent(GameEvent.HideDialog)
     }, title = {
         LargeTitleText(text = description)
@@ -223,6 +224,7 @@ fun SetDialog(
     }, confirmButton = {
         ConfirmButton {
             onEvent(GameEvent.SaveSet)
+            onEvent(GameEvent.SwitchIsInOverlay)
             onEvent(GameEvent.HideDialog)
             onEvent(GameEvent.SwitchJustSaved)
             Toast.makeText(localContext, "Set saved", Toast.LENGTH_SHORT).show()
@@ -230,6 +232,7 @@ fun SetDialog(
     },
         dismissButton = {
             DismissButton {
+                onEvent(GameEvent.SwitchIsInOverlay)
                 onEvent(GameEvent.HideDialog)
             }
         })

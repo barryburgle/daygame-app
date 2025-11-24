@@ -128,6 +128,7 @@ fun InputScreen(
                         exit = floatingButtonExitTransition(300)
                     ) {
                         floatingAddButton(Icons.Default.Favorite, "Date") {
+                            onEvent(GameEvent.SwitchIsInOverlay)
                             onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.DATE))
                             isExpanded = false
                             isRotated = false
@@ -139,6 +140,7 @@ fun InputScreen(
                         exit = floatingButtonExitTransition(500)
                     ) {
                         floatingAddButton(Icons.Default.PersonAddAlt1, "Set") {
+                            onEvent(GameEvent.SwitchIsInOverlay)
                             onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SET))
                             isExpanded = false
                             isRotated = false
@@ -150,6 +152,7 @@ fun InputScreen(
                         exit = floatingButtonExitTransition(700)
                     ) {
                         floatingAddButton(Icons.Default.GroupAdd, "Session") {
+                            onEvent(GameEvent.SwitchIsInOverlay)
                             onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SESSION))
                             isExpanded = false
                             isRotated = false
