@@ -92,7 +92,7 @@ fun DataEntryCard(
             onEvent(ToolEvent.SwitchAutoSetEventDateTime)
         }
         var autoSetOptionTitle = "Auto-set the %s time"
-        var autoSetOptionDesc = "Now setting the %s time of a new %s to current time"
+        var autoSetOptionDesc = "Setting the %s hour of a new %s to current"
         autoSetEventTime(
             autoSetOptionTitle,
             autoSetOptionDesc,
