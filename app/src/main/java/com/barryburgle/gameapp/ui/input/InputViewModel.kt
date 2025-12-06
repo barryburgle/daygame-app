@@ -29,7 +29,7 @@ import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
 import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.CombineSeven
-import com.barryburgle.gameapp.ui.CombineSeventeen
+import com.barryburgle.gameapp.ui.CombineTwentyOne
 import com.barryburgle.gameapp.ui.input.state.InputSettingsState
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -134,6 +134,10 @@ class InputViewModel(
     private val _generateiDate = settingDao.getGenerateiDate()
     private val _followCount = settingDao.getFollowCount()
     private val _suggestLeadsNationality = settingDao.getSuggestLeadsNationality()
+    private val _autoSetEventDateTime = settingDao.getAutoSetEventDateTime()
+    private val _autoSetSessionTimeToStart = settingDao.getAutoSetSessionTimeToStart()
+    private val _autoSetSetTimeToStart = settingDao.getAutoSetSetTimeToStart()
+    private val _autoSetDateTimeToStart = settingDao.getAutoSetDateTimeToStart()
     private val _shownNationalities = settingDao.getShownNationalities()
     private val _simplePlusOneReport = settingDao.getSimplePlusOneReport()
     private val _neverShareLeadInfo = settingDao.getNeverShareLeadInfo()
@@ -246,7 +250,7 @@ class InputViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _state = MutableStateFlow(InputState())
-    val _combinedSettings = CombineSeventeen(
+    val _combinedSettings = CombineTwentyOne(
         _notificationTime,
         _exportSessionsFileName,
         _exportLeadsFileName,
@@ -259,12 +263,16 @@ class InputViewModel(
         _generateiDate,
         _followCount,
         _suggestLeadsNationality,
+        _autoSetEventDateTime,
+        _autoSetSessionTimeToStart,
+        _autoSetSetTimeToStart,
+        _autoSetDateTimeToStart,
         _shownNationalities,
         _simplePlusOneReport,
         _neverShareLeadInfo,
         _copyReportOnClipboard,
         _showSummaryCard
-    ) { notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, generateiDate, followCount, suggestLeadsNationality, shownNationalities, simplePlusOneReport, neverShareLeadInfo, copyReportOnClipboard, showSummaryCard ->
+    ) { notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, generateiDate, followCount, suggestLeadsNationality, autoSetEventDateTime, autoSetSessionTimeToStart, autoSetSetTimeToStart, autoSetDateTimeToStart, shownNationalities, simplePlusOneReport, neverShareLeadInfo, copyReportOnClipboard, showSummaryCard ->
         InputSettingsState(
             notificationTime = notificationTime,
             exportSessionsFileName = exportSessionsFileName,
@@ -278,6 +286,10 @@ class InputViewModel(
             generateiDate = generateiDate.toBoolean(),
             followCount = followCount.toBoolean(),
             suggestLeadsNationality = suggestLeadsNationality.toBoolean(),
+            autoSetEventDateTime = autoSetEventDateTime.toBoolean(),
+            autoSetSessionTimeToStart = autoSetSessionTimeToStart.toBoolean(),
+            autoSetSetTimeToStart = autoSetSetTimeToStart.toBoolean(),
+            autoSetDateTimeToStart = autoSetDateTimeToStart.toBoolean(),
             shownNationalities = shownNationalities.toInt(),
             simplePlusOneReport = simplePlusOneReport.toBoolean(),
             neverShareLeadInfo = neverShareLeadInfo.toBoolean(),
@@ -332,6 +344,10 @@ class InputViewModel(
             generateiDate = combinedSettings.generateiDate,
             followCount = combinedSettings.followCount,
             suggestLeadsNationality = combinedSettings.suggestLeadsNationality,
+            autoSetEventDateTime = combinedSettings.autoSetEventDateTime,
+            autoSetSessionTimeToStart = combinedSettings.autoSetSessionTimeToStart,
+            autoSetSetTimeToStart = combinedSettings.autoSetSetTimeToStart,
+            autoSetDateTimeToStart = combinedSettings.autoSetDateTimeToStart,
             shownNationalities = combinedSettings.shownNationalities,
             simplePlusOneReport = combinedSettings.simplePlusOneReport,
             neverShareLeadInfo = combinedSettings.neverShareLeadInfo,
