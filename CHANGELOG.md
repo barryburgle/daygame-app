@@ -5,6 +5,7 @@
 - Enable the Summary card to get a summary of you last week and month on the app open 📌
 - Share Summary, Sessions, Single Sets, Leads and Dates result cards with one tap ✨
 - Blur background when dialog is shown 🔎
+- Blur right side session event leads scrolling 🔎
 
 **Bugs**
 - Months chart bugfix
