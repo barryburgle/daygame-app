@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -141,6 +142,7 @@ fun SessionDialog(
                                 },
                                 imageVector = Icons.Default.Add,
                                 contentDescription = "Add a lead"
+                                // TODO: the blur stys set on when inserting a lead on the session and then getting back to game events view
                             )
                         }
                     }
@@ -344,7 +346,7 @@ fun leadName(
     cardShow: Boolean
 ) {
     var displayName = lead.name
-    if (displayName != null && !displayName.isBlank()) {
+    if (displayName.isNotBlank()) {
         if (displayName.length >= 7) {
             displayName = displayName.substring(0, 5) + "... "
         }
@@ -358,7 +360,7 @@ fun leadName(
             Column(
                 modifier = Modifier
                     .background(
-                        color = backgroundColor, shape = RoundedCornerShape(5.dp)
+                        color = backgroundColor, shape = RoundedCornerShape(20.dp)
                     )
                     .width(80.dp)
                     .padding(8.dp),
