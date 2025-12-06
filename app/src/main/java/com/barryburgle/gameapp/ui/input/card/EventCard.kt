@@ -26,6 +26,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -310,6 +313,7 @@ fun EventCard(
                             }
                         }
                         Spacer(modifier = Modifier.height(7.dp))
+                        val semiOpaqueBackground = MaterialTheme.colorScheme.surface
                         CardSection {
                             if (leads == null || leads.isEmpty()) {
                                 LittleBodyText("No leads")
@@ -317,12 +321,21 @@ fun EventCard(
                                 LittleBodyText("Leads:")
                                 Spacer(modifier = Modifier.height(7.dp))
                                 LazyRow(
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(120.dp)
+                                        .drawWithContent {
+                                            drawContent()
+                                            drawRect(
+                                                brush = getEventCardLeadsBrush(semiOpaqueBackground)
+                                            )
+                                        },
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
+                                    item {
+                                        Spacer(modifier = Modifier.width(15.dp))
+                                    }
                                     for (lead in leads) {
-                                        item {
-                                            Spacer(modifier = Modifier.width(5.dp))
-                                        }
                                         item {
                                             Row(
                                                 modifier = Modifier.clickable {
@@ -350,6 +363,12 @@ fun EventCard(
                                                 )
                                             }
                                         }
+                                        item {
+                                            Spacer(modifier = Modifier.width(5.dp))
+                                        }
+                                    }
+                                    item {
+                                        Spacer(modifier = Modifier.width(35.dp))
                                     }
                                 }
                             }
@@ -419,4 +438,19 @@ fun EventCard(
             }
         }
     }
+}
+
+fun getEventCardLeadsBrush(semiOpaqueBackground: Color): Brush {
+    return Brush.horizontalGradient(
+        0.0f to semiOpaqueBackground,
+        0.01f to semiOpaqueBackground.copy(alpha = 0.95f),
+        0.02f to semiOpaqueBackground.copy(alpha = 0.6f),
+        0.03f to semiOpaqueBackground.copy(alpha = 0.2f),
+        0.05f to semiOpaqueBackground.copy(alpha = 0f),
+        0.88f to semiOpaqueBackground.copy(alpha = 0f),
+        0.91f to semiOpaqueBackground.copy(alpha = 0.3f),
+        0.94f to semiOpaqueBackground.copy(alpha = 0.65f),
+        0.97f to semiOpaqueBackground.copy(alpha = 0.99f),
+        1.0f to semiOpaqueBackground
+    )
 }
