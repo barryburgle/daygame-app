@@ -118,8 +118,6 @@ fun InfoDialog(
                             imageVector = Icons.Default.Share,
                             contentDescription = "Share Histogram"
                         )
-
-
                     }
                 }
             }
