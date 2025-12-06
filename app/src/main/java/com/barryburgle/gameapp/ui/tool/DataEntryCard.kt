@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
+import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.utilities.setting.IconButtonSetting
 import com.barryburgle.gameapp.ui.utilities.setting.SwitchSetting
@@ -83,5 +84,70 @@ fun DataEntryCard(
         ) {
             onEvent(ToolEvent.SwitchSuggestLeadsNationality)
         }
+        SwitchSetting(
+            "Auto-set date and time",
+            state.autoSetEventDateTime,
+            description = "When inserting a new session, set or date the date and time will respectively be set to the current one and the one selected by the respective toggle"
+        ) {
+            onEvent(ToolEvent.SwitchAutoSetEventDateTime)
+        }
+        var autoSetOptionTitle = "Auto-set the %s time"
+        var autoSetOptionDesc = "Now setting the %s time of a new %s to current time"
+        autoSetEventTime(
+            autoSetOptionTitle,
+            autoSetOptionDesc,
+            EventTypeEnum.SESSION,
+            state.autoSetSessionTimeToStart && state.autoSetEventDateTime, // Such that disabling state.autoSetEventDateTime makes all the other flags disabled, but the actual time settings are never deleted
+            state.autoSetEventDateTime
+        ) {
+            onEvent(ToolEvent.SwitchAutoSetSessionTimeToStart)
+        }
+        autoSetEventTime(
+            autoSetOptionTitle,
+            autoSetOptionDesc,
+            EventTypeEnum.SET,
+            state.autoSetSetTimeToStart && state.autoSetEventDateTime, // Such that disabling state.autoSetEventDateTime makes all the other flags disabled, but the actual time settings are never deleted
+            state.autoSetEventDateTime
+        ) {
+            onEvent(ToolEvent.SwitchAutoSetSetTimeToStart)
+        }
+        autoSetEventTime(
+            autoSetOptionTitle,
+            autoSetOptionDesc,
+            EventTypeEnum.DATE,
+            state.autoSetDateTimeToStart && state.autoSetEventDateTime, // Such that disabling state.autoSetEventDateTime makes all the other flags disabled, but the actual time settings are never deleted
+            state.autoSetEventDateTime
+        ) {
+            onEvent(ToolEvent.SwitchAutoSetDateTimeToStart)
+        }
+    }
+}
+
+@Composable
+fun autoSetEventTime(
+    autoSetOptionTitle: String,
+    autoSetOptionDesc: String,
+    eventType: EventTypeEnum,
+    flag: Boolean,
+    autoSetEventDateTime: Boolean,
+    onCheckedChange: () -> Unit
+) {
+    val actualSetting = if (flag) "start" else "end"
+    val masterDisableMessage =
+        eventType.getField() + " " + actualSetting + " time insert disabled: please enable the \"Auto-set date and time\" option"
+    SwitchSetting(
+        String.format(
+            autoSetOptionTitle,
+            eventType.getField().lowercase()
+        ),
+        flag,
+        if (!autoSetEventDateTime) masterDisableMessage else
+            String.format(
+                autoSetOptionDesc,
+                actualSetting,
+                eventType.getField().lowercase()
+            )
+    ) {
+        onCheckedChange()
     }
 }
