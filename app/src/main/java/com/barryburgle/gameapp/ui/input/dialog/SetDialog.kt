@@ -53,8 +53,11 @@ fun SetDialog(
     var latestStartHour = state.startHour
     var latestEndHour = state.endHour
     var locationTextFieldExpanded by remember { mutableStateOf(false) }
+    if (state.isAddingSet) {
+        setAddingState(state, state.autoSetSetTimeToStart)
+    }
     if (state.isUpdatingSet) {
-        setState(state)
+        setUpdatingState(state)
     }
     AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
         onEvent(GameEvent.SwitchIsInOverlay)
@@ -238,7 +241,7 @@ fun SetDialog(
         })
 }
 
-private fun setState(
+private fun setUpdatingState(
     state: InputState
 ) {
     if (state.editSet != null) {

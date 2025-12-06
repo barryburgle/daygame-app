@@ -59,6 +59,7 @@ import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogTimeFormSection
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,8 +86,11 @@ fun SessionDialog(
     var contactsCount by remember {
         mutableStateOf(if (contactsCountStart == null) 0 else contactsCountStart)
     }
+    if (state.isAddingSession) {
+        setAddingState(state, state.autoSetSessionTimeToStart)
+    }
     if (state.isUpdatingSession) {
-        setState(state)
+        setUpdatingState(state)
     }
     AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
         onEvent(GameEvent.SwitchIsInOverlay)
@@ -321,7 +325,7 @@ fun SessionDialog(
     )
 }
 
-private fun setState(
+private fun setUpdatingState(
     state: InputState
 ) {
     if (state.editAbstractSession != null) {
@@ -333,6 +337,20 @@ private fun setState(
         state.contacts = state.editAbstractSession.contacts.toString()
         if (state.stickingPoints.isBlank()) {
             state.stickingPoints = state.editAbstractSession.stickingPoints
+        }
+    }
+}
+
+fun setAddingState(
+    state: InputState,
+    dialogSpecificFlag: Boolean
+) {
+    if (state.autoSetEventDateTime) {
+        state.date = LocalDateTime.now().toString().substring(0, 10)
+        if (dialogSpecificFlag) {
+            state.startHour = LocalDateTime.now().toString().substring(11, 16)
+        } else {
+            state.endHour = LocalDateTime.now().toString().substring(11, 16)
         }
     }
 }

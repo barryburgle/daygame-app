@@ -63,8 +63,11 @@ fun DateDialog(
     var leadsExpanded by remember { mutableStateOf(false) }
     var dateTypesExpanded by remember { mutableStateOf(false) }
     var locationTextFieldExpanded by remember { mutableStateOf(false) }
+    if (state.isAddingDate) {
+        setAddingState(state, state.autoSetDateTimeToStart)
+    }
     if (state.isUpdatingDate) {
-        setState(state)
+        setUpdatingState(state)
     }
     AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
         onEvent(GameEvent.SwitchIsInOverlay)
@@ -366,7 +369,7 @@ fun DateDialog(
     )
 }
 
-private fun setState(
+private fun setUpdatingState(
     state: InputState
 ) {
     if (state.editDate != null) {
