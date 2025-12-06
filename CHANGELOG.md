@@ -2,8 +2,9 @@
 
 **Features**
 - Info button to inspect and export data from Results histograms 📊
-- Enable the Summary card to get a summary of you last week and month on the app open 📌
+- Enable the Summary card to get a summary of you last week and month on app open 📌
 - Share Summary, Sessions, Single Sets, Leads and Dates result cards with one tap ✨
+- Automatically set sessions', sets' and dates' dates and times to the current ones 📅
 - Blur background when dialog is shown 🔎
 - Blur right side session event leads scrolling 🔎
 
