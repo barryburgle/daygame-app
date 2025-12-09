@@ -22,19 +22,20 @@ fun TimeInputFormButton(
     possibleReturn: String,
     description: String,
     buttonTextPrefix: String,
+    theme: String,
     onValueChange: (String) -> Unit
 ) {
     val dialogState = rememberMaterialDialogState()
     val initialValue = passInitialValue(isAddingEvent, editEvent, possibleReturn)
     when (timeInputFormEnum) {
         TimeInputFormEnum.DATE -> DateMaterialDialog(
-            FormatService.parseDate(initialValue), description, dialogState
+            FormatService.parseDate(initialValue), description, dialogState, theme
         ) {
             onValueChange(it)
         }
 
         TimeInputFormEnum.HOUR -> HourMaterialDialog(
-            FormatService.parseTime(initialValue), description, dialogState
+            FormatService.parseTime(initialValue), description, dialogState, theme
         ) {
             onValueChange(it)
         }

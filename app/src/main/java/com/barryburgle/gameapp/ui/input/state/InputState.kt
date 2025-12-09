@@ -93,6 +93,7 @@ data class InputState(
     var neverShareLeadInfo: Boolean = false,
     var copyReportOnClipboard: Boolean = true,
     var showSummaryCard: Boolean = false,
+    var theme: String = "",
     val mostPopularLeadsNationalities: List<CategoryHistogram> = emptyList(),
     val sessionsByWeek: List<AggregatedSessions> = emptyList(),
     val sessionsByMonth: List<AggregatedSessions> = emptyList(),

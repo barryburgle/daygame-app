@@ -22,5 +22,6 @@ data class InputSettingsState(
     var simplePlusOneReport: Boolean = true,
     var neverShareLeadInfo: Boolean = false,
     var copyReportOnClipboard: Boolean = true,
-    var showSummaryCard: Boolean = false
+    var showSummaryCard: Boolean = false,
+    var theme: String = "",
 )

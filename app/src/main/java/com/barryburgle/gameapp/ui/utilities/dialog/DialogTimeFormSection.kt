@@ -34,7 +34,8 @@ fun DialogTimeFormSection(
             state.editDate,
             if (state.editDate != null && state.editDate!!.date != null) state.editDate!!.date!! else "",
             "session",
-            ""
+            "",
+            state.theme
         ) {
             onEvent(GameEvent.SetDate(it))
         }
@@ -47,7 +48,8 @@ fun DialogTimeFormSection(
             state.editDate,
             if (state.editDate != null) state.editDate!!.startHour else "",
             "session",
-            "Start"
+            "Start",
+            state.theme
         ) {
             onEvent(GameEvent.SetStartHour(it.substring(0, 5)))
         }
@@ -60,7 +62,8 @@ fun DialogTimeFormSection(
             state.editDate,
             if (state.editDate != null) state.editDate!!.endHour else "",
             "session",
-            "End"
+            "End",
+            state.theme
         ) {
             onEvent(GameEvent.SetEndHour(it.substring(0, 5)))
         }
