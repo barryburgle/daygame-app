@@ -4,6 +4,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.model.enums.ThemeEnum
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
@@ -15,6 +16,7 @@ fun DateMaterialDialog(
     initialDate: LocalDate,
     description: String,
     dateDialogState: MaterialDialogState,
+    theme: String,
     onValueChange: (String) -> Unit
 ) {
     MaterialDialog(
@@ -37,9 +39,8 @@ fun DateMaterialDialog(
             colors = DatePickerDefaults.colors(
                 headerBackgroundColor = MaterialTheme.colorScheme.surface,
                 headerTextColor = MaterialTheme.colorScheme.onPrimary,
-                dateActiveBackgroundColor = MaterialTheme.colorScheme.surface,
-                dateInactiveBackgroundColor = MaterialTheme.colorScheme.onPrimary
-
+                dateActiveBackgroundColor = ThemeEnum.useProperActiveColor(theme),
+                dateInactiveBackgroundColor = ThemeEnum.useProperInactiveColor(theme)
             )
         ) {
             onValueChange(it.toString())

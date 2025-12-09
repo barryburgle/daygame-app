@@ -1,6 +1,8 @@
 package com.barryburgle.gameapp.model.enums
 
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.barryburgle.gameapp.ui.theme.palette.*
 
@@ -25,9 +27,60 @@ enum class ThemeEnum(val type: String) {
     NIPLAV("niplav"),
     BREEZE("breeze");
 
-    // TODO: review all themes and colors in all the screens to fix contrast in all spots
-
     companion object {
+
+        @Composable
+        fun useProperActiveColor(type: String): Color {
+            return when (type) {
+                BOURBON.type -> MaterialTheme.colorScheme.primary
+                BREEZE.type -> MaterialTheme.colorScheme.onPrimary
+                BROODY.type -> MaterialTheme.colorScheme.onSurfaceVariant
+                CROWN.type -> MaterialTheme.colorScheme.onPrimary
+                DARK.type -> MaterialTheme.colorScheme.primary
+                FREE.type -> MaterialTheme.colorScheme.onPrimary
+                HUSTLE.type -> MaterialTheme.colorScheme.onSurfaceVariant
+                INFINITE.type -> MaterialTheme.colorScheme.primaryContainer
+                JULIUS.type -> MaterialTheme.colorScheme.primaryContainer
+                LIGHT.type -> MaterialTheme.colorScheme.onTertiary
+                MASTERY.type -> MaterialTheme.colorScheme.onPrimary
+                NIPLAV.type -> MaterialTheme.colorScheme.primary
+                NORTH.type -> MaterialTheme.colorScheme.surface
+                PHOENIX.type -> MaterialTheme.colorScheme.primary
+                RECOVER.type -> MaterialTheme.colorScheme.onPrimary
+                SOLTAN.type -> MaterialTheme.colorScheme.primary
+                STEALTH.type -> MaterialTheme.colorScheme.onSurfaceVariant
+                URBAN.type -> MaterialTheme.colorScheme.onSurfaceVariant
+                VERST.type -> MaterialTheme.colorScheme.onPrimary
+                else -> MaterialTheme.colorScheme.onPrimary
+            }
+        }
+
+        @Composable
+        fun useProperInactiveColor(type: String): Color {
+            return when (type) {
+                BOURBON.type -> MaterialTheme.colorScheme.onPrimary
+                BREEZE.type -> MaterialTheme.colorScheme.primary
+                BROODY.type -> MaterialTheme.colorScheme.primary
+                CROWN.type -> MaterialTheme.colorScheme.surface
+                DARK.type -> MaterialTheme.colorScheme.onPrimary
+                FREE.type -> MaterialTheme.colorScheme.primaryContainer
+                HUSTLE.type -> MaterialTheme.colorScheme.primaryContainer
+                INFINITE.type -> MaterialTheme.colorScheme.onPrimary
+                JULIUS.type -> MaterialTheme.colorScheme.onPrimary
+                LIGHT.type -> MaterialTheme.colorScheme.primaryContainer
+                MASTERY.type -> MaterialTheme.colorScheme.primary
+                NIPLAV.type -> MaterialTheme.colorScheme.surface
+                NORTH.type -> MaterialTheme.colorScheme.onPrimary
+                PHOENIX.type -> MaterialTheme.colorScheme.onPrimary
+                RECOVER.type -> MaterialTheme.colorScheme.primary
+                SOLTAN.type -> MaterialTheme.colorScheme.onPrimary
+                STEALTH.type -> MaterialTheme.colorScheme.background
+                URBAN.type -> MaterialTheme.colorScheme.primary
+                VERST.type -> MaterialTheme.colorScheme.primary
+                else -> MaterialTheme.colorScheme.onPrimary
+            }
+        }
+
         fun getTheme(type: String): ColorScheme {
             return when (type) {
                 DARK.type -> DarkColorPalette
@@ -55,6 +108,10 @@ enum class ThemeEnum(val type: String) {
 
         fun sortedValues(): List<ThemeEnum> {
             return ThemeEnum.values().sortedBy { it.type }
+        }
+
+        fun randomValue(): ThemeEnum {
+            return ThemeEnum.values().random()
         }
     }
 

@@ -4,6 +4,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.model.enums.ThemeEnum
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
@@ -15,6 +16,7 @@ fun HourMaterialDialog(
     initialTime: LocalTime,
     description: String,
     hourDialogState: MaterialDialogState,
+    theme: String,
     onValueChange: (String) -> Unit
 ) {
     MaterialDialog(
@@ -31,15 +33,17 @@ fun HourMaterialDialog(
             )
         }, shape = MaterialTheme.shapes.extraLarge
     ) {
+        val activeColor = ThemeEnum.useProperActiveColor(theme)
+        val inactiveColor = ThemeEnum.useProperInactiveColor(theme)
         this.timepicker(
             initialTime = initialTime,
             title = "Set $description's hour",
             colors = TimePickerDefaults.colors(
-                selectorColor = MaterialTheme.colorScheme.background,
-                activeBackgroundColor = MaterialTheme.colorScheme.surface,
-                activeTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                inactiveBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                inactiveTextColor = MaterialTheme.colorScheme.onPrimary
+                selectorColor = activeColor,
+                activeTextColor = inactiveColor,
+                activeBackgroundColor = activeColor,
+                inactiveBackgroundColor = inactiveColor,
+                inactiveTextColor = activeColor
             )
         ) {
             onValueChange(it.toString())
