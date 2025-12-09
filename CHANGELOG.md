@@ -7,10 +7,12 @@
 - Automatically set sessions', sets' and dates' dates and times to the current ones 📅
 - Blur background when dialog is shown 🔎
 - Blur right side session event leads scrolling 🔎
+- Pick random theme 🖌️
 
 **Bugs**
 - Months chart bugfix
 - Leads name cut bugfix
+- Hour and date colors fixed
 
 # Version 1.9.0 (2025-07-30)
 
