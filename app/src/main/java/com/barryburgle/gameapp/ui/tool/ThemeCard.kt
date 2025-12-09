@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.tool
 
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Brush
+import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -44,9 +47,12 @@ fun ThemeCard(
     onEvent: (ToolEvent) -> Unit
 ) {
     var themesExpanded by remember { mutableStateOf(false) }
+    val localContext = LocalContext.current.applicationContext
     GenericSettingsCard("Theme", modifier) {
         SwitchSetting(
-            "Follow system theme", state.themeSysFollow
+            "Follow system theme",
+            state.themeSysFollow,
+            if (state.themeSysFollow) "The app theme is set following system theme" else "To choose a different theme from ${state.theme.replaceFirstChar { it.uppercase() }} use the option below"
         ) {
             onEvent(ToolEvent.SwitchThemeSysFollow)
         }
@@ -166,9 +172,27 @@ fun ThemeCard(
                     onClick = {
                         onEvent(ToolEvent.SetTheme(theme.type))
                         themesExpanded = false
+                        Toast.makeText(
+                            localContext,
+                            "${theme.type.replaceFirstChar { it.uppercase() }} theme set",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 )
             }
         }
+        Spacer(modifier = Modifier.height(5.dp))
+        IconButtonSetting(text = "Pick random theme",
+            imageVector = Icons.Default.Shuffle,
+            contentDescription = "Random theme",
+            onClick = {
+                val randomTheme = ThemeEnum.randomValue().type
+                onEvent(ToolEvent.SetTheme(randomTheme))
+                Toast.makeText(
+                    localContext,
+                    "${randomTheme.replaceFirstChar { it.uppercase() }} theme set",
+                    Toast.LENGTH_SHORT
+                ).show()
+            })
     }
 }
