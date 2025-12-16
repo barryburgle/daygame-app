@@ -1116,10 +1116,18 @@ class InputViewModel(
                 }
             }
 
-            is GameEvent.SwitchIsInOverlay -> {
+            is GameEvent.SetIsInOverlayToTrue -> {
                 _state.update {
                     it.copy(
-                        isInOverlay = _state.value.isInOverlay.not()
+                        isInOverlay = true
+                    )
+                }
+            }
+
+            is GameEvent.SetIsInOverlayToFalse -> {
+                _state.update {
+                    it.copy(
+                        isInOverlay = false
                     )
                 }
             }

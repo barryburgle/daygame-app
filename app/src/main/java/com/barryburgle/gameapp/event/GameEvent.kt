@@ -80,5 +80,6 @@ sealed interface GameEvent : GenericEvent {
     data class SetConversation(val conversation: Boolean?) : GameEvent
     data class SetContact(val contact: Boolean?) : GameEvent
     data class SetInstantDate(val instantDate: Boolean?) : GameEvent
-    object SwitchIsInOverlay : GameEvent
+    object SetIsInOverlayToTrue : GameEvent
+    object SetIsInOverlayToFalse : GameEvent
 }

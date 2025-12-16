@@ -60,7 +60,7 @@ fun LeadDialog(
     var expanded by remember { mutableStateOf(false) }
     AlertDialog(modifier = modifier
         .shadow(elevation = 10.dp), onDismissRequest = {
-        onEvent(GameEvent.SwitchIsInOverlay)
+        onEvent(GameEvent.SetIsInOverlayToFalse)
         onEvent(GameEvent.HideLeadDialog)
     }, title = {
         LargeTitleText(description)
@@ -106,7 +106,7 @@ fun LeadDialog(
                                 lead
                             )
                         )
-                        onEvent(GameEvent.SwitchIsInOverlay)
+                        onEvent(GameEvent.SetIsInOverlayToFalse)
                         onEvent(
                             GameEvent.HideLeadDialog
                         )
@@ -257,7 +257,7 @@ fun LeadDialog(
             } else {
                 onEvent(GameEvent.SetLead(lead))
             }
-            onEvent(GameEvent.SwitchIsInOverlay)
+            onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideLeadDialog)
             onEvent(GameEvent.SwitchJustSaved)
             if (state.isUpdatingLead) {
@@ -269,7 +269,7 @@ fun LeadDialog(
     },
         dismissButton = {
             DismissButton {
-                onEvent(GameEvent.SwitchIsInOverlay)
+                onEvent(GameEvent.SetIsInOverlayToFalse)
                 onEvent(GameEvent.HideLeadDialog)
             }
         })

@@ -90,7 +90,7 @@ fun InputScreen(
     var isRotated by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(false) }
     val blurBackground by animateDpAsState(
-        targetValue = if (isExpanded) 10.dp else 0.dp,
+        targetValue = if (isExpanded or state.isInOverlay) 10.dp else 0.dp,
         animationSpec = tween(durationMillis = 350),
         label = "blurBackground"
     )
@@ -129,6 +129,8 @@ fun InputScreen(
                     ) {
                         floatingAddButton(Icons.Default.Favorite, "Date") {
                             onEvent(GameEvent.SwitchIsInOverlay)
+                        floatingAddButton(Icons.Default.Favorite, "Date", false) {
+                            onEvent(GameEvent.SetIsInOverlayToTrue)
                             onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.DATE))
                             isExpanded = false
                             isRotated = false
@@ -141,6 +143,8 @@ fun InputScreen(
                     ) {
                         floatingAddButton(Icons.Default.PersonAddAlt1, "Set") {
                             onEvent(GameEvent.SwitchIsInOverlay)
+                        floatingAddButton(Icons.Default.PersonAddAlt1, "Set", false) {
+                            onEvent(GameEvent.SetIsInOverlayToTrue)
                             onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SET))
                             isExpanded = false
                             isRotated = false
@@ -153,6 +157,8 @@ fun InputScreen(
                     ) {
                         floatingAddButton(Icons.Default.GroupAdd, "Session") {
                             onEvent(GameEvent.SwitchIsInOverlay)
+                        floatingAddButton(Icons.Default.GroupAdd, "Session", false) {
+                            onEvent(GameEvent.SetIsInOverlayToTrue)
                             onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SESSION))
                             isExpanded = false
                             isRotated = false

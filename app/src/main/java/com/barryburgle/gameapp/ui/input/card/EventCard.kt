@@ -205,7 +205,7 @@ fun EventCard(
                                                 )
                                             )
                                         }
-                                        onEvent(GameEvent.SwitchIsInOverlay)
+                                        onEvent(GameEvent.SetIsInOverlayToTrue)
                                         onEvent(
                                             GameEvent.EditSession(
                                                 sortableGameEvent.event as AbstractSession
@@ -235,7 +235,7 @@ fun EventCard(
                                         onEvent(
                                             GameEvent.SetRecorded((sortableGameEvent.event as SingleSet).recorded)
                                         )
-                                        onEvent(GameEvent.SwitchIsInOverlay)
+                                        onEvent(GameEvent.SetIsInOverlayToTrue)
                                         onEvent(
                                             GameEvent.EditSet(
                                                 sortableGameEvent.event as SingleSet
@@ -265,7 +265,7 @@ fun EventCard(
                                         onEvent(
                                             GameEvent.SetRecorded((sortableGameEvent.event as Date).recorded)
                                         )
-                                        onEvent(GameEvent.SwitchIsInOverlay)
+                                        onEvent(GameEvent.SetIsInOverlayToTrue)
                                         onEvent(
                                             GameEvent.EditDate(
                                                 sortableGameEvent.event as Date
@@ -339,7 +339,7 @@ fun EventCard(
                                         item {
                                             Row(
                                                 modifier = Modifier.clickable {
-                                                    onEvent(GameEvent.SwitchIsInOverlay)
+                                                    onEvent(GameEvent.SetIsInOverlayToTrue)
                                                     onEvent(
                                                         GameEvent.EditLead(
                                                             lead, true

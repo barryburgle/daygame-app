@@ -70,7 +70,7 @@ fun DateDialog(
         setUpdatingState(state)
     }
     AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
-        onEvent(GameEvent.SwitchIsInOverlay)
+        onEvent(GameEvent.SetIsInOverlayToFalse)
         onEvent(GameEvent.HideDialog)
     }, title = {
         LargeTitleText(text = description)
@@ -158,7 +158,13 @@ fun DateDialog(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                DialogTimeFormSection(state, onEvent, latestDateValue, latestStartHour, latestEndHour)
+                DialogTimeFormSection(
+                    state,
+                    onEvent,
+                    latestDateValue,
+                    latestStartHour,
+                    latestEndHour
+                )
                 Spacer(modifier = Modifier.width(5.dp))
                 Column(
                     modifier = Modifier
@@ -353,7 +359,7 @@ fun DateDialog(
                     .show()
             } else {
                 onEvent(GameEvent.SaveDate)
-                onEvent(GameEvent.SwitchIsInOverlay)
+                onEvent(GameEvent.SetIsInOverlayToFalse)
                 onEvent(GameEvent.HideDialog)
                 onEvent(GameEvent.SwitchJustSaved)
                 Toast.makeText(localContext, "Date saved", Toast.LENGTH_SHORT).show()
@@ -362,7 +368,7 @@ fun DateDialog(
     },
         dismissButton = {
             DismissButton {
-                onEvent(GameEvent.SwitchIsInOverlay)
+                onEvent(GameEvent.SetIsInOverlayToFalse)
                 onEvent(GameEvent.HideDialog)
             }
         }
