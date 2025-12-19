@@ -186,7 +186,7 @@ fun ThemeCard(
             imageVector = Icons.Default.Shuffle,
             contentDescription = "Random theme",
             onClick = {
-                val randomTheme = ThemeEnum.randomValue().type
+                val randomTheme = ThemeEnum.randomValue(state.theme).type
                 onEvent(ToolEvent.SetTheme(randomTheme))
                 Toast.makeText(
                     localContext,

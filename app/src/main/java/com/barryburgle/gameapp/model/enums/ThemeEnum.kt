@@ -106,12 +106,39 @@ enum class ThemeEnum(val type: String) {
             }
         }
 
+        fun getThemeEnum(type: String): ThemeEnum {
+            return when (type) {
+                DARK.type -> DARK
+                LIGHT.type -> LIGHT
+                INFINITE.type -> INFINITE
+                MASTERY.type -> MASTERY
+                HUSTLE.type -> HUSTLE
+                STEALTH.type -> STEALTH
+                CROWN.type -> CROWN
+                BROODY.type -> BROODY
+                JULIUS.type -> JULIUS
+                SOLTAN.type -> SOLTAN
+                FREE.type -> FREE
+                PHOENIX.type -> PHOENIX
+                BOURBON.type -> BOURBON
+                NORTH.type -> NORTH
+                RECOVER.type -> RECOVER
+                VERST.type -> VERST
+                URBAN.type -> URBAN
+                NIPLAV.type -> NIPLAV
+                BREEZE.type -> BREEZE
+                else -> LIGHT
+            }
+        }
+
         fun sortedValues(): List<ThemeEnum> {
             return ThemeEnum.values().sortedBy { it.type }
         }
 
-        fun randomValue(): ThemeEnum {
-            return ThemeEnum.values().random()
+        fun randomValue(currentTheme: String): ThemeEnum {
+            var values = ThemeEnum.values().toMutableList()
+            values.remove(getThemeEnum(currentTheme))
+            return values.random()
         }
     }
 
