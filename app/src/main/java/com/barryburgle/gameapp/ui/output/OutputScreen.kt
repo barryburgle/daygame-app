@@ -76,7 +76,7 @@ fun OutputScreen(
                     Spacer(
                         modifier = Modifier
                             .background(MaterialTheme.colorScheme.background)
-                            .height(35.dp)
+                            .height(40.dp)
                     )
                     Row {
                         Spacer(

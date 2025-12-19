@@ -72,7 +72,7 @@ fun StatsScreen(
                 Spacer(
                     modifier = Modifier
                         .background(MaterialTheme.colorScheme.background)
-                        .height(20.dp)
+                        .height(30.dp)
                 )
             }
             if (state.allSessions.isNotEmpty()) {
