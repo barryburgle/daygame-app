@@ -49,40 +49,62 @@ fun SummaryCard(
     // TODO: draw tow little charts on the edge right side of each week/month section for the three sets/contats/series in the last two weeks/months (fading away on left)
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val localContext = LocalContext.current.applicationContext
-    val updatedDate = FormatService.getDate(state.allEvents.first().eventDate)
-    val aggregatedWeekPeriodsList: List<AggregatedPeriod> =
-        SessionManager.createAggregatedPeriodList(
-            state.sessionsByWeek,
-            state.datesByWeek
-        )
-    val aggregatedWeekSessions =
-        SessionManager.getAggregatedSessions(aggregatedWeekPeriodsList)
-    val aggregatedWeekDates =
-        SessionManager.getAggregatedDates(aggregatedWeekPeriodsList)
-    val aggregatedMonthPeriodsList: List<AggregatedPeriod> =
-        SessionManager.createAggregatedPeriodList(
-            state.sessionsByMonth,
-            state.datesByMonth
-        )
-    val aggregatedMonthSessions =
-        SessionManager.getAggregatedSessions(aggregatedMonthPeriodsList)
-    val aggregatedMonthDates =
-        SessionManager.getAggregatedDates(aggregatedMonthPeriodsList)
-    val weekSets = aggregatedWeekSessions.last().sets.toInt()
-    val weekContacts = aggregatedWeekSessions.last().contacts.toInt()
-    val weekDates = aggregatedWeekDates.last().dates.toInt()
-    val monthSets = aggregatedMonthSessions.last().sets.toInt()
-    val monthContacts = aggregatedMonthSessions.last().contacts.toInt()
-    val monthDates = aggregatedMonthDates.last().dates.toInt()
-    // TODO: move following calculations in GlobalStatService and unit test
-    val weekSessionHours =
-        aggregatedWeekSessions.last().timeSpent.toLong()
-    val monthSessionHours =
-        aggregatedMonthSessions.last().timeSpent.toLong()
-    val weekDateHours =
-        aggregatedWeekDates.last().dateTimeSpent.toLong()
-    val monthDateHours =
-        aggregatedMonthDates.last().dateTimeSpent.toLong()
+    val noEvents = state.allEvents.isEmpty()
+    var updatedDate = ""
+    var weekSets = 0
+    var weekContacts = 0
+    var weekSessionHours = 0L
+    var weekDates = 0
+    var weekDateHours = 0L
+    var monthSets = 0
+    var monthContacts = 0
+    var monthSessionHours = 0L
+    var monthDates = 0
+    var monthDateHours = 0L
+    if (!noEvents) {
+        updatedDate = FormatService.getDate(state.allEvents.first().eventDate)
+        val aggregatedWeekPeriodsList: List<AggregatedPeriod> =
+            SessionManager.createAggregatedPeriodList(
+                state.sessionsByWeek,
+                state.datesByWeek
+            )
+        val aggregatedWeekSessions =
+            SessionManager.getAggregatedSessions(aggregatedWeekPeriodsList)
+        val aggregatedWeekDates =
+            SessionManager.getAggregatedDates(aggregatedWeekPeriodsList)
+        val aggregatedMonthPeriodsList: List<AggregatedPeriod> =
+            SessionManager.createAggregatedPeriodList(
+                state.sessionsByMonth,
+                state.datesByMonth
+            )
+        val aggregatedMonthSessions =
+            SessionManager.getAggregatedSessions(aggregatedMonthPeriodsList)
+        val aggregatedMonthDates =
+            SessionManager.getAggregatedDates(aggregatedMonthPeriodsList)
+
+        if (aggregatedWeekSessions.isNotEmpty()) {
+            weekSets = aggregatedWeekSessions.last().sets.toInt()
+            weekContacts = aggregatedWeekSessions.last().contacts.toInt()
+            weekSessionHours =
+                aggregatedWeekSessions.last().timeSpent.toLong()
+        }
+        if (aggregatedWeekDates.isNotEmpty()) {
+            weekDates = aggregatedWeekDates.last().dates.toInt()
+            weekDateHours =
+                aggregatedWeekDates.last().dateTimeSpent.toLong()
+        }
+        if (aggregatedMonthSessions.isNotEmpty()) {
+            monthSets = aggregatedMonthSessions.last().sets.toInt()
+            monthContacts = aggregatedMonthSessions.last().contacts.toInt()
+            monthSessionHours =
+                aggregatedMonthSessions.last().timeSpent.toLong()
+        }
+        if (aggregatedMonthDates.isNotEmpty()) {
+            monthDates = aggregatedMonthDates.last().dates.toInt()
+            monthDateHours =
+                aggregatedMonthDates.last().dateTimeSpent.toLong()
+        }
+    }
     val weekTimeSpent =
         "$weekSessionHours hours spent over sessions and $weekDateHours over dates in the last week"
     val monthTimeSpent =
@@ -106,114 +128,124 @@ fun SummaryCard(
             Column(
                 modifier = Modifier.padding(10.dp), verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .fillMaxWidth()
-                ) {
-                    LittleBodyText("Updated to $updatedDate")
-                    Spacer(modifier = Modifier.width(3.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
+                if (noEvents) {
+                    Column(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth()
                     ) {
+                        LittleBodyText("No events for summary")
+                    }
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth()
+                    ) {
+                        LittleBodyText("Updated to $updatedDate")
+                        Spacer(modifier = Modifier.width(3.dp))
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.PushPin,
-                                contentDescription = "Summary",
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.height(25.dp)
-                            )
-                            Spacer(modifier = Modifier.width(7.dp))
-                            LargeTitleText("Summary")
-                        }
-                        Row(
-                            modifier = Modifier
-                                .width(60.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            IconShadowButton(
-                                onClick = {
-                                    var histogramData = exportSummary(
-                                        updatedDate,
-                                        weekSets,
-                                        weekContacts,
-                                        weekDates,
-                                        monthSets,
-                                        monthContacts,
-                                        monthDates,
-                                        weekTimeSpent,
-                                        monthTimeSpent
-                                    )
-                                    if (state.copyReportOnClipboard) {
-                                        clipboardManager.setText(
-                                            AnnotatedString(
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.PushPin,
+                                    contentDescription = "Summary",
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier.height(25.dp)
+                                )
+                                Spacer(modifier = Modifier.width(7.dp))
+                                LargeTitleText("Summary")
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .width(60.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                IconShadowButton(
+                                    onClick = {
+                                        var histogramData = exportSummary(
+                                            updatedDate,
+                                            weekSets,
+                                            weekContacts,
+                                            weekDates,
+                                            monthSets,
+                                            monthContacts,
+                                            monthDates,
+                                            weekTimeSpent,
+                                            monthTimeSpent
+                                        )
+                                        if (state.copyReportOnClipboard) {
+                                            clipboardManager.setText(
+                                                AnnotatedString(
+                                                    histogramData
+                                                )
+                                            )
+                                            Toast.makeText(
+                                                localContext,
+                                                "Summary copied",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                        val sendIntent: Intent = Intent().apply {
+                                            action = Intent.ACTION_SEND
+                                            putExtra(
+                                                Intent.EXTRA_TEXT,
                                                 histogramData
                                             )
+                                            type = "text/plain"
+                                        }
+                                        val shareIntent = Intent.createChooser(
+                                            sendIntent,
+                                            "Share summary"
                                         )
-                                        Toast.makeText(
-                                            localContext,
-                                            "Summary copied",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                    val sendIntent: Intent = Intent().apply {
-                                        action = Intent.ACTION_SEND
-                                        putExtra(
-                                            Intent.EXTRA_TEXT,
-                                            histogramData
-                                        )
-                                        type = "text/plain"
-                                    }
-                                    val shareIntent = Intent.createChooser(
-                                        sendIntent,
-                                        "Share summary"
-                                    )
-                                    shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    localContext.startActivity(shareIntent)
-                                },
-                                imageVector = Icons.Default.Share,
-                                contentDescription = "Share Summary"
-                            )
+                                        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        localContext.startActivity(shareIntent)
+                                    },
+                                    imageVector = Icons.Default.Share,
+                                    contentDescription = "Share Summary"
+                                )
+                            }
                         }
                     }
-                }
-                Row(
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxHeight()
+                    Row(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        CardSection {
-                            SummaryBody(
-                                "Last week",
-                                weekTimeSpent,
-                                aggregatedWeekSessions.last().sets.toInt(),
-                                aggregatedWeekSessions.last().contacts.toInt(),
-                                aggregatedWeekDates.last().dates.toInt(),
-                                40.sp,
-                                10.sp
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(7.dp))
-                        CardSection {
-                            SummaryBody(
-                                "Last month",
-                                monthTimeSpent,
-                                aggregatedMonthSessions.last().sets.toInt(),
-                                aggregatedMonthSessions.last().contacts.toInt(),
-                                aggregatedMonthDates.last().dates.toInt(),
-                                40.sp,
-                                10.sp
-                            )
+                        Column(
+                            modifier = Modifier.fillMaxHeight()
+                        ) {
+                            CardSection {
+                                SummaryBody(
+                                    "Last week",
+                                    weekTimeSpent,
+                                    weekSets,
+                                    weekContacts,
+                                    weekDates,
+                                    40.sp,
+                                    10.sp
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(7.dp))
+                            CardSection {
+                                SummaryBody(
+                                    "Last month",
+                                    monthTimeSpent,
+                                    monthSets,
+                                    monthContacts,
+                                    monthDates,
+                                    40.sp,
+                                    10.sp
+                                )
+                            }
                         }
                     }
                 }
