@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
@@ -133,7 +134,13 @@ fun SetDialog(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                DialogTimeFormSection(state, onEvent, latestDateValue, latestStartHour, latestEndHour)
+                DialogTimeFormSection(
+                    state,
+                    onEvent,
+                    latestDateValue,
+                    latestStartHour,
+                    latestEndHour
+                )
                 Spacer(modifier = Modifier.width(5.dp))
                 Column {
                     // TODO: insert here a button that allows to choose from a list of sessions to which the set belongs to  [v1.10.0]
@@ -169,13 +176,34 @@ fun SetDialog(
                 visibilityFlag = !locationTextFieldExpanded,
             ) {
                 Spacer(modifier = Modifier.height(7.dp))
-                OutlinedTextField(
-                    value = state.stickingPoints,
-                    onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
-                    placeholder = { LittleBodyText("Sticking Points") },
-                    shape = MaterialTheme.shapes.large,
-                    modifier = Modifier.height(80.dp)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    OutlinedTextField(
+                        value = state.stickingPoints,
+                        onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
+                        placeholder = { LittleBodyText("Sticking Points") },
+                        shape = MaterialTheme.shapes.large,
+                        modifier = Modifier
+                            .height(100.dp)
+                            .fillMaxWidth(0.75f)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column(
+                        modifier = Modifier
+                            .height(100.dp),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        IconShadowButton(
+                            onClick = {
+                                onEvent(GameEvent.SetStickingPoints(InputDialogConstant.EMPTY_STICKING_POINTS))
+                            },
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Sticking Points"
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.height(7.dp))
             }
             Row(
@@ -254,7 +282,9 @@ private fun setUpdatingState(
             state.location = state.editSet.location!!
         }
         state.leadId = state.editSet.leadId!!
-        if (state.stickingPoints.isBlank()) {
+        if (state.stickingPoints.equals(InputDialogConstant.EMPTY_STICKING_POINTS)) {
+            state.stickingPoints = ""
+        } else if (state.stickingPoints.isBlank()) {
             state.stickingPoints = state.editSet.stickingPoints!!
         }
         state.tweetUrl = state.editSet.tweetUrl!!

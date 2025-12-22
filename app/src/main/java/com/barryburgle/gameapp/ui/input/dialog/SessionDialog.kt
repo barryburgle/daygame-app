@@ -37,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -295,13 +294,33 @@ fun SessionDialog(
                     )
                 }
             }
-            OutlinedTextField(
-                value = state.stickingPoints,
-                onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
-                placeholder = { LittleBodyText("Sticking Points") },
-                shape = MaterialTheme.shapes.large,
-                modifier = Modifier.height(100.dp)
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                OutlinedTextField(
+                    value = state.stickingPoints,
+                    onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
+                    placeholder = { LittleBodyText("Sticking Points") },
+                    shape = MaterialTheme.shapes.large,
+                    modifier = Modifier
+                        .height(100.dp)
+                        .fillMaxWidth(0.75f)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Column(
+                    modifier = Modifier
+                        .height(100.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    IconShadowButton(
+                        onClick = {
+                            onEvent(GameEvent.SetStickingPoints(InputDialogConstant.EMPTY_STICKING_POINTS))
+                        },
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete Sticking Points"
+                    )
+                }
+            }
         }
     }, confirmButton = {
         ConfirmButton {
@@ -335,7 +354,9 @@ private fun setUpdatingState(
         state.sets = state.editAbstractSession.sets.toString()
         state.convos = state.editAbstractSession.convos.toString()
         state.contacts = state.editAbstractSession.contacts.toString()
-        if (state.stickingPoints.isBlank()) {
+        if (state.stickingPoints.equals(InputDialogConstant.EMPTY_STICKING_POINTS)) {
+            state.stickingPoints = ""
+        } else if (state.stickingPoints.isBlank()) {
             state.stickingPoints = state.editAbstractSession.stickingPoints
         }
     }

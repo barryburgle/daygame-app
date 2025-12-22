@@ -8,6 +8,7 @@
 - Blur background when dialog is shown 🔎
 - Blur right side session event leads scrolling 🔎
 - Pick random theme 🖌️
+- Whiten sticking points for event with one tap  🗑️️️
 
 **Bugs**
 - Months chart bugfix

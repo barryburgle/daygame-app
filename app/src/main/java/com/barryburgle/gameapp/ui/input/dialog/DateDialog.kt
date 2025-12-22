@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ContentPaste
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
@@ -275,13 +276,34 @@ fun DateDialog(
                 visibilityFlag = !locationTextFieldExpanded,
             ) {
                 Spacer(modifier = Modifier.height(7.dp))
-                OutlinedTextField(
-                    value = state.stickingPoints,
-                    onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
-                    placeholder = { LittleBodyText("Sticking Points") },
-                    shape = MaterialTheme.shapes.large,
-                    modifier = Modifier.height(80.dp)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    OutlinedTextField(
+                        value = state.stickingPoints,
+                        onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
+                        placeholder = { LittleBodyText("Sticking Points") },
+                        shape = MaterialTheme.shapes.large,
+                        modifier = Modifier
+                            .height(100.dp)
+                            .fillMaxWidth(0.75f)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column(
+                        modifier = Modifier
+                            .height(100.dp),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        IconShadowButton(
+                            onClick = {
+                                onEvent(GameEvent.SetStickingPoints(InputDialogConstant.EMPTY_STICKING_POINTS))
+                            },
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Sticking Points"
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.height(7.dp))
             }
             Row(
@@ -393,7 +415,9 @@ private fun setUpdatingState(
         if (state.dateType.isBlank()) {
             state.dateType = state.editDate.dateType
         }
-        if (state.stickingPoints.isBlank()) {
+        if (state.stickingPoints.equals(InputDialogConstant.EMPTY_STICKING_POINTS)) {
+            state.stickingPoints = ""
+        } else if (state.stickingPoints.isBlank()) {
             state.stickingPoints = state.editDate.stickingPoints!!
         }
         state.tweetUrl = state.editDate.tweetUrl!!

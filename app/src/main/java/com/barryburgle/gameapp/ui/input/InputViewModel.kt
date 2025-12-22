@@ -30,6 +30,7 @@ import com.barryburgle.gameapp.service.set.SetService
 import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.CombineSeven
 import com.barryburgle.gameapp.ui.CombineTwentyTwo
+import com.barryburgle.gameapp.ui.input.dialog.InputDialogConstant
 import com.barryburgle.gameapp.ui.input.state.InputSettingsState
 import com.barryburgle.gameapp.ui.input.state.InputState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -453,7 +454,7 @@ class InputViewModel(
                         sets = if (_state.value.sets.isBlank()) state.value.sets else _state.value.sets,
                         convos = if (_state.value.convos.isBlank()) state.value.convos else _state.value.convos,
                         contacts = if (_state.value.contacts.isBlank()) state.value.contacts else _state.value.contacts,
-                        stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
+                        stickingPoints = if (_state.value.stickingPoints.equals(InputDialogConstant.EMPTY_STICKING_POINTS)) "" else if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
                     )
                     var sessionId: Long? = 0L
                     if (state.value.isAddingSession) {
@@ -742,7 +743,7 @@ class InputViewModel(
                         kiss = if (!_state.value.kiss) state.value.kiss else _state.value.kiss,
                         lay = if (!_state.value.lay) state.value.lay else _state.value.lay,
                         recorded = if (!_state.value.recorded) state.value.recorded else _state.value.recorded,
-                        stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
+                        stickingPoints = if (_state.value.stickingPoints.equals(InputDialogConstant.EMPTY_STICKING_POINTS)) "" else if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
                         tweetUrl = if (_state.value.tweetUrl.isBlank()) state.value.tweetUrl else _state.value.tweetUrl
                     )
                     if (state.value.isUpdatingDate) {
@@ -968,7 +969,7 @@ class InputViewModel(
                         recorded = if (!_state.value.recorded) state.value.recorded else _state.value.recorded,
                         leadId = if (_state.value.leadId == 0L) state.value.leadId else _state.value.leadId,
                         dateId = dateId,
-                        stickingPoints = if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
+                        stickingPoints = if (_state.value.stickingPoints.equals(InputDialogConstant.EMPTY_STICKING_POINTS)) "" else if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
                         tweetUrl = if (_state.value.tweetUrl.isBlank()) state.value.tweetUrl else _state.value.tweetUrl
                     )
                     var leadId = 0L
