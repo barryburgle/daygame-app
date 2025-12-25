@@ -183,7 +183,7 @@ fun SetDialog(
                     OutlinedTextField(
                         value = state.stickingPoints,
                         onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
-                        placeholder = { LittleBodyText("Sticking Points") },
+                        placeholder = { LittleBodyText("Sticking points") },
                         shape = MaterialTheme.shapes.large,
                         modifier = Modifier
                             .height(100.dp)
