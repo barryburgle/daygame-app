@@ -225,12 +225,7 @@ fun InputScreen(
             item {
                 Spacer(modifier = Modifier.height(120.dp))
             }
-            if (state.showSummaryCard &&
-                state.sessionsByWeek.isNotEmpty() &&
-                state.sessionsByMonth.isNotEmpty() &&
-                state.datesByWeek.isNotEmpty() &&
-                state.datesByMonth.isNotEmpty()
-            ) {
+            if (state.showSummaryCard) {
                 item {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Spacer(modifier = Modifier.width(spaceFromLeft))
