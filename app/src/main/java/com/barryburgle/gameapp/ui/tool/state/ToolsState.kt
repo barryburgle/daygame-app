@@ -52,7 +52,7 @@ data class ToolsState(
     var deleteDates: Boolean = false,
     var deleteSets: Boolean = false,
     var isCleaning: Boolean = false,
-    var themeSysFollow: Boolean = true,
+    var themeSysFollow: Boolean = false,
     var simplePlusOneReport: Boolean = true,
     var neverShareLeadInfo: Boolean = false,
     var copyReportOnClipboard: Boolean = true,
