@@ -9,6 +9,7 @@
 - Blur right side session event leads scrolling 🔎
 - Pick random theme 🖌️
 - Whiten sticking points for event with one tap  🗑️️️
+- Search lead nationality 🔎
 
 **Bugs**
 - Months chart bugfix

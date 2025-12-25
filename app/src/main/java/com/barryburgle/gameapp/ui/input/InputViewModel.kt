@@ -682,6 +682,14 @@ class InputViewModel(
                 }
             }
 
+            is GameEvent.SetLeadCountrySearch -> {
+                _state.update {
+                    it.copy(
+                        countrySearch = event.countrySearch
+                    )
+                }
+            }
+
             is GameEvent.SetLeadCountryName -> {
                 _state.update {
                     it.copy(

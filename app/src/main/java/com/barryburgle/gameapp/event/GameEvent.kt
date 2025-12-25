@@ -39,6 +39,7 @@ sealed interface GameEvent : GenericEvent {
     object EmptyLeads : GameEvent
     data class SetLeadName(val name: String) : GameEvent
     data class SetLeadContact(val contact: String) : GameEvent
+    data class SetLeadCountrySearch(val countrySearch: String) : GameEvent
     data class SetLeadCountryName(val countryName: String) : GameEvent
     data class SetLeadNationality(val nationality: String) : GameEvent
     data class SetLeadAge(val age: String) : GameEvent

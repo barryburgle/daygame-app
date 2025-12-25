@@ -283,7 +283,7 @@ enum class CountryEnum(val flag: String, val alpha3: String, val countryName: St
                 return orderedEnum
             }
             val mostPopularOrderedEnum: MutableList<CountryEnum> = mutableListOf()
-            for(nationality in mostPopularLeadsNationalities) {
+            for (nationality in mostPopularLeadsNationalities) {
                 for (country in values()) {
                     if (country.alpha3 == nationality.category) {
                         mostPopularOrderedEnum.add(country)
@@ -293,5 +293,18 @@ enum class CountryEnum(val flag: String, val alpha3: String, val countryName: St
             mostPopularOrderedEnum.addAll(orderedEnum)
             return mostPopularOrderedEnum
         }
+
+        fun getInsertCountries(
+            mostPopularLeadsNationalities: List<CategoryHistogram>,
+            showMostPopular: Boolean,
+            contained: String
+        ): List<CountryEnum> {
+            if (!contained.isEmpty()) {
+                return values().filter { it.countryName.contains(contained, ignoreCase = true) }
+            }
+            return getCountriesOrderedByName(mostPopularLeadsNationalities, showMostPopular)
+        }
+
+
     }
 }

@@ -48,6 +48,7 @@ data class InputState(
     val leadContact: String = "",
     val leadNationality: String = "",
     val leadAge: Long = 20,
+    val countrySearch: String = "",
     val countryName: String = "",
     val notificationTime: String = "",
     val editAbstractSession: AbstractSession? = null,

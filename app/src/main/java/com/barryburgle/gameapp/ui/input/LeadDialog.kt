@@ -2,28 +2,28 @@ package com.barryburgle.gameapp.ui.input
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,8 +44,10 @@ import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import kotlinx.coroutines.delay
 
 @Composable
 fun LeadDialog(
@@ -58,6 +60,15 @@ fun LeadDialog(
     val lead = Lead()
     val localContext = LocalContext.current.applicationContext
     var expanded by remember { mutableStateOf(false) }
+    val textModifier = if (state.isUpdatingLead) {
+        Modifier
+            .height(60.dp)
+            .width(200.dp)
+    } else {
+        Modifier
+            .height(60.dp)
+            .fillMaxWidth()
+    }
     AlertDialog(modifier = modifier
         .shadow(elevation = 10.dp), onDismissRequest = {
         onEvent(GameEvent.SetIsInOverlayToFalse)
@@ -73,71 +84,79 @@ fun LeadDialog(
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                    .fillMaxWidth()
+                    .height(60.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val textModifier = if (state.isUpdatingLead) {
-                    Modifier
-                        .height(60.dp)
-                        .width(200.dp)
-                } else {
-                    Modifier
-                        .height(60.dp)
-                        .fillMaxWidth()
-                }
                 OutlinedTextField(
                     readOnly = state.isModifyingLead,
                     value = state.leadName,
                     onValueChange = { onEvent(GameEvent.SetLeadName(it)) },
-                    placeholder = { LittleBodyText("Name") },
+                    placeholder = { LittleBodyText("Insert lead name") },
                     shape = MaterialTheme.shapes.large,
                     modifier = textModifier
                 )
                 if (state.isUpdatingLead) {
-                    IconButton(onClick = {
-                        lead.id = state.leadId
-                        lead.name = state.leadName
-                        lead.contact = state.leadContact
-                        lead.nationality = state.leadNationality
-                        lead.age = state.leadAge
-                        onEvent(
-                            GameEvent.DeleteLead(
-                                lead
+                    Spacer(modifier = Modifier.width(10.dp))
+                    IconShadowButton(
+                        onClick = {
+                            lead.id = state.leadId
+                            lead.name = state.leadName
+                            lead.contact = state.leadContact
+                            lead.nationality = state.leadNationality
+                            lead.age = state.leadAge
+                            onEvent(
+                                GameEvent.DeleteLead(
+                                    lead
+                                )
                             )
-                        )
-                        onEvent(GameEvent.SetIsInOverlayToFalse)
-                        onEvent(
-                            GameEvent.HideLeadDialog
-                        )
-                        Toast.makeText(localContext, "Lead deleted", Toast.LENGTH_SHORT).show()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete Lead",
-                            tint = MaterialTheme.colorScheme.onErrorContainer
-                        )
-                    }
+                            onEvent(GameEvent.SetIsInOverlayToFalse)
+                            onEvent(
+                                GameEvent.HideLeadDialog
+                            )
+                            Toast.makeText(localContext, "Lead deleted", Toast.LENGTH_SHORT).show()
+                        },
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete Lead"
+                    )
                 }
             }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(10.dp)
-                    )
-                    .clickable { expanded = true },
-                horizontalArrangement = Arrangement.SpaceAround,
+                    .height(60.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                LittleBodyText(
-                    if (state.leadNationality.isBlank()) "Touch to choose a country" else CountryEnum.getFlagByAlpha3(
+                LaunchedEffect(state.countrySearch) {
+                    if (state.countrySearch.isNotEmpty()) {
+                        delay(500L)
+                        expanded = true
+                    }
+                }
+                OutlinedTextField(
+                    readOnly = state.isModifyingLead,
+                    value = if (state.countrySearch.isEmpty()) CountryEnum.getFlagByAlpha3(
                         state.leadNationality
                     ) + " " + CountryEnum.getCountryNameByAlpha3(
                         state.leadNationality
-                    )
+                    ) else state.countrySearch,
+                    onValueChange = {
+                        onEvent(GameEvent.SetLeadCountrySearch(it))
+                    },
+                    placeholder = { LittleBodyText("Search lead country") },
+                    shape = MaterialTheme.shapes.large,
+                    modifier = Modifier
+                        .height(60.dp)
+                        .width(200.dp)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                IconShadowButton(
+                    onClick = {
+                        onEvent(GameEvent.SetLeadCountrySearch(""))
+                        expanded = true
+                    },
+                    imageVector = Icons.Default.FilterList,
+                    contentDescription = "Select country"
                 )
             }
             DropdownMenu(
@@ -145,12 +164,15 @@ fun LeadDialog(
                     .width(200.dp)
                     .height(450.dp),
                 expanded = expanded,
-                onDismissRequest = { expanded = false }
+                onDismissRequest = {
+                    expanded = false
+                }
             ) {
                 var count = 0
-                CountryEnum.getCountriesOrderedByName(
+                CountryEnum.getInsertCountries(
                     state.mostPopularLeadsNationalities,
-                    state.suggestLeadsNationality
+                    state.suggestLeadsNationality,
+                    state.countrySearch
                 )
                     .forEach { country ->
                         count++
@@ -176,6 +198,7 @@ fun LeadDialog(
                                 }
                             },
                             onClick = {
+                                onEvent(GameEvent.SetLeadCountrySearch(""))
                                 onEvent(GameEvent.SetLeadNationality(country.alpha3))
                                 expanded = false
                             }
