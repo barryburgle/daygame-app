@@ -31,7 +31,7 @@ interface LeadDao {
     @Query("DELETE FROM lead")
     suspend fun deleteAll()
 
-    @Query("SELECT * from lead ORDER BY session_id DESC, insert_time DESC")
+    @Query("SELECT * from lead ORDER BY insert_time DESC")
     fun getAll(): Flow<List<Lead>>
 
     @Query(QUERY_ALL_LEADS_NATIONALITIES)

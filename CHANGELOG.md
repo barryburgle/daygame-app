@@ -14,6 +14,7 @@
 - Months chart bugfix
 - Leads name cut bugfix
 - Hour and date colors fixed
+- Leads acquired by single-sets not showing in Leads dashboard section
 
 # Version 1.9.0 (2025-07-30)
 
