@@ -20,5 +20,10 @@ fun GameCard(
         ) {
             onEvent(ToolEvent.SwitchShowSummaryCard)
         }
+        SwitchSetting(
+            "Show ongoing challenge card on top", state.showOngoingChallengeCardOnTop
+        ) {
+            onEvent(ToolEvent.SwitchShowOngoingChallengeCardOnTop)
+        }
     }
 }

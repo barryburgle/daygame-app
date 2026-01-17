@@ -57,6 +57,7 @@ data class ToolsState(
     var neverShareLeadInfo: Boolean = false,
     var copyReportOnClipboard: Boolean = true,
     var showSummaryCard: Boolean = false,
+    var showOngoingChallengeCardOnTop: Boolean = true,
     var theme: String = ThemeEnum.LIGHT.type,
     var deleteConfirmationPrompt: String = ""
 ) : ExportState(

@@ -709,6 +709,21 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SwitchShowOngoingChallengeCardOnTop -> {
+                _state.update {
+                    it.copy(
+                        showOngoingChallengeCardOnTop = _state.value.showOngoingChallengeCardOnTop.not()
+                    )
+                }
+                val showChallengeCard = _state.value.showOngoingChallengeCardOnTop
+                val setting =
+                    Setting(
+                        SettingDao.SHOW_CHALLENGE_CARD_ID,
+                        showChallengeCard.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetTheme -> {
                 _state.update {
                     it.copy(
