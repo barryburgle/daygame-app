@@ -11,9 +11,9 @@ interface AggregatedSessionsDao {
 
     companion object {
         const val QUERY_SESSIONS_BY_WEEKS =
-            "SELECT SUM(sets) as sets, SUM(convos) as convos, SUM(contacts) as contacts, AVG(`index`) as avg_index, AVG(convo_ratio) as avg_convo_ratio, AVG(contact_ratio)  as avg_contact_ratio, CAST(week_number as INTEGER) as period_number, SUM(session_time)/60 as time_spent from abstract_session WHERE period_number IN (${SettingDao.QUERY_LAST_WEEKS}) GROUP BY week_number"
+            "SELECT SUM(sets) as sets, SUM(convos) as convos, SUM(contacts) as contacts, AVG(`index`) as avg_index, AVG(convo_ratio) as avg_convo_ratio, AVG(contact_ratio)  as avg_contact_ratio, CAST(strftime('%Y', session_date) as INTEGER) as year_number, CAST(week_number as INTEGER) as period_number, SUM(session_time)/60 as time_spent from abstract_session WHERE (strftime('%Y', session_date), period_number) IN (${SettingDao.QUERY_LAST_WEEKS}) GROUP BY strftime('%Y', session_date), week_number"
         const val QUERY_SESSIONS_BY_MONTHS =
-            "SELECT SUM(sets) as sets, SUM(convos) as convos, SUM(contacts) as contacts, AVG(`index`) as avg_index, AVG(convo_ratio) as avg_convo_ratio, AVG(contact_ratio)  as avg_contact_ratio, CAST(strftime('%m', session_date) as INTEGER) as period_number, SUM(session_time)/60 as time_spent from abstract_session WHERE period_number IN (${SettingDao.QUERY_LAST_MONTHS}) GROUP BY strftime('%m', session_date)"
+            "SELECT SUM(sets) as sets, SUM(convos) as convos, SUM(contacts) as contacts, AVG(`index`) as avg_index, AVG(convo_ratio) as avg_convo_ratio, AVG(contact_ratio)  as avg_contact_ratio, CAST(strftime('%Y', session_date) as INTEGER) as year_number, CAST(strftime('%m', session_date) as INTEGER) as period_number, SUM(session_time)/60 as time_spent from abstract_session WHERE (strftime('%Y', session_date), period_number) IN (${SettingDao.QUERY_LAST_MONTHS}) GROUP BY strftime('%Y', session_date), strftime('%m', session_date)"
     }
 
     @Query(QUERY_SESSIONS_BY_WEEKS)

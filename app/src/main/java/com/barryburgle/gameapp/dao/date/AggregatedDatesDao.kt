@@ -11,9 +11,9 @@ interface AggregatedDatesDao {
 
     companion object {
         const val QUERY_DATES_BY_WEEKS =
-            "SELECT COUNT(*) as dates, CAST(week_number as INTEGER) as period_number, SUM(date_time)/60 as date_time_spent from meeting WHERE period_number IN (${SettingDao.QUERY_LAST_WEEKS}) GROUP BY week_number"
+            "SELECT COUNT(*) as dates, CAST(strftime('%Y', meeting_date) as INTEGER) as year_number, CAST(week_number as INTEGER) as period_number, SUM(date_time)/60 as date_time_spent from meeting WHERE (strftime('%Y', meeting_date), period_number) IN (${SettingDao.QUERY_LAST_WEEKS}) GROUP BY strftime('%Y', meeting_date), week_number"
         const val QUERY_DATES_BY_MONTHS =
-            "SELECT COUNT(*) as dates, CAST(strftime('%m', meeting_date) as INTEGER) as period_number, SUM(date_time)/60 as date_time_spent from meeting WHERE period_number IN (${SettingDao.QUERY_LAST_MONTHS}) GROUP BY strftime('%m', meeting_date)"
+            "SELECT COUNT(*) as dates, CAST(strftime('%Y', meeting_date) as INTEGER) as year_number, CAST(strftime('%m', meeting_date) as INTEGER) as period_number, SUM(date_time)/60 as date_time_spent from meeting WHERE (strftime('%Y', meeting_date), period_number) IN (${SettingDao.QUERY_LAST_MONTHS}) GROUP BY strftime('%Y', meeting_date), strftime('%m', meeting_date)"
     }
 
     @Query(QUERY_DATES_BY_WEEKS)

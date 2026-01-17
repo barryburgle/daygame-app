@@ -95,8 +95,8 @@ interface SettingDao {
         const val QUERY_LAST_WEEKS_SHOWN = "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_WEEKS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_WEEKS_SHOWN_ID}'"
         const val QUERY_LAST_MONTHS_SHOWN = "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_MONTHS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_MONTHS_SHOWN_ID}'"
 
-        const val QUERY_LAST_WEEKS = "SELECT DISTINCT week_number FROM meeting UNION SELECT DISTINCT week_number FROM abstract_session ORDER BY week_number DESC LIMIT ($QUERY_LAST_WEEKS_SHOWN)"
-        const val QUERY_LAST_MONTHS = "SELECT DISTINCT strftime('%m', meeting_date) as month_number FROM meeting UNION SELECT DISTINCT strftime('%m', session_date) as month_number FROM abstract_session ORDER BY month_number DESC LIMIT ($QUERY_LAST_MONTHS_SHOWN)"
+        const val QUERY_LAST_WEEKS = "SELECT DISTINCT strftime('%Y', meeting_date) as date_year, week_number FROM meeting UNION SELECT DISTINCT strftime('%Y', session_date) as date_year, week_number FROM abstract_session ORDER BY date_year DESC, week_number DESC LIMIT ($QUERY_LAST_WEEKS_SHOWN)"
+        const val QUERY_LAST_MONTHS = "SELECT DISTINCT strftime('%Y', meeting_date) as date_year, strftime('%m', meeting_date) as month_number FROM meeting UNION SELECT DISTINCT strftime('%Y', session_date) as date_year, strftime('%m', session_date) as month_number FROM abstract_session ORDER BY date_year DESC, month_number DESC LIMIT ($QUERY_LAST_MONTHS_SHOWN)"
         const val QUERY_SHOWN_NATIONALITIES = "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SHOWN_NATIONALITIES}' ELSE value END FROM setting WHERE id = '${SHOWN_NATIONALITIES_ID}'"
     }
 

@@ -15,7 +15,7 @@ class SessionManager {
             var aggregatedSessions: List<AggregatedSessions> = mutableListOf()
             var count: Int = 1
             for (aggregatedPeriod in aggregatedPeriodList) {
-                var addingAggregatedSessions = AggregatedSessions(0f, 0f, 0f, 0f, 0f, 0f, count, 0f)
+                var addingAggregatedSessions = AggregatedSessions(0f, 0f, 0f, 0f, 0f, 0f, count, 0,0f)
                 if (aggregatedPeriod.aggregatedSessions != null) {
                     addingAggregatedSessions = aggregatedPeriod.aggregatedSessions!!
                     addingAggregatedSessions.periodNumber = count
@@ -35,7 +35,7 @@ class SessionManager {
             var aggregatedDates: List<AggregatedDates> = mutableListOf()
             var count: Int = 1
             for (aggregatedPeriod in aggregatedPeriodList) {
-                var addingAggregatedDates = AggregatedDates(0f, count, 0f)
+                var addingAggregatedDates = AggregatedDates(0f, count, 0,0f)
                 if (aggregatedPeriod.aggregatedDates != null) {
                     addingAggregatedDates = aggregatedPeriod.aggregatedDates!!
                     addingAggregatedDates.periodNumber = count
@@ -53,26 +53,26 @@ class SessionManager {
             aggregatedSessionsList: List<AggregatedSessions>,
             aggregatedDatesList: List<AggregatedDates>
         ): List<AggregatedPeriod> {
-            var aggregatedPeriodMap: Map<Int, AggregatedPeriod> = mutableMapOf()
+            var aggregatedPeriodMap: Map<String, AggregatedPeriod> = mutableMapOf()
             for (aggregatedSessions in aggregatedSessionsList) {
                 var aggregatedPeriod: AggregatedPeriod? =
-                    aggregatedPeriodMap.get(aggregatedSessions.periodNumber)
+                    aggregatedPeriodMap.get(aggregatedSessions.yearNumber.toString() + "-" + aggregatedSessions.periodNumber)
                 if (aggregatedPeriod != null) {
                     aggregatedPeriod.aggregatedSessions = aggregatedSessions
                 } else {
                     aggregatedPeriod = AggregatedPeriod(aggregatedSessions, null)
                 }
-                aggregatedPeriodMap += aggregatedSessions.periodNumber to aggregatedPeriod
+                aggregatedPeriodMap += aggregatedSessions.yearNumber.toString() + "-" + aggregatedSessions.periodNumber to aggregatedPeriod
             }
             for (aggregatedDates in aggregatedDatesList) {
                 var aggregatedPeriod: AggregatedPeriod? =
-                    aggregatedPeriodMap.get(aggregatedDates.periodNumber)
+                    aggregatedPeriodMap.get(aggregatedDates.yearNumber.toString() + "-" + aggregatedDates.periodNumber)
                 if (aggregatedPeriod != null) {
                     aggregatedPeriod.aggregatedDates = aggregatedDates
                 } else {
                     aggregatedPeriod = AggregatedPeriod(null, aggregatedDates)
                 }
-                aggregatedPeriodMap += aggregatedDates.periodNumber to aggregatedPeriod
+                aggregatedPeriodMap += aggregatedDates.yearNumber.toString() + "-" + aggregatedDates.periodNumber to aggregatedPeriod
             }
             aggregatedPeriodMap = aggregatedPeriodMap.toSortedMap()
             return aggregatedPeriodMap.entries.toList().map { it.value }
