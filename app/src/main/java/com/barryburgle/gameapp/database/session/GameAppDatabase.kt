@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.barryburgle.gameapp.dao.challenge.ChallengeDao
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
@@ -13,6 +14,7 @@ import com.barryburgle.gameapp.dao.date.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
 import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
+import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -20,8 +22,8 @@ import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.setting.Setting
 
 @Database(
-    entities = [AbstractSession::class, Setting::class, Lead::class, Date::class, SingleSet::class],
-    version = 5
+    entities = [AbstractSession::class, Setting::class, Lead::class, Date::class, SingleSet::class, Challenge::class],
+    version = 6
 )
 abstract class GameAppDatabase : RoomDatabase() {
     abstract val abstractSessionDao: AbstractSessionDao
@@ -31,6 +33,7 @@ abstract class GameAppDatabase : RoomDatabase() {
     abstract val leadDao: LeadDao
     abstract val dateDao: DateDao
     abstract val setDao: SetDao
+    abstract val challengeDao: ChallengeDao
 
     companion object {
         private const val DATABASE_NAME = "game_app_db"
@@ -73,6 +76,14 @@ abstract class GameAppDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_5_6: Migration = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS challenge (id INTEGER NOT NULL PRIMARY KEY, insert_time TEXT NOT NULL, name TEXT NULL, description TEXT NULL, start_date TEXT NOT NULL, end_date TEXT NOT NULL, challenge_type TEXT NOT NULL, goal INTEGER NOT NULL, tweet_url TEXT NULL);"
+                )
+            }
+        }
+
         fun getInstance(context: Context): GameAppDatabase? {
             if (INSTANCE == null) {
                 synchronized(GameAppDatabase::class) {
@@ -80,7 +91,8 @@ abstract class GameAppDatabase : RoomDatabase() {
                         context.applicationContext,
                         GameAppDatabase::class.java, DATABASE_NAME
                     ).addMigrations(MIGRATION_1_2).addMigrations(MIGRATION_2_3)
-                        .addMigrations(MIGRATION_3_4).addMigrations(MIGRATION_4_5).build()
+                        .addMigrations(MIGRATION_3_4).addMigrations(MIGRATION_4_5)
+                        .addMigrations(MIGRATION_5_6).build()
                 }
             }
             return INSTANCE
