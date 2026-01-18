@@ -30,4 +30,16 @@ interface ChallengeDao {
 
     @Query("SELECT CAST(JULIANDAY(end_date) - JULIANDAY(start_date) AS INTEGER) as metric, COUNT(*) as frequency from challenge GROUP BY metric ORDER BY metric")
     fun getDurationHistogram(): Flow<List<Histogram>>
+
+    @Query("SELECT * from challenge ORDER BY id DESC, start_date DESC")
+    fun getByStartDate(): Flow<List<Challenge>>
+
+    @Query("SELECT * from challenge ORDER BY id DESC, end_date DESC")
+    fun getByEndDate(): Flow<List<Challenge>>
+
+    @Query("SELECT * from challenge ORDER BY id DESC, challenge_type DESC")
+    fun getByChallengeType(): Flow<List<Challenge>>
+
+    @Query("SELECT * from challenge ORDER BY id DESC, challenge_type DESC, goal DESC")
+    fun getByChallengeTypeAndGoal(): Flow<List<Challenge>>
 }
