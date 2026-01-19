@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "d3c7a60dcff7b8e09cdfaadd544bfce8",
+    "identityHash": "8bdc1cb891780079ab96276a5b941579",
     "entities": [
       {
         "tableName": "abstract_session",
@@ -460,7 +460,7 @@
       },
       {
         "tableName": "challenge",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `insert_time` TEXT NOT NULL, `name` TEXT, `description` TEXT, `start_date` TEXT NOT NULL, `end_date` TEXT NOT NULL, `challenge_type` TEXT NOT NULL, `goal` INTEGER NOT NULL, `tweet_url` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `insert_time` TEXT NOT NULL, `name` TEXT, `description` TEXT, `start_date` TEXT NOT NULL, `end_date` TEXT NOT NULL, `challenge_type` TEXT NOT NULL, `goal` INTEGER NOT NULL, `tweet_url` TEXT, `day_of_week` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -515,6 +515,12 @@
             "columnName": "tweet_url",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "dayOfWeek",
+            "columnName": "day_of_week",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -530,7 +536,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd3c7a60dcff7b8e09cdfaadd544bfce8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8bdc1cb891780079ab96276a5b941579')"
     ]
   }
 }
