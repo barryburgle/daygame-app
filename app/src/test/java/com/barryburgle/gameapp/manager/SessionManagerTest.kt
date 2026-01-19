@@ -43,17 +43,17 @@ class SessionManagerTest {
         BarEntry(3f, 2.5f),
     )
     val FIRST_AGGREGATED_SESSIONS: AggregatedSessions =
-        AggregatedSessions(3f, 2f, 1f, 1.5f, 0.75f, 0.25f, 2, 120f)
+        AggregatedSessions(3f, 2f, 1f, 1.5f, 0.75f, 0.25f, 1, 2, 120f)
     val SECOND_AGGREGATED_SESSIONS: AggregatedSessions =
-        AggregatedSessions(6f, 4f, 2f, 1.5f, 0.75f, 0.25f, 3, 120f)
+        AggregatedSessions(6f, 4f, 2f, 1.5f, 0.75f, 0.25f, 1, 3, 120f)
     val AGGREGATED_SESSIONS_LIST: List<AggregatedSessions> = listOf(
         FIRST_AGGREGATED_SESSIONS,
         SECOND_AGGREGATED_SESSIONS
     )
     val FIRST_AGGREGATED_DATES: AggregatedDates =
-        AggregatedDates(3f, 3, 120f)
+        AggregatedDates(3f, 1, 3, 120f)
     val SECOND_AGGREGATED_DATES: AggregatedDates =
-        AggregatedDates(6f, 4, 120f)
+        AggregatedDates(6f, 1, 4, 120f)
     val AGGREGATED_DATES_LIST: List<AggregatedDates> = listOf(
         FIRST_AGGREGATED_DATES,
         SECOND_AGGREGATED_DATES
