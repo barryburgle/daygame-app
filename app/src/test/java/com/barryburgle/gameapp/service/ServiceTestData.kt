@@ -77,6 +77,12 @@ open class ServiceTestData {
     val SET_TOTAL_MINUTES = 18L
     val AVG_SET_MINUTES = 9L
 
+    val CHALLENGE_NAME: String = "chall-name"
+    val CHALLENGE_DESC: String = "chall-desc"
+    val CHALLENGE_DURATION: String = "10"
+    val CHALLENGE_TYPE: String = "sets"
+    val CHALLENGE_GOAL: String = "100"
+
     val abstractSessionList: List<AbstractSession> = listOf(
         AbstractSession(
             null,

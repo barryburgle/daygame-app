@@ -2,8 +2,11 @@ package com.barryburgle.gameapp.service.challenge
 
 import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.service.EntityService
+import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 class ChallengeService : ChallengeInitializer, EntityService() {
 
@@ -19,16 +22,18 @@ class ChallengeService : ChallengeInitializer, EntityService() {
         val now = OffsetDateTime.now().toString()
         val startDate = LocalDate.parse(now.take(10))
         val endDate = startDate.plusDays(duration.toInt().toLong())
+        val dayOfWeek: DayOfWeek = getDayOfWeek(LocalDateTime.now())
         return Challenge(
             getId(id),
             now,
             name,
             description,
-            startDate.toString(),
-            endDate.toString(),
+            OffsetDateTime.of(startDate.atTime(0, 0), ZoneOffset.UTC).toString(),
+            OffsetDateTime.of(endDate.atTime(0, 0), ZoneOffset.UTC).toString(),
             type,
             goal.toInt(),
-            tweetUrl
+            tweetUrl,
+            dayOfWeek.value
         )
     }
 
