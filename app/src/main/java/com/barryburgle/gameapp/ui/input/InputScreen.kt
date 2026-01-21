@@ -373,7 +373,7 @@ fun gameTopBar(
     spaceFromLeft: Dp
 ) {
     val selectedOptions = remember {
-        mutableStateListOf(true, true, true)
+        mutableStateListOf(true, true, true, true)
     }
     val semiOpaqueBackground = MaterialTheme.colorScheme.background
     Column(
@@ -408,16 +408,14 @@ fun gameTopBar(
             ) {
                 Row(
                     modifier = Modifier
+                        .padding(bottom = 5.dp)
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Spacer(modifier = Modifier.width(spaceFromLeft))
-                    MediumTitleText("Events:")
                     Spacer(modifier = Modifier.width(10.dp))
                     MultiChoiceButton(
-                        EventTypeEnum.getFieldsButAll(),
-                        listOf(state.allSessions.size, state.allSets.size, state.allDates.size),
+                        EventTypeEnum.getChoiceValues(),
                         Modifier
                             .height(50.dp),
                         selectedOptions

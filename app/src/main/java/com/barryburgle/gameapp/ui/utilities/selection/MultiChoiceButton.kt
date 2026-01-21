@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
@@ -19,12 +19,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
+import com.barryburgle.gameapp.model.enums.EventTypeEnum
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MultiChoiceButton(
-    options: List<String>,
-    sizes: List<Int>,
+    options: List<EventTypeEnum>,
     modifier: Modifier,
     selectedOptions: SnapshotStateList<Boolean>,
     onCheckedChange: (Int) -> Unit
@@ -32,7 +32,7 @@ fun MultiChoiceButton(
     val selectedOptionsToDisplay = selectedOptions
     Row(
         modifier = Modifier
-            .fillMaxWidth(0.9f),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
         MultiChoiceSegmentedButtonRow(
@@ -44,8 +44,7 @@ fun MultiChoiceButton(
                     spotColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f)
                 )
         ) {
-            options.fastForEachIndexed { index, label ->
-                val count: String = if (sizes[index] < 100) sizes[index].toString() else "99+"
+            options.fastForEachIndexed { index, eventType ->
                 SegmentedButton(
                     border = BorderStroke(0.dp, Color.Transparent),
                     shape = SegmentedButtonDefaults.itemShape(
@@ -58,7 +57,10 @@ fun MultiChoiceButton(
                         onCheckedChange(index)
                     },
                     label = {
-                        Text(label)
+                        Icon(
+                            imageVector = eventType.getIcon()!!,
+                            contentDescription = eventType.getField()
+                        )
                     },
                     colors = SegmentedButtonDefaults.colors(
                         activeContentColor = MaterialTheme.colorScheme.onPrimary,
