@@ -30,6 +30,7 @@ import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.SetSortType
+import com.barryburgle.gameapp.ui.input.dialog.component.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
@@ -176,7 +177,17 @@ fun SetDialog(
                 visibilityFlag = !locationTextFieldExpanded,
             ) {
                 Spacer(modifier = Modifier.height(7.dp))
-                Row(
+                // TODO: refactor the following row to use it in SetDialog, DateDialog, SessionDialog and ChallengeDialog
+                // taking in input the state field, the event method, placeholder and height
+                DialogTextComponent(
+                    state.stickingPoints,
+                    "Sticking points",
+                    100.dp,
+                    ""
+                ) {
+                    onEvent(GameEvent.SetStickingPoints(it))
+                }
+                /*Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -203,7 +214,7 @@ fun SetDialog(
                             contentDescription = "Delete Sticking Points"
                         )
                     }
-                }
+                }*/
                 Spacer(modifier = Modifier.height(7.dp))
             }
             Row(
