@@ -49,6 +49,7 @@ import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.ui.input.InputCounter
+import com.barryburgle.gameapp.ui.input.dialog.component.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
@@ -294,32 +295,13 @@ fun SessionDialog(
                     )
                 }
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+            DialogTextComponent(
+                state.stickingPoints,
+                "Sticking points",
+                100.dp,
+                ""
             ) {
-                OutlinedTextField(
-                    value = state.stickingPoints,
-                    onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
-                    placeholder = { LittleBodyText("Sticking points") },
-                    shape = MaterialTheme.shapes.large,
-                    modifier = Modifier
-                        .height(100.dp)
-                        .fillMaxWidth(0.75f)
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Column(
-                    modifier = Modifier
-                        .height(100.dp),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    IconShadowButton(
-                        onClick = {
-                            onEvent(GameEvent.SetStickingPoints(InputDialogConstant.EMPTY_STICKING_POINTS))
-                        },
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete Sticking Points"
-                    )
-                }
+                onEvent(GameEvent.SetStickingPoints(it))
             }
         }
     }, confirmButton = {
