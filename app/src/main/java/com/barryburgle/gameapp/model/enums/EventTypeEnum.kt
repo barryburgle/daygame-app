@@ -23,8 +23,8 @@ enum class EventTypeEnum(private val field: String, private val icon: ImageVecto
     }
 
     companion object {
-        fun getFieldsButAll(): List<String> {
-            return values().filter { it != ALL }.map { it.getField() + "s" }
+        fun getChoiceValues(): List<EventTypeEnum> {
+            return values().filter { it != ALL }
         }
     }
 }

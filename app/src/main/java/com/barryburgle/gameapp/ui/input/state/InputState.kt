@@ -61,6 +61,7 @@ data class InputState(
     override var allDates: List<Date> = emptyList(),
     var allEvents: List<SortableGameEvent> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
+    override var allChallenges: List<Challenge> = emptyList(),
     override var backupActive: Boolean = true,
     override var lastBackup: Int = 3,
     override var justSaved: Boolean = false,

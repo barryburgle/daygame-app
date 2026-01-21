@@ -11,19 +11,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.GroupAdd
-import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.ui.state.AllEntityState
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
@@ -33,7 +28,8 @@ fun InsertInvite(state: AllEntityState) {
     if (state.allSessions.isEmpty() &&
         state.allDates.isEmpty() &&
         state.allSets.isEmpty() &&
-        state.allLeads.isEmpty()
+        state.allLeads.isEmpty() &&
+        state.allChallenges.isEmpty()
     ) {
         Row(
             modifier = Modifier
@@ -59,20 +55,13 @@ fun InsertInvite(state: AllEntityState) {
                     LargeTitleText("Insert a new:")
                     // TODO: make the following tappable buttons that open the corresponding insert dialog
                 }
-                entityDescription(
-                    "Session",
-                    imageVector = Icons.Default.GroupAdd
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                entityDescription(
-                    "Set",
-                    imageVector = Icons.Default.PersonAddAlt1
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                entityDescription(
-                    "Date",
-                    imageVector = Icons.Default.Favorite
-                )
+                for (value in EventTypeEnum.getChoiceValues()) {
+                    entityDescription(
+                        value.getField(),
+                        imageVector = value.getIcon()
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
             }
         }
     }
