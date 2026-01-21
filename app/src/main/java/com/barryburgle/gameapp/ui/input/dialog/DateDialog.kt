@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ContentPaste
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
@@ -38,6 +37,7 @@ import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.DateTypeEnum
 import com.barryburgle.gameapp.ui.input.InputCountComponent
+import com.barryburgle.gameapp.ui.input.dialog.component.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
@@ -276,33 +276,13 @@ fun DateDialog(
                 visibilityFlag = !locationTextFieldExpanded,
             ) {
                 Spacer(modifier = Modifier.height(7.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                DialogTextComponent(
+                    state.stickingPoints,
+                    "Sticking points",
+                    100.dp,
+                    ""
                 ) {
-                    OutlinedTextField(
-                        value = state.stickingPoints,
-                        onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
-                        placeholder = { LittleBodyText("Sticking points") },
-                        shape = MaterialTheme.shapes.large,
-                        modifier = Modifier
-                            .height(100.dp)
-                            .fillMaxWidth(0.75f)
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Column(
-                        modifier = Modifier
-                            .height(100.dp),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        IconShadowButton(
-                            onClick = {
-                                onEvent(GameEvent.SetStickingPoints(InputDialogConstant.EMPTY_STICKING_POINTS))
-                            },
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete Sticking Points"
-                        )
-                    }
+                    onEvent(GameEvent.SetStickingPoints(it))
                 }
                 Spacer(modifier = Modifier.height(7.dp))
             }
