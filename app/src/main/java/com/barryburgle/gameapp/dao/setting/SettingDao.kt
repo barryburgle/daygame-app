@@ -40,6 +40,8 @@ interface SettingDao {
         const val IMPORT_DATES_FILE_NAME_ID: String = "import_dates_file_name"
         const val EXPORT_SETS_FILE_NAME_ID: String = "export_sets_file_name"
         const val IMPORT_SETS_FILE_NAME_ID: String = "import_sets_file_name"
+        const val EXPORT_CHALLENGES_FILE_NAME_ID: String = "export_challenges_file_name"
+        const val IMPORT_CHALLENGES_FILE_NAME_ID: String = "import_challenges_file_name"
         const val GENERATE_IDATE_ID: String = "generate_idate"
         const val FOLLOW_COUNT_ID: String = "follow_count"
         const val SUGGEST_LEADS_NATIONALITY_ID: String = "suggest_leads_nationality"
@@ -55,13 +57,17 @@ interface SettingDao {
         const val NEVER_SHARE_LEAD_INFO_ID: String = "never_share_lead_info"
         const val COPY_REPORT_ON_CLIPBOARD_ID: String = "copy_report_on_clipboard"
         const val SHOW_SUMMARY_CARD_ID: String = "show_summary_card"
+        const val SHOW_CHALLENGE_CARD_ID: String = "show_challenge_card"
         const val THEME_ID: String = "theme_id"
         const val DEFAULT_LEADS_EXPORT_FILE_NAME: String = "leads_export"
         const val DEFAULT_LEADS_IMPORT_FILE_NAME: String = "leads_export_yyyy_mm_dd_hh_mm.csv"
-        const val DEFAULT_DATES_EXPORT_FILE_NAME: String = "date_export"
-        const val DEFAULT_DATES_IMPORT_FILE_NAME: String = "date_export_yyyy_mm_dd_hh_mm.csv"
-        const val DEFAULT_SETS_EXPORT_FILE_NAME: String = "set_export"
-        const val DEFAULT_SETS_IMPORT_FILE_NAME: String = "set_export_yyyy_mm_dd_hh_mm.csv"
+        const val DEFAULT_DATES_EXPORT_FILE_NAME: String = "dates_export"
+        const val DEFAULT_DATES_IMPORT_FILE_NAME: String = "dates_export_yyyy_mm_dd_hh_mm.csv"
+        const val DEFAULT_SETS_EXPORT_FILE_NAME: String = "sets_export"
+        const val DEFAULT_SETS_IMPORT_FILE_NAME: String = "sets_export_yyyy_mm_dd_hh_mm.csv"
+        const val DEFAULT_CHALLENGES_EXPORT_FILE_NAME: String = "challenges_export"
+        const val DEFAULT_CHALLENGES_IMPORT_FILE_NAME: String =
+            "challenges_export_yyyy_mm_dd_hh_mm.csv"
         const val DEFAULT_LATEST_AVAILABLE: String = ""
         const val DEFAULT_LATEST_PUBLISH_DATE: String = ""
         const val DEFAULT_LATEST_CHANGELOG: String = ""
@@ -87,17 +93,24 @@ interface SettingDao {
         const val NEVER_SHARE_LEAD_INFO_FLAG: String = "true"
         const val COPY_REPORT_ON_CLIPBOARD_FLAG: String = "true"
         const val SHOW_SUMMARY_CARD_FLAG: String = "false"
+        const val SHOW_CHALLENGE_CARD_FLAG: String = "true"
         const val THEME_VALUE: String = "light"
         const val DEFAULT_BACKUP_NUMBER: String = "3"
         const val DEFAULT_NOTIFICATION_TIME: String = "18:00"
 
-        const val QUERY_LAST_SESSIONS_SHOWN = "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_SESSIONS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_SESSIONS_SHOWN_ID}'"
-        const val QUERY_LAST_WEEKS_SHOWN = "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_WEEKS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_WEEKS_SHOWN_ID}'"
-        const val QUERY_LAST_MONTHS_SHOWN = "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_MONTHS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_MONTHS_SHOWN_ID}'"
+        const val QUERY_LAST_SESSIONS_SHOWN =
+            "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_SESSIONS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_SESSIONS_SHOWN_ID}'"
+        const val QUERY_LAST_WEEKS_SHOWN =
+            "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_WEEKS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_WEEKS_SHOWN_ID}'"
+        const val QUERY_LAST_MONTHS_SHOWN =
+            "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_MONTHS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_MONTHS_SHOWN_ID}'"
 
-        const val QUERY_LAST_WEEKS = "SELECT DISTINCT strftime('%Y', meeting_date) as date_year, week_number FROM meeting UNION SELECT DISTINCT strftime('%Y', session_date) as date_year, week_number FROM abstract_session ORDER BY date_year DESC, week_number DESC LIMIT ($QUERY_LAST_WEEKS_SHOWN)"
-        const val QUERY_LAST_MONTHS = "SELECT DISTINCT strftime('%Y', meeting_date) as date_year, strftime('%m', meeting_date) as month_number FROM meeting UNION SELECT DISTINCT strftime('%Y', session_date) as date_year, strftime('%m', session_date) as month_number FROM abstract_session ORDER BY date_year DESC, month_number DESC LIMIT ($QUERY_LAST_MONTHS_SHOWN)"
-        const val QUERY_SHOWN_NATIONALITIES = "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SHOWN_NATIONALITIES}' ELSE value END FROM setting WHERE id = '${SHOWN_NATIONALITIES_ID}'"
+        const val QUERY_LAST_WEEKS =
+            "SELECT DISTINCT strftime('%Y', meeting_date) as date_year, week_number FROM meeting UNION SELECT DISTINCT strftime('%Y', session_date) as date_year, week_number FROM abstract_session ORDER BY date_year DESC, week_number DESC LIMIT ($QUERY_LAST_WEEKS_SHOWN)"
+        const val QUERY_LAST_MONTHS =
+            "SELECT DISTINCT strftime('%Y', meeting_date) as date_year, strftime('%m', meeting_date) as month_number FROM meeting UNION SELECT DISTINCT strftime('%Y', session_date) as date_year, strftime('%m', session_date) as month_number FROM abstract_session ORDER BY date_year DESC, month_number DESC LIMIT ($QUERY_LAST_MONTHS_SHOWN)"
+        const val QUERY_SHOWN_NATIONALITIES =
+            "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SHOWN_NATIONALITIES}' ELSE value END FROM setting WHERE id = '${SHOWN_NATIONALITIES_ID}'"
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -129,6 +142,12 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SETS_IMPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${IMPORT_SETS_FILE_NAME_ID}'")
     fun getImportSetsFilename(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_CHALLENGES_EXPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${EXPORT_CHALLENGES_FILE_NAME_ID}'")
+    fun getExportChallengesFilename(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_CHALLENGES_IMPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${IMPORT_CHALLENGES_FILE_NAME_ID}'")
+    fun getImportChallengesFilename(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_EXPORT_FOLDER}' ELSE value END FROM setting WHERE id = '${EXPORT_FOLDER_ID}'")
     fun getExportFolder(): Flow<String>
@@ -198,6 +217,9 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${SHOW_SUMMARY_CARD_FLAG}' ELSE value END FROM setting WHERE id = '${SHOW_SUMMARY_CARD_ID}'")
     fun getShowSummaryCard(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${SHOW_CHALLENGE_CARD_FLAG}' ELSE value END FROM setting WHERE id = '${SHOW_CHALLENGE_CARD_ID}'")
+    fun getShowChallengeCard(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${THEME_VALUE}' ELSE value END FROM setting WHERE id = '${THEME_ID}'")
     fun getTheme(): Flow<String>
