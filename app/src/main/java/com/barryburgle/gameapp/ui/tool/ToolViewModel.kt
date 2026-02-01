@@ -271,6 +271,30 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SetExportChallengesFileName -> {
+                _state.update {
+                    it.copy(
+                        exportChallengesFileName = event.exportChallengesFileName
+                    )
+                }
+                val exportChallengesFileName = _state.value.exportChallengesFileName
+                val setting =
+                    Setting(SettingDao.EXPORT_CHALLENGES_FILE_NAME_ID, exportChallengesFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetImportChallengesFileName -> {
+                _state.update {
+                    it.copy(
+                        importChallengesFileName = event.importChallengesFileName
+                    )
+                }
+                val importChallengesFileName = _state.value.importChallengesFileName
+                val setting =
+                    Setting(SettingDao.IMPORT_CHALLENGES_FILE_NAME_ID, importChallengesFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetExportFolder -> {
                 _state.update {
                     it.copy(
@@ -342,6 +366,16 @@ class ToolViewModel(
                 }
                 val allSets = _state.value.allSets
                 viewModelScope.launch { setDao.batchInsert(allSets) }
+            }
+
+            is ToolEvent.SetAllChallenges -> {
+                _state.update {
+                    it.copy(
+                        allChallenges = event.allChallenges
+                    )
+                }
+                val allChallenges = _state.value.allChallenges
+                viewModelScope.launch { challengeDao.batchInsert(allChallenges) }
             }
 
             is ToolEvent.SetLastSessionAverageQuantity -> {
