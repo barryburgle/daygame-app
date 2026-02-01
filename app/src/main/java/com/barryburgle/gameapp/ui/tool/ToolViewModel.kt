@@ -659,6 +659,14 @@ class ToolViewModel(
                 }
             }
 
+            is ToolEvent.SwitchDeleteChallenges -> {
+                _state.update {
+                    it.copy(
+                        deleteChallenges = _state.value.deleteChallenges.not()
+                    )
+                }
+            }
+
             is ToolEvent.SwitchDeleteSets -> {
                 _state.update {
                     it.copy(
@@ -793,6 +801,10 @@ class ToolViewModel(
 
             is ToolEvent.DeleteAllSets -> {
                 viewModelScope.launch { setDao.deleteAll() }
+            }
+
+            is ToolEvent.DeleteAllChallenges -> {
+                viewModelScope.launch { challengeDao.deleteAll() }
             }
         }
     }
