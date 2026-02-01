@@ -40,12 +40,7 @@ open class Challenge(
     }
 
     override fun getEventDescription(): String {
-        return "${
-            DayOfWeek.of(dayOfWeek).toString().lowercase()
-                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-        } ${FormatService.getDate(startDate)} until ${
-            DayOfWeek.of(FormatService.parseDate(endDate).dayOfWeek.value).toString().lowercase()
-        } ${
+        return "${FormatService.getDate(startDate)} ⮕ ${
             FormatService.getDate(
                 endDate
             )
