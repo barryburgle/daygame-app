@@ -72,6 +72,7 @@ class CSVFindService {
                     .removePrefix("leads_backup_")
                     .removePrefix("dates_backup_")
                     .removePrefix("sets_backup_")
+                    .removePrefix("challenges_backup_")
                     .removeSuffix(".csv")
             }
             .toSet()
