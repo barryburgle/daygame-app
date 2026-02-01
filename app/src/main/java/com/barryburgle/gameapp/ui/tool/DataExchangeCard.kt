@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
 import com.barryburgle.gameapp.service.csv.CSVFindService
+import com.barryburgle.gameapp.service.csv.ChallengeCsvService
 import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
@@ -53,6 +54,7 @@ fun DataExchangeCard(
     leadCsvService: LeadCsvService,
     dateCsvService: DateCsvService,
     setCsvService: SetCsvService,
+    challengeCsvService: ChallengeCsvService,
     csvFindService: CSVFindService,
     onEvent: (ToolEvent) -> Unit
 ) {
@@ -431,6 +433,65 @@ fun DataExchangeCard(
                                     onEvent(ToolEvent.SetExportSetsFileName(it))
                                 } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
                                     onEvent(ToolEvent.SetImportSetsFileName(it))
+                                }
+                            }
+                        )
+                        FilenameComposable(cardTitle = cardTitle,
+                            icon,
+                            "challenge",
+                            textFieldColumnWidth,
+                            textFieldHeight,
+                            localContext,
+                            if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                state.exportChallengesFileName
+                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                state.importChallengesFileName
+                            } else "",
+                            buttonFunction = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    challengeCsvService.setExportObjects(state.allChallenges)
+                                    challengeCsvService.exportRows(
+                                        state.exportFolder,
+                                        state.exportChallengesFileName,
+                                        state.exportHeader
+                                    )
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    try {
+                                        onEvent(
+                                            ToolEvent.SetAllChallenges(
+                                                challengeCsvService.importRows(
+                                                    state.importFolder,
+                                                    state.importChallengesFileName,
+                                                    state.importHeader
+                                                )
+                                            )
+                                        )
+                                    } catch (fileNotFoundException: FileNotFoundException) {
+                                        Toast.makeText(
+                                            localContext,
+                                            fileNotFoundException.message,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            },
+                            reloadFunction = {
+                                if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(
+                                        ToolEvent.SetImportChallengesFileName(
+                                            csvFindService.getLastFilenameInFolder(
+                                                state.importFolder,
+                                                "challenge"
+                                            )
+                                        )
+                                    )
+                                }
+                            },
+                            filenameOnEvent = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetExportChallengesFileName(it))
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetImportChallengesFileName(it))
                                 }
                             }
                         )
