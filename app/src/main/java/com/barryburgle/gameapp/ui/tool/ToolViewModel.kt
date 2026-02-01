@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.ui.tool
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.barryburgle.gameapp.dao.challenge.ChallengeDao
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
@@ -24,6 +25,7 @@ class ToolViewModel(
     private val leadDao: LeadDao,
     private val dateDao: DateDao,
     private val setDao: SetDao,
+    private val challengeDao: ChallengeDao,
     private val settingDao: SettingDao
 ) : ViewModel() {
     private val _state =

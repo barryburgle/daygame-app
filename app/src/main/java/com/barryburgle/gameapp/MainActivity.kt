@@ -65,6 +65,7 @@ class MainActivity : ComponentActivity() {
                         it.leadDao,
                         it.dateDao,
                         it.setDao,
+                        it.challengeDao,
                         it.aggregatedSessionsDao,
                         it.aggregatedDatesDao
                     )
@@ -112,7 +113,7 @@ class MainActivity : ComponentActivity() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return db?.let {
                     ToolViewModel(
-                        it.abstractSessionDao, it.leadDao, it.dateDao, it.setDao, it.settingDao
+                        it.abstractSessionDao, it.leadDao, it.dateDao, it.setDao, it.challengeDao, it.settingDao
                     )
                 } as T
             }
