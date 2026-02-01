@@ -87,6 +87,12 @@ fun DeleteDialog(
                         onEvent,
                         ToolEvent.SwitchDeleteSets
                     )
+                    deleteTableSwitch(
+                        "Challenges",
+                        state.deleteChallenges,
+                        onEvent,
+                        ToolEvent.SwitchDeleteChallenges
+                    )
                 }
             }
             OutlinedTextField(
@@ -122,6 +128,9 @@ fun DeleteDialog(
                 if (state.deleteSets) {
                     onEvent(ToolEvent.DeleteAllSets)
                 }
+                if (state.deleteChallenges) {
+                    onEvent(ToolEvent.DeleteAllChallenges)
+                }
                 onEvent(ToolEvent.SetDeleteConfirmationPrompt(""))
                 Toast.makeText(localContext, deletionMessage, Toast.LENGTH_SHORT)
                     .show()
@@ -139,7 +148,7 @@ fun DeleteDialog(
 }
 
 private fun getDeleteDescription(state: ToolsState): String {
-    if (!state.deleteSessions && !state.deleteLeads && !state.deleteDates && !state.deleteSets) {
+    if (!state.deleteSessions && !state.deleteLeads && !state.deleteDates && !state.deleteSets && !state.deleteChallenges) {
         return "No tables will be deleted, please select at least one option"
     }
     val deleteSessionsDescription =
@@ -147,8 +156,9 @@ private fun getDeleteDescription(state: ToolsState): String {
     val deleteLeadsDescription = if (state.deleteLeads) " ${state.allLeads.size} leads," else ""
     val deleteDatesDescription = if (state.deleteDates) " ${state.allDates.size} dates," else ""
     val deleteSetsDescription = if (state.deleteSets) " ${state.allSets.size} sets," else ""
+    val deleteChallengesDescription = if (state.deleteChallenges) " ${state.allChallenges.size} challenges," else ""
     val deleteDescription =
-        "Permanently deleting${deleteSessionsDescription}${deleteLeadsDescription}${deleteDatesDescription}${deleteSetsDescription}"
+        "Deleting${deleteSessionsDescription}${deleteLeadsDescription}${deleteDatesDescription}${deleteSetsDescription}${deleteChallengesDescription}"
     return deleteDescription.dropLast(1)
 }
 
