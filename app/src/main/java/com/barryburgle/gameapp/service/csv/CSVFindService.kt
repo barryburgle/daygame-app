@@ -45,10 +45,11 @@ class CSVFindService {
 
     fun getLastFilenameInFolder(folder: String, prefix: String): String {
         var foundFiles: List<String> = findCsvFiles(folder)
-        val foundFilename: String = foundFiles.filter { foundFile -> foundFile.startsWith(prefix) }
-            .toSet()
-            .sortedDescending()[0]
-        return foundFilename
+        val foundFilenames = foundFiles.filter { foundFile -> foundFile.startsWith(prefix) }
+        if (foundFilenames.isEmpty()) {
+            return prefix + "_export_yyyy_mm_dd_hh_mm.csv"
+        }
+        return foundFilenames.toSet().sortedDescending()[0]
     }
 
     fun getLastBackupDate(backupFolder: String): String {
