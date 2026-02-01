@@ -3,11 +3,13 @@ package com.barryburgle.gameapp.service.exchange
 import android.content.Context
 import android.widget.Toast
 import com.barryburgle.gameapp.event.ToolEvent
+import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.csv.CSVFindService
+import com.barryburgle.gameapp.service.csv.ChallengeCsvService
 import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
@@ -24,6 +26,7 @@ class DataExchangeService {
         val leadCsvService: LeadCsvService = LeadCsvService()
         val dateCsvService: DateCsvService = DateCsvService()
         val setCsvService: SetCsvService = SetCsvService()
+        val challengeCsvService: ChallengeCsvService = ChallengeCsvService()
 
         fun backup(
             state: ExportState
@@ -52,6 +55,10 @@ class DataExchangeService {
                 state.exportFolder + "/" + state.backupFolder,
                 state.lastBackup
             )
+            challengeCsvService.cleanBackupFolder(
+                state.exportFolder + "/" + state.backupFolder,
+                state.lastBackup
+            )
         }
 
         fun validateAll(
@@ -69,6 +76,9 @@ class DataExchangeService {
             setCsvService.validateExport(
                 state.exportFolder + "/" + state.backupFolder
             )
+            challengeCsvService.validateExport(
+                state.exportFolder + "/" + state.backupFolder
+            )
         }
 
         fun export(
@@ -80,6 +90,8 @@ class DataExchangeService {
             exportDatesFileName: String,
             allSets: List<SingleSet>,
             exportSetsFileName: String,
+            allChallenges: List<Challenge>,
+            exportChallengesFileName: String,
             exportFolder: String
         ) {
             sessionCsvService.setExportObjects(allSessions)
@@ -106,6 +118,12 @@ class DataExchangeService {
                 exportSetsFileName,
                 true
             )
+            challengeCsvService.setExportObjects(allChallenges)
+            challengeCsvService.exportRows(
+                exportFolder,
+                exportChallengesFileName,
+                true
+            )
         }
 
         fun import(
@@ -113,6 +131,7 @@ class DataExchangeService {
             importLeadsFileName: String,
             importDatesFileName: String,
             importSetsFileName: String,
+            importChallengesFileName: String,
             importFolder: String,
             importHeader: Boolean,
             onEvent: (ToolEvent) -> Unit
@@ -153,6 +172,15 @@ class DataExchangeService {
                     )
                 )
             )
+            onEvent(
+                ToolEvent.SetAllChallenges(
+                    challengeCsvService.importRows(
+                        importFolder,
+                        importChallengesFileName,
+                        importHeader
+                    )
+                )
+            )
         }
 
         fun backupAll(
@@ -167,6 +195,8 @@ class DataExchangeService {
                 dateCsvService.getBackupFileName(),
                 state.allSets,
                 setCsvService.getBackupFileName(),
+                state.allChallenges,
+                challengeCsvService.getBackupFileName(),
                 state.exportFolder + "/" + state.backupFolder
             )
         }
@@ -184,6 +214,8 @@ class DataExchangeService {
                 state.exportDatesFileName,
                 state.allSets,
                 state.exportSetsFileName,
+                state.allChallenges,
+                state.exportChallengesFileName,
                 state.exportFolder
             )
             Toast.makeText(
@@ -221,6 +253,11 @@ class DataExchangeService {
                         state.importFolder + "/" + state.backupFolder,
                         "set"
                     )
+                val importChallengesFileName =
+                    if (!fromBackupFolder) state.importChallengesFileName else csvFindService.getLastFilenameInFolder(
+                        state.importFolder + "/" + state.backupFolder,
+                        "challenge"
+                    )
                 val importFolder =
                     if (!fromBackupFolder) state.importFolder else state.importFolder + "/" + state.backupFolder
                 import(
@@ -228,6 +265,7 @@ class DataExchangeService {
                     importLeadsFileName,
                     importDatesFileName,
                     importSetsFileName,
+                    importChallengesFileName,
                     importFolder,
                     true,
                     onEvent
