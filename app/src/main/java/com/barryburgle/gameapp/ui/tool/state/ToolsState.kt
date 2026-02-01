@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.tool.state
 
+import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.ThemeEnum
 import com.barryburgle.gameapp.model.lead.Lead
@@ -16,6 +17,8 @@ data class ToolsState(
     var importDatesFileName: String = "",
     override var exportSetsFileName: String = "",
     var importSetsFileName: String = "",
+    override var exportChallengesFileName: String = "",
+    var importChallengesFileName: String = "",
     override var exportFolder: String = "",
     var importFolder: String = "",
     override var backupFolder: String = "",
@@ -23,6 +26,7 @@ data class ToolsState(
     override var allLeads: List<Lead> = emptyList(),
     override var allDates: List<Date> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
+    override var allChallenges: List<Challenge> = emptyList(),
     val lastSessionAverageQuantity: Int = 4,
     val lastSessionsShown: Int = 14,
     val lastWeeksShown: Int = 8,
@@ -51,6 +55,7 @@ data class ToolsState(
     var deleteLeads: Boolean = false,
     var deleteDates: Boolean = false,
     var deleteSets: Boolean = false,
+    var deleteChallenges: Boolean = false,
     var isCleaning: Boolean = false,
     var themeSysFollow: Boolean = false,
     var simplePlusOneReport: Boolean = true,
@@ -66,12 +71,14 @@ data class ToolsState(
     exportLeadsFileName,
     exportDatesFileName,
     exportSetsFileName,
+    exportChallengesFileName,
     exportFolder,
     backupFolder,
     allSessions,
     allLeads,
     allDates,
     allSets,
+    allChallenges,
     backupActive,
     lastBackup
 )
