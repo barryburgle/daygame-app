@@ -10,6 +10,7 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
+import com.barryburgle.gameapp.ui.CombineEighteen
 import com.barryburgle.gameapp.ui.CombineFifteen
 import com.barryburgle.gameapp.ui.CombineSixteen
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
@@ -34,7 +35,8 @@ class ToolViewModel(
     private val _allLeads = leadDao.getAll()
     private val _allDates = dateDao.getAll()
     private val _allSets = setDao.getAll()
-    val _importExportSettingState: Flow<ImportExportSettingState> = CombineSixteen(
+    private val _allChallenges = challengeDao.getAll()
+    val _importExportSettingState: Flow<ImportExportSettingState> = CombineEighteen(
         settingDao.getExportFolder(),
         settingDao.getImportFolder(),
         settingDao.getBackupFolder(),
@@ -49,9 +51,11 @@ class ToolViewModel(
         settingDao.getImportDatesFilename(),
         settingDao.getExportSetsFilename(),
         settingDao.getImportSetsFilename(),
+        settingDao.getExportChallengesFilename(),
+        settingDao.getImportChallengesFilename(),
         settingDao.getArchiveBackupFolder(),
         settingDao.getIsCleaning()
-    ) { exportFolder, importFolder, backupFolder, exportHeader, importHeader, backupActive, exportSessions, importSessions, exportLeads, importLeads, exportDates, importDates, exportSets, importSets, archiveBackupFolder, isCleaning ->
+    ) { exportFolder, importFolder, backupFolder, exportHeader, importHeader, backupActive, exportSessions, importSessions, exportLeads, importLeads, exportDates, importDates, exportSets, importSets, exportChallenges, importChallenges, archiveBackupFolder, isCleaning ->
         ImportExportSettingState(
             exportFolder = exportFolder,
             importFolder = importFolder,
@@ -67,6 +71,8 @@ class ToolViewModel(
             importDatesFilename = importDates,
             exportSetsFilename = exportSets,
             importSetsFilename = importSets,
+            exportChallengesFilename = exportChallenges,
+            importChallengesFilename = importChallenges,
             archiveBackupFolder = archiveBackupFolder,
             isCleaning = isCleaning
         )
@@ -115,12 +121,13 @@ class ToolViewModel(
     private val _lastWeeksShown = settingDao.getLastWeeksShown()
     private val _lastMonthsShown = settingDao.getLastMonthsShown()
     val state =
-        CombineFifteen(
+        CombineSixteen(
             _state,
             _allSessions,
             _allLeads,
             _allDates,
             _allSets,
+            _allChallenges,
             _importExportSettingState,
             _generalSettingState,
             _averageLast,
@@ -131,7 +138,7 @@ class ToolViewModel(
             _lastSessionsShown,
             _lastWeeksShown,
             _lastMonthsShown
-        ) { state, allSessions, allLeads, allDates, allSets, importExportSettingState, generalSettingState, averageLast, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown ->
+        ) { state, allSessions, allLeads, allDates, allSets, allChallenges, importExportSettingState, generalSettingState, averageLast, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown ->
             state.copy(
                 exportSessionsFileName = importExportSettingState.exportSessionsFilename,
                 importSessionsFileName = importExportSettingState.importSessionsFilename,
@@ -141,6 +148,8 @@ class ToolViewModel(
                 importDatesFileName = importExportSettingState.importDatesFilename,
                 exportSetsFileName = importExportSettingState.exportSetsFilename,
                 importSetsFileName = importExportSettingState.importSetsFilename,
+                exportChallengesFileName = importExportSettingState.exportChallengesFilename,
+                importChallengesFileName = importExportSettingState.importChallengesFilename,
                 archiveBackupFolder = importExportSettingState.archiveBackupFolder.toBoolean(),
                 isCleaning = importExportSettingState.isCleaning.toBoolean(),
                 themeSysFollow = generalSettingState.themeSysFollow.toBoolean(),
@@ -153,6 +162,7 @@ class ToolViewModel(
                 allLeads = allLeads,
                 allDates = allDates,
                 allSets = allSets,
+                allChallenges = allChallenges,
                 lastSessionAverageQuantity = averageLast,
                 exportHeader = importExportSettingState.exportHeader.toBoolean(),
                 importHeader = importExportSettingState.importHeader.toBoolean(),
@@ -835,6 +845,8 @@ data class ImportExportSettingState(
     val importDatesFilename: String,
     val exportSetsFilename: String,
     val importSetsFilename: String,
+    val exportChallengesFilename: String,
+    val importChallengesFilename: String,
     val archiveBackupFolder: String,
     val isCleaning: String
 )
