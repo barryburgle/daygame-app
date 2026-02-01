@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.Flow
 interface ChallengeDao {
 
     @Insert(onConflict = REPLACE)
+    suspend fun batchInsert(challenges: List<Challenge>)
+
+    @Insert(onConflict = REPLACE)
     suspend fun insert(challenge: Challenge): Long
 
     @Delete
