@@ -14,13 +14,13 @@ class ChallengeService : ChallengeInitializer, EntityService() {
         id: String?,
         name: String,
         description: String,
+        startDate: LocalDate,
         duration: String,
         type: String,
         goal: String,
         tweetUrl: String
     ): Challenge {
         val now = OffsetDateTime.now().toString()
-        val startDate = LocalDate.parse(now.take(10))
         val endDate = startDate.plusDays(duration.toInt().toLong())
         val dayOfWeek: DayOfWeek = getDayOfWeek(LocalDateTime.now())
         return Challenge(

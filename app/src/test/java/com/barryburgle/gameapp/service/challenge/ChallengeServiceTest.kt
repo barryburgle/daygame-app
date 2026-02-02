@@ -5,6 +5,8 @@ import com.barryburgle.gameapp.service.ServiceTestData
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.junit.Test
+import java.time.LocalDate
+import java.time.OffsetDateTime
 
 class ChallengeServiceTest : ServiceTestData() {
 
@@ -16,6 +18,7 @@ class ChallengeServiceTest : ServiceTestData() {
             null,
             CHALLENGE_NAME,
             CHALLENGE_DESC,
+            LocalDate.parse(OffsetDateTime.now().toString().take(10)),
             CHALLENGE_DURATION,
             CHALLENGE_TYPE,
             CHALLENGE_GOAL,
