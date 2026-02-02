@@ -36,12 +36,15 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.event.GameEvent
+import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
+import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.ui.input.card.body.ChallengeBody
 import com.barryburgle.gameapp.ui.input.card.body.DateBody
 import com.barryburgle.gameapp.ui.input.card.body.SessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SetBody
@@ -50,6 +53,7 @@ import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import java.time.temporal.ChronoUnit
 
 @ExperimentalMaterial3Api
 @Composable
@@ -145,6 +149,7 @@ fun EventCard(
                                             AbstractSession::class.java.simpleName -> " session "
                                             Date::class.java.simpleName -> " date "
                                             SingleSet::class.java.simpleName -> " set "
+                                            Challenge::class.java.simpleName -> " challenge "
                                             else -> " "
                                         }
                                     val shareIntent = Intent.createChooser(
@@ -183,6 +188,13 @@ fun EventCard(
                                         onEvent(
                                             GameEvent.DeleteDate(
                                                 sortableGameEvent.event as Date
+                                            )
+                                        )
+                                    }
+                                    if (Challenge::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                        onEvent(
+                                            GameEvent.DeleteChallenge(
+                                                sortableGameEvent.event as Challenge
                                             )
                                         )
                                     }
@@ -279,6 +291,47 @@ fun EventCard(
                                             )
                                         )
                                     }
+                                    if (Challenge::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                        onEvent(
+                                            GameEvent.SetChallengeName((sortableGameEvent.event as Challenge).name!!)
+                                        )
+                                        onEvent(
+                                            GameEvent.SetChallengeDescription((sortableGameEvent.event as Challenge).description!!)
+                                        )
+                                        onEvent(
+                                            GameEvent.SetChallengeStartDate((sortableGameEvent.event as Challenge).startDate)
+                                        )
+                                        val startDate =
+                                            FormatService.parseDate((sortableGameEvent.event as Challenge).startDate)
+                                        val endDate =
+                                            FormatService.parseDate((sortableGameEvent.event as Challenge).endDate)
+                                        val duration = ChronoUnit.DAYS.between(startDate, endDate)
+                                        onEvent(
+                                            GameEvent.SetChallengeDuration(duration.toString())
+                                        )
+                                        onEvent(
+                                            GameEvent.SetChallengeType((sortableGameEvent.event as Challenge).type)
+                                        )
+                                        onEvent(
+                                            GameEvent.SetChallengeGoal((sortableGameEvent.event as Challenge).goal.toString())
+                                        )
+                                        onEvent(
+                                            GameEvent.SetChallengeTweetUrl((sortableGameEvent.event as Challenge).tweetUrl!!)
+                                        )
+                                        onEvent(GameEvent.SetIsInOverlayToTrue)
+                                        onEvent(
+                                            GameEvent.EditChallenge(
+                                                sortableGameEvent.event as Challenge
+                                            )
+                                        )
+                                        onEvent(
+                                            GameEvent.ShowDialog(
+                                                false,
+                                                true,
+                                                EventTypeEnum.CHALLENGE
+                                            )
+                                        )
+                                    }
                                 },
                                 imageVector = Icons.Default.Edit,
                                 contentDescription = "Edit Event"
@@ -311,126 +364,140 @@ fun EventCard(
                             if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
                                 DateBody(sortableGameEvent.event as Date, 10.sp, 15.sp)
                             }
+                            if (Challenge::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                val computedAchievement = 25
+                                ChallengeBody(
+                                    sortableGameEvent.event as Challenge,
+                                    25,
+                                    40.sp,
+                                    10.sp
+                                )
+                            }
                         }
-                        Spacer(modifier = Modifier.height(7.dp))
-                        val semiOpaqueBackground = MaterialTheme.colorScheme.surface
-                        CardSection {
-                            if (leads == null || leads.isEmpty()) {
-                                LittleBodyText("No leads")
-                            } else {
-                                LittleBodyText("Leads:")
-                                Spacer(modifier = Modifier.height(7.dp))
-                                LazyRow(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(120.dp)
-                                        .drawWithContent {
-                                            drawContent()
-                                            drawRect(
-                                                brush = getEventCardLeadsBrush(semiOpaqueBackground)
-                                            )
-                                        },
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    item {
-                                        Spacer(modifier = Modifier.width(15.dp))
-                                    }
-                                    for (lead in leads) {
+                        if (!Challenge::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                            Spacer(modifier = Modifier.height(7.dp))
+                            val semiOpaqueBackground = MaterialTheme.colorScheme.surface
+                            CardSection {
+                                if (leads == null || leads.isEmpty()) {
+                                    LittleBodyText("No leads")
+                                } else {
+                                    LittleBodyText("Leads:")
+                                    Spacer(modifier = Modifier.height(7.dp))
+                                    LazyRow(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(120.dp)
+                                            .drawWithContent {
+                                                drawContent()
+                                                drawRect(
+                                                    brush = getEventCardLeadsBrush(
+                                                        semiOpaqueBackground
+                                                    )
+                                                )
+                                            },
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
                                         item {
-                                            Row(
-                                                modifier = Modifier.clickable {
-                                                    onEvent(GameEvent.SetIsInOverlayToTrue)
-                                                    onEvent(
-                                                        GameEvent.EditLead(
-                                                            lead, true
+                                            Spacer(modifier = Modifier.width(15.dp))
+                                        }
+                                        for (lead in leads) {
+                                            item {
+                                                Row(
+                                                    modifier = Modifier.clickable {
+                                                        onEvent(GameEvent.SetIsInOverlayToTrue)
+                                                        onEvent(
+                                                            GameEvent.EditLead(
+                                                                lead, true
+                                                            )
                                                         )
-                                                    )
-                                                    onEvent(
-                                                        GameEvent.ShowLeadDialog(
-                                                            false, false
+                                                        onEvent(
+                                                            GameEvent.ShowLeadDialog(
+                                                                false, false
+                                                            )
                                                         )
+                                                    },
+                                                    horizontalArrangement = Arrangement.spacedBy(
+                                                        7.dp
                                                     )
-                                                },
-                                                horizontalArrangement = Arrangement.spacedBy(
-                                                    7.dp
-                                                )
-                                            ) {
-                                                leadName(
-                                                    lead = lead,
-                                                    backgroundColor = MaterialTheme.colorScheme.background,
-                                                    outputShow = false,
-                                                    cardShow = true
-                                                )
+                                                ) {
+                                                    leadName(
+                                                        lead = lead,
+                                                        backgroundColor = MaterialTheme.colorScheme.background,
+                                                        outputShow = false,
+                                                        cardShow = true
+                                                    )
+                                                }
+                                            }
+                                            item {
+                                                Spacer(modifier = Modifier.width(5.dp))
                                             }
                                         }
                                         item {
-                                            Spacer(modifier = Modifier.width(5.dp))
+                                            Spacer(modifier = Modifier.width(35.dp))
                                         }
-                                    }
-                                    item {
-                                        Spacer(modifier = Modifier.width(35.dp))
                                     }
                                 }
                             }
-                        }
-                        Spacer(modifier = Modifier.height(7.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth()
-                        ) {
-                            var stickingPoints = sortableGameEvent.event.getEventStickingPoints()
-                            val validStickingPoints =
-                                stickingPoints != null && !stickingPoints.isBlank()
-                            var width = 1f
-                            if (validStickingPoints) {
-                                width = 0.8f
-                            }
-                            CardSection(width = width) {
-                                Row(
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .fillMaxWidth()
-                                ) {
-                                    Column(
+                            Spacer(modifier = Modifier.height(7.dp))
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .fillMaxWidth()
+                            ) {
+                                var stickingPoints =
+                                    sortableGameEvent.event.getEventStickingPoints()
+                                val validStickingPoints =
+                                    stickingPoints != null && !stickingPoints.isBlank()
+                                var width = 1f
+                                if (validStickingPoints) {
+                                    width = 0.8f
+                                }
+                                CardSection(width = width) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically,
                                         modifier = Modifier
-                                            .fillMaxWidth()
                                             .fillMaxHeight()
+                                            .fillMaxWidth()
                                     ) {
-                                        if (stickingPoints == null || stickingPoints.isBlank()) {
-                                            LittleBodyText("No sticking points")
-                                        } else {
-                                            LittleBodyText("Sticking points:")
-                                            Spacer(modifier = Modifier.height(5.dp))
-                                            MediumBodyText(if (stickingPoints != null) stickingPoints else "No sticking points")
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .fillMaxHeight()
+                                        ) {
+                                            if (stickingPoints == null || stickingPoints.isBlank()) {
+                                                LittleBodyText("No sticking points")
+                                            } else {
+                                                LittleBodyText("Sticking points:")
+                                                Spacer(modifier = Modifier.height(5.dp))
+                                                MediumBodyText(if (stickingPoints != null) stickingPoints else "No sticking points")
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            if (validStickingPoints) {
-                                Spacer(modifier = Modifier.width(10.dp))
-                                IconShadowButton(
-                                    onClick = {
-                                        if (stickingPoints != null) {
-                                            clipboardManager.setText(
-                                                AnnotatedString(
-                                                    stickingPoints
+                                if (validStickingPoints) {
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    IconShadowButton(
+                                        onClick = {
+                                            if (stickingPoints != null) {
+                                                clipboardManager.setText(
+                                                    AnnotatedString(
+                                                        stickingPoints
+                                                    )
                                                 )
-                                            )
-                                            Toast.makeText(
-                                                localContext,
-                                                "Sticking points copied",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    },
-                                    imageVector = Icons.Default.ContentCopy,
-                                    contentDescription = "Copy Sticking Points"
-                                )
+                                                Toast.makeText(
+                                                    localContext,
+                                                    "Sticking points copied",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        },
+                                        imageVector = Icons.Default.ContentCopy,
+                                        contentDescription = "Copy Sticking Points"
+                                    )
+                                }
                             }
                         }
                     }
