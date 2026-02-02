@@ -63,12 +63,13 @@ fun ChallengeBody(
         ) {
             val completionRatio = achieved.toFloat() / challenge.goal
             LittleBodyText("You are ${truncate(completionRatio * 10000) / 100}% there!")
+            Spacer(modifier = Modifier.height(5.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(10.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         shape = RoundedCornerShape(5.dp)
                     ),
                 horizontalArrangement = Arrangement.Start
@@ -78,7 +79,7 @@ fun ChallengeBody(
                         .fillMaxWidth(completionRatio)
                         .height(10.dp)
                         .background(
-                            color = MaterialTheme.colorScheme.inversePrimary, // TODO: animate with left-to-right glow in future
+                            color = MaterialTheme.colorScheme.onSurface, // TODO: animate with left-to-right glow in future
                             shape = RoundedCornerShape(5.dp)
                         )
                 ) {
