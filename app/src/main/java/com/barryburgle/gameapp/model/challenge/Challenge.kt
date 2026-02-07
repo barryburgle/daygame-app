@@ -51,6 +51,9 @@ open class Challenge(
     }
 
     override fun getEventStickingPoints(): String? {
+        if (!description!!.isBlank()) {
+            return description
+        }
         return ""
     }
 
