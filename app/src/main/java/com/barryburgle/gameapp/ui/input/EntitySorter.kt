@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.GenericEvent
+import com.barryburgle.gameapp.model.enums.ChallengeSortType
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.GameEventSortType
@@ -80,6 +81,20 @@ fun EntitySorter(
                             sortType,
                             onEvent as (GenericEvent) -> Unit,
                             GameEvent.SortDates(
+                                sortType
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                    }
+                }
+            } else if (EventTypeEnum.CHALLENGE.equals(eventType)) {
+                ChallengeSortType.values().forEach { sortType ->
+                    state.challengeSortType?.let {
+                        GenericSortingButton(
+                            it,
+                            sortType,
+                            onEvent as (GenericEvent) -> Unit,
+                            GameEvent.SortChallenges(
                                 sortType
                             )
                         )

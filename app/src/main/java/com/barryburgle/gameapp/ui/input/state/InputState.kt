@@ -21,6 +21,7 @@ data class InputState(
     var showSessions: Boolean = true,
     var showSets: Boolean = true,
     var showDates: Boolean = true,
+    var showChallenges: Boolean = true,
     var date: String = "",
     var startHour: String = "",
     var endHour: String = "",

@@ -266,9 +266,16 @@ fun InputScreen(
 private fun showAllSorter(
     showSessions: Boolean,
     showSets: Boolean,
-    showDates: Boolean
+    showDates: Boolean,
+    showChallenges: Boolean
 ): Boolean {
-    if ((showSessions && showSets) || (showSessions && showDates) || (showSets && showDates)) {
+    if ((showSessions && showSets)
+        || (showSessions && showDates)
+        || (showSessions && showChallenges)
+        || (showSets && showDates)
+        || (showSets && showChallenges)
+        || (showDates && showChallenges)
+    ) {
         return true
     }
     return false
@@ -277,9 +284,10 @@ private fun showAllSorter(
 private fun showSessionSorter(
     showSessions: Boolean,
     showSets: Boolean,
-    showDates: Boolean
+    showDates: Boolean,
+    showChallenges: Boolean
 ): Boolean {
-    if (showSessions && !showSets && !showDates) {
+    if (showSessions && !showSets && !showDates && !showChallenges) {
         return true
     }
     return false
@@ -288,9 +296,10 @@ private fun showSessionSorter(
 private fun showSetSorter(
     showSessions: Boolean,
     showSets: Boolean,
-    showDates: Boolean
+    showDates: Boolean,
+    showChallenges: Boolean
 ): Boolean {
-    if (!showSessions && showSets && !showDates) {
+    if (!showSessions && showSets && !showDates && !showChallenges) {
         return true
     }
     return false
@@ -299,9 +308,22 @@ private fun showSetSorter(
 private fun showDateSorter(
     showSessions: Boolean,
     showSets: Boolean,
-    showDates: Boolean
+    showDates: Boolean,
+    showChallenges: Boolean
 ): Boolean {
-    if (!showSessions && !showSets && showDates) {
+    if (!showSessions && !showSets && showDates && !showChallenges) {
+        return true
+    }
+    return false
+}
+
+private fun showChallengeSorter(
+    showSessions: Boolean,
+    showSets: Boolean,
+    showDates: Boolean,
+    showChallenges: Boolean
+): Boolean {
+    if (!showSessions && !showSets && !showDates && showChallenges) {
         return true
     }
     return false
@@ -424,26 +446,55 @@ fun gameTopBar(
                     }
                 }
                 EntitySorter(
-                    showAllSorter(state.showSessions, state.showSets, state.showDates),
+                    showAllSorter(
+                        state.showSessions,
+                        state.showSets,
+                        state.showDates,
+                        state.showChallenges
+                    ),
                     spaceFromLeft,
                     EventTypeEnum.ALL,
                     state,
                     onEvent
                 )
                 EntitySorter(
-                    showSessionSorter(state.showSessions, state.showSets, state.showDates),
+                    showSessionSorter(
+                        state.showSessions,
+                        state.showSets,
+                        state.showDates,
+                        state.showChallenges
+                    ),
                     spaceFromLeft,
                     EventTypeEnum.SESSION,
                     state,
                     onEvent
                 )
                 EntitySorter(
-                    showSetSorter(state.showSessions, state.showSets, state.showDates),
+                    showSetSorter(
+                        state.showSessions,
+                        state.showSets,
+                        state.showDates,
+                        state.showChallenges
+                    ),
                     spaceFromLeft, EventTypeEnum.SET, state, onEvent
                 )
                 EntitySorter(
-                    showDateSorter(state.showSessions, state.showSets, state.showDates),
+                    showDateSorter(
+                        state.showSessions,
+                        state.showSets,
+                        state.showDates,
+                        state.showChallenges
+                    ),
                     spaceFromLeft, EventTypeEnum.DATE, state, onEvent
+                )
+                EntitySorter(
+                    showChallengeSorter(
+                        state.showSessions,
+                        state.showSets,
+                        state.showDates,
+                        state.showChallenges
+                    ),
+                    spaceFromLeft, EventTypeEnum.CHALLENGE, state, onEvent
                 )
             }
         }
