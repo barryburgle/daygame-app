@@ -1140,6 +1140,114 @@ class InputViewModel(
                     )
                 }
             }
+
+            is GameEvent.SaveChallenge -> {
+                viewModelScope.launch {
+                    val isUpdatingChallenge = state.value.isUpdatingChallenge
+                    var challengeId: Long? = null
+                    val challenge = _challengeService.init(
+                        id = null,
+                        name = if (_state.value.challengeName.isBlank()) state.value.challengeName else _state.value.challengeName,
+                        description = if (_state.value.challengeDescription.isBlank()) state.value.challengeDescription else _state.value.challengeDescription,
+                        startDate = if (_state.value.challengeStartDate.isBlank()) LocalDate.parse(
+                            OffsetDateTime.now().toString().take(10)
+                        ) else LocalDate.parse(_state.value.challengeStartDate.take(10)),
+                        duration = if (_state.value.challengeDuration.isBlank()) state.value.challengeDuration else _state.value.challengeDuration,
+                        type = if (_state.value.challengeType.isBlank()) state.value.challengeType else _state.value.challengeType,
+                        goal = if (_state.value.challengeGoal.isBlank()) state.value.challengeGoal else _state.value.challengeGoal,
+                        tweetUrl = if (_state.value.challengeTweetUrl.isBlank()) state.value.challengeTweetUrl else _state.value.challengeTweetUrl
+                    )
+                    if (isUpdatingChallenge) {
+                        // TODO: to test once you can edit challenges from card
+                        challenge.id = state.value.editChallenge!!.id
+                        challenge.insertTime = state.value.editChallenge!!.insertTime
+                    }
+                    challengeDao.insert(challenge)
+                    _state.update {
+                        it.copy(
+                            challengeName = "",
+                            challengeDescription = "",
+                            challengeStartDate = "",
+                            challengeDuration = "",
+                            challengeType = "",
+                            challengeGoal = "",
+                            challengeTweetUrl = "",
+                            isAddingChallenge = false,
+                            isUpdatingChallenge = false
+                        )
+                    }
+                }
+            }
+
+            is GameEvent.SetChallengeName -> {
+                _state.update {
+                    it.copy(
+                        challengeName = event.challengeName
+                    )
+                }
+            }
+
+            is GameEvent.SetChallengeDescription -> {
+                _state.update {
+                    it.copy(
+                        challengeDescription = event.challengeDescription
+                    )
+                }
+            }
+
+            is GameEvent.SetChallengeStartDate -> {
+                _state.update {
+                    it.copy(
+                        challengeStartDate = event.challengeStartDate
+                    )
+                }
+            }
+
+            is GameEvent.SetChallengeDuration -> {
+                _state.update {
+                    it.copy(
+                        challengeDuration = event.challengeDuration
+                    )
+                }
+            }
+
+            is GameEvent.SetChallengeType -> {
+                _state.update {
+                    it.copy(
+                        challengeType = event.challengeType
+                    )
+                }
+            }
+
+            is GameEvent.SetChallengeGoal -> {
+                _state.update {
+                    it.copy(
+                        challengeGoal = event.challengeGoal
+                    )
+                }
+            }
+
+            is GameEvent.SetChallengeTweetUrl -> {
+                _state.update {
+                    it.copy(
+                        challengeTweetUrl = event.challengeTweetUrl
+                    )
+                }
+            }
+
+            is GameEvent.DeleteChallenge -> {
+                viewModelScope.launch {
+                    challengeDao.delete(event.challenge)
+                }
+            }
+
+            is GameEvent.EditChallenge -> {
+                _state.update {
+                    it.copy(
+                        editChallenge = event.challenge
+                    )
+                }
+            }
         }
     }
 }
