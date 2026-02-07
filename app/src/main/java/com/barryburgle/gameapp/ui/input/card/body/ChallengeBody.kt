@@ -72,10 +72,12 @@ fun ChallengeBody(
             var completionDesc = "Time to get on with some work"
             if (completionRatio > 0) {
                 if (completionRatio < 100) {
-                    completionDesc = "You are ${completionRatio}% there!"
+                    completionDesc = "Keep going, you are ${completionRatio}% there!"
+                } else if (completionRatio == 100) {
+                    completionDesc = "Well done, you completed this challenge!"
                 } else {
                     completionDesc =
-                        "Congratulations! Results exceed expectations by ${completionRatio}%"
+                        "Fantastic! Results exceeded expectations by ${completionRatio - 100}%"
                 }
             }
             LittleBodyText(completionDesc)
