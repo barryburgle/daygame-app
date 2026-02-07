@@ -43,10 +43,11 @@ open class Challenge(
     }
 
     override fun getEventDuration(): String {
-        if (!description!!.isBlank()) {
-            return description!!
-        }
-        return ""
+        return "${FormatService.getDate(startDate)} ⮕ ${
+            FormatService.getDate(
+                endDate
+            )
+        }"
     }
 
     override fun getEventStickingPoints(): String? {
