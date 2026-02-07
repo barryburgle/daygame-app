@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.barryburgle.gameapp.model.enums.ChallengeTypeEnum
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.EventModel
 import com.barryburgle.gameapp.model.lead.Lead
@@ -34,7 +35,7 @@ open class Challenge(
     }
 
     override fun getEventIcon(): ImageVector {
-        return EventTypeEnum.CHALLENGE.getIcon()!!
+        return ChallengeTypeEnum.getIcon(type)
     }
 
     override fun getEventDescription(): String {
