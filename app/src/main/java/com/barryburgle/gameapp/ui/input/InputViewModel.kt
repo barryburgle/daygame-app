@@ -254,20 +254,6 @@ class InputViewModel(
                     )
                 }
 
-                GameEventSortType.START_HOUR -> {
-                    flowOf(combinedList.sortedWith(
-                        compareByDescending<SortableGameEvent> { it.eventHour }
-                    )
-                    )
-                }
-
-                GameEventSortType.TIME_SPENT -> {
-                    flowOf(combinedList.sortedWith(
-                        compareByDescending<SortableGameEvent> { it.timeSpent }
-                    )
-                    )
-                }
-
                 GameEventSortType.DAY_OF_WEEK -> {
                     flowOf(combinedList.sortedWith(
                         compareByDescending<SortableGameEvent> { it.dayOfWeek }
