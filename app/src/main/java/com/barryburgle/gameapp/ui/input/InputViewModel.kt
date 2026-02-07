@@ -24,6 +24,7 @@ import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.notification.AndroidNotificationScheduler
 import com.barryburgle.gameapp.notification.state.NotificationState
 import com.barryburgle.gameapp.service.batch.BatchSessionService
+import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
@@ -61,6 +62,7 @@ class InputViewModel(
     private val _batchSessionService = BatchSessionService()
     private val _dateService = DateService()
     private val _setService = SetService()
+    private val _challengeService = ChallengeService()
     private val _sessionSortType = MutableStateFlow(SessionSortType.DATE)
     private val _allSessions = _sessionSortType.flatMapLatest { sortType ->
         when (sortType) {
