@@ -58,15 +58,15 @@ open class Challenge(
     }
 
     override fun shareReport(leads: List<Lead>): String {
-        var exportPrefix = "New \"" + getEventTitle() + "\""
-        if (!EventTypeEnum.CHALLENGE.getField().equals(exportPrefix)) {
-            exportPrefix += " " + EventTypeEnum.CHALLENGE.getField().lowercase()
-        }
-        return "\uD83C\uDFC6 ${exportPrefix}\n${FormatService.getDate(startDate)} until ${
+        return "\uD83C\uDFC6 New ${type}s' challenge: \"${name}\"\nDescription: ${description}\n\nGoal: ${goal} ${type.replaceFirstChar { it.lowercase() }}s from ${
+            FormatService.getDate(
+                startDate
+            )
+        } until ${
             FormatService.getDate(
                 endDate
             )
-        }\n\nGoal: ${goal} ${type.replaceFirstChar { it.lowercase() }}s\n\n${description}"
+        }"
     }
 
     constructor() : this(
