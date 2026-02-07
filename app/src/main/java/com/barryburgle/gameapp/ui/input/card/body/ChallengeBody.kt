@@ -20,7 +20,6 @@ import com.barryburgle.gameapp.model.enums.ChallengeTypeEnum
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
-import kotlin.math.truncate
 
 @Composable
 fun ChallengeBody(
@@ -68,8 +67,18 @@ fun ChallengeBody(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            val completionRatio = achieved.toFloat() / challenge.goal
-            LittleBodyText("You are ${truncate(completionRatio * 10000) / 100}% there!")
+            val completionRatio =
+                (achievedChallenge.achieved.toFloat() / achievedChallenge.challenge.goal * 100).toInt()
+            var completionDesc = "Time to get on with some work"
+            if (completionRatio > 0) {
+                if (completionRatio < 100) {
+                    completionDesc = "You are ${completionRatio}% there!"
+                } else {
+                    completionDesc =
+                        "Congratulations! Results exceed expectations by ${completionRatio}%"
+                }
+            }
+            LittleBodyText(completionDesc)
             Spacer(modifier = Modifier.height(5.dp))
             Row(
                 modifier = Modifier
@@ -83,7 +92,7 @@ fun ChallengeBody(
             ) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(completionRatio)
+                        .fillMaxWidth(completionRatio.toFloat() / 100)
                         .height(10.dp)
                         .background(
                             color = MaterialTheme.colorScheme.onSurface, // TODO: animate with left-to-right glow in future
