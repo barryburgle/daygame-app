@@ -12,6 +12,7 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.ChallengeSortType
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.DateTypeEnum
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
@@ -125,6 +126,15 @@ class InputViewModel(
             SetSortType.WEEK_NUMBER -> setDao.getByWeekNumber()
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _challengeSortType = MutableStateFlow(ChallengeSortType.END_DATE)
+    private val _allChallenges = _challengeSortType.flatMapLatest { sortType ->
+        when (sortType) {
+            ChallengeSortType.START_DATE -> challengeDao.getByStartDate()
+            ChallengeSortType.END_DATE -> challengeDao.getByEndDate()
+            ChallengeSortType.TYPE -> challengeDao.getByChallengeType()
+            ChallengeSortType.TYPE_AND_GOAL -> challengeDao.getByChallengeTypeAndGoal()
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _notificationTime = settingDao.getNotificationTime()
     private val _exportSessionsFileName = settingDao.getExportSessionsFilename()
     private val _exportLeadsFileName = settingDao.getExportLeadsFilename()
@@ -159,22 +169,28 @@ class InputViewModel(
     val _showSessions = MutableStateFlow(true)
     val _showSets = MutableStateFlow(true)
     val _showDates = MutableStateFlow(true)
+    val _showChallenges = MutableStateFlow(true)
     private val _gameEventSortType = MutableStateFlow(GameEventSortType.DATE)
-    val _allEvents: Flow<List<SortableGameEvent>> = CombineSeven(
+    val _allEvents: Flow<List<SortableGameEvent>> = CombineNine(
         _showSessions,
         _showSets,
         _showDates,
+        _showChallenges,
         _allSessions,
         _allDates,
         _allSets,
+        _allChallenges,
         _gameEventSortType
-    ) { showSessions, showSets, showDates, allSessions, allDates, allSets, gameEventSortType ->
+    ) { showSessions, showSets, showDates, showChallenges, allSessions, allDates, allSets, allChallenges, gameEventSortType ->
         val flagsTriple = Triple(showSessions, showSets, showDates)
-        listOf(flagsTriple, allSessions, allDates, allSets, gameEventSortType)
-    }.flatMapLatest { (flagsTriple, allSessions, allDates, allSets, gameEventSortType) ->
+        val eventsTriple = Triple(allSessions, allDates, allSets)
+        listOf(flagsTriple, showChallenges, eventsTriple, allChallenges, gameEventSortType)
+    }.flatMapLatest { (flagsTriple, showChallenges, eventsTriple, allChallenges, gameEventSortType) ->
         val (showSessions, showSets, showDates) = flagsTriple as Triple<Boolean, Boolean, Boolean>
+        val showChallenges = showChallenges as Boolean
+        val (allSessions, allDates, allSets) = eventsTriple as Triple<List<AbstractSession>, List<Date>, List<SingleSet>>
         val combinedList = mutableListOf<SortableGameEvent>().apply {
-            if (showSessions) addAll((allSessions as List<AbstractSession>).map {
+            if (showSessions) addAll(allSessions.map {
                 SortableGameEvent(
                     it.insertTime,
                     it.date,
@@ -185,7 +201,7 @@ class InputViewModel(
                     it
                 )
             }) else removeIf { it.classType == AbstractSession::class.java.simpleName }
-            if (showSets) addAll((allSets as List<SingleSet>).map {
+            if (showSets) addAll(allSets.map {
                 SortableGameEvent(
                     it.insertTime,
                     it.date,
@@ -196,7 +212,7 @@ class InputViewModel(
                     it
                 )
             }) else removeIf { it.classType == SingleSet::class.java.simpleName }
-            if (showDates) addAll((allDates as List<Date>).map {
+            if (showDates) addAll(allDates.map {
                 SortableGameEvent(
                     it.insertTime,
                     it.date!!,
@@ -207,8 +223,19 @@ class InputViewModel(
                     it
                 )
             }) else removeIf { it.classType == Date::class.java.simpleName }
+            if (showChallenges) addAll((allChallenges as List<AchievedChallenge>).map {
+                SortableGameEvent(
+                    it.challenge.insertTime,
+                    it.challenge.startDate,
+                    it.challenge.endDate,
+                    0L,
+                    0,
+                    AchievedChallenge::class.java.simpleName,
+                    it
+                )
+            }) else removeIf { it.classType == AchievedChallenge::class.java.simpleName }
         }
-        if ((showSessions && !showDates && !showSets) || (!showSessions && showDates && !showSets) || (!showSessions && !showDates && showSets)) {
+        if ((showSessions && !showDates && !showSets && !showChallenges) || (!showSessions && showDates && !showSets && !showChallenges) || (!showSessions && !showDates && showSets && !showChallenges) || (!showSessions && !showDates && !showSets && showChallenges)) {
             flowOf(
                 combinedList
             )
