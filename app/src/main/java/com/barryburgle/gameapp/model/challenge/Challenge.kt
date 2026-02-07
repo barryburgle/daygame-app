@@ -28,9 +28,6 @@ open class Challenge(
     }
 
     override fun getEventTitle(): String {
-        if (name != null) {
-            return "${name?.replaceFirstChar { it.uppercase() }} ${EventTypeEnum.CHALLENGE.getField()}"
-        }
         return EventTypeEnum.CHALLENGE.getField()
     }
 
