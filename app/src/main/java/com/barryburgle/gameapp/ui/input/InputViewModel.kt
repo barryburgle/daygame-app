@@ -29,12 +29,17 @@ import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
-import com.barryburgle.gameapp.ui.CombineNineteen
-import com.barryburgle.gameapp.ui.CombineSeven
-import com.barryburgle.gameapp.ui.CombineTwentyTwo
+import com.barryburgle.gameapp.ui.CombineEight
+import com.barryburgle.gameapp.ui.CombineFive
+import com.barryburgle.gameapp.ui.CombineFourteen
+import com.barryburgle.gameapp.ui.CombineNine
+import com.barryburgle.gameapp.ui.CombineSixteen
 import com.barryburgle.gameapp.ui.input.dialog.InputDialogConstant
-import com.barryburgle.gameapp.ui.input.state.InputSettingsState
+import com.barryburgle.gameapp.ui.input.state.DialogSettingsState
+import com.barryburgle.gameapp.ui.input.state.ExportSettingsState
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.input.state.ShareSettingsState
+import com.barryburgle.gameapp.ui.input.state.SortTypeState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -140,6 +145,7 @@ class InputViewModel(
     private val _exportLeadsFileName = settingDao.getExportLeadsFilename()
     private val _exportDatesFileName = settingDao.getExportDatesFilename()
     private val _exportSetsFileName = settingDao.getExportSetsFilename()
+    private val _exportChallengesFileName = settingDao.getExportChallengesFilename()
     private val _exportFolder = settingDao.getExportFolder()
     private val _backupFolder = settingDao.getBackupFolder()
     private val _backupActive = settingDao.getBackupActiveFlag()
@@ -279,18 +285,43 @@ class InputViewModel(
             }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
+    val _mostPopularLeadsNationalities = leadDao.getNationalityHistogram()
     private val _state = MutableStateFlow(InputState())
-    val _combinedSettings = CombineTwentyTwo(
-        _notificationTime,
+    val _exportSettings = CombineFourteen(
+        _allSessions,
+        _allLeads,
+        _allDates,
+        _allSets,
+        _allChallenges,
         _exportSessionsFileName,
         _exportLeadsFileName,
         _exportDatesFileName,
         _exportSetsFileName,
+        _exportChallengesFileName,
         _exportFolder,
         _backupFolder,
         _backupActive,
-        _lastBackup,
+        _lastBackup
+    ) { allSessions, allLeads, allDates, allSets, allChallenges, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportChallengesFileName, exportFolder, backupFolder, backupActive, lastBackup ->
+        ExportSettingsState(
+            allSessions = allSessions,
+            allLeads = allLeads,
+            allDates = allDates,
+            allSets = allSets,
+            allChallenges = allChallenges,
+            exportSessionsFileName = exportSessionsFileName,
+            exportLeadsFileName = exportLeadsFileName,
+            exportDatesFileName = exportDatesFileName,
+            exportSetsFileName = exportSetsFileName,
+            exportChallengesFileName = exportChallengesFileName,
+            exportFolder = exportFolder,
+            backupFolder = backupFolder,
+            backupActive = backupActive.toBoolean(),
+            lastBackup = lastBackup.toInt()
+        )
+    }
+    val _dialogSettings = CombineEight(
+        _notificationTime,
         _generateiDate,
         _followCount,
         _suggestLeadsNationality,
@@ -298,95 +329,105 @@ class InputViewModel(
         _autoSetSessionTimeToStart,
         _autoSetSetTimeToStart,
         _autoSetDateTimeToStart,
-        _shownNationalities,
-        _simplePlusOneReport,
-        _neverShareLeadInfo,
-        _copyReportOnClipboard,
-        _showSummaryCard,
-        _theme
-    ) { notificationTime, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportFolder, backupFolder, backupActive, lastBackup, generateiDate, followCount, suggestLeadsNationality, autoSetEventDateTime, autoSetSessionTimeToStart, autoSetSetTimeToStart, autoSetDateTimeToStart, shownNationalities, simplePlusOneReport, neverShareLeadInfo, copyReportOnClipboard, showSummaryCard, theme ->
-        InputSettingsState(
+    ) { notificationTime, generateiDate, followCount, suggestLeadsNationality, autoSetEventDateTime, autoSetSessionTimeToStart, autoSetSetTimeToStart, autoSetDateTimeToStart ->
+        DialogSettingsState(
             notificationTime = notificationTime,
-            exportSessionsFileName = exportSessionsFileName,
-            exportLeadsFileName = exportLeadsFileName,
-            exportDatesFileName = exportDatesFileName,
-            exportSetsFileName = exportSetsFileName,
-            exportFolder = exportFolder,
-            backupFolder = backupFolder,
-            backupActive = backupActive.toBoolean(),
-            lastBackup = lastBackup.toInt(),
             generateiDate = generateiDate.toBoolean(),
             followCount = followCount.toBoolean(),
             suggestLeadsNationality = suggestLeadsNationality.toBoolean(),
             autoSetEventDateTime = autoSetEventDateTime.toBoolean(),
             autoSetSessionTimeToStart = autoSetSessionTimeToStart.toBoolean(),
             autoSetSetTimeToStart = autoSetSetTimeToStart.toBoolean(),
-            autoSetDateTimeToStart = autoSetDateTimeToStart.toBoolean(),
+            autoSetDateTimeToStart = autoSetDateTimeToStart.toBoolean()
+        )
+    }
+    val _shareSettings = CombineFive(
+        _shownNationalities,
+        _simplePlusOneReport,
+        _neverShareLeadInfo,
+        _copyReportOnClipboard,
+        _showSummaryCard
+    ) { shownNationalities, simplePlusOneReport, neverShareLeadInfo, copyReportOnClipboard, showSummaryCard ->
+        ShareSettingsState(
             shownNationalities = shownNationalities.toInt(),
             simplePlusOneReport = simplePlusOneReport.toBoolean(),
             neverShareLeadInfo = neverShareLeadInfo.toBoolean(),
             copyReportOnClipboard = copyReportOnClipboard.toBoolean(),
-            showSummaryCard = showSummaryCard.toBoolean(),
-            theme = theme
+            showSummaryCard = showSummaryCard.toBoolean()
         )
     }
-    val _mostPopularLeadsNationalities = leadDao.getNationalityHistogram()
-    val state = CombineNineteen(
-        _state,
-        _allSessions,
-        _allLeads,
-        _allDates,
+    val _sortTypes = CombineFive(
         _sessionSortType,
         _dateSortType,
         _setSortType,
-        _allSets,
+        _challengeSortType,
+        _gameEventSortType
+    ) { sessionSortType, dateSortType, setSortType, challengeSortType, gameEventSortType ->
+        SortTypeState(
+            sessionSortType = sessionSortType,
+            dateSortType = dateSortType,
+            setSortType = setSortType,
+            challengeSortType = challengeSortType,
+            gameEventSortType = gameEventSortType
+        )
+    }
+    val state = CombineSixteen(
+        _state,
+        _exportSettings,
+        _dialogSettings,
+        _shareSettings,
+        _sortTypes,
         _allEvents,
         _showSessions,
         _showSets,
         _showDates,
-        _gameEventSortType,
-        _combinedSettings,
+        _showChallenges,
         _mostPopularLeadsNationalities,
         _sessionsByWeek,
         _sessionsByMonth,
         _datesByWeek,
-        _datesByMonth
-    ) { state, allSessions, allLeads, allDates, sessionSortType, dateSortType, setSortType, allSets, allEvents, showSessions, showSets, showDates, gameEventSortType, combinedSettings, mostPopularLeadsNationalities, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth ->
+        _datesByMonth,
+        _theme
+    ) { state, exportSettings, dialogSettings, shareSettings, sortTypes, allEvents, showSessions, showSets, showDates, showChallenges, mostPopularLeadsNationalities, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, theme ->
         state.copy(
-            allSessions = allSessions,
-            allLeads = allLeads,
-            allDates = allDates,
-            allSets = allSets,
+            allSessions = exportSettings.allSessions,
+            allLeads = exportSettings.allLeads,
+            allDates = exportSettings.allDates,
+            allSets = exportSettings.allSets,
+            allChallenges = exportSettings.allChallenges,
+            sessionSortType = sortTypes.sessionSortType,
+            dateSortType = sortTypes.dateSortType,
+            setSortType = sortTypes.setSortType,
+            challengeSortType = sortTypes.challengeSortType,
             allEvents = allEvents,
-            sessionSortType = sessionSortType,
-            dateSortType = dateSortType,
-            setSortType = setSortType,
-            notificationTime = combinedSettings.notificationTime,
-            exportSessionsFileName = combinedSettings.exportSessionsFileName,
-            exportLeadsFileName = combinedSettings.exportLeadsFileName,
-            exportDatesFileName = combinedSettings.exportDatesFileName,
-            exportSetsFileName = combinedSettings.exportSetsFileName,
-            exportFolder = combinedSettings.exportFolder,
-            backupFolder = combinedSettings.backupFolder,
-            backupActive = combinedSettings.backupActive,
-            lastBackup = combinedSettings.lastBackup,
+            notificationTime = dialogSettings.notificationTime,
+            exportSessionsFileName = exportSettings.exportSessionsFileName,
+            exportLeadsFileName = exportSettings.exportLeadsFileName,
+            exportDatesFileName = exportSettings.exportDatesFileName,
+            exportSetsFileName = exportSettings.exportSetsFileName,
+            exportChallengesFileName = exportSettings.exportChallengesFileName,
+            exportFolder = exportSettings.exportFolder,
+            backupFolder = exportSettings.backupFolder,
+            backupActive = exportSettings.backupActive,
+            lastBackup = exportSettings.lastBackup,
             showSessions = showSessions,
             showSets = showSets,
             showDates = showDates,
-            gameEventSortType = gameEventSortType,
-            generateiDate = combinedSettings.generateiDate,
-            followCount = combinedSettings.followCount,
-            suggestLeadsNationality = combinedSettings.suggestLeadsNationality,
-            autoSetEventDateTime = combinedSettings.autoSetEventDateTime,
-            autoSetSessionTimeToStart = combinedSettings.autoSetSessionTimeToStart,
-            autoSetSetTimeToStart = combinedSettings.autoSetSetTimeToStart,
-            autoSetDateTimeToStart = combinedSettings.autoSetDateTimeToStart,
-            shownNationalities = combinedSettings.shownNationalities,
-            simplePlusOneReport = combinedSettings.simplePlusOneReport,
-            neverShareLeadInfo = combinedSettings.neverShareLeadInfo,
-            copyReportOnClipboard = combinedSettings.copyReportOnClipboard,
-            showSummaryCard = combinedSettings.showSummaryCard,
-            theme = combinedSettings.theme,
+            showChallenges = showChallenges,
+            gameEventSortType = sortTypes.gameEventSortType,
+            generateiDate = dialogSettings.generateiDate,
+            followCount = dialogSettings.followCount,
+            suggestLeadsNationality = dialogSettings.suggestLeadsNationality,
+            autoSetEventDateTime = dialogSettings.autoSetEventDateTime,
+            autoSetSessionTimeToStart = dialogSettings.autoSetSessionTimeToStart,
+            autoSetSetTimeToStart = dialogSettings.autoSetSetTimeToStart,
+            autoSetDateTimeToStart = dialogSettings.autoSetDateTimeToStart,
+            shownNationalities = shareSettings.shownNationalities,
+            simplePlusOneReport = shareSettings.simplePlusOneReport,
+            neverShareLeadInfo = shareSettings.neverShareLeadInfo,
+            copyReportOnClipboard = shareSettings.copyReportOnClipboard,
+            showSummaryCard = shareSettings.showSummaryCard,
+            theme = theme,
             mostPopularLeadsNationalities = mostPopularLeadsNationalities,
             sessionsByWeek = sessionsByWeek,
             sessionsByMonth = sessionsByMonth,
