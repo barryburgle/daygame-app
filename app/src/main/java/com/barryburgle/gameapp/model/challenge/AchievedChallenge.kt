@@ -8,7 +8,7 @@ import com.barryburgle.gameapp.model.lead.Lead
 open class AchievedChallenge(
     @Embedded
     val challenge: Challenge,
-    val achieved: Int = 0
+    val achieved: Double = 0.0
 ) : EventModel {
     override fun getEventDate(): String? {
         return challenge.getEventDate()
