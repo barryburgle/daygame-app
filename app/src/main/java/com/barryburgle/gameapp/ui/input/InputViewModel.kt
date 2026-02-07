@@ -788,6 +788,9 @@ class InputViewModel(
                 if (event.flagNumber == 2) {
                     _showDates.value = !_showDates.value
                 }
+                if (event.flagNumber == 3) {
+                    _showChallenges.value = !_showChallenges.value
+                }
             }
 
             is GameEvent.SaveDate -> {
@@ -1289,6 +1292,10 @@ class InputViewModel(
                         challengeTweetUrl = event.challengeTweetUrl
                     )
                 }
+            }
+
+            is GameEvent.SortChallenges -> {
+                _challengeSortType.value = event.sortType
             }
 
             is GameEvent.DeleteChallenge -> {
