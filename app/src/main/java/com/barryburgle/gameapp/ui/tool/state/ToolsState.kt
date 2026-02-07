@@ -1,6 +1,6 @@
 package com.barryburgle.gameapp.ui.tool.state
 
-import com.barryburgle.gameapp.model.challenge.Challenge
+import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.ThemeEnum
 import com.barryburgle.gameapp.model.lead.Lead
@@ -26,7 +26,7 @@ data class ToolsState(
     override var allLeads: List<Lead> = emptyList(),
     override var allDates: List<Date> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
-    override var allChallenges: List<Challenge> = emptyList(),
+    override var allChallenges: List<AchievedChallenge> = emptyList(),
     val lastSessionAverageQuantity: Int = 4,
     val lastSessionsShown: Int = 14,
     val lastWeeksShown: Int = 8,

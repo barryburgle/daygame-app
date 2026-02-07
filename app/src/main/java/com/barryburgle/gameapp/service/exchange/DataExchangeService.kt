@@ -3,7 +3,7 @@ package com.barryburgle.gameapp.service.exchange
 import android.content.Context
 import android.widget.Toast
 import com.barryburgle.gameapp.event.ToolEvent
-import com.barryburgle.gameapp.model.challenge.Challenge
+import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
@@ -90,7 +90,7 @@ class DataExchangeService {
             exportDatesFileName: String,
             allSets: List<SingleSet>,
             exportSetsFileName: String,
-            allChallenges: List<Challenge>,
+            allChallenges: List<AchievedChallenge>,
             exportChallengesFileName: String,
             exportFolder: String
         ) {

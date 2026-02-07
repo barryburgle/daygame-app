@@ -1,6 +1,6 @@
 package com.barryburgle.gameapp.ui.state
 
-import com.barryburgle.gameapp.model.challenge.Challenge
+import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.FieldEnum
 import com.barryburgle.gameapp.model.lead.Lead
@@ -20,7 +20,7 @@ open class ExportState(
     override var allLeads: List<Lead> = emptyList(),
     override var allDates: List<Date> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
-    override var allChallenges: List<Challenge> = emptyList(),
+    override var allChallenges: List<AchievedChallenge> = emptyList(),
     open var backupActive: Boolean = true,
     open var lastBackup: Int = 3,
     open var justSaved: Boolean = false,
