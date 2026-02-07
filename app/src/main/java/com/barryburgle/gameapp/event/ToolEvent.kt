@@ -1,6 +1,6 @@
 package com.barryburgle.gameapp.event
 
-import com.barryburgle.gameapp.model.challenge.Challenge
+import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
@@ -24,7 +24,7 @@ sealed interface ToolEvent : GenericEvent {
     data class SetAllLeads(val allLeads: List<Lead>) : ToolEvent
     data class SetAllDates(val allDates: List<Date>) : ToolEvent
     data class SetAllSets(val allSets: List<SingleSet>) : ToolEvent
-    data class SetAllChallenges(val allChallenges: List<Challenge>) : ToolEvent
+    data class SetAllChallenges(val allChallenges: List<AchievedChallenge>) : ToolEvent
     data class SetLastSessionAverageQuantity(val lastSessionAverageQuantity: String) : ToolEvent
     data class SetLastSessionsShown(val lastSessionsShown: String) : ToolEvent
     data class SetLastWeeksShown(val lastWeeksShown: String) : ToolEvent
