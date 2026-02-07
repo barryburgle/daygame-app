@@ -1,5 +1,11 @@
 package com.barryburgle.gameapp.ui.input.card.body
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,8 +17,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
@@ -23,9 +33,7 @@ import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
 fun ChallengeBody(
-    achievedChallenge: AchievedChallenge,
-    countFontSize: TextUnit,
-    descriptionFontSize: TextUnit
+    achievedChallenge: AchievedChallenge, countFontSize: TextUnit, descriptionFontSize: TextUnit
 ) {
     LittleBodyText("Challenge overview:")
     Row(
@@ -64,8 +72,7 @@ fun ChallengeBody(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             val completionRatio =
                 (achievedChallenge.achieved.toFloat() / achievedChallenge.challenge.goal * 100).toInt()
@@ -89,19 +96,34 @@ fun ChallengeBody(
                     .background(
                         color = MaterialTheme.colorScheme.primaryContainer,
                         shape = RoundedCornerShape(5.dp)
-                    ),
-                horizontalArrangement = Arrangement.Start
+                    ), horizontalArrangement = Arrangement.Start
             ) {
+                val transition = rememberInfiniteTransition(label = "shimmer")
+                val xOffset by transition.animateFloat(
+                    initialValue = 0f, targetValue = 4000f, animationSpec = infiniteRepeatable(
+                        animation = tween(durationMillis = 4000, easing = LinearEasing),
+                        repeatMode = RepeatMode.Restart
+                    ), label = "xOffset"
+                )
+                val shimmerColors = listOf(
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f),
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
+                )
+                val brush = Brush.linearGradient(
+                    colors = shimmerColors,
+                    start = Offset(xOffset - 1000f, 0f),
+                    end = Offset(xOffset, 0f),
+                    tileMode = TileMode.Clamp
+                )
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(completionRatio.toFloat() / 100)
                         .height(10.dp)
                         .background(
-                            color = MaterialTheme.colorScheme.onSurface, // TODO: animate with left-to-right glow in future
-                            shape = RoundedCornerShape(5.dp)
+                            brush = brush, shape = RoundedCornerShape(5.dp)
                         )
-                ) {
-                }
+                ) {}
             }
         }
     }
