@@ -8,8 +8,6 @@ import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.EventModel
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
-import java.time.DayOfWeek
-import java.util.Locale
 
 @Entity(tableName = "challenge")
 open class Challenge(
