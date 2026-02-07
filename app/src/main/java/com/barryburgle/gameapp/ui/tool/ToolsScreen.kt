@@ -84,12 +84,22 @@ fun ToolsScreen(
                         .height(30.dp)
                 )
             }
+            val sessionsCountDesc =
+                if (state.allSessions.isEmpty()) "" else "${state.allSessions.size} sessions, "
+            val leadsCountDesc =
+                if (state.allLeads.isEmpty()) "" else "${state.allLeads.size} leads, "
+            val setsCountDesc =
+                if (state.allSets.isEmpty()) "" else "${state.allSets.size} sets, "
+            val datesCountDesc =
+                if (state.allDates.isEmpty()) "" else "${state.allDates.size} dates"
+            val challengesCountDesc =
+                if (state.allChallenges.isEmpty()) "." else ", ${state.allChallenges.size} challenges."
             item {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     DataExchangeCard(
                         cardTitle = "Export",
-                        cardSubtitle = "Holding ${state.allSessions.size} sessions and ${state.allLeads.size} leads",
+                        cardSubtitle = "Holding ${sessionsCountDesc}${leadsCountDesc}${setsCountDesc}${datesCountDesc}${challengesCountDesc}",
                         state = state,
                         onEvent = onEvent,
                         modifier = dataExchangeCardModifier,
