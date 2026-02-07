@@ -36,11 +36,10 @@ open class Challenge(
     }
 
     override fun getEventDescription(): String {
-        return "${FormatService.getDate(startDate)} ⮕ ${
-            FormatService.getDate(
-                endDate
-            )
-        }"
+        if (!name!!.isBlank()) {
+            return "\"" + name?.replaceFirstChar { it.uppercase() } + "\""
+        }
+        return ""
     }
 
     override fun getEventDuration(): String {
