@@ -13,8 +13,8 @@ enum class ChallengeTypeEnum(
     private val icon: ImageVector
 ) {
     SET("set", "Sets", Icons.Default.DirectionsRun),
-    CONTACT("contact", "Contacts", Icons.Default.ContactPhone),
-    CONVERSATION("conversation", "Conversations", Icons.Default.RecordVoiceOver);
+    CONVERSATION("conversation", "Conversations", Icons.Default.RecordVoiceOver),
+    CONTACT("contact", "Contacts", Icons.Default.ContactPhone);
     // TODO: add here goals on percs and indexes later. For a future task, the challenge type will determine how the challenge completion is computed from raw data (sessions, dates, sets)
 
     fun getType(): String {
