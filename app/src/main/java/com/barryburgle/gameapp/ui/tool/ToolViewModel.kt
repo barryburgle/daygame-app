@@ -385,7 +385,7 @@ class ToolViewModel(
                     )
                 }
                 val allChallenges = _state.value.allChallenges
-                viewModelScope.launch { challengeDao.batchInsert(allChallenges) }
+                viewModelScope.launch { challengeDao.batchInsert(allChallenges.map { it.challenge }) }
             }
 
             is ToolEvent.SetLastSessionAverageQuantity -> {
