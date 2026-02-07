@@ -14,7 +14,7 @@ open class Challenge(
     @PrimaryKey(autoGenerate = true) var id: Long?,
     @ColumnInfo(name = "insert_time") var insertTime: String,
     @ColumnInfo(name = "name") var name: String?,
-    @ColumnInfo(name = "description") var description: String?, // TODO: not sure this is necessary: goal and type should be enough for describing a challenge
+    @ColumnInfo(name = "description") var description: String?,
     @ColumnInfo(name = "start_date") var startDate: String,
     @ColumnInfo(name = "end_date") var endDate: String,
     @ColumnInfo(name = "challenge_type") var type: String,
