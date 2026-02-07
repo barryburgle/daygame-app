@@ -36,6 +36,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.event.GameEvent
+import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
@@ -291,37 +292,40 @@ fun EventCard(
                                             )
                                         )
                                     }
-                                    if (Challenge::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                    if (AchievedChallenge::class.java.simpleName.equals(
+                                            sortableGameEvent.classType
+                                        )
+                                    ) {
                                         onEvent(
-                                            GameEvent.SetChallengeName((sortableGameEvent.event as Challenge).name!!)
+                                            GameEvent.SetChallengeName((sortableGameEvent.event as AchievedChallenge).challenge.name!!)
                                         )
                                         onEvent(
-                                            GameEvent.SetChallengeDescription((sortableGameEvent.event as Challenge).description!!)
+                                            GameEvent.SetChallengeDescription((sortableGameEvent.event as AchievedChallenge).challenge.description!!)
                                         )
                                         onEvent(
-                                            GameEvent.SetChallengeStartDate((sortableGameEvent.event as Challenge).startDate)
+                                            GameEvent.SetChallengeStartDate((sortableGameEvent.event as AchievedChallenge).challenge.startDate)
                                         )
                                         val startDate =
-                                            FormatService.parseDate((sortableGameEvent.event as Challenge).startDate)
+                                            FormatService.parseDate((sortableGameEvent.event as AchievedChallenge).challenge.startDate)
                                         val endDate =
-                                            FormatService.parseDate((sortableGameEvent.event as Challenge).endDate)
+                                            FormatService.parseDate((sortableGameEvent.event as AchievedChallenge).challenge.endDate)
                                         val duration = ChronoUnit.DAYS.between(startDate, endDate)
                                         onEvent(
                                             GameEvent.SetChallengeDuration(duration.toString())
                                         )
                                         onEvent(
-                                            GameEvent.SetChallengeType((sortableGameEvent.event as Challenge).type)
+                                            GameEvent.SetChallengeType((sortableGameEvent.event as AchievedChallenge).challenge.type)
                                         )
                                         onEvent(
-                                            GameEvent.SetChallengeGoal((sortableGameEvent.event as Challenge).goal.toString())
+                                            GameEvent.SetChallengeGoal((sortableGameEvent.event as AchievedChallenge).challenge.goal.toString())
                                         )
                                         onEvent(
-                                            GameEvent.SetChallengeTweetUrl((sortableGameEvent.event as Challenge).tweetUrl!!)
+                                            GameEvent.SetChallengeTweetUrl((sortableGameEvent.event as AchievedChallenge).challenge.tweetUrl!!)
                                         )
                                         onEvent(GameEvent.SetIsInOverlayToTrue)
                                         onEvent(
                                             GameEvent.EditChallenge(
-                                                sortableGameEvent.event as Challenge
+                                                (sortableGameEvent.event as AchievedChallenge).challenge
                                             )
                                         )
                                         onEvent(
@@ -364,17 +368,15 @@ fun EventCard(
                             if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
                                 DateBody(sortableGameEvent.event as Date, 10.sp, 15.sp)
                             }
-                            if (Challenge::class.java.simpleName.equals(sortableGameEvent.classType)) {
-                                val computedAchievement = 25
+                            if (AchievedChallenge::class.java.simpleName.equals(sortableGameEvent.classType)) {
                                 ChallengeBody(
-                                    sortableGameEvent.event as Challenge,
-                                    25,
+                                    sortableGameEvent.event as AchievedChallenge,
                                     40.sp,
                                     10.sp
                                 )
                             }
                         }
-                        if (!Challenge::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                        if (!AchievedChallenge::class.java.simpleName.equals(sortableGameEvent.classType)) {
                             Spacer(modifier = Modifier.height(7.dp))
                             val semiOpaqueBackground = MaterialTheme.colorScheme.surface
                             CardSection {

@@ -1,11 +1,12 @@
 package com.barryburgle.gameapp.event
 
+import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.GameEventSortType
-import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.enums.SessionSortType
+import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -83,4 +84,15 @@ sealed interface GameEvent : GenericEvent {
     data class SetInstantDate(val instantDate: Boolean?) : GameEvent
     object SetIsInOverlayToTrue : GameEvent
     object SetIsInOverlayToFalse : GameEvent
+
+    object SaveChallenge : GameEvent
+    data class SetChallengeName(val challengeName: String) : GameEvent
+    data class SetChallengeDescription(val challengeDescription: String) : GameEvent
+    data class SetChallengeStartDate(val challengeStartDate: String) : GameEvent
+    data class SetChallengeDuration(val challengeDuration: String) : GameEvent
+    data class SetChallengeType(val challengeType: String) : GameEvent
+    data class SetChallengeGoal(val challengeGoal: String) : GameEvent
+    data class SetChallengeTweetUrl(val challengeTweetUrl: String) : GameEvent
+    data class DeleteChallenge(val challenge: Challenge) : GameEvent
+    data class EditChallenge(val challenge: Challenge) : GameEvent
 }
