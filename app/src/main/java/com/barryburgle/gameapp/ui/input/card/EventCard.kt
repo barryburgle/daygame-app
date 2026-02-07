@@ -39,6 +39,7 @@ import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.ChallengeTypeEnum
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
@@ -118,12 +119,45 @@ fun EventCard(
                                         leadsToShare = listOf()
                                     }
                                     var report = sortableGameEvent.event.shareReport(leadsToShare)
-                                    if (sortableGameEvent.classType.equals(Date::class.java.simpleName)) {
+                                    if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
                                         var eventDate: Date = sortableGameEvent.event as Date
                                         report = eventDate.shareDateReport(
                                             leadsToShare,
                                             simplePlusOneReport
                                         )
+                                    } else if (AchievedChallenge::class.java.simpleName.equals(
+                                            sortableGameEvent.classType
+                                        )
+                                    ) {
+                                        var achievedChallenge: AchievedChallenge =
+                                            sortableGameEvent.event as AchievedChallenge
+                                        var completePercentage =
+                                            achievedChallenge.achieved / achievedChallenge.challenge.goal
+                                        var achievedToPrint = achievedChallenge.achieved.toString()
+                                        if (ChallengeTypeEnum.isTypeAchievedInteger(
+                                                achievedChallenge.challenge.type
+                                            )
+                                        ) {
+                                            achievedToPrint =
+                                                achievedChallenge.achieved.toInt().toString()
+                                        }
+                                        val achievedPrefix =
+                                            "\n\nAchieved: ${achievedToPrint} ${achievedChallenge.challenge.type}s\n"
+                                        if (completePercentage >= 1) {
+                                            report += achievedPrefix + "████████████████████ 100%"
+                                        } else {
+                                            completePercentage *= 20
+                                            val intCompletePercentage = completePercentage.toInt()
+                                            var completionBar = ""
+                                            for (i in 1..intCompletePercentage) {
+                                                completionBar += "█"
+                                            }
+                                            for (i in 1..(20 - intCompletePercentage)) {
+                                                completionBar += "░"
+                                            }
+                                            completionBar += " ${intCompletePercentage * 5}%"
+                                            report += achievedPrefix + completionBar
+                                        }
                                     }
                                     if (copyReportOnClipboard) {
                                         clipboardManager.setText(
