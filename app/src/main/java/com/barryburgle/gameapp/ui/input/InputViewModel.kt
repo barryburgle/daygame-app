@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.ui.input
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.barryburgle.gameapp.dao.challenge.ChallengeDao
 import com.barryburgle.gameapp.dao.date.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
@@ -29,11 +30,11 @@ import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
-import com.barryburgle.gameapp.ui.CombineEight
 import com.barryburgle.gameapp.ui.CombineFive
 import com.barryburgle.gameapp.ui.CombineFourteen
 import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.CombineSixteen
+import com.barryburgle.gameapp.ui.CombineTen
 import com.barryburgle.gameapp.ui.input.dialog.InputDialogConstant
 import com.barryburgle.gameapp.ui.input.state.DialogSettingsState
 import com.barryburgle.gameapp.ui.input.state.ExportSettingsState
@@ -58,6 +59,7 @@ class InputViewModel(
     private val leadDao: LeadDao,
     private val dateDao: DateDao,
     private val setDao: SetDao,
+    private val challengeDao: ChallengeDao,
     private val aggregatedSessionsDao: AggregatedSessionsDao,
     private val aggregatedDatesDao: AggregatedDatesDao
 ) : ViewModel() {
@@ -137,7 +139,7 @@ class InputViewModel(
             ChallengeSortType.START_DATE -> challengeDao.getByStartDate()
             ChallengeSortType.END_DATE -> challengeDao.getByEndDate()
             ChallengeSortType.TYPE -> challengeDao.getByChallengeType()
-            ChallengeSortType.TYPE_AND_GOAL -> challengeDao.getByChallengeTypeAndGoal()
+            ChallengeSortType.GOAL -> challengeDao.getByChallengeGoal()
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _notificationTime = settingDao.getNotificationTime()
