@@ -131,33 +131,7 @@ fun EventCard(
                                     ) {
                                         var achievedChallenge: AchievedChallenge =
                                             sortableGameEvent.event as AchievedChallenge
-                                        var completePercentage =
-                                            achievedChallenge.achieved / achievedChallenge.challenge.goal
-                                        var achievedToPrint = achievedChallenge.achieved.toString()
-                                        if (ChallengeTypeEnum.isTypeAchievedInteger(
-                                                achievedChallenge.challenge.type
-                                            )
-                                        ) {
-                                            achievedToPrint =
-                                                achievedChallenge.achieved.toInt().toString()
-                                        }
-                                        val achievedPrefix =
-                                            "\n\nAchieved: ${achievedToPrint} ${achievedChallenge.challenge.type}s\n"
-                                        if (completePercentage >= 1) {
-                                            report += achievedPrefix + "████████████████████ 100%"
-                                        } else {
-                                            completePercentage *= 20
-                                            val intCompletePercentage = completePercentage.toInt()
-                                            var completionBar = ""
-                                            for (i in 1..intCompletePercentage) {
-                                                completionBar += "█"
-                                            }
-                                            for (i in 1..(20 - intCompletePercentage)) {
-                                                completionBar += "░"
-                                            }
-                                            completionBar += " ${intCompletePercentage * 5}%"
-                                            report += achievedPrefix + completionBar
-                                        }
+                                        report = achievedChallenge.getAchievedChallengeReport(false)
                                     }
                                     if (copyReportOnClipboard) {
                                         clipboardManager.setText(

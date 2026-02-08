@@ -58,7 +58,7 @@ open class Challenge(
     }
 
     override fun shareReport(leads: List<Lead>): String {
-        return "\uD83C\uDFC6 New ${type}s' challenge: \"${name}\"\nDescription: ${description}\n\nGoal: ${goal} ${type.replaceFirstChar { it.lowercase() }}s from ${
+        return "${type}s' challenge: \"${name}\"\nDescription: ${description}\n\nGoal: ${goal} ${type.replaceFirstChar { it.lowercase() }}s from ${
             FormatService.getDate(
                 startDate
             )
