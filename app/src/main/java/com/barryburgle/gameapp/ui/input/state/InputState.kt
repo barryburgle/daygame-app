@@ -111,7 +111,7 @@ data class InputState(
     var challengeStartDate: String = "",
     var challengeDuration: String = "",
     var challengeType: String = "",
-    var challengeGoal: String = "",
+    var challengeGoal: String = "20",
     var challengeTweetUrl: String = "",
     val editChallenge: Challenge? = null
 ) : ExportState(
