@@ -6,5 +6,7 @@ data class ShareSettingsState(
     var simplePlusOneReport: Boolean = true,
     var neverShareLeadInfo: Boolean = false,
     var copyReportOnClipboard: Boolean = true,
-    var showSummaryCard: Boolean = false
+    var showCurrentWeekSummary : Boolean = false,
+    var showCurrentMonthSummary: Boolean = false,
+    var showCurrentChallengeSummary: Boolean = false
 )
