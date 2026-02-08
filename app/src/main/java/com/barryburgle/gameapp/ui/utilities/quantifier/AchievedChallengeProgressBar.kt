@@ -26,7 +26,7 @@ import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
 fun AchievedChallengeProgressBar(achievedChallenge: AchievedChallenge) {
-    val completionRatio = achievedChallenge.getCompletionPerc().toInt() * 100
+    val completionRatio = (achievedChallenge.getCompletionPerc() * 100).toInt()
     var completionDesc = "Time to get on with some work"
     if (completionRatio > 0) {
         if (completionRatio < 100) {
