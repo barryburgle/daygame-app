@@ -24,6 +24,7 @@ fun InputCountComponent(
     style: TextStyle = MaterialTheme.typography.bodyMedium,
     onEvent: (GenericEvent) -> Unit,
     countStart: Int? = 0,
+    increment: Int? = 1,
     zeroValue: String? = "",
     saveEvent: (input: String) -> GenericEvent
 ) {
@@ -53,7 +54,7 @@ fun InputCountComponent(
         }
         IconShadowButton(
             onClick = {
-                count++
+                count += increment!!
                 onEvent(saveEvent(count.toString()))
             }, imageVector = Icons.Default.Add, contentDescription = "More"
         )
