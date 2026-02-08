@@ -255,6 +255,7 @@ fun SummaryCard(
 }
 
 fun exportSummary(
+    state: InputState,
     updatedDate: String,
     weekSets: Int,
     weekContacts: Int,
@@ -263,11 +264,24 @@ fun exportSummary(
     monthContacts: Int,
     monthDates: Int,
     weekTimeDescription: String,
-    monthTimeDescription: String
+    monthTimeDescription: String,
+    achievedChallenge: AchievedChallenge,
+    isChallengeValid: Boolean
 ): String {
     var summary = "\uD83D\uDCCC $updatedDate summary:\n\n"
-    var lastWeek = "•Last week:\n-$weekSets sets\n-$weekContacts contacts\n-$weekDates dates\n\n"
+    var lastWeek =
+        "• Current week:\n-$weekSets sets\n-$weekContacts contacts\n-$weekDates dates\n-$weekTimeDescription\n\n"
     var lastMonth =
-        "•Last month:\n-$monthSets sets\n-$monthContacts contacts\n-$monthDates dates\n\n"
-    return summary + lastWeek + lastMonth + weekTimeDescription + "\n\n" + monthTimeDescription
+        "• Current month:\n-$monthSets sets\n-$monthContacts contacts\n-$monthDates dates\n-$monthTimeDescription\n\n"
+    var currentChallenge = achievedChallenge.getAchievedChallengeReport(true)
+    if (state.showCurrentWeekSummary) {
+        summary += lastWeek
+    }
+    if (state.showCurrentMonthSummary) {
+        summary += lastMonth
+    }
+    if (state.showCurrentChallengeSummary && isChallengeValid) {
+        summary += currentChallenge
+    }
+    return summary
 }
