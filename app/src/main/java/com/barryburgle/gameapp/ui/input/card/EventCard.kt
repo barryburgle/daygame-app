@@ -200,7 +200,10 @@ fun EventCard(
                                             )
                                         )
                                     }
-                                    if (AchievedChallenge::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                    if (AchievedChallenge::class.java.simpleName.equals(
+                                            sortableGameEvent.classType
+                                        )
+                                    ) {
                                         onEvent(
                                             GameEvent.DeleteChallenge(
                                                 (sortableGameEvent.event as AchievedChallenge).challenge
