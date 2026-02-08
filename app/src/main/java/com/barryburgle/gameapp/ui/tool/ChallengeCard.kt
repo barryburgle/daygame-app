@@ -17,18 +17,18 @@ fun ChallengeCard(
     onEvent: (ToolEvent) -> Unit
 ) {
     GenericSettingsCard("Challenge", modifier) {
+        SwitchSetting(
+            "Show ongoing challenge summary", state.showCurrentChallengeSummary
+        ) {
+            onEvent(ToolEvent.SwitchShowCurrentChallengeSummary)
+        }
         CountSetting(
-            text = "Increment challenge goal by ${state.incrementChallengeGoal} units",
+            text = "Increment challenge goal by ${state.incrementChallengeGoal}",
             count = state.incrementChallengeGoal,
-            description = "Every time you increase the Challenge goal it will increment by ${state.incrementChallengeGoal}",
+            description = "The + button will increase challenge goal of ${state.incrementChallengeGoal}",
             onEvent = onEvent as (GenericEvent) -> Unit,
             saveEvent = ToolEvent::SetIncrementChallengeGoal
         )
-        SwitchSetting(
-            "Show ongoing challenge card on top", state.showOngoingChallengeCardOnTop
-        ) {
-            onEvent(ToolEvent.SwitchShowOngoingChallengeCardOnTop)
-        }
         CountSetting(
             text = "Start a new challenge with goal set to ${state.defaultChallengeGoal}",
             count = state.defaultChallengeGoal,
