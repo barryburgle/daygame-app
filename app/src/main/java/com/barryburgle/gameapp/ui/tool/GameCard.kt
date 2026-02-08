@@ -16,14 +16,14 @@ fun GameCard(
 ) {
     GenericSettingsCard("Game", modifier) {
         SwitchSetting(
-            "Show period summary card", state.showSummaryCard
+            "Show current week summary", state.showCurrentWeekSummary
         ) {
-            onEvent(ToolEvent.SwitchShowSummaryCard)
+            onEvent(ToolEvent.SwitchShowCurrentWeekSummary)
         }
         SwitchSetting(
-            "Show ongoing challenge card on top", state.showOngoingChallengeCardOnTop
+            "Show current month summary", state.showCurrentMonthSummary
         ) {
-            onEvent(ToolEvent.SwitchShowOngoingChallengeCardOnTop)
+            onEvent(ToolEvent.SwitchShowCurrentMonthSummary)
         }
     }
 }
