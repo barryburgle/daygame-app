@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.event
 
 import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.ChallengeSortType
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.GameEventSortType
@@ -93,6 +94,7 @@ sealed interface GameEvent : GenericEvent {
     data class SetChallengeType(val challengeType: String) : GameEvent
     data class SetChallengeGoal(val challengeGoal: String) : GameEvent
     data class SetChallengeTweetUrl(val challengeTweetUrl: String) : GameEvent
+    data class SortChallenges(val sortType: ChallengeSortType) : GameEvent
     data class DeleteChallenge(val challenge: Challenge) : GameEvent
     data class EditChallenge(val challenge: Challenge) : GameEvent
 }

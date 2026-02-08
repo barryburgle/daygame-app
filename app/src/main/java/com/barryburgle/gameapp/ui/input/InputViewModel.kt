@@ -12,6 +12,7 @@ import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
 import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.GameEvent
+import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.ChallengeSortType
 import com.barryburgle.gameapp.model.enums.DateSortType
@@ -33,6 +34,7 @@ import com.barryburgle.gameapp.service.set.SetService
 import com.barryburgle.gameapp.ui.CombineFive
 import com.barryburgle.gameapp.ui.CombineFourteen
 import com.barryburgle.gameapp.ui.CombineNine
+import com.barryburgle.gameapp.ui.CombineSeven
 import com.barryburgle.gameapp.ui.CombineSixteen
 import com.barryburgle.gameapp.ui.CombineTen
 import com.barryburgle.gameapp.ui.input.dialog.InputDialogConstant
@@ -50,6 +52,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.OffsetDateTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class InputViewModel(
@@ -503,7 +507,9 @@ class InputViewModel(
                         isAddingDate = false,
                         isUpdatingDate = false,
                         isAddingSet = false,
-                        isUpdatingSet = false
+                        isUpdatingSet = false,
+                        isAddingChallenge = false,
+                        isUpdatingChallenge = false
                     )
                 }
             }
@@ -683,20 +689,25 @@ class InputViewModel(
                             isUpdatingSession = event.updateEvent
                         )
                     }
-                }
-                if (EventTypeEnum.SET.equals(event.eventType)) {
+                } else if (EventTypeEnum.SET.equals(event.eventType)) {
                     _state.update {
                         it.copy(
                             isAddingSet = event.addEvent,
                             isUpdatingSet = event.updateEvent
                         )
                     }
-                }
-                if (EventTypeEnum.DATE.equals(event.eventType)) {
+                } else if (EventTypeEnum.DATE.equals(event.eventType)) {
                     _state.update {
                         it.copy(
                             isAddingDate = event.addEvent,
                             isUpdatingDate = event.updateEvent
+                        )
+                    }
+                } else if (EventTypeEnum.CHALLENGE.equals(event.eventType)) {
+                    _state.update {
+                        it.copy(
+                            isAddingChallenge = event.addEvent,
+                            isUpdatingChallenge = event.updateEvent
                         )
                     }
                 }

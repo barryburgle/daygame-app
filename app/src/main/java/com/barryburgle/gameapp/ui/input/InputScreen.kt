@@ -205,6 +205,12 @@ fun InputScreen(
         if (state.isUpdatingSet) {
             SetDialog(state = state, onEvent = onEvent, "Edit a set")
         }
+        if (state.isAddingChallenge) {
+            ChallengeDialog(state = state, onEvent = onEvent, "Add a challenge")
+        }
+        if (state.isUpdatingChallenge) {
+            ChallengeDialog(state = state, onEvent = onEvent, "Edit a challenge")
+        }
         if (state.justSaved && state.backupActive) {
             runBlocking {
                 async {

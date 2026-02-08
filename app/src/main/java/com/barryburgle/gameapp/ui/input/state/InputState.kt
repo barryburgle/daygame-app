@@ -1,7 +1,9 @@
 package com.barryburgle.gameapp.ui.input.state
 
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
+import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.ChallengeSortType
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.GameEventSortType
 import com.barryburgle.gameapp.model.enums.SetSortType
@@ -32,16 +34,19 @@ data class InputState(
     val sessionSortType: SessionSortType = SessionSortType.DATE,
     val dateSortType: DateSortType = DateSortType.DATE,
     val setSortType: SetSortType = SetSortType.DATE,
+    val challengeSortType: ChallengeSortType = ChallengeSortType.END_DATE,
     val gameEventSortType: GameEventSortType = GameEventSortType.DATE,
     val isAddingSession: Boolean = false,
     val isUpdatingSession: Boolean = false,
     val isAddingDate: Boolean = false,
-    val isUpdatingDate: Boolean = false,
+    val isUpdatingDate: Boolean = false, // TODO: after removing the setUpdateState method from dialogs consider removing the update flags like this if serve no purpose
     val isAddingSet: Boolean = false,
     val isUpdatingSet: Boolean = false,
     val isAddingLead: Boolean = false,
     val isModifyingLead: Boolean = false,
     val isUpdatingLead: Boolean = false,
+    val isAddingChallenge: Boolean = false,
+    val isUpdatingChallenge: Boolean = false,
     var leads: List<Lead> = emptyList(),
     var leadId: Long = 0L,
     val leadInsertTime: String = "",
@@ -58,6 +63,7 @@ data class InputState(
     override var exportLeadsFileName: String = "",
     override var exportDatesFileName: String = "",
     override var exportSetsFileName: String = "",
+    override var exportChallengesFileName: String = "",
     override var exportFolder: String = "",
     override var backupFolder: String = "",
     override var allDates: List<Date> = emptyList(),
@@ -122,12 +128,14 @@ data class InputState(
     exportLeadsFileName,
     exportDatesFileName,
     exportSetsFileName,
+    exportChallengesFileName,
     exportFolder,
     backupFolder,
     allSessions,
     allLeads,
     allDates,
     allSets,
+    allChallenges,
     backupActive,
     lastBackup,
     justSaved
