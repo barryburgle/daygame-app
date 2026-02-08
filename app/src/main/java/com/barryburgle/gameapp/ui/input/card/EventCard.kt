@@ -474,66 +474,72 @@ fun EventCard(
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(7.dp))
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .fillMaxWidth()
-                            ) {
-                                var stickingPoints =
-                                    sortableGameEvent.event.getEventStickingPoints()
-                                val validStickingPoints =
-                                    stickingPoints != null && !stickingPoints.isBlank()
-                                var width = 1f
-                                if (validStickingPoints) {
-                                    width = 0.8f
-                                }
-                                CardSection(width = width) {
-                                    Row(
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        verticalAlignment = Alignment.CenterVertically,
+                        }
+                        Spacer(modifier = Modifier.height(7.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth()
+                        ) {
+                            var stickingPoints =
+                                sortableGameEvent.event.getEventStickingPoints()
+                            val validStickingPoints =
+                                stickingPoints != null && !stickingPoints.isBlank()
+                            var width = 1f
+                            if (validStickingPoints) {
+                                width = 0.8f
+                            }
+                            var sectionDescription = "Sticking points"
+                            if (AchievedChallenge::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                sectionDescription = "Description"
+                            }
+                            CardSection(width = width) {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .fillMaxWidth()
+                                ) {
+                                    Column(
                                         modifier = Modifier
-                                            .fillMaxHeight()
                                             .fillMaxWidth()
+                                            .fillMaxHeight()
                                     ) {
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .fillMaxHeight()
-                                        ) {
-                                            if (stickingPoints == null || stickingPoints.isBlank()) {
-                                                LittleBodyText("No sticking points")
-                                            } else {
-                                                LittleBodyText("Sticking points:")
-                                                Spacer(modifier = Modifier.height(5.dp))
-                                                MediumBodyText(if (stickingPoints != null) stickingPoints else "No sticking points")
-                                            }
+                                        val noSectionContentSentence =
+                                            "No ${sectionDescription.lowercase()}"
+                                        if (stickingPoints == null || stickingPoints.isBlank()) {
+                                            LittleBodyText(noSectionContentSentence)
+                                        } else {
+                                            LittleBodyText("${sectionDescription}:")
+                                            Spacer(modifier = Modifier.height(5.dp))
+                                            MediumBodyText(if (stickingPoints != null) stickingPoints else noSectionContentSentence)
                                         }
                                     }
                                 }
-                                if (validStickingPoints) {
-                                    Spacer(modifier = Modifier.width(10.dp))
-                                    IconShadowButton(
-                                        onClick = {
-                                            if (stickingPoints != null) {
-                                                clipboardManager.setText(
-                                                    AnnotatedString(
-                                                        stickingPoints
-                                                    )
+                            }
+                            if (validStickingPoints) {
+                                Spacer(modifier = Modifier.width(10.dp))
+                                IconShadowButton(
+                                    onClick = {
+                                        if (stickingPoints != null) {
+                                            clipboardManager.setText(
+                                                AnnotatedString(
+                                                    stickingPoints
                                                 )
-                                                Toast.makeText(
-                                                    localContext,
-                                                    "Sticking points copied",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        },
-                                        imageVector = Icons.Default.ContentCopy,
-                                        contentDescription = "Copy Sticking Points"
-                                    )
-                                }
+                                            )
+                                            Toast.makeText(
+                                                localContext,
+                                                "Sticking points copied",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    },
+                                    imageVector = Icons.Default.ContentCopy,
+                                    contentDescription = "Copy Sticking Points"
+                                )
                             }
                         }
                     }
