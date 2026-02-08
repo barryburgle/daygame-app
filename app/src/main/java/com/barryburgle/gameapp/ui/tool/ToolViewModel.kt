@@ -11,7 +11,7 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.ui.CombineEighteen
-import com.barryburgle.gameapp.ui.CombineFifteen
+import com.barryburgle.gameapp.ui.CombineSeventeen
 import com.barryburgle.gameapp.ui.CombineSixteen
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.Flow
@@ -77,7 +77,7 @@ class ToolViewModel(
             isCleaning = isCleaning
         )
     }
-    val _generalSettingState: Flow<GeneralSettingState> = CombineFifteen(
+    val _generalSettingState: Flow<GeneralSettingState> = CombineSeventeen(
         settingDao.getGenerateiDate(),
         settingDao.getNotificationTime(),
         settingDao.getFollowCount(),
@@ -92,8 +92,10 @@ class ToolViewModel(
         settingDao.getSimplePlusOneReport(),
         settingDao.getNeverShareLeadInfo(),
         settingDao.getCopyReportOnClipboard(),
-        settingDao.getShowSummaryCard()
-    ) { generateiDate, notificationTime, followCount, suggestLeadsNationality, shownNationalities, autoSetEventDateTime, autoSetSessionTimeToStart, autoSetSetTimeToStart, autoSetDateTimeToStart, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showSummaryCard ->
+        settingDao.getShowCurrentWeekSummary(),
+        settingDao.getShowCurrentMonthSummary(),
+        settingDao.getShowCurrentChallengeSummary()
+    ) { generateiDate, notificationTime, followCount, suggestLeadsNationality, shownNationalities, autoSetEventDateTime, autoSetSessionTimeToStart, autoSetSetTimeToStart, autoSetDateTimeToStart, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary ->
         GeneralSettingState(
             generateiDate = generateiDate,
             notificationTime = notificationTime,
@@ -109,7 +111,9 @@ class ToolViewModel(
             simplePlusOneReport = simplePlusOneReport,
             neverShareLeadInfo = neverShareLead,
             copyReportOnClipboard = copyReportOnClipboard,
-            showSummaryCard = showSummaryCard
+            showCurrentWeekSummary = showCurrentWeekSummary,
+            showCurrentMonthSummary = showCurrentMonthSummary,
+            showCurrentChallengeSummary = showCurrentChallengeSummary
         )
     }
     private val _averageLast = settingDao.getAverageLast()
@@ -185,7 +189,9 @@ class ToolViewModel(
                 simplePlusOneReport = generalSettingState.simplePlusOneReport.toBoolean(),
                 neverShareLeadInfo = generalSettingState.neverShareLeadInfo.toBoolean(),
                 copyReportOnClipboard = generalSettingState.copyReportOnClipboard.toBoolean(),
-                showSummaryCard = generalSettingState.showSummaryCard.toBoolean()
+                showCurrentWeekSummary = generalSettingState.showCurrentWeekSummary.toBoolean(),
+                showCurrentMonthSummary = generalSettingState.showCurrentMonthSummary.toBoolean(),
+                showCurrentChallengeSummary = generalSettingState.showCurrentChallengeSummary.toBoolean()
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ToolsState())
 
@@ -748,17 +754,47 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
-            is ToolEvent.SwitchShowSummaryCard -> {
+            is ToolEvent.SwitchShowCurrentWeekSummary -> {
                 _state.update {
                     it.copy(
-                        showSummaryCard = _state.value.showSummaryCard.not()
+                        showCurrentWeekSummary = _state.value.showCurrentWeekSummary.not()
                     )
                 }
-                val showSummaryCard = _state.value.showSummaryCard
+                val showCurrentWeekSummary = _state.value.showCurrentWeekSummary
                 val setting =
                     Setting(
-                        SettingDao.SHOW_SUMMARY_CARD_ID,
-                        showSummaryCard.toString()
+                        SettingDao.SHOW_CURRENT_WEEK_SUMMARY_ID,
+                        showCurrentWeekSummary.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SwitchShowCurrentMonthSummary -> {
+                _state.update {
+                    it.copy(
+                        showCurrentMonthSummary = _state.value.showCurrentMonthSummary.not()
+                    )
+                }
+                val showCurrentMonthSummary = _state.value.showCurrentMonthSummary
+                val setting =
+                    Setting(
+                        SettingDao.SHOW_CURRENT_MONTH_SUMMARY_ID,
+                        showCurrentMonthSummary.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SwitchShowCurrentChallengeSummary -> {
+                _state.update {
+                    it.copy(
+                        showCurrentChallengeSummary = _state.value.showCurrentChallengeSummary.not()
+                    )
+                }
+                val showCurrentChallengeSummary = _state.value.showCurrentChallengeSummary
+                val setting =
+                    Setting(
+                        SettingDao.SHOW_CURRENT_CHALLENGE_SUMMARY_ID,
+                        showCurrentChallengeSummary.toString()
                     )
                 viewModelScope.launch { settingDao.insert(setting) }
             }
@@ -778,21 +814,6 @@ class ToolViewModel(
                     SettingDao.INCREMENT_CHALLENGE_GOAL_ID,
                     incrementChallengeGoal.toString()
                 )
-                viewModelScope.launch { settingDao.insert(setting) }
-            }
-
-            is ToolEvent.SwitchShowOngoingChallengeCardOnTop -> {
-                _state.update {
-                    it.copy(
-                        showOngoingChallengeCardOnTop = _state.value.showOngoingChallengeCardOnTop.not()
-                    )
-                }
-                val showChallengeCard = _state.value.showOngoingChallengeCardOnTop
-                val setting =
-                    Setting(
-                        SettingDao.SHOW_CHALLENGE_CARD_ID,
-                        showChallengeCard.toString()
-                    )
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
@@ -902,5 +923,7 @@ data class GeneralSettingState(
     val simplePlusOneReport: String,
     val neverShareLeadInfo: String,
     val copyReportOnClipboard: String,
-    val showSummaryCard: String
+    val showCurrentWeekSummary: String,
+    val showCurrentMonthSummary: String,
+    val showCurrentChallengeSummary: String
 )

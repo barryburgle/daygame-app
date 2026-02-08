@@ -55,9 +55,10 @@ sealed interface ToolEvent : GenericEvent {
     object SwitchSimplePlusOneReport : ToolEvent
     object SwitchNeverShareLeadInfo : ToolEvent
     object SwitchCopyReportOnClipboard : ToolEvent
-    object SwitchShowSummaryCard : ToolEvent
+    object SwitchShowCurrentWeekSummary : ToolEvent
+    object SwitchShowCurrentMonthSummary : ToolEvent
+    object SwitchShowCurrentChallengeSummary : ToolEvent
     data class SetIncrementChallengeGoal(val incrementChallengeGoal: String) : ToolEvent
-    object SwitchShowOngoingChallengeCardOnTop : ToolEvent
     data class SetDefaultChallengeGoal(val defaultChallengeGoal: String) : ToolEvent
     data class SetTheme(val themeId: String) : ToolEvent
     data class SetDeleteConfirmationPrompt(val deleteConfirmationPrompt: String) : ToolEvent

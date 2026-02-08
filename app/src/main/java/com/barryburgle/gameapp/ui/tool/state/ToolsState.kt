@@ -61,10 +61,11 @@ data class ToolsState(
     var simplePlusOneReport: Boolean = true,
     var neverShareLeadInfo: Boolean = false,
     var copyReportOnClipboard: Boolean = true,
-    var showSummaryCard: Boolean = false,
+    var showCurrentWeekSummary: Boolean = false,
+    var showCurrentMonthSummary: Boolean = false,
+    var showCurrentChallengeSummary: Boolean = false,
     val incrementChallengeGoal: Int = 5,
     val defaultChallengeGoal: Int = 20,
-    var showOngoingChallengeCardOnTop: Boolean = true,
     var theme: String = ThemeEnum.LIGHT.type,
     var deleteConfirmationPrompt: String = ""
 ) : ExportState(

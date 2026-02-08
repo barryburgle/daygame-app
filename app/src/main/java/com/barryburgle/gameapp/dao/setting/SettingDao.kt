@@ -56,9 +56,10 @@ interface SettingDao {
         const val SIMPLE_PLUS_ONE_REPORT_ID: String = "simple_plus_one_report"
         const val NEVER_SHARE_LEAD_INFO_ID: String = "never_share_lead_info"
         const val COPY_REPORT_ON_CLIPBOARD_ID: String = "copy_report_on_clipboard"
-        const val SHOW_SUMMARY_CARD_ID: String = "show_summary_card"
+        const val SHOW_CURRENT_WEEK_SUMMARY_ID: String = "show_current_week_summary"
+        const val SHOW_CURRENT_MONTH_SUMMARY_ID: String = "show_current_month_summary"
+        const val SHOW_CURRENT_CHALLENGE_SUMMARY_ID: String = "show_current_challenge_summary"
         const val INCREMENT_CHALLENGE_GOAL_ID: String = "increment_challenge_goal"
-        const val SHOW_CHALLENGE_CARD_ID: String = "show_challenge_card"
         const val DEFAULT_CHALLENGE_GOAL_ID: String = "default_challenge_goal"
         const val THEME_ID: String = "theme_id"
         const val DEFAULT_LEADS_EXPORT_FILE_NAME: String = "leads_export"
@@ -94,9 +95,10 @@ interface SettingDao {
         const val SIMPLE_PLUS_ONE_REPORT_FLAG: String = "true"
         const val NEVER_SHARE_LEAD_INFO_FLAG: String = "true"
         const val COPY_REPORT_ON_CLIPBOARD_FLAG: String = "true"
-        const val SHOW_SUMMARY_CARD_FLAG: String = "false"
+        const val SHOW_CURRENT_WEEK_SUMMARY_FLAG: String = "false"
+        const val SHOW_CURRENT_MONTH_SUMMARY_FLAG: String = "false"
+        const val SHOW_CURRENT_CHALLENGE_SUMMARY_FLAG: String = "false"
         const val DEFAULT_INCREMENT_CHALLENGE_GOAL: Int = 5
-        const val SHOW_CHALLENGE_CARD_FLAG: String = "true"
         const val DEFAULT_CHALLENGE_GOAL: Int = 20
         const val THEME_VALUE: String = "light"
         const val DEFAULT_BACKUP_NUMBER: String = "3"
@@ -219,14 +221,17 @@ interface SettingDao {
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${COPY_REPORT_ON_CLIPBOARD_FLAG}' ELSE value END FROM setting WHERE id = '${COPY_REPORT_ON_CLIPBOARD_ID}'")
     fun getCopyReportOnClipboard(): Flow<String>
 
-    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${SHOW_SUMMARY_CARD_FLAG}' ELSE value END FROM setting WHERE id = '${SHOW_SUMMARY_CARD_ID}'")
-    fun getShowSummaryCard(): Flow<String>
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${SHOW_CURRENT_WEEK_SUMMARY_FLAG}' ELSE value END FROM setting WHERE id = '${SHOW_CURRENT_WEEK_SUMMARY_ID}'")
+    fun getShowCurrentWeekSummary(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${SHOW_CURRENT_MONTH_SUMMARY_FLAG}' ELSE value END FROM setting WHERE id = '${SHOW_CURRENT_MONTH_SUMMARY_ID}'")
+    fun getShowCurrentMonthSummary(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${SHOW_CURRENT_CHALLENGE_SUMMARY_FLAG}' ELSE value END FROM setting WHERE id = '${SHOW_CURRENT_CHALLENGE_SUMMARY_ID}'")
+    fun getShowCurrentChallengeSummary(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_INCREMENT_CHALLENGE_GOAL}' ELSE value END FROM setting WHERE id = '${INCREMENT_CHALLENGE_GOAL_ID}'")
     fun getIncrementChallengeGoal(): Flow<Int>
-
-    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${SHOW_CHALLENGE_CARD_FLAG}' ELSE value END FROM setting WHERE id = '${SHOW_CHALLENGE_CARD_ID}'")
-    fun getShowChallengeCard(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_CHALLENGE_GOAL}' ELSE value END FROM setting WHERE id = '${DEFAULT_CHALLENGE_GOAL_ID}'")
     fun getDefaultChallengeGoal(): Flow<Int>
