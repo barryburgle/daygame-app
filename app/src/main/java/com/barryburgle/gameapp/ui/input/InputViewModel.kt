@@ -163,9 +163,11 @@ class InputViewModel(
     private val _simplePlusOneReport = settingDao.getSimplePlusOneReport()
     private val _neverShareLeadInfo = settingDao.getNeverShareLeadInfo()
     private val _copyReportOnClipboard = settingDao.getCopyReportOnClipboard()
-    private val _showSummaryCard = settingDao.getShowSummaryCard()
     private val _incrementChallengeGoal = settingDao.getIncrementChallengeGoal()
     private val _defaultChallengeGoal = settingDao.getDefaultChallengeGoal()
+    private val _showCurrentWeekSummary = settingDao.getShowCurrentWeekSummary()
+    private val _showCurrentMonthSummary = settingDao.getShowCurrentMonthSummary()
+    private val _showCurrentChallengeSummary = settingDao.getShowCurrentChallengeSummary()
     private val _theme = settingDao.getTheme()
     private val _sessionsByWeek = aggregatedSessionsDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
@@ -335,19 +337,23 @@ class InputViewModel(
             defaultChallengeGoal = defaultChallengeGoal,
         )
     }
-    val _shareSettings = CombineFive(
+    val _shareSettings = CombineSeven(
         _shownNationalities,
         _simplePlusOneReport,
         _neverShareLeadInfo,
         _copyReportOnClipboard,
-        _showSummaryCard
-    ) { shownNationalities, simplePlusOneReport, neverShareLeadInfo, copyReportOnClipboard, showSummaryCard ->
+        _showCurrentWeekSummary,
+        _showCurrentMonthSummary,
+        _showCurrentChallengeSummary
+    ) { shownNationalities, simplePlusOneReport, neverShareLeadInfo, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary ->
         ShareSettingsState(
             shownNationalities = shownNationalities.toInt(),
             simplePlusOneReport = simplePlusOneReport.toBoolean(),
             neverShareLeadInfo = neverShareLeadInfo.toBoolean(),
             copyReportOnClipboard = copyReportOnClipboard.toBoolean(),
-            showSummaryCard = showSummaryCard.toBoolean()
+            showCurrentWeekSummary = showCurrentWeekSummary.toBoolean(),
+            showCurrentMonthSummary = showCurrentMonthSummary.toBoolean(),
+            showCurrentChallengeSummary = showCurrentChallengeSummary.toBoolean()
         )
     }
     val _sortTypes = CombineFive(
@@ -422,7 +428,9 @@ class InputViewModel(
             simplePlusOneReport = shareSettings.simplePlusOneReport,
             neverShareLeadInfo = shareSettings.neverShareLeadInfo,
             copyReportOnClipboard = shareSettings.copyReportOnClipboard,
-            showSummaryCard = shareSettings.showSummaryCard,
+            showCurrentWeekSummary = shareSettings.showCurrentWeekSummary,
+            showCurrentMonthSummary = shareSettings.showCurrentMonthSummary,
+            showCurrentChallengeSummary = shareSettings.showCurrentChallengeSummary,
             theme = theme,
             mostPopularLeadsNationalities = mostPopularLeadsNationalities,
             sessionsByWeek = sessionsByWeek,
