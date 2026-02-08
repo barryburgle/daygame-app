@@ -62,6 +62,8 @@ data class ToolsState(
     var neverShareLeadInfo: Boolean = false,
     var copyReportOnClipboard: Boolean = true,
     var showSummaryCard: Boolean = false,
+    val incrementChallengeGoal: Int = 5,
+    val defaultChallengeGoal: Int = 20,
     var showOngoingChallengeCardOnTop: Boolean = true,
     var theme: String = ThemeEnum.LIGHT.type,
     var deleteConfirmationPrompt: String = ""

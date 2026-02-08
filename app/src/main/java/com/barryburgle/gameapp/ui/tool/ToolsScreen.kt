@@ -158,9 +158,15 @@ fun ToolsScreen(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     GameCard(
-                        state = state,
-                        onEvent = onEvent,
-                        modifier = settingsCardModifier
+                        state = state, onEvent = onEvent, modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    ChallengeCard(
+                        state = state, onEvent = onEvent, modifier = settingsCardModifier
                     )
                 }
             }

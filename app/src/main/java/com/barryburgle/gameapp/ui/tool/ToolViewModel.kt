@@ -763,6 +763,24 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SetIncrementChallengeGoal -> {
+                _state.update {
+                    it.copy(
+                        incrementChallengeGoal = minMaxLimiter(
+                            event.incrementChallengeGoal.toInt(),
+                            1,
+                            50
+                        )
+                    )
+                }
+                val incrementChallengeGoal = _state.value.incrementChallengeGoal
+                val setting = Setting(
+                    SettingDao.INCREMENT_CHALLENGE_GOAL_ID,
+                    incrementChallengeGoal.toString()
+                )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SwitchShowOngoingChallengeCardOnTop -> {
                 _state.update {
                     it.copy(
@@ -775,6 +793,24 @@ class ToolViewModel(
                         SettingDao.SHOW_CHALLENGE_CARD_ID,
                         showChallengeCard.toString()
                     )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetDefaultChallengeGoal -> {
+                _state.update {
+                    it.copy(
+                        defaultChallengeGoal = minMaxLimiter(
+                            event.defaultChallengeGoal.toInt(),
+                            1,
+                            100
+                        )
+                    )
+                }
+                val defaultSetsChallengeGoal = _state.value.defaultChallengeGoal
+                val setting = Setting(
+                    SettingDao.DEFAULT_CHALLENGE_GOAL_ID,
+                    defaultSetsChallengeGoal.toString()
+                )
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
