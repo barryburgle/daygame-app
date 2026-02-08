@@ -64,11 +64,12 @@ fun ToolsScreen(
             .shadow(
                 elevation = 5.dp, shape = MaterialTheme.shapes.large
             )
-        val settingsCardModifier = Modifier
-            .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
-            .shadow(
-                elevation = 5.dp, shape = MaterialTheme.shapes.large
-            )
+        val settingsCardModifier =
+            Modifier
+                .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
+                .shadow(
+                    elevation = 5.dp, shape = MaterialTheme.shapes.large
+                )
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
