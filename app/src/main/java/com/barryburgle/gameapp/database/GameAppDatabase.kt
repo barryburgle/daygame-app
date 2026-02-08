@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.database.session
+package com.barryburgle.gameapp.database
 
 import android.content.Context
 import androidx.room.Database
