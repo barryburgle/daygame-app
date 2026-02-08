@@ -9,5 +9,7 @@ data class DialogSettingsState(
     var autoSetEventDateTime: Boolean = true,
     var autoSetSessionTimeToStart: Boolean = true,
     var autoSetSetTimeToStart: Boolean = true,
-    var autoSetDateTimeToStart: Boolean = true
+    var autoSetDateTimeToStart: Boolean = true,
+    val incrementChallengeGoal: Int = 5,
+    val defaultChallengeGoal: Int = 20
 )
