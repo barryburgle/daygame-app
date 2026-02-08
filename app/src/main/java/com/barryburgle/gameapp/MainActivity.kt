@@ -33,7 +33,7 @@ import androidx.lifecycle.lifecycleScope
 import com.barryburgle.gameapp.api.RetrofitInstance
 import com.barryburgle.gameapp.api.response.github.GithubLatestResponse
 import com.barryburgle.gameapp.dao.setting.SettingDao
-import com.barryburgle.gameapp.database.session.GameAppDatabase
+import com.barryburgle.gameapp.database.GameAppDatabase
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.ui.input.InputViewModel

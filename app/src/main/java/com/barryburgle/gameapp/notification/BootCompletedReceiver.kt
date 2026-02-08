@@ -3,7 +3,7 @@ package com.barryburgle.gameapp.notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.barryburgle.gameapp.database.session.GameAppDatabase
+import com.barryburgle.gameapp.database.GameAppDatabase
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.service.notification.NotificationService
 import kotlinx.coroutines.flow.combine
