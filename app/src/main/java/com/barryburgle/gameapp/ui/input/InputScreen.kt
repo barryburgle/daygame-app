@@ -225,7 +225,7 @@ fun InputScreen(
             item {
                 Spacer(modifier = Modifier.height(120.dp))
             }
-            if (state.showSummaryCard) {
+            if (state.showCurrentWeekSummary || state.showCurrentMonthSummary || state.showCurrentChallengeSummary) {
                 item {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Spacer(modifier = Modifier.width(spaceFromLeft))
