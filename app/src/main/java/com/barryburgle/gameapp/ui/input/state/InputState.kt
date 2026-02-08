@@ -92,6 +92,8 @@ data class InputState(
     var autoSetSessionTimeToStart: Boolean = true,
     var autoSetSetTimeToStart: Boolean = true,
     var autoSetDateTimeToStart: Boolean = true,
+    val incrementChallengeGoal: Int = 5,
+    val defaultChallengeGoal: Int = 20,
     var shownNationalities: Int = 6,
     var simplePlusOneReport: Boolean = true,
     var neverShareLeadInfo: Boolean = false,

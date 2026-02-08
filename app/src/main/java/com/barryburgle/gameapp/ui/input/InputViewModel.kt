@@ -162,6 +162,8 @@ class InputViewModel(
     private val _neverShareLeadInfo = settingDao.getNeverShareLeadInfo()
     private val _copyReportOnClipboard = settingDao.getCopyReportOnClipboard()
     private val _showSummaryCard = settingDao.getShowSummaryCard()
+    private val _incrementChallengeGoal = settingDao.getIncrementChallengeGoal()
+    private val _defaultChallengeGoal = settingDao.getDefaultChallengeGoal()
     private val _theme = settingDao.getTheme()
     private val _sessionsByWeek = aggregatedSessionsDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
@@ -306,7 +308,7 @@ class InputViewModel(
             lastBackup = lastBackup.toInt()
         )
     }
-    val _dialogSettings = CombineEight(
+    val _dialogSettings = CombineTen(
         _notificationTime,
         _generateiDate,
         _followCount,
@@ -315,7 +317,9 @@ class InputViewModel(
         _autoSetSessionTimeToStart,
         _autoSetSetTimeToStart,
         _autoSetDateTimeToStart,
-    ) { notificationTime, generateiDate, followCount, suggestLeadsNationality, autoSetEventDateTime, autoSetSessionTimeToStart, autoSetSetTimeToStart, autoSetDateTimeToStart ->
+        _incrementChallengeGoal,
+        _defaultChallengeGoal
+    ) { notificationTime, generateiDate, followCount, suggestLeadsNationality, autoSetEventDateTime, autoSetSessionTimeToStart, autoSetSetTimeToStart, autoSetDateTimeToStart, incrementChallengeGoal, defaultChallengeGoal ->
         DialogSettingsState(
             notificationTime = notificationTime,
             generateiDate = generateiDate.toBoolean(),
@@ -324,7 +328,9 @@ class InputViewModel(
             autoSetEventDateTime = autoSetEventDateTime.toBoolean(),
             autoSetSessionTimeToStart = autoSetSessionTimeToStart.toBoolean(),
             autoSetSetTimeToStart = autoSetSetTimeToStart.toBoolean(),
-            autoSetDateTimeToStart = autoSetDateTimeToStart.toBoolean()
+            autoSetDateTimeToStart = autoSetDateTimeToStart.toBoolean(),
+            incrementChallengeGoal = incrementChallengeGoal,
+            defaultChallengeGoal = defaultChallengeGoal,
         )
     }
     val _shareSettings = CombineFive(
@@ -408,6 +414,8 @@ class InputViewModel(
             autoSetSessionTimeToStart = dialogSettings.autoSetSessionTimeToStart,
             autoSetSetTimeToStart = dialogSettings.autoSetSetTimeToStart,
             autoSetDateTimeToStart = dialogSettings.autoSetDateTimeToStart,
+            incrementChallengeGoal = dialogSettings.incrementChallengeGoal,
+            defaultChallengeGoal = dialogSettings.defaultChallengeGoal,
             shownNationalities = shareSettings.shownNationalities,
             simplePlusOneReport = shareSettings.simplePlusOneReport,
             neverShareLeadInfo = shareSettings.neverShareLeadInfo,
