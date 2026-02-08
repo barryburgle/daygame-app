@@ -74,8 +74,7 @@ fun ToolsScreen(
                 .fillMaxSize()
                 .offset(
                     y = spaceFromTop - 20.dp
-                ),
-            verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
+                ), verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
         ) {
             item {
                 Spacer(
@@ -88,8 +87,7 @@ fun ToolsScreen(
                 if (state.allSessions.isEmpty()) "" else "${state.allSessions.size} sessions, "
             val leadsCountDesc =
                 if (state.allLeads.isEmpty()) "" else "${state.allLeads.size} leads, "
-            val setsCountDesc =
-                if (state.allSets.isEmpty()) "" else "${state.allSets.size} sets, "
+            val setsCountDesc = if (state.allSets.isEmpty()) "" else "${state.allSets.size} sets, "
             val datesCountDesc =
                 if (state.allDates.isEmpty()) "" else "${state.allDates.size} dates"
             val challengesCountDesc =
@@ -174,9 +172,7 @@ fun ToolsScreen(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     DashboardCard(
-                        state = state,
-                        onEvent = onEvent,
-                        modifier = settingsCardModifier
+                        state = state, onEvent = onEvent, modifier = settingsCardModifier
                     )
                 }
             }
@@ -184,9 +180,7 @@ fun ToolsScreen(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     DataEntryCard(
-                        state = state,
-                        onEvent = onEvent,
-                        modifier = settingsCardModifier
+                        state = state, onEvent = onEvent, modifier = settingsCardModifier
                     )
                 }
             }
@@ -194,9 +188,7 @@ fun ToolsScreen(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     ThemeCard(
-                        state = state,
-                        onEvent = onEvent,
-                        modifier = settingsCardModifier
+                        state = state, onEvent = onEvent, modifier = settingsCardModifier
                     )
                 }
             }
@@ -204,9 +196,7 @@ fun ToolsScreen(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     ShareCard(
-                        state = state,
-                        onEvent = onEvent,
-                        modifier = settingsCardModifier
+                        state = state, onEvent = onEvent, modifier = settingsCardModifier
                     )
                 }
             }
@@ -224,8 +214,7 @@ fun ToolsScreen(
             }
             item {
                 Spacer(
-                    modifier = Modifier
-                        .height(spaceFromTop + spaceFromBottom + spaceFromLeft * 2)
+                    modifier = Modifier.height(spaceFromTop + spaceFromBottom + spaceFromLeft * 2)
                 )
             }
         }
