@@ -21,9 +21,12 @@ import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
 fun ChallengeBody(
-    achievedChallenge: AchievedChallenge, countFontSize: TextUnit, descriptionFontSize: TextUnit
+    bodyTitle: String,
+    achievedChallenge: AchievedChallenge,
+    countFontSize: TextUnit,
+    descriptionFontSize: TextUnit
 ) {
-    LittleBodyText("Challenge overview:")
+    LittleBodyText(bodyTitle)
     Row(
         modifier = Modifier
             .fillMaxWidth()
