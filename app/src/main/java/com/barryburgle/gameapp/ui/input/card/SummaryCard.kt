@@ -128,164 +128,166 @@ fun SummaryCard(
                 isChallengeValid = true
             }
         }
-        Card(
-            modifier = modifier,
-            colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-            shape = MaterialTheme.shapes.large
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primaryContainer,
-                            MaterialTheme.colorScheme.secondaryContainer
-                        ),
-                    )
-                )
+        if (isChallengeValid == true || state.showCurrentWeekSummary || state.showCurrentMonthSummary) {
+            Card(
+                modifier = modifier,
+                colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+                shape = MaterialTheme.shapes.large
             ) {
-                Column(
-                    modifier = Modifier.padding(10.dp),
-                    verticalArrangement = Arrangement.SpaceEvenly
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.background(
+                        brush = Brush.linearGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primaryContainer,
+                                MaterialTheme.colorScheme.secondaryContainer
+                            ),
+                        )
+                    )
                 ) {
-                    if (noEvents) {
-                        Column(
-                            modifier = Modifier
-                                .padding(5.dp)
-                                .fillMaxWidth()
-                        ) {
-                            LittleBodyText("No events for summary")
-                        }
-                    } else {
-                        Column(
-                            modifier = Modifier
-                                .padding(5.dp)
-                                .fillMaxWidth()
-                        ) {
-                            LittleBodyText("Updated to $updatedDate")
-                            Spacer(modifier = Modifier.width(3.dp))
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier.fillMaxWidth()
+                    Column(
+                        modifier = Modifier.padding(10.dp),
+                        verticalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        if (noEvents) {
+                            Column(
+                                modifier = Modifier
+                                    .padding(5.dp)
+                                    .fillMaxWidth()
                             ) {
+                                LittleBodyText("No events for summary")
+                            }
+                        } else {
+                            Column(
+                                modifier = Modifier
+                                    .padding(5.dp)
+                                    .fillMaxWidth()
+                            ) {
+                                LittleBodyText("Updated to $updatedDate")
+                                Spacer(modifier = Modifier.width(3.dp))
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.PushPin,
-                                        contentDescription = "Summary",
-                                        tint = MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier.height(25.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(5.dp))
-                                    LargeTitleText("Summary")
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .width(60.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    IconShadowButton(
-                                        onClick = {
-                                            var histogramData = exportSummary(
-                                                state,
-                                                updatedDate,
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.PushPin,
+                                            contentDescription = "Summary",
+                                            tint = MaterialTheme.colorScheme.onPrimary,
+                                            modifier = Modifier.height(25.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(5.dp))
+                                        LargeTitleText("Summary")
+                                    }
+                                    Row(
+                                        modifier = Modifier
+                                            .width(60.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        IconShadowButton(
+                                            onClick = {
+                                                var histogramData = exportSummary(
+                                                    state,
+                                                    updatedDate,
+                                                    weekSets,
+                                                    weekContacts,
+                                                    weekDates,
+                                                    monthSets,
+                                                    monthContacts,
+                                                    monthDates,
+                                                    weekTimeSpent,
+                                                    monthTimeSpent,
+                                                    lastChallenge,
+                                                    isChallengeValid
+                                                )
+                                                if (state.copyReportOnClipboard) {
+                                                    clipboardManager.setText(
+                                                        AnnotatedString(
+                                                            histogramData
+                                                        )
+                                                    )
+                                                    Toast.makeText(
+                                                        localContext,
+                                                        "Summary copied",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                                val sendIntent: Intent = Intent().apply {
+                                                    action = Intent.ACTION_SEND
+                                                    putExtra(
+                                                        Intent.EXTRA_TEXT,
+                                                        histogramData
+                                                    )
+                                                    type = "text/plain"
+                                                }
+                                                val shareIntent = Intent.createChooser(
+                                                    sendIntent,
+                                                    "Share summary"
+                                                )
+                                                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                                localContext.startActivity(shareIntent)
+                                            },
+                                            imageVector = Icons.Default.Share,
+                                            contentDescription = "Share Summary"
+                                        )
+                                    }
+                                }
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .padding(5.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Column(
+                                    modifier = Modifier.fillMaxHeight()
+                                ) {
+                                    if (state.showCurrentWeekSummary) {
+                                        CardSection {
+                                            SummaryBody(
+                                                "Last week",
+                                                weekTimeSpent,
                                                 weekSets,
                                                 weekContacts,
                                                 weekDates,
+                                                40.sp,
+                                                10.sp
+                                            )
+                                        }
+                                    }
+                                    if (state.showCurrentWeekSummary && state.showCurrentMonthSummary) {
+                                        Spacer(modifier = Modifier.height(5.dp))
+                                    }
+                                    if (state.showCurrentMonthSummary) {
+                                        CardSection {
+                                            SummaryBody(
+                                                "Last month",
+                                                monthTimeSpent,
                                                 monthSets,
                                                 monthContacts,
                                                 monthDates,
-                                                weekTimeSpent,
-                                                monthTimeSpent,
+                                                40.sp,
+                                                10.sp
+                                            )
+                                        }
+                                    }
+                                    if ((state.showCurrentWeekSummary || state.showCurrentMonthSummary) && state.showCurrentChallengeSummary) {
+                                        Spacer(modifier = Modifier.height(5.dp))
+                                    }
+                                    if (isChallengeValid) {
+                                        CardSection {
+                                            ChallengeBody(
+                                                "Your ongoing \"${lastChallenge.challenge.name}\" challenge:",
                                                 lastChallenge,
-                                                isChallengeValid
+                                                40.sp,
+                                                10.sp
                                             )
-                                            if (state.copyReportOnClipboard) {
-                                                clipboardManager.setText(
-                                                    AnnotatedString(
-                                                        histogramData
-                                                    )
-                                                )
-                                                Toast.makeText(
-                                                    localContext,
-                                                    "Summary copied",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                            val sendIntent: Intent = Intent().apply {
-                                                action = Intent.ACTION_SEND
-                                                putExtra(
-                                                    Intent.EXTRA_TEXT,
-                                                    histogramData
-                                                )
-                                                type = "text/plain"
-                                            }
-                                            val shareIntent = Intent.createChooser(
-                                                sendIntent,
-                                                "Share summary"
-                                            )
-                                            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                            localContext.startActivity(shareIntent)
-                                        },
-                                        imageVector = Icons.Default.Share,
-                                        contentDescription = "Share Summary"
-                                    )
-                                }
-                            }
-                        }
-                        Row(
-                            modifier = Modifier
-                                .padding(5.dp)
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Column(
-                                modifier = Modifier.fillMaxHeight()
-                            ) {
-                                if (state.showCurrentWeekSummary) {
-                                    CardSection {
-                                        SummaryBody(
-                                            "Last week",
-                                            weekTimeSpent,
-                                            weekSets,
-                                            weekContacts,
-                                            weekDates,
-                                            40.sp,
-                                            10.sp
-                                        )
-                                    }
-                                }
-                                if (state.showCurrentWeekSummary && state.showCurrentMonthSummary) {
-                                    Spacer(modifier = Modifier.height(5.dp))
-                                }
-                                if (state.showCurrentMonthSummary) {
-                                    CardSection {
-                                        SummaryBody(
-                                            "Last month",
-                                            monthTimeSpent,
-                                            monthSets,
-                                            monthContacts,
-                                            monthDates,
-                                            40.sp,
-                                            10.sp
-                                        )
-                                    }
-                                }
-                                if ((state.showCurrentWeekSummary || state.showCurrentMonthSummary) && state.showCurrentChallengeSummary) {
-                                    Spacer(modifier = Modifier.height(5.dp))
-                                }
-                                if (isChallengeValid) {
-                                    CardSection {
-                                        ChallengeBody(
-                                            "Your ongoing \"${lastChallenge.challenge.name}\" challenge:",
-                                            lastChallenge,
-                                            40.sp,
-                                            10.sp
-                                        )
+                                        }
                                     }
                                 }
                             }
