@@ -5,6 +5,9 @@ import androidx.room.Embedded
 import com.barryburgle.gameapp.model.enums.ChallengeTypeEnum
 import com.barryburgle.gameapp.model.game.EventModel
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.service.FormatService
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 open class AchievedChallenge(
     @Embedded
@@ -41,6 +44,18 @@ open class AchievedChallenge(
 
     fun getCompletionPerc(): Double {
         return achieved / challenge.goal
+    }
+
+    fun getTimePassingPerc(): Double {
+        val timePassed = ChronoUnit.DAYS.between(
+            FormatService.parseDate(challenge.startDate),
+            LocalDate.now()
+        )
+        val totalTime = ChronoUnit.DAYS.between(
+            FormatService.parseDate(challenge.startDate),
+            FormatService.parseDate(challenge.endDate)
+        )
+        return timePassed.toDouble() / totalTime.toDouble()
     }
 
     fun getAchievedChallengeReport(isCurrentChallengeSummary: Boolean): String {
