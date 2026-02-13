@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Contacts
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.filled.PersonAddAlt1
@@ -298,6 +299,46 @@ fun StatsScreen(
                                 )
                             } %",
                             fourthPerformanceDescription = "Lay to Kiss\nRatio"
+                        )
+                    }
+                }
+            }
+            if (state.allChallenges.isNotEmpty()) {
+                item {
+                    Row {
+                        Spacer(
+                            modifier = Modifier.width(spaceFromLeft)
+                        )
+                        val completedChallenges: Int =
+                            state.allChallenges.filter { achievedChallenge -> achievedChallenge.achieved >= achievedChallenge.challenge.goal.toDouble() }.size
+                        val exceededChallenges: Int =
+                            state.allChallenges.filter { achievedChallenge -> achievedChallenge.achieved > achievedChallenge.challenge.goal.toDouble() }.size
+                        val avgChallengeDuration: Double =
+                            GlobalStatsService.computeAvgChallengeDuration(state.allChallenges)
+                        StatsCard(
+                            modifier = cardModifier,
+                            title = "Challenges",
+                            statCardIcon = Icons.Default.EmojiEvents,
+                            description = "Each challenge lasts on average ${avgChallengeDuration} days",
+                            copyReportOnClipboard = state.copyReportOnClipboard,
+                            firstQuantifierQuantity = "${state.allChallenges.size}",
+                            firstQuantifierDescription = "Challenges",
+                            secondQuantifierQuantity = "${completedChallenges}",
+                            secondQuantifierDescription = "Completed",
+                            thirdQuantifierQuantity = "${exceededChallenges}",
+                            thirdQuantifierDescription = "Exceeded",
+                            firstPerformanceQuantity = "${
+                                GlobalStatsService.computeGenericRatio(
+                                    state.allChallenges.size, completedChallenges
+                                )
+                            } %",
+                            firstPerformanceDescription = "Completion\nRatio",
+                            secondPerformanceQuantity = "${
+                                GlobalStatsService.computeGenericRatio(
+                                    state.allChallenges.size, exceededChallenges
+                                )
+                            } %",
+                            secondPerformanceDescription = "Exceed\nRatio",
                         )
                     }
                 }

@@ -100,6 +100,7 @@ class MainActivity : ComponentActivity() {
                         it.abstractSessionDao,
                         it.leadDao,
                         it.dateDao,
+                        it.challengeDao,
                         it.setDao,
                         it.settingDao
                     )

@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.ui.stats
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.barryburgle.gameapp.dao.challenge.ChallengeDao
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
@@ -9,7 +10,7 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.StatsEvent
 import com.barryburgle.gameapp.model.enums.StatsLoadInfoEnum
-import com.barryburgle.gameapp.ui.CombineFifteen
+import com.barryburgle.gameapp.ui.CombineSixteen
 import com.barryburgle.gameapp.ui.stats.state.StatsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,6 +22,7 @@ class StatsViewModel(
     private val abstractSessionDao: AbstractSessionDao,
     private val leadDao: LeadDao,
     private val dateDao: DateDao,
+    private val challengeDao: ChallengeDao,
     private val setDao: SetDao,
     private val settingDao: SettingDao,
 ) : ViewModel() {
@@ -29,6 +31,7 @@ class StatsViewModel(
     private val _allSessions = abstractSessionDao.getAll()
     private val _allLeads = leadDao.getAll()
     private val _allDates = dateDao.getAll()
+    private val _allChallenges = challengeDao.getAll()
     private val _allSets = setDao.getAll()
     private val _setsHistogram = abstractSessionDao.getSetsHistogram()
     private val _convosHistogram = abstractSessionDao.getConvosHistogram()
@@ -54,11 +57,12 @@ class StatsViewModel(
     private val _copyReportOnClipboard = settingDao.getCopyReportOnClipboard()
 
     val state =
-        CombineFifteen(
+        CombineSixteen(
             _state,
             _allSessions,
             _allLeads,
             _allDates,
+            _allChallenges,
             _allSets,
             _setsHistogram,
             _convosHistogram,
@@ -70,11 +74,12 @@ class StatsViewModel(
             _datesNationalityHistogram,
             _completeHistogram,
             _copyReportOnClipboard
-        ) { state, allSessions, allLeads, allDates, allSets, setsHistogram, convosHistogram, contactsHistogram, leadsAgeHistogram, leadsNationalityHistogram, datesAgeHistogram, datesNumberHistogram, datesNationalityHistogram, completeHistogram, copyReportOnClipboard ->
+        ) { state, allSessions, allLeads, allDates, allChallenges, allSets, setsHistogram, convosHistogram, contactsHistogram, leadsAgeHistogram, leadsNationalityHistogram, datesAgeHistogram, datesNumberHistogram, datesNationalityHistogram, completeHistogram, copyReportOnClipboard ->
             state.copy(
                 allSessions = allSessions,
                 allLeads = allLeads,
                 allDates = allDates,
+                allChallenges = allChallenges,
                 allSets = allSets,
                 setsHistogram = setsHistogram,
                 convosHistogram = convosHistogram,

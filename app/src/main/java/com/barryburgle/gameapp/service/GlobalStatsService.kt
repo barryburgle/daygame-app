@@ -1,8 +1,10 @@
 package com.barryburgle.gameapp.service
 
+import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
+import java.time.temporal.ChronoUnit
 import kotlin.math.truncate
 
 class GlobalStatsService {
@@ -109,6 +111,23 @@ class GlobalStatsService {
             var setTime = computeSetTime(setList)
             var avgContactTime = setTime / contacts
             return avgContactTime
+        }
+
+        fun computeAvgChallengeDuration(
+            achievedChallengeList: List<AchievedChallenge>
+        ): Double {
+            if (achievedChallengeList.isEmpty()) {
+                return 0.0
+            }
+            var days = 0L
+            for (achievedChallenge in achievedChallengeList) {
+                days = days +
+                        ChronoUnit.DAYS.between(
+                            FormatService.parseDate(achievedChallenge.challenge.startDate),
+                            FormatService.parseDate(achievedChallenge.challenge.endDate)
+                        )
+            }
+            return days.toDouble() / achievedChallengeList.size.toDouble()
         }
 
         fun computeAvgLayTime(
