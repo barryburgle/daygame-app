@@ -30,37 +30,35 @@ fun DescribedIcon(
     falseFlagDescription: String,
     descriptionFontSize: TextUnit,
     @DrawableRes icon: Int,
-    happened: Boolean?
+    happened: Boolean? = true,
+    isBoolean: Boolean? = true,
+    defaultColor: Color? = MaterialTheme.colorScheme.secondaryContainer
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(5.dp)
     ) {
-        var color: Color = MaterialTheme.colorScheme.secondaryContainer
+        var color = defaultColor!!
         var flagDescription = trueFlagDescription
         if (!happened!!) {
             color = MaterialTheme.colorScheme.inversePrimary
             flagDescription = falseFlagDescription
         }
-        Column(
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.background,
-                    shape = RoundedCornerShape(25.dp)
-                )
-                .size(50.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(icon),
-                contentDescription = flagDescription,
-                alignment = Alignment.Center,
-                contentScale = ContentScale.Fit,
+        if (!isBoolean!!) {
+            image(icon, flagDescription, color)
+        } else {
+            Column(
                 modifier = Modifier
-                    .height(30.dp),
-                colorFilter = ColorFilter.tint(color)
-            )
+                    .background(
+                        color = MaterialTheme.colorScheme.background,
+                        shape = RoundedCornerShape(25.dp)
+                    )
+                    .size(50.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                image(icon, flagDescription, color)
+            }
         }
         Spacer(modifier = Modifier.height(5.dp))
         Text(
@@ -70,4 +68,21 @@ fun DescribedIcon(
             textAlign = TextAlign.Center
         )
     }
+}
+
+@Composable
+private fun image(
+    icon: Int,
+    flagDescription: String,
+    color: Color
+) {
+    Image(
+        painter = painterResource(icon),
+        contentDescription = flagDescription,
+        alignment = Alignment.Center,
+        contentScale = ContentScale.Fit,
+        modifier = Modifier
+            .height(30.dp),
+        colorFilter = ColorFilter.tint(color)
+    )
 }
