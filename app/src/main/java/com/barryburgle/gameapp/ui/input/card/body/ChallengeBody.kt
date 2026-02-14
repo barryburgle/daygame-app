@@ -7,15 +7,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
+import com.barryburgle.gameapp.model.enums.ChallengeMedalEnum
 import com.barryburgle.gameapp.model.enums.ChallengeTypeEnum
+import com.barryburgle.gameapp.service.challenge.ChallengeMedalService
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.AchievedChallengeProgressBar
+import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedIcon
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
@@ -52,6 +57,15 @@ fun ChallengeBody(
             quantityFontSize = countFontSize,
             description = achievedDescription,
             descriptionFontSize = descriptionFontSize
+        )
+        val challengeEnumValue = ChallengeMedalService.getMedal(achievedChallenge)
+        DescribedIcon(
+            challengeEnumValue.getDescription(),
+            challengeEnumValue.getDescription(),
+            10.sp,
+            challengeEnumValue.getIcon(),
+            isBoolean = false,
+            defaultColor = if (ChallengeMedalEnum.ONGOING.equals(challengeEnumValue)) MaterialTheme.colorScheme.secondaryContainer else challengeEnumValue.getColor()
         )
         TweetLinkButton(achievedChallenge.challenge.tweetUrl)
     }
