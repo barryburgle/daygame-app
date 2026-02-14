@@ -76,7 +76,11 @@ fun AchievedChallengeProgressBar(achievedChallenge: AchievedChallenge) {
         ) {}
     }
     Spacer(modifier = Modifier.height(5.dp))
-    LittleBodyText("You already used ${timePassingRatio}% of your time")
+    var timePassingDesc = "You already used ${timePassingRatio}% of your time"
+    if (timePassingRatio > 100) {
+        timePassingDesc = "Challenge time is over"
+    }
+    LittleBodyText(timePassingDesc)
     Spacer(modifier = Modifier.height(5.dp))
     Row(
         modifier = Modifier
