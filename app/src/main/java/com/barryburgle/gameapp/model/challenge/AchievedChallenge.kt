@@ -50,11 +50,11 @@ open class AchievedChallenge(
         val timePassed = ChronoUnit.DAYS.between(
             FormatService.parseDate(challenge.startDate),
             LocalDate.now()
-        )
+        ) + 1
         val totalTime = ChronoUnit.DAYS.between(
             FormatService.parseDate(challenge.startDate),
             FormatService.parseDate(challenge.endDate)
-        )
+        ) + 1
         return timePassed.toDouble() / totalTime.toDouble()
     }
 
