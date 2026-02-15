@@ -64,31 +64,31 @@ fun DeleteDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     deleteTableSwitch(
-                        "Sessions",
+                        "sessions",
                         state.deleteSessions,
                         onEvent,
                         ToolEvent.SwitchDeleteSessions
                     )
                     deleteTableSwitch(
-                        "Leads",
+                        "leads",
                         state.deleteLeads,
                         onEvent,
                         ToolEvent.SwitchDeleteLeads
                     )
                     deleteTableSwitch(
-                        "Dates",
+                        "dates",
                         state.deleteDates,
                         onEvent,
                         ToolEvent.SwitchDeleteDates
                     )
                     deleteTableSwitch(
-                        "Sets",
+                        "sets",
                         state.deleteSets,
                         onEvent,
                         ToolEvent.SwitchDeleteSets
                     )
                     deleteTableSwitch(
-                        "Challenges",
+                        "challenges",
                         state.deleteChallenges,
                         onEvent,
                         ToolEvent.SwitchDeleteChallenges
