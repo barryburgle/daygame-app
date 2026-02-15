@@ -6,6 +6,7 @@ import com.barryburgle.gameapp.model.enums.FieldEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
+import com.barryburgle.gameapp.model.setting.Setting
 
 open class ExportState(
     open val sortType: FieldEnum? = null,
@@ -14,6 +15,7 @@ open class ExportState(
     open var exportDatesFileName: String = "",
     open var exportSetsFileName: String = "",
     open var exportChallengesFileName: String = "",
+    open var exportSettingsFileName: String = "",
     open var exportFolder: String = "",
     open var backupFolder: String = "",
     override var allSessions: List<AbstractSession> = emptyList(),
@@ -21,6 +23,7 @@ open class ExportState(
     override var allDates: List<Date> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
     override var allChallenges: List<AchievedChallenge> = emptyList(),
+    override var allSettings: List<Setting> = emptyList(),
     open var backupActive: Boolean = true,
     open var lastBackup: Int = 3,
     open var justSaved: Boolean = false,

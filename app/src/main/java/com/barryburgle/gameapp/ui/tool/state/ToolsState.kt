@@ -6,6 +6,7 @@ import com.barryburgle.gameapp.model.enums.ThemeEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
+import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.ui.state.ExportState
 
 data class ToolsState(
@@ -19,6 +20,8 @@ data class ToolsState(
     var importSetsFileName: String = "",
     override var exportChallengesFileName: String = "",
     var importChallengesFileName: String = "",
+    override var exportSettingsFileName: String = "",
+    var importSettingsFileName: String = "",
     override var exportFolder: String = "",
     var importFolder: String = "",
     override var backupFolder: String = "",
@@ -27,6 +30,7 @@ data class ToolsState(
     override var allDates: List<Date> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
     override var allChallenges: List<AchievedChallenge> = emptyList(),
+    override var allSettings: List<Setting> = emptyList(),
     val lastSessionAverageQuantity: Int = 4,
     val lastSessionsShown: Int = 14,
     val lastWeeksShown: Int = 8,
@@ -76,6 +80,7 @@ data class ToolsState(
     exportDatesFileName,
     exportSetsFileName,
     exportChallengesFileName,
+    exportSettingsFileName,
     exportFolder,
     backupFolder,
     allSessions,
@@ -83,6 +88,7 @@ data class ToolsState(
     allDates,
     allSets,
     allChallenges,
+    allSettings,
     backupActive,
     lastBackup
 )

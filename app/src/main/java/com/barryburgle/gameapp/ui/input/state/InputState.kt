@@ -6,12 +6,13 @@ import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.ChallengeSortType
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.GameEventSortType
-import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.enums.SessionSortType
+import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
+import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.model.stat.AggregatedDates
 import com.barryburgle.gameapp.model.stat.AggregatedSessions
 import com.barryburgle.gameapp.model.stat.CategoryHistogram
@@ -70,6 +71,7 @@ data class InputState(
     var allEvents: List<SortableGameEvent> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
     override var allChallenges: List<AchievedChallenge> = emptyList(),
+    override var allSettings: List<Setting> = emptyList(),
     override var backupActive: Boolean = true,
     override var lastBackup: Int = 3,
     override var justSaved: Boolean = false,
@@ -104,7 +106,7 @@ data class InputState(
     var simplePlusOneReport: Boolean = true,
     var neverShareLeadInfo: Boolean = false,
     var copyReportOnClipboard: Boolean = true,
-    var showCurrentWeekSummary : Boolean = false,
+    var showCurrentWeekSummary: Boolean = false,
     var showCurrentMonthSummary: Boolean = false,
     var showCurrentChallengeSummary: Boolean = false,
     var theme: String = "",
@@ -129,6 +131,7 @@ data class InputState(
     exportDatesFileName,
     exportSetsFileName,
     exportChallengesFileName,
+    "",// Not passing a valid exportSettingFileName because it is not used from InputScreen features for any settings export
     exportFolder,
     backupFolder,
     allSessions,
@@ -136,6 +139,7 @@ data class InputState(
     allDates,
     allSets,
     allChallenges,
+    allSettings,
     backupActive,
     lastBackup,
     justSaved
