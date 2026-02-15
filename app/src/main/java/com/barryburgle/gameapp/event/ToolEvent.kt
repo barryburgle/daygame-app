@@ -50,6 +50,7 @@ sealed interface ToolEvent : GenericEvent {
     object SwitchDeleteDates : ToolEvent
     object SwitchDeleteSets : ToolEvent
     object SwitchDeleteChallenges : ToolEvent
+    object SwitchDeleteSettings : ToolEvent
     object SwitchIsCleaning : ToolEvent
     object SwitchThemeSysFollow : ToolEvent
     object SwitchSimplePlusOneReport : ToolEvent
@@ -67,4 +68,5 @@ sealed interface ToolEvent : GenericEvent {
     object DeleteAllDates : ToolEvent
     object DeleteAllSets : ToolEvent
     object DeleteAllChallenges : ToolEvent
+    object DeleteAllSettings : ToolEvent
 }

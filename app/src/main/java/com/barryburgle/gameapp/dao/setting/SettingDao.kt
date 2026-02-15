@@ -122,6 +122,9 @@ interface SettingDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(setting: Setting)
 
+    @Query("DELETE FROM setting")
+    suspend fun deleteAll()
+
     @Query("SELECT * FROM setting WHERE id=:id")
     fun getById(id: String): Flow<Setting>
 

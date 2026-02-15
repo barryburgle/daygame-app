@@ -93,6 +93,12 @@ fun DeleteDialog(
                         onEvent,
                         ToolEvent.SwitchDeleteChallenges
                     )
+                    deleteTableSwitch(
+                        "settings",
+                        state.deleteSettings,
+                        onEvent,
+                        ToolEvent.SwitchDeleteSettings
+                    )
                 }
             }
             OutlinedTextField(
@@ -130,6 +136,9 @@ fun DeleteDialog(
                 }
                 if (state.deleteChallenges) {
                     onEvent(ToolEvent.DeleteAllChallenges)
+                }
+                if (state.deleteSettings) {
+                    onEvent(ToolEvent.DeleteAllSettings)
                 }
                 onEvent(ToolEvent.SetDeleteConfirmationPrompt(""))
                 Toast.makeText(localContext, deletionMessage, Toast.LENGTH_SHORT)
