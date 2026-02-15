@@ -5,6 +5,7 @@ import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
+import com.barryburgle.gameapp.model.setting.Setting
 
 sealed interface ToolEvent : GenericEvent {
     data class SetExportSessionsFileName(val exportSessionsFileName: String) : ToolEvent
@@ -17,6 +18,8 @@ sealed interface ToolEvent : GenericEvent {
     data class SetImportSetsFileName(val importSetsFileName: String) : ToolEvent
     data class SetExportChallengesFileName(val exportChallengesFileName: String) : ToolEvent
     data class SetImportChallengesFileName(val importChallengesFileName: String) : ToolEvent
+    data class SetExportSettingsFileName(val exportSettingsFileName: String) : ToolEvent
+    data class SetImportSettingsFileName(val importSettingsFileName: String) : ToolEvent
     data class SetExportFolder(val exportFolder: String) : ToolEvent
     data class SetImportFolder(val importFolder: String) : ToolEvent
     data class SetBackupFolder(val backupFolder: String) : ToolEvent
@@ -25,6 +28,7 @@ sealed interface ToolEvent : GenericEvent {
     data class SetAllDates(val allDates: List<Date>) : ToolEvent
     data class SetAllSets(val allSets: List<SingleSet>) : ToolEvent
     data class SetAllChallenges(val allChallenges: List<AchievedChallenge>) : ToolEvent
+    data class SetAllSettings(val allSettings: List<Setting>) : ToolEvent // TODO: complete
     data class SetLastSessionAverageQuantity(val lastSessionAverageQuantity: String) : ToolEvent
     data class SetLastSessionsShown(val lastSessionsShown: String) : ToolEvent
     data class SetLastWeeksShown(val lastWeeksShown: String) : ToolEvent
