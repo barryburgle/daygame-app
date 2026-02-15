@@ -1,4 +1,4 @@
-# Version 1.10.0 (2025-11-xx)
+# Version 1.10.0 (2026-mm-dd)
 ***WARNING*** ⚠️
 
 __If you have already installed a previous version of DayGame it will be necessary to backup all your data and uninstall the app, proceeding then with the installation of the new version and backup import.
