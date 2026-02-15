@@ -28,6 +28,7 @@ import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.service.csv.SetCsvService
+import com.barryburgle.gameapp.service.csv.SettingCsvService
 import com.barryburgle.gameapp.ui.tool.dialog.DeleteDialog
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.utilities.BlurStatusBar
@@ -49,6 +50,7 @@ fun ToolsScreen(
     val dateCsvService = DateCsvService()
     val setCsvService = SetCsvService()
     val challengeCsvService = ChallengeCsvService()
+    val settingCsvService = SettingCsvService()
     val csvFindService = CSVFindService()
     if (state.isCleaning) {
         DeleteDialog(state = state, onEvent = onEvent, "Clear data", csvFindService)
@@ -59,7 +61,7 @@ fun ToolsScreen(
         },
     ) { padding ->
         val dataExchangeCardModifier = Modifier
-            .height(680.dp)
+            .height(760.dp)
             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
             .shadow(
                 elevation = 5.dp, shape = MaterialTheme.shapes.large
@@ -107,6 +109,7 @@ fun ToolsScreen(
                         dateCsvService = dateCsvService,
                         setCsvService = setCsvService,
                         challengeCsvService = challengeCsvService,
+                        settingCsvService = settingCsvService,
                         csvFindService = csvFindService
                     )
                 }
@@ -125,6 +128,7 @@ fun ToolsScreen(
                         dateCsvService = dateCsvService,
                         setCsvService = setCsvService,
                         challengeCsvService = challengeCsvService,
+                        settingCsvService = settingCsvService,
                         csvFindService = csvFindService
                     )
                 }
