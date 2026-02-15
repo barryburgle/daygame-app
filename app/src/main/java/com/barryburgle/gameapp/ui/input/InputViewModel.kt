@@ -31,8 +31,8 @@ import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
+import com.barryburgle.gameapp.ui.CombineFifteen
 import com.barryburgle.gameapp.ui.CombineFive
-import com.barryburgle.gameapp.ui.CombineFourteen
 import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.CombineSeven
 import com.barryburgle.gameapp.ui.CombineSixteen
@@ -146,6 +146,7 @@ class InputViewModel(
             ChallengeSortType.GOAL -> challengeDao.getByChallengeGoal()
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _allSettings = settingDao.getAll()
     private val _notificationTime = settingDao.getNotificationTime()
     private val _exportSessionsFileName = settingDao.getExportSessionsFilename()
     private val _exportLeadsFileName = settingDao.getExportLeadsFilename()
@@ -283,12 +284,13 @@ class InputViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val _mostPopularLeadsNationalities = leadDao.getNationalityHistogram()
     private val _state = MutableStateFlow(InputState())
-    val _exportSettings = CombineFourteen(
+    val _exportSettings = CombineFifteen(
         _allSessions,
         _allLeads,
         _allDates,
         _allSets,
         _allChallenges,
+        _allSettings,
         _exportSessionsFileName,
         _exportLeadsFileName,
         _exportDatesFileName,
@@ -298,13 +300,14 @@ class InputViewModel(
         _backupFolder,
         _backupActive,
         _lastBackup
-    ) { allSessions, allLeads, allDates, allSets, allChallenges, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportChallengesFileName, exportFolder, backupFolder, backupActive, lastBackup ->
+    ) { allSessions, allLeads, allDates, allSets, allChallenges, allSettings, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportChallengesFileName, exportFolder, backupFolder, backupActive, lastBackup ->
         ExportSettingsState(
             allSessions = allSessions,
             allLeads = allLeads,
             allDates = allDates,
             allSets = allSets,
             allChallenges = allChallenges,
+            allSettings = allSettings,
             exportSessionsFileName = exportSessionsFileName,
             exportLeadsFileName = exportLeadsFileName,
             exportDatesFileName = exportDatesFileName,
@@ -399,6 +402,7 @@ class InputViewModel(
             allDates = exportSettings.allDates,
             allSets = exportSettings.allSets,
             allChallenges = exportSettings.allChallenges,
+            allSettings = exportSettings.allSettings,
             sessionSortType = sortTypes.sessionSortType,
             dateSortType = sortTypes.dateSortType,
             setSortType = sortTypes.setSortType,
