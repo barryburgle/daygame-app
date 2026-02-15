@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.dao.setting
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import com.barryburgle.gameapp.model.setting.Setting
 import kotlinx.coroutines.flow.Flow
@@ -42,6 +43,8 @@ interface SettingDao {
         const val IMPORT_SETS_FILE_NAME_ID: String = "import_sets_file_name"
         const val EXPORT_CHALLENGES_FILE_NAME_ID: String = "export_challenges_file_name"
         const val IMPORT_CHALLENGES_FILE_NAME_ID: String = "import_challenges_file_name"
+        const val EXPORT_SETTINGS_FILE_NAME_ID: String = "export_settings_file_name"
+        const val IMPORT_SETTINGS_FILE_NAME_ID: String = "import_settings_file_name"
         const val GENERATE_IDATE_ID: String = "generate_idate"
         const val FOLLOW_COUNT_ID: String = "follow_count"
         const val SUGGEST_LEADS_NATIONALITY_ID: String = "suggest_leads_nationality"
@@ -71,6 +74,9 @@ interface SettingDao {
         const val DEFAULT_CHALLENGES_EXPORT_FILE_NAME: String = "challenges_export"
         const val DEFAULT_CHALLENGES_IMPORT_FILE_NAME: String =
             "challenges_export_yyyy_mm_dd_hh_mm.csv"
+        const val DEFAULT_SETTINGS_EXPORT_FILE_NAME: String = "settings_export"
+        const val DEFAULT_SETTINGS_IMPORT_FILE_NAME: String =
+            "settings_export_yyyy_mm_dd_hh_mm.csv"
         const val DEFAULT_LATEST_AVAILABLE: String = ""
         const val DEFAULT_LATEST_PUBLISH_DATE: String = ""
         const val DEFAULT_LATEST_CHANGELOG: String = ""
@@ -119,6 +125,12 @@ interface SettingDao {
             "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SHOWN_NATIONALITIES}' ELSE value END FROM setting WHERE id = '${SHOWN_NATIONALITIES_ID}'"
     }
 
+    @Insert(onConflict = REPLACE)
+    suspend fun batchInsert(challenges: List<Setting>)
+
+    @Query("SELECT * from setting")
+    fun getAll(): Flow<List<Setting>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(setting: Setting)
 
@@ -157,6 +169,12 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_CHALLENGES_IMPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${IMPORT_CHALLENGES_FILE_NAME_ID}'")
     fun getImportChallengesFilename(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SETTINGS_EXPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${EXPORT_SETTINGS_FILE_NAME_ID}'")
+    fun getExportSettingsFilename(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SETTINGS_IMPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${IMPORT_SETTINGS_FILE_NAME_ID}'")
+    fun getImportSettingsFilename(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_EXPORT_FOLDER}' ELSE value END FROM setting WHERE id = '${EXPORT_FOLDER_ID}'")
     fun getExportFolder(): Flow<String>
