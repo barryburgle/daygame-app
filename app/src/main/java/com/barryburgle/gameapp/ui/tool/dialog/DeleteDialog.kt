@@ -165,7 +165,8 @@ private fun getDeleteDescription(state: ToolsState): String {
     val deleteLeadsDescription = if (state.deleteLeads) " ${state.allLeads.size} leads," else ""
     val deleteDatesDescription = if (state.deleteDates) " ${state.allDates.size} dates," else ""
     val deleteSetsDescription = if (state.deleteSets) " ${state.allSets.size} sets," else ""
-    val deleteChallengesDescription = if (state.deleteChallenges) " ${state.allChallenges.size} challenges," else ""
+    val deleteChallengesDescription =
+        if (state.deleteChallenges) " ${state.allChallenges.size} challenges," else ""
     val deleteDescription =
         "Deleting${deleteSessionsDescription}${deleteLeadsDescription}${deleteDatesDescription}${deleteSetsDescription}${deleteChallengesDescription}"
     return deleteDescription.dropLast(1)
@@ -178,7 +179,8 @@ private fun deleteTableSwitch(
     onEvent: (ToolEvent) -> Unit,
     toolEvent: ToolEvent
 ) {
-    val optionDescription = if (flag) "Deleting " + description else description
+    val optionDescription =
+        if (flag) "Deleting " + description else description.replaceFirstChar { it.uppercase() }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
