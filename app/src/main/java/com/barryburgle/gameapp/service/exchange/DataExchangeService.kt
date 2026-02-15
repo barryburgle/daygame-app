@@ -8,12 +8,14 @@ import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
+import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.csv.ChallengeCsvService
 import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.service.csv.SetCsvService
+import com.barryburgle.gameapp.service.csv.SettingCsvService
 import com.barryburgle.gameapp.ui.state.ExportState
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import java.io.FileNotFoundException
@@ -27,6 +29,7 @@ class DataExchangeService {
         val dateCsvService: DateCsvService = DateCsvService()
         val setCsvService: SetCsvService = SetCsvService()
         val challengeCsvService: ChallengeCsvService = ChallengeCsvService()
+        val settingCsvService: SettingCsvService = SettingCsvService()
 
         fun backup(
             state: ExportState
@@ -92,6 +95,7 @@ class DataExchangeService {
             exportSetsFileName: String,
             allChallenges: List<AchievedChallenge>,
             exportChallengesFileName: String,
+            allSettings: List<Setting>,
             exportFolder: String
         ) {
             sessionCsvService.setExportObjects(allSessions)
@@ -124,6 +128,12 @@ class DataExchangeService {
                 exportChallengesFileName,
                 true
             )
+            settingCsvService.setExportObjects(allSettings)
+            settingCsvService.exportRows(
+                exportFolder,
+                settingCsvService.getBackupFileName(),
+                true
+            )
         }
 
         fun import(
@@ -132,6 +142,7 @@ class DataExchangeService {
             importDatesFileName: String,
             importSetsFileName: String,
             importChallengesFileName: String,
+            importSettingsFileName: String,
             importFolder: String,
             importHeader: Boolean,
             onEvent: (ToolEvent) -> Unit
@@ -181,6 +192,15 @@ class DataExchangeService {
                     )
                 )
             )
+            onEvent(
+                ToolEvent.SetAllSettings(
+                    settingCsvService.importRows(
+                        importFolder,
+                        importSettingsFileName,
+                        importHeader
+                    )
+                )
+            )
         }
 
         fun backupAll(
@@ -197,6 +217,7 @@ class DataExchangeService {
                 setCsvService.getBackupFileName(),
                 state.allChallenges,
                 challengeCsvService.getBackupFileName(),
+                state.allSettings,
                 state.exportFolder + "/" + state.backupFolder
             )
         }
@@ -216,6 +237,7 @@ class DataExchangeService {
                 state.exportSetsFileName,
                 state.allChallenges,
                 state.exportChallengesFileName,
+                state.allSettings,
                 state.exportFolder
             )
             Toast.makeText(
@@ -258,6 +280,11 @@ class DataExchangeService {
                         state.importFolder + "/" + state.backupFolder,
                         "challenge"
                     )
+                val importSettingsFileName =
+                    if (!fromBackupFolder) state.importSettingsFileName else csvFindService.getLastFilenameInFolder(
+                        state.importFolder + "/" + state.backupFolder,
+                        "setting"
+                    )
                 val importFolder =
                     if (!fromBackupFolder) state.importFolder else state.importFolder + "/" + state.backupFolder
                 import(
@@ -266,6 +293,7 @@ class DataExchangeService {
                     importDatesFileName,
                     importSetsFileName,
                     importChallengesFileName,
+                    importSettingsFileName,
                     importFolder,
                     true,
                     onEvent
