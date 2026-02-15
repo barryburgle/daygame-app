@@ -45,7 +45,10 @@ class CSVFindService {
 
     fun getLastFilenameInFolder(folder: String, prefix: String): String {
         var foundFiles: List<String> = findCsvFiles(folder)
-        val foundFilenames = foundFiles.filter { foundFile -> foundFile.startsWith(prefix) }
+        var foundFilenames = foundFiles.filter { foundFile -> foundFile.startsWith(prefix) }
+        if ("set".equals(prefix)) {
+            foundFilenames = foundFilenames.filter { foundFile -> !foundFile.startsWith("setting") }
+        }
         if (foundFilenames.isEmpty()) {
             return prefix + "_export_yyyy_mm_dd_hh_mm.csv"
         }
