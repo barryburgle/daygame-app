@@ -1,4 +1,8 @@
 # Version 1.10.0 (2025-11-xx)
+***WARNING*** ⚠️
+
+__If you have already installed a previous version of DayGame it will be necessary to backup all your data and uninstall the app, proceeding then with the installation of the new version and backup import.
+If you will not follow this procedure you will not be able to upgrade.__
 
 **Features**
 - Have some fun with sets, conversations and contact challenges: push your game to the maximum to score medals 🏆
