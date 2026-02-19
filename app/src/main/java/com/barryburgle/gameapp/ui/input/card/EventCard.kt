@@ -381,6 +381,7 @@ fun EventCard(
                             }
                             if (AchievedChallenge::class.java.simpleName.equals(sortableGameEvent.classType)) {
                                 ChallengeBody(
+                                    "Challenge overview:",
                                     sortableGameEvent.event as AchievedChallenge,
                                     40.sp,
                                     10.sp
