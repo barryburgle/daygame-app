@@ -17,17 +17,24 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.OutputEvent
+import com.barryburgle.gameapp.model.enums.HeatmapEntityEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.dialog.leadName
@@ -57,6 +64,8 @@ fun OutputScreen(
 ) {
     // TODO: make cards with injectable type of charts
     // TODO: make different types of charts injectable with arrays
+    var heatmapEntitySelectorExpanded by remember { mutableStateOf(false) }
+    var heatmapEntitySelected by remember { mutableStateOf(HeatmapEntityEnum.SETS) }
     Scaffold(
         topBar = {
             BlurStatusBar()
@@ -71,13 +80,76 @@ fun OutputScreen(
                 ),
             verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
         ) {
-            if (state.allLeads.isNotEmpty()) {
+            if (state.allSessions.isNotEmpty()) {
                 item {
                     Spacer(
                         modifier = Modifier
                             .background(MaterialTheme.colorScheme.background)
                             .height(40.dp)
                     )
+                    Row {
+                        Spacer(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.background)
+                                .width(spaceFromLeft)
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            sectionTitleAndDescription(
+                                "History", "Look back at your volume:"
+                            )
+                            Row(
+                                modifier = Modifier.width(125.dp),
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                LittleBodyText(heatmapEntitySelected.getField())
+                                IconButton(onClick = {
+                                    heatmapEntitySelectorExpanded = !heatmapEntitySelectorExpanded
+                                }) {
+                                    Icon(
+                                        imageVector = if (state.showLeadsLegend) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                                        contentDescription = "Heatmap Entity Selection",
+                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                        modifier = Modifier
+                                            .height(50.dp)
+                                    )
+                                }
+                                DropdownMenu(
+                                    modifier = Modifier
+                                        .width(120.dp)
+                                        .height(450.dp),
+                                    expanded = heatmapEntitySelectorExpanded,
+                                    onDismissRequest = { heatmapEntitySelectorExpanded = false }
+                                ) {
+                                    HeatmapEntityEnum.values().forEach { enumValue ->
+                                        DropdownMenuItem(
+                                            text = { LittleBodyText(enumValue.getField()) },
+                                            onClick = {
+                                                heatmapEntitySelected = enumValue
+                                                heatmapEntitySelectorExpanded = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    HeatmapCalendar(
+                        modifier = Modifier.fillMaxWidth(),
+                        entries = getSeries(state, heatmapEntitySelected),
+                        selectEntity = heatmapEntitySelected,
+                        textColor = MaterialTheme.colorScheme.onPrimary,
+                        cellColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        emptyColor = MaterialTheme.colorScheme.surface
+                    )
+                }
+            }
+            if (state.allLeads.isNotEmpty()) {
+                item {
                     Row {
                         Spacer(
                             modifier = Modifier
@@ -361,5 +433,189 @@ fun legendLead(legend: String, legendColor: Color) {
         ) {}
         Spacer(modifier = Modifier.width(7.dp))
         LittleBodyText(legend)
+    }
+}
+
+fun getSeries(state: OutputState, heatmapEntity: HeatmapEntityEnum): List<ContributionEntry> {
+    return when (heatmapEntity) {
+        HeatmapEntityEnum.SETS -> {
+            val setsByDate = state.allSets
+                .groupBy { FormatService.parseDate(it.date) }
+                .mapValues { (_, sets) -> sets.size.toFloat() }
+            return state.allSessionsUnlimited
+                .groupBy { FormatService.parseDate(it.date) }
+                .map { (date, sessions) ->
+                    var sessionSetsSum = 0.0f
+                    var desc = ""
+                    for (session in sessions) {
+                        sessionSetsSum += session.sets
+                        if (session.sets > 0) {
+                            desc += "\n[Session] ${FormatService.getTime(session.startHour)} - ${
+                                FormatService.getTime(
+                                    session.endHour
+                                )
+                            }: ${session.sets} sets"
+                        }
+                    }
+                    val singleSetsSum = setsByDate[date] ?: 0f
+                    if (singleSetsSum > 0) {
+                        desc += "\n${singleSetsSum.toInt()} single sets"
+                    }
+                    ContributionEntry(
+                        date,
+                        sessionSetsSum + singleSetsSum,
+                        desc
+                    )
+                }
+        }
+
+        HeatmapEntityEnum.CONVERSATIONS -> {
+            val conversationsByDate = state.allSets
+                .groupBy { FormatService.parseDate(it.date) }
+                .mapValues { (_, sets) -> sets.count { entry -> entry.conversation }.toFloat() }
+            return state.allSessionsUnlimited
+                .groupBy { FormatService.parseDate(it.date) }
+                .map { (date, sessions) ->
+                    var sessionSetsSum = 0.0f
+                    var desc = ""
+                    for (session in sessions) {
+                        sessionSetsSum += session.convos
+                        if (session.convos > 0) {
+                            desc += "\n[Session] ${FormatService.getTime(session.startHour)} - ${
+                                FormatService.getTime(
+                                    session.endHour
+                                )
+                            }: ${session.sets} conversations"
+                        }
+                    }
+                    val singleSetsSum = conversationsByDate[date] ?: 0f
+                    if (singleSetsSum > 0) {
+                        desc += "\n${singleSetsSum.toInt()} single conversations"
+                    }
+                    ContributionEntry(
+                        date,
+                        sessionSetsSum + singleSetsSum,
+                        desc
+                    )
+                }
+        }
+
+        HeatmapEntityEnum.CONTACTS -> {
+            val contactsByDate = state.allSets
+                .groupBy { FormatService.parseDate(it.date) }
+                .mapValues { (_, sets) -> sets.count { entry -> entry.contact }.toFloat() }
+            return state.allSessionsUnlimited
+                .groupBy { FormatService.parseDate(it.date) }
+                .map { (date, sessions) ->
+                    var sessionSetsSum = 0.0f
+                    var desc = ""
+                    for (session in sessions) {
+                        sessionSetsSum += session.contacts
+                        if (session.contacts > 0) {
+                            desc += "\n[Session] ${FormatService.getTime(session.startHour)} - ${
+                                FormatService.getTime(
+                                    session.endHour
+                                )
+                            }: ${session.sets} contacts"
+                        }
+                    }
+                    val singleSetsSum = contactsByDate[date] ?: 0f
+                    if (singleSetsSum > 0) {
+                        desc += "\n${singleSetsSum.toInt()} single contacts"
+                    }
+                    ContributionEntry(
+                        date,
+                        sessionSetsSum + singleSetsSum,
+                        desc
+                    )
+                }
+        }
+
+        HeatmapEntityEnum.INDEX -> state.allSessionsUnlimited
+            .groupBy { FormatService.parseDate(it.date) }
+            .map { (date, sessions) ->
+                ContributionEntry(
+                    date = date,
+                    count = sessions.map { it.index }.average().toFloat(),
+                    ""
+                )
+            }
+
+        HeatmapEntityEnum.DATES -> state.allDates
+            .groupBy { it.date?.let { dateString -> FormatService.parseDate(dateString) } }
+            .mapNotNull { (date, dates) ->
+                date?.let {
+                    ContributionEntry(
+                        date = it,
+                        count = dates.size.toFloat(),
+                        ""
+                    )
+                }
+            }
+
+        // TODO: find a way to track in-session sets recordings: maybe when adding a convo or contact or lead allow option to flag a recording (or long press button) and write on another AbstractSession column the number of recordings
+        // From session editing should be possible to edit the number of recordings
+        HeatmapEntityEnum.RECORDINGS -> state.allDates
+            .groupBy { it.date?.let { dateString -> FormatService.parseDate(dateString) } }
+            .mapNotNull { (date, dates) ->
+                date?.let {
+                    ContributionEntry(
+                        date = it,
+                        count = dates.count { entry -> entry.recorded }.toFloat(),
+                        ""
+                    )
+                }
+            }
+
+        HeatmapEntityEnum.PULLED -> state.allDates
+            .groupBy { it.date?.let { dateString -> FormatService.parseDate(dateString) } }
+            .mapNotNull { (date, dates) ->
+                date?.let {
+                    ContributionEntry(
+                        date = it,
+                        count = dates.count { entry -> entry.pull }.toFloat(),
+                        ""
+                    )
+                }
+            }
+
+        HeatmapEntityEnum.BOUNCED -> state.allDates
+            .groupBy { it.date?.let { dateString -> FormatService.parseDate(dateString) } }
+            .mapNotNull { (date, dates) ->
+                date?.let {
+                    ContributionEntry(
+                        date = it,
+                        count = dates.count { entry -> entry.bounce }.toFloat(),
+                        ""
+                    )
+                }
+            }
+
+        HeatmapEntityEnum.KISSED -> state.allDates
+            .groupBy { it.date?.let { dateString -> FormatService.parseDate(dateString) } }
+            .mapNotNull { (date, dates) ->
+                date?.let {
+                    ContributionEntry(
+                        date = it,
+                        count = dates.count { entry -> entry.kiss }.toFloat(),
+                        ""
+                    )
+                }
+            }
+
+        HeatmapEntityEnum.LAID -> state.allDates
+            .groupBy { it.date?.let { dateString -> FormatService.parseDate(dateString) } }
+            .mapNotNull { (date, dates) ->
+                date?.let {
+                    ContributionEntry(
+                        date = it,
+                        count = dates.count { entry -> entry.lay }.toFloat(),
+                        ""
+                    )
+                }
+            }
+
+
+        else -> emptyList()
     }
 }
