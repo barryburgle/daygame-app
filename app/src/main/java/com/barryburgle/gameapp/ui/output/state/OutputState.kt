@@ -9,7 +9,8 @@ import com.barryburgle.gameapp.model.stat.AggregatedSessions
 import com.barryburgle.gameapp.ui.state.AllEntityState
 
 data class OutputState(
-    override var allSessions: List<AbstractSession> = emptyList(),
+    var allSessionsLimited: List<AbstractSession> = emptyList(),
+    var allSessionsUnlimited: List<AbstractSession> = emptyList(),
     override var allLeads: List<Lead> = emptyList(),
     override var allDates: List<Date> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
@@ -21,7 +22,7 @@ data class OutputState(
     val showLeadsLegend: Boolean = false,
     val showIndexFormula: Boolean = false
 ) : AllEntityState(
-    allSessions,
+    allSessionsLimited,
     allLeads,
     allDates,
     allSets

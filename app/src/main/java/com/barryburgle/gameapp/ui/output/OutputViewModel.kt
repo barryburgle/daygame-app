@@ -11,7 +11,7 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.manager.SessionManager
-import com.barryburgle.gameapp.ui.CombineTen
+import com.barryburgle.gameapp.ui.CombineEleven
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,7 +29,8 @@ class OutputViewModel(
 ) : ViewModel() {
     private val _state = MutableStateFlow(OutputState())
 
-    private val _allSessions = abstractSessionDao.getAllLimit()
+    private val _allSessionsLimited = abstractSessionDao.getAllLimit()
+    private val _allSessionsUnlimited = abstractSessionDao.getAll()
     private val _allLeads = leadDao.getAll()
     private val _allDates = dateDao.getAll()
     private val _allSet = setDao.getAll()
@@ -43,9 +44,10 @@ class OutputViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _averageLast = settingDao.getAverageLast()
 
-    val state = CombineTen(
+    val state = CombineEleven(
         _state,
-        _allSessions,
+        _allSessionsLimited,
+        _allSessionsUnlimited,
         _allLeads,
         _allDates,
         _allSet,
@@ -55,9 +57,10 @@ class OutputViewModel(
         _datesByMonth,
         _averageLast
     )
-    { state, allSessions, allLeads, allDates, allSets, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast ->
+    { state, allSessionsLimited, allSessionsUnlimited, allLeads, allDates, allSets, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast ->
         state.copy(
-            allSessions = SessionManager.normalizeSessionsIds(allSessions),
+            allSessionsLimited = SessionManager.normalizeSessionsIds(allSessionsLimited),
+            allSessionsUnlimited = SessionManager.normalizeSessionsIds(allSessionsUnlimited),
             allLeads = allLeads,
             allDates = allDates,
             allSets = allSets,
