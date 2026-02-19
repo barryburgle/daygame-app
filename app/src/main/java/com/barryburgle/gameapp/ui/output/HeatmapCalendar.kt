@@ -114,7 +114,7 @@ fun HeatmapCalendar(
                         week.forEach { date ->
                             val entry = entryMap[date]
                             val count = entry?.count ?: 0.0f
-                            val desc = entry?.desc ?: selectEntity.getField()
+                            val desc = entry?.desc ?: ""
                             ContributionCellWithTooltip(
                                 date = date,
                                 count = count,
