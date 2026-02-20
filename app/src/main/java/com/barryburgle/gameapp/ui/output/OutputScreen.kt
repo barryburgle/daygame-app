@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.OutputEvent
+import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.HeatmapEntityEnum
 import com.barryburgle.gameapp.model.lead.Lead
@@ -51,6 +52,7 @@ import com.barryburgle.gameapp.ui.utilities.BlurStatusBar
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
+import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 
@@ -586,64 +588,79 @@ fun getSeries(state: OutputState, heatmapEntity: HeatmapEntityEnum): List<Contri
         HeatmapEntityEnum.RECORDINGS -> state.allDates
             .groupBy { it.date?.let { dateString -> FormatService.parseDate(dateString) } }
             .mapNotNull { (date, dates) ->
-                date?.let {
-                    ContributionEntry(
-                        date = it,
-                        count = dates.count { entry -> entry.recorded }.toFloat(),
-                        ""
-                    )
+                dates.let {
+                    getDateContributionEntry(dates, condition = Date::recorded, state, date)
                 }
             }
 
         HeatmapEntityEnum.PULLED -> state.allDates
             .groupBy { it.date?.let { dateString -> FormatService.parseDate(dateString) } }
             .mapNotNull { (date, dates) ->
-                date?.let {
-                    ContributionEntry(
-                        date = it,
-                        count = dates.count { entry -> entry.pull }.toFloat(),
-                        ""
-                    )
+                dates.let {
+                    getDateContributionEntry(dates, condition = Date::pull, state, date)
                 }
             }
 
         HeatmapEntityEnum.BOUNCED -> state.allDates
             .groupBy { it.date?.let { dateString -> FormatService.parseDate(dateString) } }
             .mapNotNull { (date, dates) ->
-                date?.let {
-                    ContributionEntry(
-                        date = it,
-                        count = dates.count { entry -> entry.bounce }.toFloat(),
-                        ""
-                    )
+                dates.let {
+                    getDateContributionEntry(dates, condition = Date::bounce, state, date)
                 }
             }
 
         HeatmapEntityEnum.KISSED -> state.allDates
             .groupBy { it.date?.let { dateString -> FormatService.parseDate(dateString) } }
             .mapNotNull { (date, dates) ->
-                date?.let {
-                    ContributionEntry(
-                        date = it,
-                        count = dates.count { entry -> entry.kiss }.toFloat(),
-                        ""
-                    )
+                dates.let {
+                    getDateContributionEntry(dates, condition = Date::kiss, state, date)
                 }
             }
 
         HeatmapEntityEnum.LAID -> state.allDates
             .groupBy { it.date?.let { dateString -> FormatService.parseDate(dateString) } }
             .mapNotNull { (date, dates) ->
-                date?.let {
-                    ContributionEntry(
-                        date = it,
-                        count = dates.count { entry -> entry.lay }.toFloat(),
-                        ""
-                    )
+                dates.let {
+                    getDateContributionEntry(dates, condition = Date::lay, state, date)
                 }
             }
 
 
         else -> emptyList()
     }
+}
+
+private fun getDateContributionEntry(
+    dates: List<Date>,
+    condition: (Date) -> Boolean,
+    state: OutputState,
+    date: LocalDate?
+): ContributionEntry {
+    var recCount = 0.0f
+    var desc = ""
+    for (singleDate in dates) {
+        if (condition(singleDate)) {
+            recCount += 1.0f
+            var dateLead: Lead? = null
+            for (lead in state.allLeads) {
+                if (singleDate.leadId == lead.id) {
+                    dateLead = lead
+                }
+            }
+            desc += "\n[${CountryEnum.getFlagByAlpha3(dateLead!!.nationality)} ${dateLead!!.name}] ${singleDate.dateType.replaceFirstChar { it.uppercase() }} ${
+                FormatService.getTime(
+                    singleDate.startHour
+                )
+            } - ${
+                FormatService.getTime(
+                    singleDate.endHour
+                )
+            }"
+        }
+    }
+    return ContributionEntry(
+        date = date!!,
+        count = recCount,
+        desc
+    )
 }
