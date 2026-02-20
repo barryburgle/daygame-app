@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.OutputEvent
+import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.HeatmapEntityEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
@@ -551,11 +552,31 @@ fun getSeries(state: OutputState, heatmapEntity: HeatmapEntityEnum): List<Contri
         HeatmapEntityEnum.DATES -> state.allDates
             .groupBy { it.date?.let { dateString -> FormatService.parseDate(dateString) } }
             .mapNotNull { (date, dates) ->
-                date?.let {
+                dates.let {
+                    var dateCount = 0.0f
+                    var desc = ""
+                    for (singleDate in dates) {
+                        dateCount += 1.0f
+                        var dateLead: Lead? = null
+                        for (lead in state.allLeads) {
+                            if (singleDate.leadId == lead.id) {
+                                dateLead = lead
+                            }
+                        }
+                        desc += "\n[${CountryEnum.getFlagByAlpha3(dateLead!!.nationality)} ${dateLead!!.name}] ${singleDate.dateType.replaceFirstChar { it.uppercase() }} ${
+                            FormatService.getTime(
+                                singleDate.startHour
+                            )
+                        } - ${
+                            FormatService.getTime(
+                                singleDate.endHour
+                            )
+                        }"
+                    }
                     ContributionEntry(
-                        date = it,
-                        count = dates.size.toFloat(),
-                        ""
+                        date = date!!,
+                        count = dateCount,
+                        desc
                     )
                 }
             }
