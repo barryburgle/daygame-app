@@ -565,15 +565,17 @@ fun getSeries(state: OutputState, heatmapEntity: HeatmapEntityEnum): List<Contri
                                 dateLead = lead
                             }
                         }
-                        desc += "\n[${CountryEnum.getFlagByAlpha3(dateLead!!.nationality)} ${dateLead!!.name}] ${singleDate.dateType.replaceFirstChar { it.uppercase() }} ${
-                            FormatService.getTime(
-                                singleDate.startHour
-                            )
-                        } - ${
-                            FormatService.getTime(
-                                singleDate.endHour
-                            )
-                        }"
+                        if (dateLead != null) {
+                            desc += "\n[${CountryEnum.getFlagByAlpha3(dateLead!!.nationality)} ${dateLead!!.name}] ${singleDate.dateType.replaceFirstChar { it.uppercase() }} ${
+                                FormatService.getTime(
+                                    singleDate.startHour
+                                )
+                            } - ${
+                                FormatService.getTime(
+                                    singleDate.endHour
+                                )
+                            }"
+                        }
                     }
                     ContributionEntry(
                         date = date!!,
