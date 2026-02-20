@@ -534,10 +534,17 @@ fun getSeries(state: OutputState, heatmapEntity: HeatmapEntityEnum): List<Contri
         HeatmapEntityEnum.INDEX -> state.allSessionsUnlimited
             .groupBy { FormatService.parseDate(it.date) }
             .map { (date, sessions) ->
+                val indexAvg = sessions.map { it.index }.average().toFloat()
+                var desc = ""
+                if (sessions.size == 1) {
+                    desc = "\nIndex: $indexAvg"
+                } else if (sessions.size > 1) {
+                    desc = "\n[${sessions.size} sessions] Avg index: $indexAvg"
+                }
                 ContributionEntry(
                     date = date,
-                    count = sessions.map { it.index }.average().toFloat(),
-                    ""
+                    count = indexAvg,
+                    desc
                 )
             }
 
