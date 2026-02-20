@@ -102,7 +102,7 @@ fun OutputScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             sectionTitleAndDescription(
-                                "History", "Look back at your volume:"
+                                "History", "Have a look at your past:"
                             )
                             Row(
                                 modifier = Modifier.width(125.dp),
@@ -124,7 +124,7 @@ fun OutputScreen(
                                 DropdownMenu(
                                     modifier = Modifier
                                         .width(120.dp)
-                                        .height(450.dp),
+                                        .height(485.dp),
                                     expanded = heatmapEntitySelectorExpanded,
                                     onDismissRequest = { heatmapEntitySelectorExpanded = false }
                                 ) {
