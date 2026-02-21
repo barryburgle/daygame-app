@@ -39,7 +39,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.barryburgle.gameapp.model.enums.HeatmapEntityEnum
 import com.barryburgle.gameapp.service.FormatService
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -135,7 +134,7 @@ fun HeatmapCalendar(
                                 avgCount = avgCount,
                                 textColor = textColor,
                                 cellColor = cellColor,
-                                emptyColor = emptyColor.copy(alpha = 0.2f),
+                                emptyColor = emptyColor.copy(alpha = 0.1f),
                                 isSelected = selectedDate == date,
                                 onClick = { selectedDate = date }
                             )
