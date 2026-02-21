@@ -144,6 +144,7 @@ fun OutputScreen(
                     HeatmapCalendar(
                         modifier = Modifier.fillMaxWidth(),
                         entries = getSeries(state, heatmapEntitySelected),
+                        spaceFromLeft = spaceFromLeft + 3.dp,
                         textColor = MaterialTheme.colorScheme.onPrimary,
                         cellColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         emptyColor = MaterialTheme.colorScheme.surface

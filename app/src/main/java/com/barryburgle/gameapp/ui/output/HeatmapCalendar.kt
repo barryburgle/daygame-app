@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.service.FormatService
@@ -56,16 +57,14 @@ data class ContributionEntry(
 fun HeatmapCalendar(
     modifier: Modifier = Modifier,
     entries: List<ContributionEntry>,
-    weeksToShow: Int = 26,
+    spaceFromLeft: Dp,
     textColor: Color,
     cellColor: Color,
     emptyColor: Color,
 ) {
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
     val endDate = remember { LocalDate.now() }
-    val startDate =
-        remember { endDate.minusWeeks(weeksToShow.toLong()).with(java.time.DayOfWeek.MONDAY) }
-
+    val startDate = remember { entries.sortedBy { it.date }.first().date }
     val entryMap = remember(entries) { entries.associateBy { it.date } }
     val avgCount = remember(entries) {
         if (entries.isEmpty()) 0f
@@ -92,6 +91,11 @@ fun HeatmapCalendar(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             contentPadding = PaddingValues(end = 16.dp)
         ) {
+            item {
+                Spacer(
+                    modifier = Modifier.width(spaceFromLeft - 7.dp)
+                )
+            }
             itemsIndexed(weeks) { index, week ->
                 Column(horizontalAlignment = Alignment.Start) {
                     Box(
