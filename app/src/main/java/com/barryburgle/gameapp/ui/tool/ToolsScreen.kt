@@ -61,7 +61,7 @@ fun ToolsScreen(
         },
     ) { padding ->
         val dataExchangeCardModifier = Modifier
-            .height(760.dp)
+            .height(780.dp)
             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
             .shadow(
                 elevation = 5.dp, shape = MaterialTheme.shapes.large
