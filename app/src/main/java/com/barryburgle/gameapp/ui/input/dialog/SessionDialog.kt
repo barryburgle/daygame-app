@@ -393,9 +393,9 @@ fun leadName(
                     textColor = MaterialTheme.colorScheme.onPrimary
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(3.dp)
-                            .background(alertColor, shape = RoundedCornerShape(5.dp))
+                            .fillMaxWidth(0.5f)
+                            .height(8.dp)
+                            .background(alertColor, shape = RoundedCornerShape(4.dp))
                     ) {}
                     Spacer(Modifier.height(3.dp))
                 }
