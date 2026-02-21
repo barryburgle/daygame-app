@@ -54,7 +54,6 @@ data class ContributionEntry(
 fun HeatmapCalendar(
     modifier: Modifier = Modifier,
     entries: List<ContributionEntry>,
-    selectEntity: HeatmapEntityEnum,
     weeksToShow: Int = 26,
     textColor: Color,
     cellColor: Color,
