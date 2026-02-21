@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -31,6 +33,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -91,12 +94,17 @@ fun HeatmapCalendar(
             contentPadding = PaddingValues(end = 16.dp)
         ) {
             itemsIndexed(weeks) { index, week ->
-                Column {
-                    val firstDayOfWeek = week.first()
-                    Box(modifier = Modifier.height(20.dp)) {
-                        if (index == 0 || firstDayOfWeek.dayOfMonth <= 7) {
+                Column(horizontalAlignment = Alignment.Start) {
+                    Box(
+                        modifier = Modifier
+                            .height(20.dp)
+                            .width(0.dp)
+                    ) {
+                        val monthStartingInWeek = week.find { it.dayOfMonth == 1 }
+                        if (index == 0 || monthStartingInWeek != null) {
+                            val displayMonth = (monthStartingInWeek ?: week.first()).month
                             Text(
-                                text = firstDayOfWeek.month.getDisplayName(
+                                text = displayMonth.getDisplayName(
                                     TextStyle.SHORT,
                                     Locale.getDefault()
                                 ),
@@ -104,12 +112,18 @@ fun HeatmapCalendar(
                                 fontWeight = FontWeight.Bold,
                                 color = textColor,
                                 maxLines = 1,
-                                modifier = Modifier.offset(x = 24.dp)
+                                softWrap = false,
+                                modifier = Modifier
+                                    .wrapContentWidth(unbounded = true)
+                                    .offset(x = 10.dp)
                             )
                         }
                     }
                     Spacer(modifier = Modifier.height(4.dp))
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Column(
+                        modifier = Modifier.wrapContentWidth(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         week.forEach { date ->
                             val entry = entryMap[date]
                             val count = entry?.count ?: 0.0f
