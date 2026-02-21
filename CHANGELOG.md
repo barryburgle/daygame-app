@@ -5,7 +5,8 @@ __If you have already installed a previous version of DayGame it will be necessa
 If you will not follow this procedure you will not be able to upgrade.__
 
 **Features**
-- Have some fun with sets, conversations and contact challenges: push your game to the maximum to score medals 🏆ù
+- Have some fun with sets, conversations and contact challenges: push your game to the maximum to score medals 🏆
+- Have a look at your past with the "History" grid: the best way to observe your volumes, achievements and results on sets and dates across months 🔎
 - Export and import settings in csv file along with other data 🔒
 - Info button to inspect and export data from Results histograms 📊
 - Enable the Summary card to get a summary of you last week and month on app open 📌
