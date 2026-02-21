@@ -442,96 +442,94 @@ fun legendLead(legend: String, legendColor: Color) {
 fun getSeries(state: OutputState, heatmapEntity: HeatmapEntityEnum): List<ContributionEntry> {
     return when (heatmapEntity) {
         HeatmapEntityEnum.SETS -> {
-            val setsByDate = state.allSets
-                .groupBy { FormatService.parseDate(it.date) }
-                .mapValues { (_, sets) -> sets.size.toFloat() }
-            return state.allSessionsUnlimited
-                .groupBy { FormatService.parseDate(it.date) }
-                .map { (date, sessions) ->
-                    var sessionSetsSum = 0.0f
-                    var desc = ""
-                    for (session in sessions) {
-                        sessionSetsSum += session.sets
-                        if (session.sets > 0) {
-                            desc += "\n[Session] ${FormatService.getTime(session.startHour)} - ${
-                                FormatService.getTime(
-                                    session.endHour
-                                )
-                            }: ${session.sets} sets"
-                        }
+            val allDates = getAllDates(state)
+            return allDates.map { date ->
+                val sessions = filterSessions(state, date)
+                val sets = filterSets(state, date)
+                var desc = ""
+                var sessionSetsSum = 0.0f
+                for (session in sessions) {
+                    sessionSetsSum += session.sets
+                    if (session.sets > 0) {
+                        desc += "\n[Session] ${FormatService.getTime(session.startHour)} - ${
+                            FormatService.getTime(
+                                session.endHour
+                            )
+                        }: ${session.sets} sets"
                     }
-                    val singleSetsSum = setsByDate[date] ?: 0f
-                    if (singleSetsSum > 0) {
-                        desc += "\n${singleSetsSum.toInt()} single sets"
-                    }
-                    ContributionEntry(
-                        date,
-                        sessionSetsSum + singleSetsSum,
-                        desc
-                    )
                 }
+                val singleSetsSum = sets.size
+                if (singleSetsSum > 0) {
+                    desc += "\n[Single Sets] ${singleSetsSum}"
+                }
+                ContributionEntry(
+                    date,
+                    sessionSetsSum + singleSetsSum,
+                    desc
+                )
+            }
         }
 
         HeatmapEntityEnum.CONVERSATIONS -> {
-            val conversationsByDate = state.allSets
-                .groupBy { FormatService.parseDate(it.date) }
-                .mapValues { (_, sets) -> sets.count { entry -> entry.conversation }.toFloat() }
-            return state.allSessionsUnlimited
-                .groupBy { FormatService.parseDate(it.date) }
-                .map { (date, sessions) ->
-                    var sessionSetsSum = 0.0f
-                    var desc = ""
-                    for (session in sessions) {
-                        sessionSetsSum += session.convos
+            val allDates = getAllDates(state)
+            return allDates.map { date ->
+                val sessions = filterSessions(state, date)
+                val sets = filterSets(state, date)
+                var desc = ""
+                var sessionConvosSum = 0.0f
+                for (session in sessions) {
+                    if (session.convos > 0) {
+                        sessionConvosSum += session.convos
                         if (session.convos > 0) {
                             desc += "\n[Session] ${FormatService.getTime(session.startHour)} - ${
                                 FormatService.getTime(
                                     session.endHour
                                 )
-                            }: ${session.sets} conversations"
+                            }: ${session.convos} conversations"
                         }
                     }
-                    val singleSetsSum = conversationsByDate[date] ?: 0f
-                    if (singleSetsSum > 0) {
-                        desc += "\n${singleSetsSum.toInt()} single conversations"
-                    }
-                    ContributionEntry(
-                        date,
-                        sessionSetsSum + singleSetsSum,
-                        desc
-                    )
                 }
+                val singleConvosSum = sets.filter { it.conversation }.size
+                if (singleConvosSum > 0) {
+                    desc += "\n[Single Conversations] ${singleConvosSum}"
+                }
+                ContributionEntry(
+                    date,
+                    sessionConvosSum + singleConvosSum,
+                    desc
+                )
+            }
         }
 
         HeatmapEntityEnum.CONTACTS -> {
-            val contactsByDate = state.allSets
-                .groupBy { FormatService.parseDate(it.date) }
-                .mapValues { (_, sets) -> sets.count { entry -> entry.contact }.toFloat() }
-            return state.allSessionsUnlimited
-                .groupBy { FormatService.parseDate(it.date) }
-                .map { (date, sessions) ->
-                    var sessionSetsSum = 0.0f
-                    var desc = ""
-                    for (session in sessions) {
-                        sessionSetsSum += session.contacts
+            val allDates = getAllDates(state)
+            return allDates.map { date ->
+                val sessions = filterSessions(state, date)
+                val sets = filterSets(state, date)
+                var desc = ""
+                var sessionContactsSum = 0.0f
+                for (session in sessions) {
+                    if (session.contacts > 0) {
+                        sessionContactsSum += session.contacts
                         if (session.contacts > 0) {
                             desc += "\n[Session] ${FormatService.getTime(session.startHour)} - ${
                                 FormatService.getTime(
                                     session.endHour
                                 )
-                            }: ${session.sets} contacts"
+                            }: ${session.contacts} contacts"
                         }
                     }
-                    val singleSetsSum = contactsByDate[date] ?: 0f
-                    if (singleSetsSum > 0) {
-                        desc += "\n${singleSetsSum.toInt()} single contacts"
-                    }
-                    ContributionEntry(
-                        date,
-                        sessionSetsSum + singleSetsSum,
-                        desc
-                    )
                 }
+                val singleContactsSum = sets.filter { set -> set.contact }.size
+                if (singleContactsSum > 0) {
+                    desc += "\n[Single Contact] ${singleContactsSum}"
+                }
+                ContributionEntry(
+                    date,
+                    sessionContactsSum + singleContactsSum,
+                    desc
+                )
+            }
         }
 
         HeatmapEntityEnum.INDEX -> state.allSessionsUnlimited
@@ -587,13 +585,47 @@ fun getSeries(state: OutputState, heatmapEntity: HeatmapEntityEnum): List<Contri
 
         // TODO: find a way to track in-session sets recordings: maybe when adding a convo or contact or lead allow option to flag a recording (or long press button) and write on another AbstractSession column the number of recordings
         // From session editing should be possible to edit the number of recordings
-        HeatmapEntityEnum.RECORDINGS -> state.allDates
-            .groupBy { it.date?.let { dateString -> FormatService.parseDate(dateString) } }
-            .mapNotNull { (date, dates) ->
-                dates.let {
-                    getDateContributionEntry(dates, condition = Date::recorded, state, date)
+        HeatmapEntityEnum.RECORDINGS -> {
+            val allDates =
+                state.allDates.filter { it.date != null }.map { FormatService.parseDate(it.date!!) }
+                    .toSet() +
+                        state.allSets.map { FormatService.parseDate(it.date) }.toSet()
+            return allDates.map { date ->
+                val dates = filterDates(state, date)
+                val sets = filterSets(state, date)
+                var desc = ""
+                var datesRecSum = 0.0f
+                for (singleDate in dates) {
+                    if (singleDate.recorded) {
+                        datesRecSum += 1.0f
+                        var dateLead: Lead? = null
+                        for (lead in state.allLeads) {
+                            if (singleDate.leadId == lead.id) {
+                                dateLead = lead
+                            }
+                        }
+                        desc += "\n[${CountryEnum.getFlagByAlpha3(dateLead!!.nationality)} ${dateLead!!.name}] ${singleDate.dateType.replaceFirstChar { it.uppercase() }} ${
+                            FormatService.getTime(
+                                singleDate.startHour
+                            )
+                        } - ${
+                            FormatService.getTime(
+                                singleDate.endHour
+                            )
+                        }"
+                    }
                 }
+                val setsRecSum = sets.filter { set -> set.recorded }.size
+                if (setsRecSum > 0) {
+                    desc += "\n[Single Recording] ${setsRecSum}"
+                }
+                ContributionEntry(
+                    date,
+                    datesRecSum + setsRecSum,
+                    desc
+                )
             }
+        }
 
         HeatmapEntityEnum.PULLED -> state.allDates
             .groupBy { it.date?.let { dateString -> FormatService.parseDate(dateString) } }
@@ -626,11 +658,27 @@ fun getSeries(state: OutputState, heatmapEntity: HeatmapEntityEnum): List<Contri
                     getDateContributionEntry(dates, condition = Date::lay, state, date)
                 }
             }
-
-
-        else -> emptyList()
     }
 }
+
+private fun filterSets(
+    state: OutputState,
+    date: LocalDate
+) = state.allSets.filter { FormatService.parseDate(it.date) == date }
+
+private fun filterSessions(
+    state: OutputState,
+    date: LocalDate
+) = state.allSessionsUnlimited.filter { FormatService.parseDate(it.date) == date }
+
+private fun filterDates(
+    state: OutputState,
+    date: LocalDate
+) = state.allDates.filter { FormatService.parseDate(it.date!!) == date }
+
+private fun getAllDates(state: OutputState) =
+    state.allSessionsUnlimited.map { FormatService.parseDate(it.date) }.toSet() +
+            state.allSets.map { FormatService.parseDate(it.date) }.toSet()
 
 private fun getDateContributionEntry(
     dates: List<Date>,
