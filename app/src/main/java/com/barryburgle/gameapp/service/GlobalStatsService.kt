@@ -130,6 +130,21 @@ class GlobalStatsService {
             return days.toDouble() / achievedChallengeList.size.toDouble()
         }
 
+        fun computeAvgCompletionRatio(
+            achievedChallengeList: List<AchievedChallenge>
+        ): Double {
+            // TODO: unit tests
+            if (achievedChallengeList.isEmpty()) {
+                return 0.0
+            }
+            var totalCompletionRation = 0.0
+            for (achievedChallenge in achievedChallengeList) {
+                totalCompletionRation =
+                    totalCompletionRation + achievedChallenge.getCompletionPerc()
+            }
+            return totalCompletionRation / achievedChallengeList.size.toDouble()
+        }
+
         fun computeAvgLayTime(
             dateList: List<Date>,
             lays: Int
