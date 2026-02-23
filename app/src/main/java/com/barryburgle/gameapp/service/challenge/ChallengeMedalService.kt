@@ -8,6 +8,11 @@ import java.time.LocalDate
 class ChallengeMedalService {
 
     companion object {
+
+        fun getMedals(achievedChallengeList: List<AchievedChallenge>): List<ChallengeMedalEnum> {
+            return achievedChallengeList.map { achievedChallenge -> getMedal(achievedChallenge) }
+        }
+
         fun getMedal(achievedChallenge: AchievedChallenge): ChallengeMedalEnum {
             val completionPerc = achievedChallenge.getCompletionPerc()
             return when {
