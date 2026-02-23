@@ -48,10 +48,16 @@ fun StatsCard(
     firstQuantifierQuantity: String,
     firstQuantifierDescription: String,
     secondQuantifierQuantity: String,
+    secondQuantifierIcon: Int? = null,
+    secondQuantifierColor: Color? = null,
     secondQuantifierDescription: String,
     thirdQuantifierQuantity: String,
+    thirdQuantifierIcon: Int? = null,
+    thirdQuantifierColor: Color? = null,
     thirdQuantifierDescription: String,
     fourthQuantifierQuantity: String? = null,
+    fourthQuantifierIcon: Int? = null,
+    fourthQuantifierColor: Color? = null,
     fourthQuantifierDescription: String? = null,
     fifthQuantifierQuantity: String? = null,
     fifthQuantifierDescription: String? = null,
@@ -206,12 +212,16 @@ fun StatsCard(
                                 )
                                 DescribedQuantifier(
                                     quantity = secondQuantifierQuantity,
+                                    icon = if (secondQuantifierIcon != null) secondQuantifierIcon else null,
+                                    color = if (secondQuantifierColor != null) secondQuantifierColor else null,
                                     quantityFontSize = countFontSize,
                                     description = secondQuantifierDescription,
                                     descriptionFontSize = descriptionFontSize
                                 )
                                 DescribedQuantifier(
                                     quantity = thirdQuantifierQuantity,
+                                    icon = if (thirdQuantifierIcon != null) thirdQuantifierIcon else null,
+                                    color = if (thirdQuantifierColor != null) thirdQuantifierColor else null,
                                     quantityFontSize = countFontSize,
                                     description = thirdQuantifierDescription,
                                     descriptionFontSize = descriptionFontSize
@@ -219,6 +229,8 @@ fun StatsCard(
                                 if (fourthQuantifierQuantity != null && fourthQuantifierDescription != null) {
                                     DescribedQuantifier(
                                         quantity = fourthQuantifierQuantity,
+                                        icon = if (fourthQuantifierIcon != null) fourthQuantifierIcon else null,
+                                        color = if (fourthQuantifierColor != null) fourthQuantifierColor else null,
                                         quantityFontSize = countFontSize,
                                         description = fourthQuantifierDescription,
                                         descriptionFontSize = descriptionFontSize
