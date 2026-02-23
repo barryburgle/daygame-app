@@ -64,7 +64,9 @@ fun HeatmapCalendar(
 ) {
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
     val endDate = remember { LocalDate.now() }
-    val startDate = remember { entries.sortedBy { it.date }.first().date }
+    val startDate = remember {
+        entries.minBy { it.date }.date.with(java.time.DayOfWeek.MONDAY)
+    }
     val entryMap = remember(entries) { entries.associateBy { it.date } }
     val avgCount = remember(entries) {
         if (entries.isEmpty()) 0f
