@@ -26,8 +26,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.StatsEvent
+import com.barryburgle.gameapp.model.enums.ChallengeMedalEnum
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.service.GlobalStatsService
+import com.barryburgle.gameapp.service.challenge.ChallengeMedalService
 import com.barryburgle.gameapp.ui.output.sectionTitleAndDescription
 import com.barryburgle.gameapp.ui.stats.dialog.InfoDialog
 import com.barryburgle.gameapp.ui.stats.section.DatesHistogramsSection
@@ -313,8 +315,18 @@ fun StatsScreen(
                             state.allChallenges.filter { achievedChallenge -> achievedChallenge.achieved >= achievedChallenge.challenge.goal.toDouble() }.size
                         val exceededChallenges: Int =
                             state.allChallenges.filter { achievedChallenge -> achievedChallenge.achieved > achievedChallenge.challenge.goal.toDouble() }.size
-                        val avgChallengeDuration: Double =
+                        val avgChallengeDuration =
                             GlobalStatsService.computeAvgChallengeDuration(state.allChallenges)
+                                .toInt()
+                        val medalList = ChallengeMedalService.getMedals(state.allChallenges)
+                        val goldMedals: Int =
+                            medalList.filter { medal -> ChallengeMedalEnum.GOLD.equals(medal) }.size
+                        val silverMedals: Int =
+                            medalList.filter { medal -> ChallengeMedalEnum.SILVER.equals(medal) }.size
+                        val bronzeMedals: Int =
+                            medalList.filter { medal -> ChallengeMedalEnum.BRONZE.equals(medal) }.size
+                        val averageCompletionRatio =
+                            GlobalStatsService.computeAvgCompletionRatio(state.allChallenges)
                         StatsCard(
                             modifier = cardModifier,
                             title = "Challenges",
@@ -323,22 +335,35 @@ fun StatsScreen(
                             copyReportOnClipboard = state.copyReportOnClipboard,
                             firstQuantifierQuantity = "${state.allChallenges.size}",
                             firstQuantifierDescription = "Challenges",
-                            secondQuantifierQuantity = "${completedChallenges}",
-                            secondQuantifierDescription = "Completed",
-                            thirdQuantifierQuantity = "${exceededChallenges}",
-                            thirdQuantifierDescription = "Exceeded",
+                            secondQuantifierQuantity = goldMedals.toString(),
+                            secondQuantifierIcon = ChallengeMedalEnum.GOLD.getIcon(),
+                            secondQuantifierColor = ChallengeMedalEnum.GOLD.getColor(),
+                            secondQuantifierDescription = ChallengeMedalEnum.GOLD.getDescription()
+                                .replace("\n", "") + "s",
+                            thirdQuantifierQuantity = silverMedals.toString(),
+                            thirdQuantifierIcon = ChallengeMedalEnum.SILVER.getIcon(),
+                            thirdQuantifierColor = ChallengeMedalEnum.SILVER.getColor(),
+                            thirdQuantifierDescription = ChallengeMedalEnum.SILVER.getDescription()
+                                .replace("\n", "") + "s",
+                            fourthQuantifierQuantity = bronzeMedals.toString(),
+                            fourthQuantifierIcon = ChallengeMedalEnum.BRONZE.getIcon(),
+                            fourthQuantifierColor = ChallengeMedalEnum.BRONZE.getColor(),
+                            fourthQuantifierDescription = ChallengeMedalEnum.BRONZE.getDescription()
+                                .replace("\n", "") + "s",
                             firstPerformanceQuantity = "${
                                 GlobalStatsService.computeGenericRatio(
                                     state.allChallenges.size, completedChallenges
                                 )
                             } %",
-                            firstPerformanceDescription = "Completion\nRatio",
+                            firstPerformanceDescription = "Challenges\nCompleted",
                             secondPerformanceQuantity = "${
                                 GlobalStatsService.computeGenericRatio(
                                     state.allChallenges.size, exceededChallenges
                                 )
                             } %",
-                            secondPerformanceDescription = "Exceed\nRatio",
+                            secondPerformanceDescription = "Challenges\nExceeded",
+                            thirdPerformanceQuantity = "${(averageCompletionRatio * 10000).toInt() / 100} %",
+                            thirdPerformanceDescription = "Average\nCompletion\nRatio",
                         )
                     }
                 }
