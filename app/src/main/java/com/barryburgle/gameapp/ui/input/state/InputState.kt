@@ -119,7 +119,7 @@ data class InputState(
     var challengeName: String = "",
     var challengeDescription: String = "",
     var challengeStartDate: String = "",
-    var challengeDuration: String = "",
+    var challengeDuration: String = "1",
     var challengeType: String = "",
     var challengeGoal: String = "20",
     var challengeTweetUrl: String = "",

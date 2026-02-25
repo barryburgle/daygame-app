@@ -167,7 +167,7 @@ fun ChallengeDialog(
                     modifier = Modifier,
                     style = MaterialTheme.typography.titleSmall,
                     onEvent = onEvent as (GenericEvent) -> Unit,
-                    countStart = if (state.isAddingChallenge) 0 else state.challengeDuration.toInt(),
+                    countStart = if (state.isAddingChallenge) 1 else state.challengeDuration.toInt() + 1,
                     saveEvent = GameEvent::SetChallengeDuration,
                 )
             }

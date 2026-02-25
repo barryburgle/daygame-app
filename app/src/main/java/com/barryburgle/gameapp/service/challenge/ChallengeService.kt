@@ -21,7 +21,7 @@ class ChallengeService : ChallengeInitializer, EntityService() {
         tweetUrl: String
     ): Challenge {
         val now = OffsetDateTime.now().toString()
-        val endDate = startDate.plusDays(duration.toInt().toLong())
+        val endDate = startDate.plusDays(duration.toInt().toLong() - 1L)
         val dayOfWeek: DayOfWeek = getDayOfWeek(LocalDateTime.now())
         return Challenge(
             getId(id),
