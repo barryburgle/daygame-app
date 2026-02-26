@@ -62,6 +62,10 @@ class DataExchangeService {
                 state.exportFolder + "/" + state.backupFolder,
                 state.lastBackup
             )
+            settingCsvService.cleanBackupFolder(
+                state.exportFolder + "/" + state.backupFolder,
+                state.lastBackup
+            )
         }
 
         fun validateAll(
