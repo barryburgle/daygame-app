@@ -80,7 +80,7 @@ fun ChallengeDialog(
                 DropdownMenu(
                     modifier = Modifier
                         .width(175.dp)
-                        .height(180.dp),
+                        .height(220.dp),
                     expanded = challengeTypesExpanded,
                     onDismissRequest = { challengeTypesExpanded = false }
                 ) {

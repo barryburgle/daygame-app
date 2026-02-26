@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContactPhone
 import androidx.compose.material.icons.filled.DirectionsRun
 import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.RecordVoiceOver
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -15,7 +16,8 @@ enum class ChallengeTypeEnum(
 ) {
     SET("set", "Sets", "done", Icons.Default.DirectionsRun),
     CONVERSATION("conversation", "Conversations", "had", Icons.Default.RecordVoiceOver),
-    CONTACT("contact", "Contacts", "taken", Icons.Default.ContactPhone);
+    CONTACT("contact", "Contacts", "taken", Icons.Default.ContactPhone),
+    DATE("date", "Dates", "had", Icons.Default.Favorite);
     // TODO: add here goals on percs and indexes later. For a future task, the challenge type will determine how the challenge completion is computed from raw data (sessions, dates, sets)
 
     fun getType(): String {
@@ -40,6 +42,7 @@ enum class ChallengeTypeEnum(
                 SET.getType() -> true
                 CONTACT.getType() -> true
                 CONVERSATION.getType() -> true
+                DATE.getType() -> true
                 else -> false
             }
         }
@@ -49,6 +52,7 @@ enum class ChallengeTypeEnum(
                 SET.getType() -> SET.icon
                 CONTACT.getType() -> CONTACT.icon
                 CONVERSATION.getType() -> CONVERSATION.icon
+                DATE.getType() -> DATE.icon
                 else -> Icons.Default.EmojiEvents
             }
         }
@@ -58,6 +62,7 @@ enum class ChallengeTypeEnum(
                 SET.getType() -> SET.getDescription()
                 CONTACT.getType() -> CONTACT.getDescription()
                 CONVERSATION.getType() -> CONVERSATION.getDescription()
+                DATE.getType() -> DATE.getDescription()
                 else -> "Type"
             }
         }
@@ -67,6 +72,7 @@ enum class ChallengeTypeEnum(
                 SET.getType() -> SET
                 CONTACT.getType() -> CONTACT
                 CONVERSATION.getType() -> CONVERSATION
+                DATE.getType() -> DATE
                 else -> SET
             }
         }

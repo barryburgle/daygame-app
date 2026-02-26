@@ -21,12 +21,14 @@ interface ChallengeDao {
         const val SINGLE_SET_CONVOS_SUBQUERY = "(SELECT COUNT(*) FROM single_set WHERE conversation = '1' AND set_date >= challenge.start_date AND set_date <= challenge.end_date)"
         const val ABSTRACT_SESSION_CONTACTS_SUBQUERY = "(SELECT IFNULL(SUM(contacts), 0) FROM abstract_session WHERE session_date >= challenge.start_date AND session_date <= challenge.end_date)"
         const val SINGLE_SET_CONTACTS_SUBQUERY = "(SELECT COUNT(*) FROM single_set WHERE contact = '1' AND set_date >= challenge.start_date AND set_date <= challenge.end_date)"
+        const val DATE_SUBQUERY = "(SELECT COUNT(*) FROM meeting WHERE meeting_date >= challenge.start_date AND meeting_date <= challenge.end_date)"
         const val ACHIEVED_CHALLENGE_QUERY = """
         SELECT *, (
             CASE challenge.challenge_type
                 WHEN 'set' THEN ${ABSTRACT_SESSION_SETS_SUBQUERY} + ${SINGLE_SET_SETS_SUBQUERY}
                 WHEN 'conversation' THEN ${ABSTRACT_SESSION_CONVOS_SUBQUERY} + ${SINGLE_SET_CONVOS_SUBQUERY}
                 WHEN 'contact' THEN ${ABSTRACT_SESSION_CONTACTS_SUBQUERY} + ${SINGLE_SET_CONTACTS_SUBQUERY}
+                WHEN 'date' THEN ${DATE_SUBQUERY}
                 ELSE 0
             END
         ) as achieved from challenge
