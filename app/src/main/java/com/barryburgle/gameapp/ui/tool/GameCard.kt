@@ -25,5 +25,8 @@ fun GameCard(
         ) {
             onEvent(ToolEvent.SwitchShowCurrentMonthSummary)
         }
+        // TODO: game card should contain an "Experimental" flag that enables switches in features like:
+        // challenges type prediction based on the lowest global ratio
+        // (if your sets are too little) -> suggest sets... <similar other events>
     }
 }

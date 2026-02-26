@@ -329,6 +329,7 @@ fun SessionDialog(
 private fun setUpdatingState(
     state: InputState
 ) {
+    // TODO: consider removing methods like this from every dialog since the setting of state to edit by dialog is done by GameEvent methods called in the event card ()
     if (state.editAbstractSession != null) {
         state.date = state.editAbstractSession.date.substring(0, 10)
         state.startHour = state.editAbstractSession.startHour.substring(11, 16)

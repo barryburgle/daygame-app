@@ -222,6 +222,7 @@ fun EventCard(
                                             sortableGameEvent.classType
                                         )
                                     ) {
+                                        // TODO: here the code should call all the setters for the session and feed them with data from the actual session to edit
                                         leads.forEach { lead ->
                                             onEvent(
                                                 GameEvent.SetLead(
@@ -247,6 +248,7 @@ fun EventCard(
                                             sortableGameEvent.classType
                                         )
                                     ) {
+                                        // TODO: here the code should call all the setters for the set and feed them with data from the actual set to edit
                                         onEvent(
                                             GameEvent.SetConversation((sortableGameEvent.event as SingleSet).conversation)
                                         )
@@ -274,6 +276,7 @@ fun EventCard(
                                         )
                                     }
                                     if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                        // TODO: here the code should call all the setters for the date and feed them with data from the actual date to edit
                                         onEvent(
                                             GameEvent.SetPull((sortableGameEvent.event as Date).pull)
                                         )
