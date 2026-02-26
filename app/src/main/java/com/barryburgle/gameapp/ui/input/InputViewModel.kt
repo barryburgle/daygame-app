@@ -578,7 +578,8 @@ class InputViewModel(
                             leadContact = "",
                             leadNationality = "",
                             countryName = "",
-                            leadAge = 20
+                            leadAge = 20,
+                            justSaved = true
                         )
                     }
                 }
@@ -736,6 +737,11 @@ class InputViewModel(
             is GameEvent.SaveLead -> {
                 viewModelScope.launch {
                     leadDao.insert(event.lead)
+                    _state.update {
+                        it.copy(
+                            justSaved = true
+                        )
+                    }
                 }
             }
 
@@ -870,7 +876,8 @@ class InputViewModel(
                             tweetUrl = "",
                             dateSortType = DateSortType.DATE,
                             isAddingDate = false,
-                            isUpdatingDate = false
+                            isUpdatingDate = false,
+                            justSaved = true
                         )
                     }
                 }
@@ -1125,7 +1132,8 @@ class InputViewModel(
                             tweetUrl = "",
                             setSortType = SetSortType.DATE,
                             isAddingSet = false,
-                            isUpdatingSet = false
+                            isUpdatingSet = false,
+                            justSaved = true
                         )
                     }
                 }
@@ -1265,7 +1273,8 @@ class InputViewModel(
                             challengeGoal = "",
                             challengeTweetUrl = "",
                             isAddingChallenge = false,
-                            isUpdatingChallenge = false
+                            isUpdatingChallenge = false,
+                            justSaved = true
                         )
                     }
                 }
