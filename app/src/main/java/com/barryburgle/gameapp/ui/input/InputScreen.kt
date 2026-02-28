@@ -506,6 +506,7 @@ fun gameTopBar(
                     ) {
                         onEvent(GameEvent.SwitchShowFlag(it))
                     }
+                    Spacer(modifier = Modifier.width(10.dp))
                 }
                 EntitySorter(
                     showAllSorter(
