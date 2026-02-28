@@ -70,7 +70,7 @@ open class AchievedChallenge(
             achievedToPrint = achieved.toInt().toString()
         }
         val achievedPrefix =
-            "\n\nAchieved: ${achievedToPrint} ${challenge.type}s\n"
+            "\n\nAchieved: ${achievedToPrint}/${challenge.goal} ${challenge.type}s\n"
         if (completePercentage >= 1) {
             report += achievedPrefix + "████████████████████ 100%"
         } else {
