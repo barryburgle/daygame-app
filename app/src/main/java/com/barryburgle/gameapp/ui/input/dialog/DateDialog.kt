@@ -36,6 +36,7 @@ import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.DateTypeEnum
+import com.barryburgle.gameapp.service.EntityService
 import com.barryburgle.gameapp.ui.input.InputCountComponent
 import com.barryburgle.gameapp.ui.input.dialog.component.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
@@ -356,7 +357,17 @@ fun DateDialog(
         }
     }, confirmButton = {
         ConfirmButton {
-            if (state.leadId == 0L) {
+            if (EntityService.getParsedHour(
+                    state.date,
+                    state.startHour
+                ) > EntityService.getParsedHour(state.date, state.endHour)
+            ) {
+                Toast.makeText(
+                    localContext,
+                    "Please choose valid hours",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else if (state.leadId == 0L) {
                 Toast.makeText(localContext, "Please choose a lead", Toast.LENGTH_SHORT)
                     .show()
             } else {

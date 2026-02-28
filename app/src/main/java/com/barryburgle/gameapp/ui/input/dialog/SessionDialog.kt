@@ -48,6 +48,7 @@ import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.service.EntityService
 import com.barryburgle.gameapp.ui.input.InputCounter
 import com.barryburgle.gameapp.ui.input.dialog.component.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
@@ -306,16 +307,28 @@ fun SessionDialog(
         }
     }, confirmButton = {
         ConfirmButton {
-            onEvent(GameEvent.SaveAbstractSession)
-            onEvent(GameEvent.SetIsInOverlayToFalse)
-            onEvent(GameEvent.HideDialog)
-            onEvent(GameEvent.SwitchJustSaved)
-            Toast.makeText(
-                localContext,
-                "Session saved",
-                Toast.LENGTH_SHORT
-            )
-                .show()
+            if (EntityService.getParsedHour(
+                    state.date,
+                    state.startHour
+                ) > EntityService.getParsedHour(state.date, state.endHour)
+            ) {
+                Toast.makeText(
+                    localContext,
+                    "Please choose valid hours",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                onEvent(GameEvent.SaveAbstractSession)
+                onEvent(GameEvent.SetIsInOverlayToFalse)
+                onEvent(GameEvent.HideDialog)
+                onEvent(GameEvent.SwitchJustSaved)
+                Toast.makeText(
+                    localContext,
+                    "Session saved",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+            }
         }
     }, dismissButton = {
         DismissButton {

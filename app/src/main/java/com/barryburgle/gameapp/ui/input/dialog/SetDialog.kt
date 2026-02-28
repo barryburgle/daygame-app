@@ -30,6 +30,7 @@ import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.SetSortType
+import com.barryburgle.gameapp.service.EntityService
 import com.barryburgle.gameapp.ui.input.dialog.component.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
@@ -265,11 +266,23 @@ fun SetDialog(
         }
     }, confirmButton = {
         ConfirmButton {
-            onEvent(GameEvent.SaveSet)
-            onEvent(GameEvent.SetIsInOverlayToFalse)
-            onEvent(GameEvent.HideDialog)
-            onEvent(GameEvent.SwitchJustSaved)
-            Toast.makeText(localContext, "Set saved", Toast.LENGTH_SHORT).show()
+            if (EntityService.getParsedHour(
+                    state.date,
+                    state.startHour
+                ) > EntityService.getParsedHour(state.date, state.endHour)
+            ) {
+                Toast.makeText(
+                    localContext,
+                    "Please choose valid hours",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                onEvent(GameEvent.SaveSet)
+                onEvent(GameEvent.SetIsInOverlayToFalse)
+                onEvent(GameEvent.HideDialog)
+                onEvent(GameEvent.SwitchJustSaved)
+                Toast.makeText(localContext, "Set saved", Toast.LENGTH_SHORT).show()
+            }
         }
     },
         dismissButton = {
