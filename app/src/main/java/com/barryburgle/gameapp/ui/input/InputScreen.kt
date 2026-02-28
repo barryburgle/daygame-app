@@ -28,9 +28,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.GroupAdd
-import androidx.compose.material.icons.filled.PersonAddAlt1
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -65,6 +63,7 @@ import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.card.EventCard
 import com.barryburgle.gameapp.ui.input.card.SummaryCard
+import com.barryburgle.gameapp.ui.input.dialog.ChallengeDialog
 import com.barryburgle.gameapp.ui.input.dialog.DateDialog
 import com.barryburgle.gameapp.ui.input.dialog.SessionDialog
 import com.barryburgle.gameapp.ui.input.dialog.SetDialog
@@ -127,9 +126,11 @@ fun InputScreen(
                         enter = floatingButtonEnterTransition(300),
                         exit = floatingButtonExitTransition(300)
                     ) {
-                        floatingAddButton(Icons.Default.Favorite, "Date") {
-                            onEvent(GameEvent.SwitchIsInOverlay)
-                        floatingAddButton(Icons.Default.Favorite, "Date", false) {
+                        floatingAddButton(
+                            EventTypeEnum.DATE.getIcon()!!,
+                            EventTypeEnum.DATE.getField(),
+                            false
+                        ) {
                             onEvent(GameEvent.SetIsInOverlayToTrue)
                             onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.DATE))
                             isExpanded = false
@@ -141,9 +142,10 @@ fun InputScreen(
                         enter = floatingButtonEnterTransition(500),
                         exit = floatingButtonExitTransition(500)
                     ) {
-                        floatingAddButton(Icons.Default.PersonAddAlt1, "Set") {
-                            onEvent(GameEvent.SwitchIsInOverlay)
-                        floatingAddButton(Icons.Default.PersonAddAlt1, "Set", false) {
+                        floatingAddButton(
+                            EventTypeEnum.SET.getIcon()!!,
+                            EventTypeEnum.SET.getField(), false
+                        ) {
                             onEvent(GameEvent.SetIsInOverlayToTrue)
                             onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SET))
                             isExpanded = false
@@ -155,11 +157,27 @@ fun InputScreen(
                         enter = floatingButtonEnterTransition(700),
                         exit = floatingButtonExitTransition(700)
                     ) {
-                        floatingAddButton(Icons.Default.GroupAdd, "Session") {
-                            onEvent(GameEvent.SwitchIsInOverlay)
-                        floatingAddButton(Icons.Default.GroupAdd, "Session", false) {
+                        floatingAddButton(
+                            EventTypeEnum.SESSION.getIcon()!!,
+                            EventTypeEnum.SESSION.getField(), false
+                        ) {
                             onEvent(GameEvent.SetIsInOverlayToTrue)
                             onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SESSION))
+                            isExpanded = false
+                            isRotated = false
+                        }
+                    }
+                    AnimatedVisibility(
+                        visible = isExpanded,
+                        enter = floatingButtonEnterTransition(900),
+                        exit = floatingButtonExitTransition(900)
+                    ) {
+                        floatingAddButton(
+                            EventTypeEnum.CHALLENGE.getIcon()!!,
+                            EventTypeEnum.CHALLENGE.getField(), false
+                        ) {
+                            onEvent(GameEvent.SetIsInOverlayToTrue)
+                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.CHALLENGE))
                             isExpanded = false
                             isRotated = false
                         }
