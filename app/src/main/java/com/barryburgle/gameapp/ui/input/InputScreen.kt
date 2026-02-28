@@ -182,6 +182,21 @@ fun InputScreen(
                             isRotated = false
                         }
                     }
+                    AnimatedVisibility(
+                        visible = isExpanded,
+                        enter = floatingButtonEnterTransition(1100),
+                        exit = floatingButtonExitTransition(1100)
+                    ) {
+                        floatingAddButton(
+                            Icons.Default.Timer,
+                            "Live\nSession",
+                            true, // TODO: set to true and make the color red little darker
+                            Color.Red
+                        ) {
+                            onEvent(GameEvent.SetIsInOverlayToTrue)
+                            // TODO: create livesession card and last empty session
+                        }
+                    }
                 }
                 IconShadowButton(
                     onClick = {
@@ -383,7 +398,11 @@ fun getLeads(state: InputState, sortableGameEvent: SortableGameEvent): List<Lead
 
 @Composable
 fun floatingAddButton(
-    icon: ImageVector, description: String, onClick: () -> Unit
+    icon: ImageVector,
+    description: String,
+    animate: Boolean,
+    animationColor: Color? = MaterialTheme.colorScheme.background,
+    onClick: () -> Unit
 ) {
     Column(
         modifier = Modifier.height(80.dp),
@@ -398,9 +417,28 @@ fun floatingAddButton(
             containerColor = MaterialTheme.colorScheme.tertiary,
             shape = CircleShape
         ) {
-            Icon(
-                imageVector = icon, contentDescription = description
+            val infiniteTransition = rememberInfiniteTransition(label = "icon-pulse-transition")
+            val animatedColor by infiniteTransition.animateColor(
+                initialValue = animationColor!!,
+                targetValue = MaterialTheme.colorScheme.background,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(2000, easing = LinearEasing),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = "pulsing-icon-color"
             )
+            if (animate) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = description,
+                    tint = animatedColor
+                )
+            } else {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = description
+                )
+            }
         }
         Spacer(modifier = Modifier.height(5.dp))
         Text(
