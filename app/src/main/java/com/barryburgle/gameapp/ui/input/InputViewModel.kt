@@ -541,7 +541,7 @@ class InputViewModel(
                         stickingPoints = if (_state.value.stickingPoints.equals(InputDialogConstant.EMPTY_STICKING_POINTS)) "" else if (_state.value.stickingPoints.isBlank()) state.value.stickingPoints else _state.value.stickingPoints,
                     )
                     var sessionId: Long? = 0L
-                    if (state.value.isAddingSession) {
+                    if (state.value.isAddingSession || state.value.isAddingLiveSession) {
                         sessionId = abstractSessionDao.insert(abstractSession)
                         notificationState = NotificationService.createNotificationState(
                             state.value.notificationTime,
@@ -571,6 +571,7 @@ class InputViewModel(
                             stickingPoints = "",
                             sessionSortType = SessionSortType.DATE,
                             isAddingSession = false,
+                            isAddingLiveSession = false,
                             isUpdatingSession = false,
                             isAddingLead = false,
                             leads = emptyList(),
@@ -682,6 +683,14 @@ class InputViewModel(
                 _state.update {
                     it.copy(
                         stickingPoints = event.stickingPoints
+                    )
+                }
+            }
+
+            is GameEvent.SetIsAddingLiveSession -> {
+                _state.update {
+                    it.copy(
+                        isAddingLiveSession = true
                     )
                 }
             }

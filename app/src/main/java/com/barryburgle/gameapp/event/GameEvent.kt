@@ -14,6 +14,7 @@ import com.barryburgle.gameapp.model.set.SingleSet
 
 sealed interface GameEvent : GenericEvent {
     object SaveAbstractSession : GameEvent
+    object SetIsAddingLiveSession : GameEvent
     data class ShowDialog(
         val addEvent: Boolean,
         val updateEvent: Boolean,

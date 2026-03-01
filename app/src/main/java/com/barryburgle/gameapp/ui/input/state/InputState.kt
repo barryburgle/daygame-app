@@ -38,6 +38,7 @@ data class InputState(
     val challengeSortType: ChallengeSortType = ChallengeSortType.END_DATE,
     val gameEventSortType: GameEventSortType = GameEventSortType.DATE,
     val isAddingSession: Boolean = false,
+    val isAddingLiveSession: Boolean = false,
     val isUpdatingSession: Boolean = false,
     val isAddingDate: Boolean = false,
     val isUpdatingDate: Boolean = false, // TODO: after removing the setUpdateState method from dialogs consider removing the update flags like this if serve no purpose
