@@ -76,7 +76,7 @@ private fun passStateValue(stateValue: String, latestValue: String): String {
     return stateValue
 }
 
-private fun passInitialValue(
+fun passInitialValue(
     isAddingEvent: Boolean,
     editEvent: Any?,
     possibleReturn: String

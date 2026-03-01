@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.input
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.LinearEasing
@@ -57,6 +58,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -77,6 +79,7 @@ import com.barryburgle.gameapp.ui.input.dialog.SetDialog
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
 import com.barryburgle.gameapp.ui.utilities.selection.MultiChoiceButton
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
@@ -94,6 +97,7 @@ fun InputScreen(
     val spaceFromNavBar = 80.dp
     var isRotated by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(false) }
+    val localContext = LocalContext.current.applicationContext
     val blurBackground by animateDpAsState(
         targetValue = if (isExpanded or state.isInOverlay) 10.dp else 0.dp,
         animationSpec = tween(durationMillis = 350),
@@ -196,11 +200,33 @@ fun InputScreen(
                         floatingAddButton(
                             Icons.Default.Timer,
                             "Live\nSession",
-                            true, // TODO: set to true and make the color red little darker
+                            true,
                             Color.Red
                         ) {
-                            onEvent(GameEvent.SetIsInOverlayToTrue)
-                            // TODO: create livesession card and last empty session
+                            val dateTime = passInitialValue(true, null, "")
+                            onEvent(
+                                GameEvent.SetIsAddingLiveSession
+                            )
+                            onEvent(
+                                GameEvent.SetDate(
+                                    dateTime.dropLast(7)
+                                )
+                            )
+                            onEvent(
+                                GameEvent.SetStartHour(
+                                    dateTime.substring(11, 16)
+                                )
+                            )
+                            onEvent(GameEvent.SaveAbstractSession)
+                            onEvent(GameEvent.SetIsInOverlayToFalse)
+                            isExpanded = false
+                            isRotated = false
+                            Toast.makeText(
+                                localContext,
+                                "Live session started",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
                         }
                     }
                 }
