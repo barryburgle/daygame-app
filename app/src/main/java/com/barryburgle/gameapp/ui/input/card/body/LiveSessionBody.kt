@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
+import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.AbstractSessionService
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.InputCounter
@@ -34,6 +35,7 @@ fun LiveSessionBody(
     descriptionFontSize: TextUnit,
     perfFontSize: TextUnit,
     onEvent: (GameEvent) -> Unit,
+    abstractSession: AbstractSession,
     followCount: Boolean
 ) {
     var setsCount by remember {
@@ -57,7 +59,7 @@ fun LiveSessionBody(
             IconShadowButton(
                 onClick = {
                     setsCount--
-                    onEvent(GameEvent.SetSets(setsCount.toString()))
+                    onEvent(GameEvent.SetSetsLive(abstractSession, setsCount))
                 },
                 imageVector = Icons.Default.Remove,
                 contentDescription = "Less"
@@ -70,7 +72,7 @@ fun LiveSessionBody(
             IconShadowButton(
                 onClick = {
                     setsCount++
-                    onEvent(GameEvent.SetSets(setsCount.toString()))
+                    onEvent(GameEvent.SetSetsLive(abstractSession, setsCount))
                 },
                 imageVector = Icons.Default.Add,
                 contentDescription = "More"
@@ -83,7 +85,7 @@ fun LiveSessionBody(
             IconShadowButton(
                 onClick = {
                     convosCount--
-                    onEvent(GameEvent.SetConvos(convosCount.toString()))
+                    onEvent(GameEvent.SetConvosLive(abstractSession, convosCount, false))
                 },
                 imageVector = Icons.Default.Remove,
                 contentDescription = "Less"
@@ -96,7 +98,7 @@ fun LiveSessionBody(
             IconShadowButton(
                 onClick = {
                     convosCount++
-                    onEvent(GameEvent.SetConvos(convosCount.toString()))
+                    onEvent(GameEvent.SetConvosLive(abstractSession, convosCount, true))
                     if (followCount) {
                         setsCount++
                     }
@@ -112,7 +114,7 @@ fun LiveSessionBody(
             IconShadowButton(
                 onClick = {
                     contactsCount--
-                    onEvent(GameEvent.SetContacts(contactsCount.toString()))
+                    onEvent(GameEvent.SetContactsLive(abstractSession, contactsCount, false))
                 },
                 imageVector = Icons.Default.Remove,
                 contentDescription = "Less"
@@ -125,7 +127,7 @@ fun LiveSessionBody(
             IconShadowButton(
                 onClick = {
                     contactsCount++
-                    onEvent(GameEvent.SetContacts(contactsCount.toString()))
+                    onEvent(GameEvent.SetContactsLive(abstractSession, contactsCount, true))
                     if (followCount) {
                         setsCount++
                         convosCount++
