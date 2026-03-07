@@ -719,8 +719,16 @@ class InputViewModel(
 
             is GameEvent.StopLiveSession -> {
                 viewModelScope.launch {
-                    var abstractSession = event.abstractSession
-                    abstractSession.endHour = LocalDateTime.now().toString().substring(0, 16) + 'Z'
+                    val abstractSession = _batchSessionService.init(
+                        id = event.abstractSession.id.toString(),
+                        date = event.abstractSession.date.substring(0, 10),
+                        startHour = event.abstractSession.startHour.substring(11, 16),
+                        endHour = LocalDateTime.now().toString().substring(11, 16),
+                        sets = event.abstractSession.sets.toString(),
+                        convos = event.abstractSession.convos.toString(),
+                        contacts = event.abstractSession.contacts.toString(),
+                        stickingPoints = event.abstractSession.stickingPoints,
+                    )
                     abstractSessionDao.insert(abstractSession)
                 }
             }
