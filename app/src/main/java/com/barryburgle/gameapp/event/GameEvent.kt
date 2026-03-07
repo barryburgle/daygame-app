@@ -29,8 +29,25 @@ sealed interface GameEvent : GenericEvent {
     data class SetStartHour(val startHour: String) : GameEvent
     data class SetEndHour(val endHour: String) : GameEvent
     data class SetSets(val sets: String) : GameEvent
+    data class SetSetsLive(
+        val abstractSession: AbstractSession,
+        val sets: Int
+    ) : GameEvent
+
     data class SetConvos(val convos: String) : GameEvent
+    data class SetConvosLive(
+        val abstractSession: AbstractSession,
+        val convos: Int,
+        val isIncreasing: Boolean
+    ) : GameEvent
+
     data class SetContacts(val contacts: String) : GameEvent
+    data class SetContactsLive(
+        val abstractSession: AbstractSession,
+        val contacts: Int,
+        val isIncreasing: Boolean
+    ) : GameEvent
+
     data class SetStickingPoints(val stickingPoints: String) : GameEvent
     data class SortSessions(val sessionSortType: SessionSortType) : GameEvent
     data class DeleteSession(val abstractSession: AbstractSession) : GameEvent

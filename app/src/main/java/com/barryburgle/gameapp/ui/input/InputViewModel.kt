@@ -617,6 +617,14 @@ class InputViewModel(
                 }
             }
 
+            is GameEvent.SetSetsLive -> {
+                viewModelScope.launch {
+                    var abstractSession = event.abstractSession
+                    abstractSession.sets = event.sets
+                    abstractSessionDao.insert(abstractSession)
+                }
+            }
+
             is GameEvent.SetConvos -> {
                 _state.update {
                     it.copy(
@@ -638,6 +646,19 @@ class InputViewModel(
                             sets = sets.toString()
                         )
                     }
+                }
+            }
+
+            is GameEvent.SetConvosLive -> {
+                viewModelScope.launch {
+                    var abstractSession = event.abstractSession
+                    if (state.value.followCount && event.isIncreasing) {
+                        var sets = abstractSession.sets
+                        sets++
+                        abstractSession.sets = sets
+                    }
+                    abstractSession.convos = event.convos
+                    abstractSessionDao.insert(abstractSession)
                 }
             }
 
@@ -676,6 +697,22 @@ class InputViewModel(
                             convos = convos.toString()
                         )
                     }
+                }
+            }
+
+            is GameEvent.SetContactsLive -> {
+                viewModelScope.launch {
+                    var abstractSession = event.abstractSession
+                    if (state.value.followCount && event.isIncreasing) {
+                        var sets = abstractSession.sets
+                        sets++
+                        abstractSession.sets = sets
+                        var convos = abstractSession.convos
+                        convos++
+                        abstractSession.convos = convos
+                    }
+                    abstractSession.contacts = event.contacts
+                    abstractSessionDao.insert(abstractSession)
                 }
             }
 
