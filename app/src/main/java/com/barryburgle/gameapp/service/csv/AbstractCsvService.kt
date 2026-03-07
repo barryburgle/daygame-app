@@ -117,7 +117,7 @@ abstract class AbstractCsvService<T : Any> {
         if (rowLimit != null) {
             lastIndex = rowLimit
         }
-        if (lastIndex >= startCount) {
+        if (lastIndex >= startCount && lastIndex < listOfStrings.size) {
             for (index in startCount..lastIndex) {
                 val row = listOfStrings.get(index)
                 if (row != null && row.isNotEmpty()) {
