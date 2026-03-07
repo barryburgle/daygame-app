@@ -730,6 +730,11 @@ class InputViewModel(
                         stickingPoints = event.abstractSession.stickingPoints,
                     )
                     abstractSessionDao.insert(abstractSession)
+                    _state.update {
+                        it.copy(
+                            justSaved = true
+                        )
+                    }
                 }
             }
 
