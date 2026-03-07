@@ -48,6 +48,7 @@ import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.card.body.ChallengeBody
 import com.barryburgle.gameapp.ui.input.card.body.DateBody
+import com.barryburgle.gameapp.ui.input.card.body.LiveSessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SetBody
 import com.barryburgle.gameapp.ui.input.dialog.leadName
@@ -368,7 +369,19 @@ fun EventCard(
                         modifier = Modifier.fillMaxHeight()
                     ) {
                         CardSection {
-                            if (AbstractSession::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                            if (isLiveSession) {
+                                LiveSessionBody(
+                                    liveSessionTime,
+                                    10.sp,
+                                    15.sp,
+                                    onEvent,
+                                    sortableGameEvent.event as AbstractSession,
+                                    followCount
+                                )
+                            } else if (AbstractSession::class.java.simpleName.equals(
+                                    sortableGameEvent.classType
+                                )
+                            ) {
                                 SessionBody(
                                     sortableGameEvent.event as AbstractSession,
                                     50.sp,
