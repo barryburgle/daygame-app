@@ -733,6 +733,14 @@ class InputViewModel(
                 }
             }
 
+            is GameEvent.SetLiveStickingPoints -> {
+                viewModelScope.launch {
+                    var abstractSession = event.abstractSession
+                    abstractSession.stickingPoints = event.stickingPoints
+                    abstractSessionDao.insert(abstractSession)
+                }
+            }
+
             is GameEvent.SetIsAddingLiveSession -> {
                 _state.update {
                     it.copy(
