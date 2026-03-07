@@ -39,13 +39,13 @@ fun LiveSessionBody(
     followCount: Boolean
 ) {
     var setsCount by remember {
-        mutableStateOf(0)
+        mutableStateOf(abstractSession.sets)
     }
     var convosCount by remember {
-        mutableStateOf(0)
+        mutableStateOf(abstractSession.convos)
     }
     var contactsCount by remember {
-        mutableStateOf(0)
+        mutableStateOf(abstractSession.contacts)
     }
     LittleBodyText("Live session:")
     Spacer(modifier = Modifier.height(7.dp))
