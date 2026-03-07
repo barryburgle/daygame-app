@@ -48,6 +48,10 @@ sealed interface GameEvent : GenericEvent {
         val isIncreasing: Boolean
     ) : GameEvent
 
+    data class StopLiveSession(
+        val abstractSession: AbstractSession
+    ) : GameEvent
+
     data class SetStickingPoints(val stickingPoints: String) : GameEvent
     data class SortSessions(val sessionSortType: SessionSortType) : GameEvent
     data class DeleteSession(val abstractSession: AbstractSession) : GameEvent

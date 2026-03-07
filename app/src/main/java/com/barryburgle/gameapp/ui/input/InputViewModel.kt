@@ -53,6 +53,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -712,6 +713,14 @@ class InputViewModel(
                         abstractSession.convos = convos
                     }
                     abstractSession.contacts = event.contacts
+                    abstractSessionDao.insert(abstractSession)
+                }
+            }
+
+            is GameEvent.StopLiveSession -> {
+                viewModelScope.launch {
+                    var abstractSession = event.abstractSession
+                    abstractSession.endHour = LocalDateTime.now().toString().substring(0, 16) + 'Z'
                     abstractSessionDao.insert(abstractSession)
                 }
             }
