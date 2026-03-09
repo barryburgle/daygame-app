@@ -482,21 +482,11 @@ fun floatingAddButton(
             containerColor = MaterialTheme.colorScheme.tertiary,
             shape = CircleShape
         ) {
-            val infiniteTransition = rememberInfiniteTransition(label = "icon-pulse-transition")
-            val animatedColor by infiniteTransition.animateColor(
-                initialValue = animationColor!!,
-                targetValue = MaterialTheme.colorScheme.background,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(2000, easing = LinearEasing),
-                    repeatMode = RepeatMode.Reverse
-                ),
-                label = "pulsing-icon-color"
-            )
             if (animate) {
                 Icon(
                     imageVector = icon,
                     contentDescription = description,
-                    tint = animatedColor
+                    tint = liveSessionPulsingColor(animationColor)
                 )
             } else {
                 Icon(
@@ -627,4 +617,22 @@ fun gameTopBar(
             }
         }
     }
+}
+
+@Composable
+fun liveSessionPulsingColor(
+    initialColor: Color? = Color.Red,
+    durationMillis: Int = 2000
+): Color {
+    val infiniteTransition = rememberInfiniteTransition(label = "icon-pulse-transition")
+    val animatedColor by infiniteTransition.animateColor(
+        initialValue = initialColor!!,
+        targetValue = MaterialTheme.colorScheme.background,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulsing-icon-color"
+    )
+    return animatedColor
 }
