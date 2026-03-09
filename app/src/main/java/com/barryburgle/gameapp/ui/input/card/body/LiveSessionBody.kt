@@ -36,17 +36,11 @@ fun LiveSessionBody(
     perfFontSize: TextUnit,
     onEvent: (GameEvent) -> Unit,
     abstractSession: AbstractSession,
-    followCount: Boolean
+    liveSessionLeads: Int
 ) {
-    var setsCount by remember {
-        mutableStateOf(abstractSession.sets)
-    }
-    var convosCount by remember {
-        mutableStateOf(abstractSession.convos)
-    }
-    var contactsCount by remember {
-        mutableStateOf(abstractSession.contacts)
-    }
+    var setsCount = abstractSession.sets + liveSessionLeads
+    var convosCount = abstractSession.convos + liveSessionLeads
+    var contactsCount = abstractSession.contacts + liveSessionLeads
     LittleBodyText("Live session:")
     Spacer(modifier = Modifier.height(7.dp))
     Row(
@@ -58,8 +52,7 @@ fun LiveSessionBody(
             LittleBodyText("Sets")
             IconShadowButton(
                 onClick = {
-                    setsCount--
-                    onEvent(GameEvent.SetSetsLive(abstractSession, setsCount))
+                    onEvent(GameEvent.SetSetsLive(abstractSession, setsCount - 1))
                 },
                 imageVector = Icons.Default.Remove,
                 contentDescription = "Less"
@@ -71,12 +64,12 @@ fun LiveSessionBody(
             )
             IconShadowButton(
                 onClick = {
-                    setsCount++
-                    onEvent(GameEvent.SetSetsLive(abstractSession, setsCount))
+                    onEvent(GameEvent.SetSetsLive(abstractSession, setsCount + 1))
                 },
                 imageVector = Icons.Default.Add,
                 contentDescription = "More"
             )
+            // TODO: use counters in SessionDialog as here, withotu remember and without follow count on FE
         }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -84,8 +77,7 @@ fun LiveSessionBody(
             LittleBodyText("Conversations")
             IconShadowButton(
                 onClick = {
-                    convosCount--
-                    onEvent(GameEvent.SetConvosLive(abstractSession, convosCount, false))
+                    onEvent(GameEvent.SetConvosLive(abstractSession, convosCount - 1, false))
                 },
                 imageVector = Icons.Default.Remove,
                 contentDescription = "Less"
@@ -97,11 +89,7 @@ fun LiveSessionBody(
             )
             IconShadowButton(
                 onClick = {
-                    convosCount++
-                    onEvent(GameEvent.SetConvosLive(abstractSession, convosCount, true))
-                    if (followCount) {
-                        setsCount++
-                    }
+                    onEvent(GameEvent.SetConvosLive(abstractSession, convosCount + 1, true))
                 },
                 imageVector = Icons.Default.Add,
                 contentDescription = "More"
@@ -113,8 +101,7 @@ fun LiveSessionBody(
             LittleBodyText("Contacts")
             IconShadowButton(
                 onClick = {
-                    contactsCount--
-                    onEvent(GameEvent.SetContactsLive(abstractSession, contactsCount, false))
+                    onEvent(GameEvent.SetContactsLive(abstractSession, contactsCount - 1, false))
                 },
                 imageVector = Icons.Default.Remove,
                 contentDescription = "Less"
@@ -126,12 +113,7 @@ fun LiveSessionBody(
             )
             IconShadowButton(
                 onClick = {
-                    contactsCount++
-                    onEvent(GameEvent.SetContactsLive(abstractSession, contactsCount, true))
-                    if (followCount) {
-                        setsCount++
-                        convosCount++
-                    }
+                    onEvent(GameEvent.SetContactsLive(abstractSession, contactsCount + 1, true))
                 },
                 imageVector = Icons.Default.Add,
                 contentDescription = "More"
