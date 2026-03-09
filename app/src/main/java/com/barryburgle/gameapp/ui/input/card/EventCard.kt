@@ -413,59 +413,7 @@ fun EventCard(
                                 } else {
                                     LittleBodyText("Leads:")
                                     Spacer(modifier = Modifier.height(7.dp))
-                                    LazyRow(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(120.dp)
-                                            .drawWithContent {
-                                                drawContent()
-                                                drawRect(
-                                                    brush = getEventCardLeadsBrush(
-                                                        semiOpaqueBackground
-                                                    )
-                                                )
-                                            },
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        item {
-                                            Spacer(modifier = Modifier.width(15.dp))
-                                        }
-                                        for (lead in leads) {
-                                            item {
-                                                Row(
-                                                    modifier = Modifier.clickable {
-                                                        onEvent(GameEvent.SetIsInOverlayToTrue)
-                                                        onEvent(
-                                                            GameEvent.EditLead(
-                                                                lead, true
-                                                            )
-                                                        )
-                                                        onEvent(
-                                                            GameEvent.ShowLeadDialog(
-                                                                false, false
-                                                            )
-                                                        )
-                                                    },
-                                                    horizontalArrangement = Arrangement.spacedBy(
-                                                        7.dp
-                                                    )
-                                                ) {
-                                                    leadName(
-                                                        lead = lead,
-                                                        backgroundColor = MaterialTheme.colorScheme.background,
-                                                        outputShow = false,
-                                                        cardShow = true
-                                                    )
-                                                }
-                                            }
-                                            item {
-                                                Spacer(modifier = Modifier.width(5.dp))
-                                            }
-                                        }
-                                        item {
-                                            Spacer(modifier = Modifier.width(35.dp))
-                                        }
-                                    }
+                                    LeadsRow(semiOpaqueBackground, leads, onEvent)
                                 }
                             }
                         }
@@ -539,6 +487,67 @@ fun EventCard(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun LeadsRow(
+    semiOpaqueBackground: Color,
+    leads: List<Lead>,
+    onEvent: (GameEvent) -> Unit
+) {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(120.dp)
+            .drawWithContent {
+                drawContent()
+                drawRect(
+                    brush = getEventCardLeadsBrush(
+                        semiOpaqueBackground
+                    )
+                )
+            },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        item {
+            Spacer(modifier = Modifier.width(15.dp))
+        }
+        for (lead in leads) {
+            item {
+                Row(
+                    modifier = Modifier.clickable {
+                        onEvent(GameEvent.SetIsInOverlayToTrue)
+                        onEvent(
+                            GameEvent.EditLead(
+                                lead, true
+                            )
+                        )
+                        onEvent(
+                            GameEvent.ShowLeadDialog(
+                                false, false
+                            )
+                        )
+                    },
+                    horizontalArrangement = Arrangement.spacedBy(
+                        7.dp
+                    )
+                ) {
+                    leadName(
+                        lead = lead,
+                        backgroundColor = MaterialTheme.colorScheme.background,
+                        outputShow = false,
+                        cardShow = true
+                    )
+                }
+            }
+            item {
+                Spacer(modifier = Modifier.width(5.dp))
+            }
+        }
+        item {
+            Spacer(modifier = Modifier.width(35.dp))
         }
     }
 }
