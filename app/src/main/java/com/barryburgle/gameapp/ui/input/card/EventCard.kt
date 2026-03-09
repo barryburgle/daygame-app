@@ -67,9 +67,9 @@ fun EventCard(
     modifier: Modifier = Modifier,
     simplePlusOneReport: Boolean,
     neverShareLeadInfo: Boolean,
-    copyReportOnClipboard: Boolean
     copyReportOnClipboard: Boolean,
     isLiveSession: Boolean = false,
+    followCount: Boolean = true
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val localContext = LocalContext.current.applicationContext
@@ -187,192 +187,248 @@ fun EventCard(
                                 imageVector = Icons.Default.Share,
                                 contentDescription = "Share Event"
                             )
-                            IconShadowButton(
-                                onClick = {
-                                    if (AbstractSession::class.java.simpleName.equals(
-                                            sortableGameEvent.classType
-                                        )
-                                    ) {
-                                        onEvent(
-                                            GameEvent.DeleteSession(
-                                                sortableGameEvent.event as AbstractSession
-                                            )
-                                        )
-                                    }
-                                    if (SingleSet::class.java.simpleName.equals(
-                                            sortableGameEvent.classType
-                                        )
-                                    ) {
-                                        onEvent(
-                                            GameEvent.DeleteSet(
-                                                sortableGameEvent.event as SingleSet
-                                            )
-                                        )
-                                    }
-                                    if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
-                                        onEvent(
-                                            GameEvent.DeleteDate(
-                                                sortableGameEvent.event as Date
-                                            )
-                                        )
-                                    }
-                                    if (AchievedChallenge::class.java.simpleName.equals(
-                                            sortableGameEvent.classType
-                                        )
-                                    ) {
-                                        onEvent(
-                                            GameEvent.DeleteChallenge(
-                                                (sortableGameEvent.event as AchievedChallenge).challenge
-                                            )
-                                        )
-                                    }
-                                },
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete Event",
-                                iconColor = MaterialTheme.colorScheme.onErrorContainer
-                            )
-                            IconShadowButton(
-                                onClick = {
-                                    onEvent(GameEvent.EmptyLeads)
-                                    if (AbstractSession::class.java.simpleName.equals(
-                                            sortableGameEvent.classType
-                                        )
-                                    ) {
-                                        // TODO: here the code should call all the setters for the session and feed them with data from the actual session to edit
-                                        leads.forEach { lead ->
+                            if (isLiveSession) {
+                                IconShadowButton(
+                                    onClick = {
+                                        var liveSession = sortableGameEvent.event as AbstractSession
+                                        if (followCount) {
                                             onEvent(
-                                                GameEvent.SetLead(
-                                                    lead
+                                                GameEvent.SetContactsLive(
+                                                    liveSession,
+                                                    liveSession.contacts + 1,
+                                                    true
                                                 )
                                             )
                                         }
-                                        onEvent(GameEvent.SetIsInOverlayToTrue)
-                                        onEvent(
-                                            GameEvent.EditSession(
-                                                sortableGameEvent.event as AbstractSession
+                                        liveSessionLeads += 1
+                                        onEvent(GameEvent.SwitchSaveLeadToLiveSession)
+                                        onEvent(GameEvent.SetLeadSessionId(liveSession.id!!))
+                                        onEvent(GameEvent.SwitchJustSaved)
+                                        onEvent(GameEvent.ShowLeadDialog(true, false))
+                                    },
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "Add Lead to Live Session"
+                                )
+                            } else {
+                                IconShadowButton(
+                                    onClick = {
+                                        onEvent(GameEvent.EmptyLeads)
+                                        if (AbstractSession::class.java.simpleName.equals(
+                                                sortableGameEvent.classType
                                             )
-                                        )
-                                        onEvent(
-                                            GameEvent.ShowDialog(
-                                                false,
-                                                true,
-                                                EventTypeEnum.SESSION
+                                        ) {
+                                            // TODO: here the code should call all the setters for the session and feed them with data from the actual session to edit
+                                            leads.forEach { lead ->
+                                                onEvent(
+                                                    GameEvent.SetLead(
+                                                        lead
+                                                    )
+                                                )
+                                            }
+                                            onEvent(GameEvent.SetIsInOverlayToTrue)
+                                            onEvent(
+                                                GameEvent.EditSession(
+                                                    sortableGameEvent.event as AbstractSession
+                                                )
                                             )
-                                        )
-                                    }
-                                    if (SingleSet::class.java.simpleName.equals(
-                                            sortableGameEvent.classType
-                                        )
-                                    ) {
-                                        // TODO: here the code should call all the setters for the set and feed them with data from the actual set to edit
-                                        onEvent(
-                                            GameEvent.SetConversation((sortableGameEvent.event as SingleSet).conversation)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetContact((sortableGameEvent.event as SingleSet).contact)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetInstantDate((sortableGameEvent.event as SingleSet).instantDate)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetRecorded((sortableGameEvent.event as SingleSet).recorded)
-                                        )
-                                        onEvent(GameEvent.SetIsInOverlayToTrue)
-                                        onEvent(
-                                            GameEvent.EditSet(
-                                                sortableGameEvent.event as SingleSet
+                                            onEvent(
+                                                GameEvent.ShowDialog(
+                                                    false,
+                                                    true,
+                                                    EventTypeEnum.SESSION
+                                                )
                                             )
-                                        )
-                                        onEvent(
-                                            GameEvent.ShowDialog(
-                                                false,
-                                                true,
-                                                EventTypeEnum.SET
+                                        }
+                                        if (SingleSet::class.java.simpleName.equals(
+                                                sortableGameEvent.classType
                                             )
-                                        )
-                                    }
-                                    if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
-                                        // TODO: here the code should call all the setters for the date and feed them with data from the actual date to edit
-                                        onEvent(
-                                            GameEvent.SetPull((sortableGameEvent.event as Date).pull)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetBounce((sortableGameEvent.event as Date).bounce)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetKiss((sortableGameEvent.event as Date).kiss)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetLay((sortableGameEvent.event as Date).lay)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetRecorded((sortableGameEvent.event as Date).recorded)
-                                        )
-                                        onEvent(GameEvent.SetIsInOverlayToTrue)
-                                        onEvent(
-                                            GameEvent.EditDate(
-                                                sortableGameEvent.event as Date
+                                        ) {
+                                            // TODO: here the code should call all the setters for the set and feed them with data from the actual set to edit
+                                            onEvent(
+                                                GameEvent.SetConversation((sortableGameEvent.event as SingleSet).conversation)
                                             )
-                                        )
-                                        onEvent(
-                                            GameEvent.ShowDialog(
-                                                false,
-                                                true,
-                                                EventTypeEnum.DATE
+                                            onEvent(
+                                                GameEvent.SetContact((sortableGameEvent.event as SingleSet).contact)
                                             )
-                                        )
-                                    }
-                                    if (AchievedChallenge::class.java.simpleName.equals(
-                                            sortableGameEvent.classType
-                                        )
-                                    ) {
-                                        onEvent(
-                                            GameEvent.SetChallengeName((sortableGameEvent.event as AchievedChallenge).challenge.name!!)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetChallengeDescription((sortableGameEvent.event as AchievedChallenge).challenge.description!!)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetChallengeStartDate((sortableGameEvent.event as AchievedChallenge).challenge.startDate)
-                                        )
-                                        val startDate =
-                                            FormatService.parseDate((sortableGameEvent.event as AchievedChallenge).challenge.startDate)
-                                        val endDate =
-                                            FormatService.parseDate((sortableGameEvent.event as AchievedChallenge).challenge.endDate)
-                                        val duration = ChronoUnit.DAYS.between(startDate, endDate)
-                                        onEvent(
-                                            GameEvent.SetChallengeDuration(duration.toString())
-                                        )
-                                        onEvent(
-                                            GameEvent.SetChallengeType((sortableGameEvent.event as AchievedChallenge).challenge.type)
-                                        )
-                                        onEvent(
-                                            GameEvent.SetChallengeGoal((sortableGameEvent.event as AchievedChallenge).challenge.goal.toString())
-                                        )
-                                        onEvent(
-                                            GameEvent.SetChallengeTweetUrl((sortableGameEvent.event as AchievedChallenge).challenge.tweetUrl!!)
-                                        )
-                                        onEvent(GameEvent.SetIsInOverlayToTrue)
-                                        onEvent(
-                                            GameEvent.EditChallenge(
-                                                (sortableGameEvent.event as AchievedChallenge).challenge
+                                            onEvent(
+                                                GameEvent.SetInstantDate((sortableGameEvent.event as SingleSet).instantDate)
                                             )
-                                        )
-                                        onEvent(
-                                            GameEvent.ShowDialog(
-                                                false,
-                                                true,
-                                                EventTypeEnum.CHALLENGE
+                                            onEvent(
+                                                GameEvent.SetRecorded((sortableGameEvent.event as SingleSet).recorded)
                                             )
+                                            onEvent(GameEvent.SetIsInOverlayToTrue)
+                                            onEvent(
+                                                GameEvent.EditSet(
+                                                    sortableGameEvent.event as SingleSet
+                                                )
+                                            )
+                                            onEvent(
+                                                GameEvent.ShowDialog(
+                                                    false,
+                                                    true,
+                                                    EventTypeEnum.SET
+                                                )
+                                            )
+                                        }
+                                        if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                            // TODO: here the code should call all the setters for the date and feed them with data from the actual date to edit
+                                            onEvent(
+                                                GameEvent.SetPull((sortableGameEvent.event as Date).pull)
+                                            )
+                                            onEvent(
+                                                GameEvent.SetBounce((sortableGameEvent.event as Date).bounce)
+                                            )
+                                            onEvent(
+                                                GameEvent.SetKiss((sortableGameEvent.event as Date).kiss)
+                                            )
+                                            onEvent(
+                                                GameEvent.SetLay((sortableGameEvent.event as Date).lay)
+                                            )
+                                            onEvent(
+                                                GameEvent.SetRecorded((sortableGameEvent.event as Date).recorded)
+                                            )
+                                            onEvent(GameEvent.SetIsInOverlayToTrue)
+                                            onEvent(
+                                                GameEvent.EditDate(
+                                                    sortableGameEvent.event as Date
+                                                )
+                                            )
+                                            onEvent(
+                                                GameEvent.ShowDialog(
+                                                    false,
+                                                    true,
+                                                    EventTypeEnum.DATE
+                                                )
+                                            )
+                                        }
+                                        if (AchievedChallenge::class.java.simpleName.equals(
+                                                sortableGameEvent.classType
+                                            )
+                                        ) {
+                                            onEvent(
+                                                GameEvent.SetChallengeName((sortableGameEvent.event as AchievedChallenge).challenge.name!!)
+                                            )
+                                            onEvent(
+                                                GameEvent.SetChallengeDescription((sortableGameEvent.event as AchievedChallenge).challenge.description!!)
+                                            )
+                                            onEvent(
+                                                GameEvent.SetChallengeStartDate((sortableGameEvent.event as AchievedChallenge).challenge.startDate)
+                                            )
+                                            val startDate =
+                                                FormatService.parseDate((sortableGameEvent.event as AchievedChallenge).challenge.startDate)
+                                            val endDate =
+                                                FormatService.parseDate((sortableGameEvent.event as AchievedChallenge).challenge.endDate)
+                                            val duration =
+                                                ChronoUnit.DAYS.between(startDate, endDate)
+                                            onEvent(
+                                                GameEvent.SetChallengeDuration(duration.toString())
+                                            )
+                                            onEvent(
+                                                GameEvent.SetChallengeType((sortableGameEvent.event as AchievedChallenge).challenge.type)
+                                            )
+                                            onEvent(
+                                                GameEvent.SetChallengeGoal((sortableGameEvent.event as AchievedChallenge).challenge.goal.toString())
+                                            )
+                                            onEvent(
+                                                GameEvent.SetChallengeTweetUrl((sortableGameEvent.event as AchievedChallenge).challenge.tweetUrl!!)
+                                            )
+                                            onEvent(GameEvent.SetIsInOverlayToTrue)
+                                            onEvent(
+                                                GameEvent.EditChallenge(
+                                                    (sortableGameEvent.event as AchievedChallenge).challenge
+                                                )
+                                            )
+                                            onEvent(
+                                                GameEvent.ShowDialog(
+                                                    false,
+                                                    true,
+                                                    EventTypeEnum.CHALLENGE
+                                                )
+                                            )
+                                        }
+                                    },
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = "Edit Event"
+                                )
+                            }
+                            if (isLiveSession) {
+                                IconShadowButton(
+                                    onClick = {
+                                        onEvent(
+                                            GameEvent.StopLiveSession(sortableGameEvent.event as AbstractSession)
                                         )
-                                    }
-                                },
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = "Edit Event"
-                            )
+                                    },
+                                    imageVector = Icons.Default.Stop,
+                                    contentDescription = "Stop Live Session",
+                                    iconColor = MaterialTheme.colorScheme.onErrorContainer
+                                )
+                            } else {
+                                IconShadowButton(
+                                    onClick = {
+                                        if (AbstractSession::class.java.simpleName.equals(
+                                                sortableGameEvent.classType
+                                            )
+                                        ) {
+                                            onEvent(
+                                                GameEvent.DeleteSession(
+                                                    sortableGameEvent.event as AbstractSession
+                                                )
+                                            )
+                                        }
+                                        if (SingleSet::class.java.simpleName.equals(
+                                                sortableGameEvent.classType
+                                            )
+                                        ) {
+                                            onEvent(
+                                                GameEvent.DeleteSet(
+                                                    sortableGameEvent.event as SingleSet
+                                                )
+                                            )
+                                        }
+                                        if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                                            onEvent(
+                                                GameEvent.DeleteDate(
+                                                    sortableGameEvent.event as Date
+                                                )
+                                            )
+                                        }
+                                        if (AchievedChallenge::class.java.simpleName.equals(
+                                                sortableGameEvent.classType
+                                            )
+                                        ) {
+                                            onEvent(
+                                                GameEvent.DeleteChallenge(
+                                                    (sortableGameEvent.event as AchievedChallenge).challenge
+                                                )
+                                            )
+                                        }
+                                    },
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Delete Event",
+                                    iconColor = MaterialTheme.colorScheme.onErrorContainer
+                                )
+                            }
                         }
                     }
-                    LittleBodyText(sortableGameEvent.event.getEventDuration())
+                    var eventDuration = sortableGameEvent.event.getEventDuration()
+                    if (isLiveSession) {
+                        val session = sortableGameEvent.event as AbstractSession
+                        val nowLocalDateTime = LocalDateTime.now()
+                        val nowTime = getParsedHour(
+                            session.date.substring(0, 10),
+                            nowLocalDateTime.toLocalTime().toString().substring(0, 5)
+                        )
+                        val startTime = getParsedHour(
+                            session.startHour.substring(0, 10),
+                            session.startHour.substring(11, 16)
+                        )
+                        liveSessionTime = getTime(startTime, nowTime)
+                        eventDuration =
+                            eventDuration.substring(0, 8) + nowLocalDateTime.toLocalTime()
+                                .toString()
+                                .substring(0, 5) + ": " + liveSessionTime.toString() + " minutes"
+                    }
+                    LittleBodyText(eventDuration)
                 }
                 Row(
                     modifier = Modifier
