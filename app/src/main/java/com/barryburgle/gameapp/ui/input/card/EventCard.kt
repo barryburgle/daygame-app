@@ -509,26 +509,42 @@ fun EventCard(
                                 sectionDescription = "Description"
                             }
                             CardSection(width = width) {
-                                Row(
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .fillMaxWidth()
-                                ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .fillMaxHeight()
+                                if (isLiveSession) {
+                                    DialogTextComponent(
+                                        (sortableGameEvent.event as AbstractSession).stickingPoints,
+                                        "Sticking points",
+                                        100.dp,
+                                        ""
                                     ) {
-                                        val noSectionContentSentence =
-                                            "No ${sectionDescription.lowercase()}"
-                                        if (stickingPoints == null || stickingPoints.isBlank()) {
-                                            LittleBodyText(noSectionContentSentence)
-                                        } else {
-                                            LittleBodyText("${sectionDescription}:")
-                                            Spacer(modifier = Modifier.height(5.dp))
-                                            MediumBodyText(if (stickingPoints != null) stickingPoints else noSectionContentSentence)
+                                        onEvent(
+                                            GameEvent.SetLiveStickingPoints(
+                                                sortableGameEvent.event as AbstractSession,
+                                                it
+                                            )
+                                        )
+                                    }
+                                } else {
+                                    Row(
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .fillMaxWidth()
+                                    ) {
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .fillMaxHeight()
+                                        ) {
+                                            val noSectionContentSentence =
+                                                "No ${sectionDescription.lowercase()}"
+                                            if (stickingPoints == null || stickingPoints.isBlank()) {
+                                                LittleBodyText(noSectionContentSentence)
+                                            } else {
+                                                LittleBodyText("${sectionDescription}:")
+                                                Spacer(modifier = Modifier.height(5.dp))
+                                                MediumBodyText(if (stickingPoints != null) stickingPoints else noSectionContentSentence)
+                                            }
                                         }
                                     }
                                 }
