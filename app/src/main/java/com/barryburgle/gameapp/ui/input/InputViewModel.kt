@@ -460,6 +460,14 @@ class InputViewModel(
                 }
             }
 
+            is GameEvent.SetLeadSessionId -> {
+                _state.update {
+                    it.copy(
+                        leadSessionId = event.leadSessionId
+                    )
+                }
+            }
+
             is GameEvent.EditLead -> {
                 _state.update {
                     if (event.isUpdatingLead) {
