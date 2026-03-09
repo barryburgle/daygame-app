@@ -125,4 +125,6 @@ sealed interface GameEvent : GenericEvent {
     data class SortChallenges(val sortType: ChallengeSortType) : GameEvent
     data class DeleteChallenge(val challenge: Challenge) : GameEvent
     data class EditChallenge(val challenge: Challenge) : GameEvent
+
+    object SwitchSaveLeadToLiveSession : GameEvent
 }

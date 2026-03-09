@@ -1437,6 +1437,14 @@ class InputViewModel(
                     )
                 }
             }
+
+            is GameEvent.SwitchSaveLeadToLiveSession -> {
+                _state.update {
+                    it.copy(
+                        saveLeadToLiveSession = _state.value.saveLeadToLiveSession.not()
+                    )
+                }
+            }
         }
     }
 }

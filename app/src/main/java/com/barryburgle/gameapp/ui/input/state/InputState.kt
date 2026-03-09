@@ -124,7 +124,8 @@ data class InputState(
     var challengeType: String = "",
     var challengeGoal: String = "20",
     var challengeTweetUrl: String = "",
-    val editChallenge: Challenge? = null
+    val editChallenge: Challenge? = null,
+    var saveLeadToLiveSession: Boolean = false,
 ) : ExportState(
     sessionSortType,
     exportSessionsFileName,
