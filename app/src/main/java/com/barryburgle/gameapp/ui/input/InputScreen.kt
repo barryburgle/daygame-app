@@ -31,7 +31,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -296,6 +296,37 @@ fun InputScreen(
             item {
                 Spacer(modifier = Modifier.height(120.dp))
             }
+            var showingLiveSessionCard = false
+            if (!state.allEvents.isEmpty()) {
+                val sessionList =
+                    state.allEvents.filter { it.classType == AbstractSession::class.java.simpleName }
+                if (!sessionList.isEmpty()) {
+                    val lastSession = sessionList.first().event as AbstractSession
+                    if (lastSession.startHour == lastSession.endHour) {
+                        showingLiveSessionCard = true
+                        item {
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Spacer(modifier = Modifier.width(spaceFromLeft))
+                                EventCard(
+                                    sessionList.first(),
+                                    getLeads(state, sessionList.first()),
+                                    onEvent,
+                                    Modifier
+                                        .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
+                                        .shadow(
+                                            elevation = 5.dp, shape = MaterialTheme.shapes.large
+                                        ),
+                                    state.simplePlusOneReport,
+                                    state.neverShareLeadInfo,
+                                    state.copyReportOnClipboard,
+                                    true,
+                                    state.followCount
+                                )
+                            }
+                        }
+                    }
+                }
+            }
             if (state.showCurrentWeekSummary || state.showCurrentMonthSummary || state.showCurrentChallengeSummary) {
                 item {
                     Row(modifier = Modifier.fillMaxWidth()) {
@@ -311,22 +342,24 @@ fun InputScreen(
                     }
                 }
             }
-            items(state.allEvents) { sortableGameEvent ->
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.width(spaceFromLeft))
-                    EventCard(
-                        sortableGameEvent,
-                        getLeads(state, sortableGameEvent),
-                        onEvent,
-                        Modifier
-                            .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
-                            .shadow(
-                                elevation = 5.dp, shape = MaterialTheme.shapes.large
-                            ),
-                        state.simplePlusOneReport,
-                        state.neverShareLeadInfo,
-                        state.copyReportOnClipboard
-                    )
+            itemsIndexed(state.allEvents) { index, sortableGameEvent ->
+                if (!(index == 0 && showingLiveSessionCard)) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Spacer(modifier = Modifier.width(spaceFromLeft))
+                        EventCard(
+                            sortableGameEvent,
+                            getLeads(state, sortableGameEvent),
+                            onEvent,
+                            Modifier
+                                .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
+                                .shadow(
+                                    elevation = 5.dp, shape = MaterialTheme.shapes.large
+                                ),
+                            state.simplePlusOneReport,
+                            state.neverShareLeadInfo,
+                            state.copyReportOnClipboard
+                        )
+                    }
                 }
             }
             item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom * 2 + spaceFromLeft * 3)) {} }
