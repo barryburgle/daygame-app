@@ -71,6 +71,7 @@ fun LeadDialog(
     }
     AlertDialog(modifier = modifier
         .shadow(elevation = 10.dp), onDismissRequest = {
+        onEvent(GameEvent.SwitchSaveLeadToLiveSession)
         onEvent(GameEvent.SetIsInOverlayToFalse)
         onEvent(GameEvent.HideLeadDialog)
     }, title = {
@@ -257,7 +258,7 @@ fun LeadDialog(
         }
     }, confirmButton = {
         ConfirmButton {
-            if (state.isUpdatingLead) {
+            if (state.isUpdatingLead || state.saveLeadToLiveSession) {
                 lead.id = state.leadId
                 lead.insertTime = state.leadInsertTime
                 lead.sessionId = state.leadSessionId
@@ -275,15 +276,16 @@ fun LeadDialog(
                     )
                 )
             }
-            if (state.isUpdatingLead) {
+            if (state.isUpdatingLead || state.saveLeadToLiveSession) {
                 onEvent(GameEvent.SaveLead(lead))
             } else {
                 onEvent(GameEvent.SetLead(lead))
             }
+            onEvent(GameEvent.SwitchSaveLeadToLiveSession)
             onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideLeadDialog)
             onEvent(GameEvent.SwitchJustSaved)
-            if (state.isUpdatingLead) {
+            if (state.isUpdatingLead || state.saveLeadToLiveSession) {
                 Toast.makeText(localContext, "Lead saved", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(localContext, "Lead on hold", Toast.LENGTH_SHORT).show()
@@ -292,6 +294,7 @@ fun LeadDialog(
     },
         dismissButton = {
             DismissButton {
+                onEvent(GameEvent.SwitchSaveLeadToLiveSession)
                 onEvent(GameEvent.SetIsInOverlayToFalse)
                 onEvent(GameEvent.HideLeadDialog)
             }
