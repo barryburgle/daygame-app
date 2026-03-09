@@ -14,10 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,23 +42,27 @@ import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
-import com.barryburgle.gameapp.model.enums.ChallengeTypeEnum
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
+import com.barryburgle.gameapp.service.EntityService.Companion.getParsedHour
+import com.barryburgle.gameapp.service.EntityService.Companion.getTime
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.card.body.ChallengeBody
 import com.barryburgle.gameapp.ui.input.card.body.DateBody
 import com.barryburgle.gameapp.ui.input.card.body.LiveSessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SetBody
+import com.barryburgle.gameapp.ui.input.dialog.component.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.dialog.leadName
+import com.barryburgle.gameapp.ui.input.liveSessionPulsingColor
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 @ExperimentalMaterial3Api
@@ -73,6 +80,8 @@ fun EventCard(
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val localContext = LocalContext.current.applicationContext
+    var liveSessionTime: Long = 0
+    var liveSessionLeads: Int = 0
     Card(
         modifier = modifier, colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
@@ -447,7 +456,7 @@ fun EventCard(
                                     15.sp,
                                     onEvent,
                                     sortableGameEvent.event as AbstractSession,
-                                    followCount
+                                    liveSessionLeads
                                 )
                             } else if (AbstractSession::class.java.simpleName.equals(
                                     sortableGameEvent.classType
