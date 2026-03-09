@@ -68,6 +68,8 @@ fun EventCard(
     simplePlusOneReport: Boolean,
     neverShareLeadInfo: Boolean,
     copyReportOnClipboard: Boolean
+    copyReportOnClipboard: Boolean,
+    isLiveSession: Boolean = false,
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val localContext = LocalContext.current.applicationContext
@@ -98,14 +100,27 @@ fun EventCard(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Icon(
-                                imageVector = sortableGameEvent.event.getEventIcon(),
-                                contentDescription = "Session date",
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.height(25.dp)
-                            )
+                            if (isLiveSession) {
+                                Icon(
+                                    imageVector = Icons.Default.Timer,
+                                    contentDescription = "Live session",
+                                    tint = liveSessionPulsingColor(),
+                                    modifier = Modifier.height(25.dp)
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = sortableGameEvent.event.getEventIcon(),
+                                    contentDescription = "Event icon",
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier.height(25.dp)
+                                )
+                            }
                             Spacer(modifier = Modifier.width(7.dp))
-                            LargeTitleText(sortableGameEvent.event.getEventTitle())
+                            var eventTitle = sortableGameEvent.event.getEventTitle()
+                            if (isLiveSession) {
+                                eventTitle = "Live " + eventTitle.lowercase()
+                            }
+                            LargeTitleText(eventTitle)
                         }
                         Row(
                             modifier = Modifier
