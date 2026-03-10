@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -215,7 +215,7 @@ fun EventCard(
                                         onEvent(GameEvent.SwitchJustSaved)
                                         onEvent(GameEvent.ShowLeadDialog(true, false))
                                     },
-                                    imageVector = Icons.Default.Add,
+                                    imageVector = Icons.Default.PersonAddAlt1,
                                     contentDescription = "Add Lead to Live Session"
                                 )
                             } else {
