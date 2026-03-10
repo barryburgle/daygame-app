@@ -5,6 +5,7 @@ __If you have already installed a previous version of DayGame it will be necessa
 If you will not follow this procedure you will not be able to upgrade.__
 
 **Features**
+- Start a new "Live Session" for easy on-the-go sets, conversations, contacts and leads insert, sticking points edit and session real-time performance observability ⏱️
 - Have some fun with sets, conversations and contact challenges: push your game to the maximum to score medals 🏆
 - Have a look at your past with the "History" grid: the best way to observe your volumes, achievements and results on sets and dates across months 🔎
 - Export and import settings in csv file along with other data 🔒
