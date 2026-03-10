@@ -92,6 +92,11 @@ You can download the app .apk installer on the release page clicking on the foll
   - challenge type between: sets, conversations and contacts (future types coming soon)
   - quantifiable goal for the selected type
   Check challenge completion from card and score medals according to achievements
+- [x] `Game Tab` Start a new "Live Session":
+  - insert on the go sets, conversations, contacts and leads
+  - get real-time session time and performance indicators
+  - take sticking points on the go
+  - convert the live session to a finalized session with stop button
 - [x] `Dashboard Tab` Visualize session charts for:
   - leads details with alert
   - sets
@@ -143,13 +148,6 @@ The future features are divided in:
 | Last contact | String Timestamp Default Null |
 | Last contact Type | Enum [ping, text, story reply, call, random meet, she gets back in touch, reason from user] Default Null |
 | Conversation Tags | List<String> Default Null |
-
-- [ ] 🟢 `Sessions Tab` Live session insert red card with single sets' timestamp & geo tracking for future space-time windows analysis (when and where to go out on a statistical basis). When a session is live a persistent and interactive notification with proper + & - buttons for sets, conversations and contacts should be shown on device. Only one session can be a Live session at a time. Abstract Session Data Model extension:
-
-| Column name | Details |
-| ----------- | ------- |
-| ... | ... |
-| Live session | Boolean Default Null |
 
 - [ ] 🟢 `Sessions Tab` Insert a new in-past date-delimited period providing overall sets, conversations, contacts, dates and lays achieved (allow jaunts tracking and destinations comparison): overall statistics should be affected from this also. Period Data Model:
 
