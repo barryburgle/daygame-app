@@ -1,8 +1,7 @@
 # Version 1.10.0 (2026-03-23)
 ***WARNING*** ⚠️
 
-__If you have already installed a previous version of DayGame it will be necessary to backup all your data and uninstall the app, proceeding then with the installation of the new version and backup import.
-If you will not follow this procedure you will not be able to upgrade.__
+__If you have already installed a previous version of Daygame it will be necessary to backup all your data and uninstall the app, proceeding then with the installation of the new version and import the backup. If you will not follow this procedure you will not be able to upgrade and may lose your data.__
 
 **Features**
 - Start a new "Live Session" for easy on-the-go sets, conversations, contacts and leads insert, sticking points edit and session real-time performance observability ⏱️
@@ -24,7 +23,7 @@ If you will not follow this procedure you will not be able to upgrade.__
 - Leads name cut bugfix
 - Hour and date colors fixed
 - Leads acquired by single-sets not showing in Leads dashboard section
-- Import tables with only one row bugix
+  - Import tables with only one row bugfix
 
 # Version 1.9.0 (2025-07-30)
 
