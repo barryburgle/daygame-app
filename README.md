@@ -21,7 +21,7 @@
   <br />
   <img src="https://img.shields.io/github/commit-activity/m/barryburgle/daygame-app?style=for-the-badge" alt="Commits per month">
   <img src="https://img.shields.io/github/languages/code-size/barryburgle/daygame-app?style=for-the-badge" alt="GitHub code size in bytes" />
-<img src="https://img.shields.io/badge/dynamic/json?url=https://api.codetabs.com/v1/loc?github=barryburgle/daygame-app&query=$.[?(@.language=='Total')].lines&style=for-the-badge&label=lines&color=blue" alt="Lines">
+  <img src="https://img.shields.io/badge/dynamic/json?url=https://api.codetabs.com/v1/loc?github=barryburgle/daygame-app&query=$[?(@.language=='Total')].lines&style=for-the-badge&label=lines&color=blue" alt="Lines">
 </div>
 
 The main goal of this app it to provide a tool for measurement and improvement of your daygame.
