@@ -44,6 +44,13 @@ You can download the app .apk installer on the release page clicking on the foll
 </a>
 </div>
 
+### Warning
+
+Android is - by default - blocking app installation out of verified stores. To be able to install Daygame you will therefore need to:
+1. Search on your phone Settings "Install unknown apps"
+2. Enable any app you're installing Daygame *from* to install unknown apps: if you're opening the `daygame-vX.Y.Z.apk` file from your browser enable that, if you're opening it from the file manager, enable that.
+Daygame will not be distributed through Android verified stores, but the code is free, open and forkable.
+
 ## Features
 - [x] `Game Tab` Add, edit and delete a new session specifying:
   - date
