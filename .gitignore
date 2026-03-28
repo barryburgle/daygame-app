@@ -28,5 +28,7 @@ out
 .gradle
 
 local.properties
+gradle-daemon-json.properties
+problems-report.html
 
 app/release
