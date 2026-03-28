@@ -1,0 +1,61 @@
+[versions]
+accompanistFlowlayout = "0.36.0"
+activityCompose = "1.13.0"
+agp = "9.1.0"
+appcompat = "1.7.1"
+composeMarkdown = "0.5.7"
+constraintlayout = "2.2.1"
+coreKtx = "1.18.0"
+datetime = "0.9.0"
+desugar_jdk_libs = "2.1.5"
+espressoCore = "3.7.0"
+junit = "4.13.2"
+junitVersion = "1.3.0"
+kotlin = "2.3.20"
+lifecycle = "2.10.0"
+material = "1.13.0"
+material3 = "1.4.0"
+materialIconsExtended = "1.7.8"
+mpandroidchart = "v3.1.0"
+navigation = "2.9.7"
+opencsv = "5.12.0"
+retrofit2 = "3.0.0"
+room = "2.8.4"
+ui = "1.10.6"
+
+[libraries]
+accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanistFlowlayout" }
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+compose-markdown = { group = "com.github.jeziellago", name = "compose-markdown", version.ref = "composeMarkdown" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit2" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+datetime = { group = "io.github.vanpra.compose-material-dialogs", name = "datetime", version.ref = "datetime" }
+desugar_jdk_libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitVersion" }
+lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
+lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
+lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
+material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+material3-window-size-class1 = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "material3" }
+mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
+navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
+opencsv = { group = "com.opencsv", name = "opencsv", version.ref = "opencsv" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit2" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
+
+[plugins]
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
