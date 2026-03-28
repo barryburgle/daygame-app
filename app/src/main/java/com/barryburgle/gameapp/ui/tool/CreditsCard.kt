@@ -45,7 +45,7 @@ fun CreditsCard(
     state: ToolsState,
     modifier: Modifier,
     onEvent: (ToolEvent) -> Unit,
-    currentVersion: String,
+    currentVersion: String?,
     context: Context
 ) {
     val uriHandler = LocalUriHandler.current
@@ -90,7 +90,8 @@ fun CreditsCard(
                             )
                             Spacer(modifier = Modifier.height(5.dp))
                             if (state.latestAvailable != null && !state.latestAvailable.isEmpty()) {
-                                IconButtonSetting(text = "Update to version ${state.latestAvailable}",
+                                IconButtonSetting(
+                                    text = "Update to version ${state.latestAvailable}",
                                     imageVector = Icons.Default.Download,
                                     contentDescription = "Update",
                                     onClick = {
@@ -106,7 +107,8 @@ fun CreditsCard(
                                     })
                             }
                             Spacer(modifier = Modifier.height(5.dp))
-                            ImageButtonSetting(text = "Daygame App Github repository",
+                            ImageButtonSetting(
+                                text = "Daygame App Github repository",
                                 icon = R.drawable.ic_launcher_round,
                                 contentDescription = "Project repository",
                                 color = Color.Black,
@@ -114,7 +116,8 @@ fun CreditsCard(
                                     uriHandler.openUri("https://github.com/barryburgle/daygame-app")
                                 })
                             Spacer(modifier = Modifier.height(5.dp))
-                            ImageButtonSetting(text = "Barry Burgle's blog",
+                            ImageButtonSetting(
+                                text = "Barry Burgle's blog",
                                 icon = R.drawable.bb_v3b,
                                 contentDescription = "Barry Blog",
                                 color = Color.Black,
@@ -143,23 +146,25 @@ fun updateRedDot() {
 
 @Composable
 fun versionInfo(
-    state: ToolsState, currentVersion: String, onEvent: (ToolEvent) -> Unit, context: Context
+    state: ToolsState, currentVersion: String?, onEvent: (ToolEvent) -> Unit, context: Context
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
     ) {
         val latestVersion = state.latestAvailable
-        var info = "Daygame App v$currentVersion"
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (state.latestAvailable != null && !state.latestAvailable.isEmpty()) {
-                changelog(latestVersion, state, onEvent)
+        if (currentVersion != null) {
+            var info = "Daygame App v$currentVersion"
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (state.latestAvailable != null && !state.latestAvailable.isEmpty()) {
+                    changelog(latestVersion, state, onEvent)
 
-            } else {
-                SmallTitleText(info)
+                } else {
+                    SmallTitleText(info)
+                }
             }
         }
     }
