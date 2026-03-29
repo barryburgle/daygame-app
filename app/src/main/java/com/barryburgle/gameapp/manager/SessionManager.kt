@@ -53,29 +53,23 @@ class SessionManager {
             aggregatedSessionsList: List<AggregatedSessions>,
             aggregatedDatesList: List<AggregatedDates>
         ): List<AggregatedPeriod> {
-            var aggregatedPeriodMap: Map<String, AggregatedPeriod> = mutableMapOf()
+            val aggregatedPeriodMap = mutableMapOf<String, AggregatedPeriod>()
             for (aggregatedSessions in aggregatedSessionsList) {
-                var aggregatedPeriod: AggregatedPeriod? =
-                    aggregatedPeriodMap.get(aggregatedSessions.yearNumber.toString() + "-" + aggregatedSessions.periodNumber)
-                if (aggregatedPeriod != null) {
-                    aggregatedPeriod.aggregatedSessions = aggregatedSessions
-                } else {
-                    aggregatedPeriod = AggregatedPeriod(aggregatedSessions, null)
-                }
-                aggregatedPeriodMap += aggregatedSessions.yearNumber.toString() + "-" + aggregatedSessions.periodNumber to aggregatedPeriod
+                val key = "${aggregatedSessions.yearNumber}-${aggregatedSessions.periodNumber}"
+                val period = aggregatedPeriodMap.getOrPut(key) { AggregatedPeriod(null, null) }
+                period.aggregatedSessions = aggregatedSessions
             }
             for (aggregatedDates in aggregatedDatesList) {
-                var aggregatedPeriod: AggregatedPeriod? =
-                    aggregatedPeriodMap.get(aggregatedDates.yearNumber.toString() + "-" + aggregatedDates.periodNumber)
-                if (aggregatedPeriod != null) {
-                    aggregatedPeriod.aggregatedDates = aggregatedDates
-                } else {
-                    aggregatedPeriod = AggregatedPeriod(null, aggregatedDates)
-                }
-                aggregatedPeriodMap += aggregatedDates.yearNumber.toString() + "-" + aggregatedDates.periodNumber to aggregatedPeriod
+                val key = "${aggregatedDates.yearNumber}-${aggregatedDates.periodNumber}"
+                val period = aggregatedPeriodMap.getOrPut(key) { AggregatedPeriod(null, null) }
+                period.aggregatedDates = aggregatedDates
             }
-            aggregatedPeriodMap = aggregatedPeriodMap.toSortedMap()
-            return aggregatedPeriodMap.entries.toList().map { it.value }
+
+            return aggregatedPeriodMap.values.sortedWith(
+                compareBy(
+                    { it.aggregatedSessions?.yearNumber ?: it.aggregatedDates?.yearNumber },
+                    { it.aggregatedSessions?.periodNumber ?: it.aggregatedDates?.periodNumber }
+                ))
         }
 
         fun normalizeSessionsIds(

@@ -5,6 +5,7 @@
 **Bugs**
 - Session/set/date dialog hours validation bugfix
 - Removed auto-set session/set/date time feature: use Live Sessions
+- Period aggregation sorting bugfix impacting week/month charts and summary card
 
 # Version 1.10.0 (2026-03-23)
 ***WARNING*** ⚠️
