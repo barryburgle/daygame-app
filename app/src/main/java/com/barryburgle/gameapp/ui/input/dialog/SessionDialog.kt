@@ -87,9 +87,6 @@ fun SessionDialog(
     var contactsCount by remember {
         mutableStateOf(if (contactsCountStart == null) 0 else contactsCountStart)
     }
-    if (state.isAddingSession) {
-        setAddingState(state, state.autoSetSessionTimeToStart)
-    }
     if (state.isUpdatingSession) {
         setUpdatingState(state)
     }
@@ -354,20 +351,6 @@ private fun setUpdatingState(
             state.stickingPoints = ""
         } else if (state.stickingPoints.isBlank()) {
             state.stickingPoints = state.editAbstractSession.stickingPoints
-        }
-    }
-}
-
-fun setAddingState(
-    state: InputState,
-    dialogSpecificFlag: Boolean
-) {
-    if (state.autoSetEventDateTime) {
-        state.date = LocalDateTime.now().toString().substring(0, 10)
-        if (dialogSpecificFlag) {
-            state.startHour = LocalDateTime.now().toString().substring(11, 16)
-        } else {
-            state.endHour = LocalDateTime.now().toString().substring(11, 16)
         }
     }
 }

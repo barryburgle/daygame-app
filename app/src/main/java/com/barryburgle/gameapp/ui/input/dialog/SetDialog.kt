@@ -56,9 +56,6 @@ fun SetDialog(
     var latestStartHour = state.startHour
     var latestEndHour = state.endHour
     var locationTextFieldExpanded by remember { mutableStateOf(false) }
-    if (state.isAddingSet) {
-        setAddingState(state, state.autoSetSetTimeToStart)
-    }
     if (state.isUpdatingSet) {
         setUpdatingState(state)
     }

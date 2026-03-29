@@ -65,9 +65,6 @@ fun DateDialog(
     var leadsExpanded by remember { mutableStateOf(false) }
     var dateTypesExpanded by remember { mutableStateOf(false) }
     var locationTextFieldExpanded by remember { mutableStateOf(false) }
-    if (state.isAddingDate) {
-        setAddingState(state, state.autoSetDateTimeToStart)
-    }
     if (state.isUpdatingDate) {
         setUpdatingState(state)
     }

@@ -11,6 +11,7 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.ui.CombineSeventeen
+import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.CombineTwenty
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.Flow
@@ -81,16 +82,12 @@ class ToolViewModel(
             isCleaning = isCleaning
         )
     }
-    val _generalSettingState: Flow<GeneralSettingState> = CombineSeventeen(
+    val _generalSettingState: Flow<GeneralSettingState> = CombineThirteen(
         settingDao.getGenerateiDate(),
         settingDao.getNotificationTime(),
         settingDao.getFollowCount(),
         settingDao.getSuggestLeadsNationality(),
         settingDao.getShownNationalities(),
-        settingDao.getAutoSetEventDateTime(),
-        settingDao.getAutoSetSessionTimeToStart(),
-        settingDao.getAutoSetSetTimeToStart(),
-        settingDao.getAutoSetDateTimeToStart(),
         settingDao.getThemeSysFollow(),
         settingDao.getTheme(),
         settingDao.getSimplePlusOneReport(),
@@ -99,17 +96,13 @@ class ToolViewModel(
         settingDao.getShowCurrentWeekSummary(),
         settingDao.getShowCurrentMonthSummary(),
         settingDao.getShowCurrentChallengeSummary()
-    ) { generateiDate, notificationTime, followCount, suggestLeadsNationality, shownNationalities, autoSetEventDateTime, autoSetSessionTimeToStart, autoSetSetTimeToStart, autoSetDateTimeToStart, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary ->
+    ) { generateiDate, notificationTime, followCount, suggestLeadsNationality, shownNationalities, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary ->
         GeneralSettingState(
             generateiDate = generateiDate,
             notificationTime = notificationTime,
             followCount = followCount,
             suggestLeadsNationality = suggestLeadsNationality,
             shownNationalities = shownNationalities,
-            autoSetEventDateTime = autoSetEventDateTime,
-            autoSetSessionTimeToStart = autoSetSessionTimeToStart,
-            autoSetSetTimeToStart = autoSetSetTimeToStart,
-            autoSetDateTimeToStart = autoSetDateTimeToStart,
             themeSysFollow = themeSysFollow,
             themeId = themeId,
             simplePlusOneReport = simplePlusOneReport,
@@ -190,10 +183,6 @@ class ToolViewModel(
                 followCount = generalSettingState.followCount.toBoolean(),
                 suggestLeadsNationality = generalSettingState.suggestLeadsNationality.toBoolean(),
                 shownNationalities = generalSettingState.shownNationalities.toInt(),
-                autoSetEventDateTime = generalSettingState.autoSetEventDateTime.toBoolean(),
-                autoSetSessionTimeToStart = generalSettingState.autoSetSessionTimeToStart.toBoolean(),
-                autoSetSetTimeToStart = generalSettingState.autoSetSetTimeToStart.toBoolean(),
-                autoSetDateTimeToStart = generalSettingState.autoSetDateTimeToStart.toBoolean(),
                 simplePlusOneReport = generalSettingState.simplePlusOneReport.toBoolean(),
                 neverShareLeadInfo = generalSettingState.neverShareLeadInfo.toBoolean(),
                 copyReportOnClipboard = generalSettingState.copyReportOnClipboard.toBoolean(),
@@ -611,62 +600,6 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
-            is ToolEvent.SwitchAutoSetEventDateTime -> {
-                _state.update {
-                    it.copy(
-                        autoSetEventDateTime = _state.value.autoSetEventDateTime.not()
-                    )
-                }
-                val autoSetEventDateTime = _state.value.autoSetEventDateTime
-                val setting = Setting(
-                    SettingDao.AUTO_SET_EVENT_DATE_TIME_ID,
-                    autoSetEventDateTime.toString()
-                )
-                viewModelScope.launch { settingDao.insert(setting) }
-            }
-
-            is ToolEvent.SwitchAutoSetSessionTimeToStart -> {
-                _state.update {
-                    it.copy(
-                        autoSetSessionTimeToStart = _state.value.autoSetSessionTimeToStart.not()
-                    )
-                }
-                val autoSetSessionTimeToStart = _state.value.autoSetSessionTimeToStart
-                val setting = Setting(
-                    SettingDao.AUTO_SET_SESSION_TIME_TO_START_ID,
-                    autoSetSessionTimeToStart.toString()
-                )
-                viewModelScope.launch { settingDao.insert(setting) }
-            }
-
-            is ToolEvent.SwitchAutoSetSetTimeToStart -> {
-                _state.update {
-                    it.copy(
-                        autoSetSetTimeToStart = _state.value.autoSetSetTimeToStart.not()
-                    )
-                }
-                val autoSetSetTimeToStart = _state.value.autoSetSetTimeToStart
-                val setting = Setting(
-                    SettingDao.AUTO_SET_SET_TIME_TO_START_ID,
-                    autoSetSetTimeToStart.toString()
-                )
-                viewModelScope.launch { settingDao.insert(setting) }
-            }
-
-            is ToolEvent.SwitchAutoSetDateTimeToStart -> {
-                _state.update {
-                    it.copy(
-                        autoSetDateTimeToStart = _state.value.autoSetDateTimeToStart.not()
-                    )
-                }
-                val autoSetDateTimeToStart = _state.value.autoSetDateTimeToStart
-                val setting = Setting(
-                    SettingDao.AUTO_SET_DATE_TIME_TO_START_ID,
-                    autoSetDateTimeToStart.toString()
-                )
-                viewModelScope.launch { settingDao.insert(setting) }
-            }
-
             is ToolEvent.SetShownNationalities -> {
                 _state.update {
                     it.copy(
@@ -969,10 +902,6 @@ data class GeneralSettingState(
     val notificationTime: String,
     val followCount: String,
     val suggestLeadsNationality: String,
-    val autoSetEventDateTime: String,
-    val autoSetSessionTimeToStart: String,
-    val autoSetSetTimeToStart: String,
-    val autoSetDateTimeToStart: String,
     val shownNationalities: String,
     val themeSysFollow: String,
     val themeId: String,

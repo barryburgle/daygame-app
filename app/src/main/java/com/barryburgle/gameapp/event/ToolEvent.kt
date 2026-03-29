@@ -43,10 +43,6 @@ sealed interface ToolEvent : GenericEvent {
     object SwitchGenerateiDate : ToolEvent
     object SwitchFollowCount : ToolEvent
     object SwitchSuggestLeadsNationality : ToolEvent
-    object SwitchAutoSetEventDateTime : ToolEvent
-    object SwitchAutoSetSessionTimeToStart : ToolEvent
-    object SwitchAutoSetSetTimeToStart : ToolEvent
-    object SwitchAutoSetDateTimeToStart : ToolEvent
     data class SetShownNationalities(val shownNationalities: String) : ToolEvent
     object SwitchArchiveBackupFolder : ToolEvent
     object SwitchDeleteSessions : ToolEvent

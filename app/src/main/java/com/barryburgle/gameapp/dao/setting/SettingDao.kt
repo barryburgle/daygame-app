@@ -48,10 +48,6 @@ interface SettingDao {
         const val GENERATE_IDATE_ID: String = "generate_idate"
         const val FOLLOW_COUNT_ID: String = "follow_count"
         const val SUGGEST_LEADS_NATIONALITY_ID: String = "suggest_leads_nationality"
-        const val AUTO_SET_EVENT_DATE_TIME_ID: String = "auto_set_event_date_time"
-        const val AUTO_SET_SESSION_TIME_TO_START_ID: String = "auto_set_session_time_to_start"
-        const val AUTO_SET_SET_TIME_TO_START_ID: String = "auto_set_set_time_to_start"
-        const val AUTO_SET_DATE_TIME_TO_START_ID: String = "auto_set_date_time_to_start"
         const val SHOWN_NATIONALITIES_ID: String = "shown_nationalities"
         const val ARCHIVE_BACKUP_FOLDER_ID: String = "archive_backup"
         const val IS_CLEANING_ID: String = "is_cleaning"
@@ -90,10 +86,6 @@ interface SettingDao {
         const val DEFAULT_GENERATE_IDATE_FLAG: String = "true"
         const val DEFAULT_FOLLOW_COUNT_FLAG: String = "false"
         const val DEFAULT_SUGGEST_LEADS_NATIONALITY_FLAG: String = "true"
-        const val DEFAULT_AUTO_SET_EVENT_DATE_TIME_FLAG: String = "true"
-        const val DEFAULT_AUTO_SET_SESSION_TIME_TO_START_FLAG: String = "true"
-        const val DEFAULT_AUTO_SET_SET_TIME_TO_START_FLAG: String = "true"
-        const val DEFAULT_AUTO_SET_DATE_TIME_TO_START_FLAG: String = "true"
         const val DEFAULT_SHOWN_NATIONALITIES: String = "6"
         const val DEFAULT_ARCHIVE_BACKUP_FOLDER_FLAG: String = "true"
         const val DEFAULT_IS_CLEANING_FLAG: String = "false"
@@ -208,19 +200,6 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SUGGEST_LEADS_NATIONALITY_FLAG}' ELSE value END FROM setting WHERE id = '${SUGGEST_LEADS_NATIONALITY_ID}'")
     fun getSuggestLeadsNationality(): Flow<String>
-
-    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_AUTO_SET_EVENT_DATE_TIME_FLAG}' ELSE value END FROM setting WHERE id = '${AUTO_SET_EVENT_DATE_TIME_ID}'")
-    fun getAutoSetEventDateTime(): Flow<String>
-
-    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_AUTO_SET_SESSION_TIME_TO_START_FLAG}' ELSE value END FROM setting WHERE id = '${AUTO_SET_SESSION_TIME_TO_START_ID}'")
-    fun getAutoSetSessionTimeToStart(): Flow<String>
-
-    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_AUTO_SET_SET_TIME_TO_START_FLAG}' ELSE value END FROM setting WHERE id = '${AUTO_SET_SET_TIME_TO_START_ID}'")
-    fun getAutoSetSetTimeToStart(): Flow<String>
-
-    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_AUTO_SET_DATE_TIME_TO_START_FLAG}' ELSE value END FROM setting WHERE id = '${AUTO_SET_DATE_TIME_TO_START_ID}'")
-    fun getAutoSetDateTimeToStart(): Flow<String>
-
     @Query(QUERY_SHOWN_NATIONALITIES)
     fun getShownNationalities(): Flow<String>
 

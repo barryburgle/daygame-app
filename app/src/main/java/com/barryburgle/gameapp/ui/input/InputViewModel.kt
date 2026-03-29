@@ -35,8 +35,8 @@ import com.barryburgle.gameapp.ui.CombineFifteen
 import com.barryburgle.gameapp.ui.CombineFive
 import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.CombineSeven
+import com.barryburgle.gameapp.ui.CombineSix
 import com.barryburgle.gameapp.ui.CombineSixteen
-import com.barryburgle.gameapp.ui.CombineTen
 import com.barryburgle.gameapp.ui.input.dialog.InputDialogConstant
 import com.barryburgle.gameapp.ui.input.state.DialogSettingsState
 import com.barryburgle.gameapp.ui.input.state.ExportSettingsState
@@ -161,10 +161,6 @@ class InputViewModel(
     private val _generateiDate = settingDao.getGenerateiDate()
     private val _followCount = settingDao.getFollowCount()
     private val _suggestLeadsNationality = settingDao.getSuggestLeadsNationality()
-    private val _autoSetEventDateTime = settingDao.getAutoSetEventDateTime()
-    private val _autoSetSessionTimeToStart = settingDao.getAutoSetSessionTimeToStart()
-    private val _autoSetSetTimeToStart = settingDao.getAutoSetSetTimeToStart()
-    private val _autoSetDateTimeToStart = settingDao.getAutoSetDateTimeToStart()
     private val _shownNationalities = settingDao.getShownNationalities()
     private val _simplePlusOneReport = settingDao.getSimplePlusOneReport()
     private val _neverShareLeadInfo = settingDao.getNeverShareLeadInfo()
@@ -260,24 +256,27 @@ class InputViewModel(
         } else {
             when (gameEventSortType) {
                 GameEventSortType.DATE -> {
-                    flowOf(combinedList.sortedWith(
-                        compareByDescending<SortableGameEvent> { it.eventDate }
-                    )
+                    flowOf(
+                        combinedList.sortedWith(
+                            compareByDescending<SortableGameEvent> { it.eventDate }
+                        )
                     )
                 }
 
                 GameEventSortType.DAY_OF_WEEK -> {
-                    flowOf(combinedList.sortedWith(
-                        compareByDescending<SortableGameEvent> { it.dayOfWeek }
-                    )
+                    flowOf(
+                        combinedList.sortedWith(
+                            compareByDescending<SortableGameEvent> { it.dayOfWeek }
+                        )
                     )
                 }
 
                 else -> {
-                    flowOf(combinedList.sortedWith(
-                        compareByDescending<SortableGameEvent> { it.eventDate }
-                            .thenByDescending { it.insertTime }
-                    )
+                    flowOf(
+                        combinedList.sortedWith(
+                            compareByDescending<SortableGameEvent> { it.eventDate }
+                                .thenByDescending { it.insertTime }
+                        )
                     )
                 }
             }
@@ -320,27 +319,19 @@ class InputViewModel(
             lastBackup = lastBackup.toInt()
         )
     }
-    val _dialogSettings = CombineTen(
+    val _dialogSettings = CombineSix(
         _notificationTime,
         _generateiDate,
         _followCount,
         _suggestLeadsNationality,
-        _autoSetEventDateTime,
-        _autoSetSessionTimeToStart,
-        _autoSetSetTimeToStart,
-        _autoSetDateTimeToStart,
         _incrementChallengeGoal,
         _defaultChallengeGoal
-    ) { notificationTime, generateiDate, followCount, suggestLeadsNationality, autoSetEventDateTime, autoSetSessionTimeToStart, autoSetSetTimeToStart, autoSetDateTimeToStart, incrementChallengeGoal, defaultChallengeGoal ->
+    ) { notificationTime, generateiDate, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal ->
         DialogSettingsState(
             notificationTime = notificationTime,
             generateiDate = generateiDate.toBoolean(),
             followCount = followCount.toBoolean(),
             suggestLeadsNationality = suggestLeadsNationality.toBoolean(),
-            autoSetEventDateTime = autoSetEventDateTime.toBoolean(),
-            autoSetSessionTimeToStart = autoSetSessionTimeToStart.toBoolean(),
-            autoSetSetTimeToStart = autoSetSetTimeToStart.toBoolean(),
-            autoSetDateTimeToStart = autoSetDateTimeToStart.toBoolean(),
             incrementChallengeGoal = incrementChallengeGoal,
             defaultChallengeGoal = defaultChallengeGoal,
         )
@@ -427,10 +418,6 @@ class InputViewModel(
             generateiDate = dialogSettings.generateiDate,
             followCount = dialogSettings.followCount,
             suggestLeadsNationality = dialogSettings.suggestLeadsNationality,
-            autoSetEventDateTime = dialogSettings.autoSetEventDateTime,
-            autoSetSessionTimeToStart = dialogSettings.autoSetSessionTimeToStart,
-            autoSetSetTimeToStart = dialogSettings.autoSetSetTimeToStart,
-            autoSetDateTimeToStart = dialogSettings.autoSetDateTimeToStart,
             incrementChallengeGoal = dialogSettings.incrementChallengeGoal,
             defaultChallengeGoal = dialogSettings.defaultChallengeGoal,
             shownNationalities = shareSettings.shownNationalities,
