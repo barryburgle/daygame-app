@@ -161,8 +161,6 @@ fun styleBarChart(
 fun styleXAxis(
     barChart: BarChart, textColor: Int, categories: List<String>? = null
 ) {
-    // TODO: specify on x axis label as Sets/converstaions/contacts
-    // TODO: specify on y axis label as "Sessions" (vertically written)
     val xAxisFormatter = IntegerValueFormatter()
     xAxisFormatter.label = ""
     val xAxis: XAxis = barChart.getXAxis()
