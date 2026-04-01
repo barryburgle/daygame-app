@@ -46,7 +46,7 @@ fun StatsScreen(
     onEvent: (StatsEvent) -> Unit
 ) {
     // TODO: for each one of the cards "Sessions", "Leads" and "Dates" the default version that should be displayed should be a contracted one with only absolute counts, leading to showing performances on a dropdown arrow touch
-    val heigh: Dp = 200.dp
+    val heigh: Dp = 250.dp
     val width: Dp = 320.dp
     Scaffold(
         topBar = {
