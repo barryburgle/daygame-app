@@ -1,6 +1,7 @@
 # Version 1.11.0 (2026-04-dd)
 **Features**
 - Android 16 support 🤖
+- Pie charts for every histogram Result card ◔
 
 **Bugs**
 - Session/set/date dialog hours validation bugfix
