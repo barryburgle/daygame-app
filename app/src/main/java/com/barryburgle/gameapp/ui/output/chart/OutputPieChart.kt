@@ -1,12 +1,15 @@
 package com.barryburgle.gameapp.ui.output.chart
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -61,17 +64,28 @@ fun OutputPieChart(
         onSurfaceVariant.copy(alpha = 1f)
     ).map { it.toArgb() }
 
-    Row(modifier = Modifier.fillMaxSize()) {
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .width(180.dp)
-                .padding(8.dp),
-            horizontalAlignment = Alignment.Start
+                .width(140.dp)
+                .padding(start = 12.dp, top = 8.dp, bottom = 8.dp),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Center
         ) {
             processedEntries.forEachIndexed { index, entry ->
                 val baseColor = Color(shades[index % shades.size])
                 val isHighlighted = selectedIndex == index
+
+                val backgroundColor by animateColorAsState(
+                    targetValue = if (isHighlighted) MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
+                    label = "pill_bg"
+                )
+                val textColor =
+                    if (isHighlighted) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onPrimary
 
                 val percentage = String.format(Locale.ROOT, "%.1f", (entry.y / total) * 100)
 
@@ -85,7 +99,13 @@ fun OutputPieChart(
                     entry.label
                 }
 
-                Column(modifier = Modifier.padding(vertical = 4.dp)) {
+                Box(
+                    modifier = Modifier
+                        .padding(vertical = 2.dp)
+                        .clip(CircleShape)
+                        .background(backgroundColor)
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(
                             modifier = Modifier
@@ -96,14 +116,18 @@ fun OutputPieChart(
                         Spacer(modifier = Modifier.width(6.dp))
                         LittleBodyText(
                             text = "$labelText: $percentage%",
-                            color = if (isHighlighted) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimary
+                            color = textColor
                         )
                     }
                 }
             }
         }
+
         AndroidView(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+                .offset(x = (-15).dp),
             factory = { context ->
                 PieChart(context).apply {
                     this.description.isEnabled = false
@@ -113,7 +137,7 @@ fun OutputPieChart(
                     this.setDrawEntryLabels(false)
                     this.setTouchEnabled(true)
                     this.setRotationEnabled(false)
-                    this.setExtraOffsets(0f, 0f, 0f, 0f)
+                    this.setExtraOffsets(8f, 8f, 8f, 8f)
 
                     this.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                         override fun onValueSelected(e: Entry?, h: Highlight?) {
