@@ -375,7 +375,7 @@ fun StatsScreen(
                             modifier = Modifier.width(spaceFromLeft)
                         )
                         sectionTitleAndDescription(
-                            "Sessions Histograms",
+                            "Sessions Distributions",
                             "Number of sessions with:"
                         )
                     }
@@ -403,7 +403,7 @@ fun StatsScreen(
                             modifier = Modifier.width(spaceFromLeft)
                         )
                         sectionTitleAndDescription(
-                            "Leads Histograms", "Number of leads with:"
+                            "Leads Distributions", "Number of leads with:"
                         )
                     }
                     LazyRow(
@@ -430,7 +430,7 @@ fun StatsScreen(
                             modifier = Modifier.width(spaceFromLeft)
                         )
                         sectionTitleAndDescription(
-                            "Dates Histograms", "Number of dates with:"
+                            "Dates Distributions", "Number of dates with:"
                         )
                     }
                     LazyRow(
