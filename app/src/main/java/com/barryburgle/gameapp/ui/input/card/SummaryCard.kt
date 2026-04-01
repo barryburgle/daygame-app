@@ -109,9 +109,9 @@ fun SummaryCard(
         }
     }
     val weekTimeSpent =
-        "$weekSessionHours hours spent over sessions and $weekDateHours over dates in the last week"
+        "$weekSessionHours hours spent over sessions and $weekDateHours over dates"
     val monthTimeSpent =
-        "$monthSessionHours hours spent over sessions and $monthDateHours over dates in the last month."
+        "$monthSessionHours hours spent over sessions and $monthDateHours over dates"
     var lastChallenge = AchievedChallenge()
     var isChallengeValid = false
     if (state.allEvents.isNotEmpty()) {
