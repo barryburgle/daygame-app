@@ -39,7 +39,8 @@ fun OutputBarChart(
     ratio: Boolean,
     categories: List<String>? = null,
     statsLoadInfo: StatsLoadInfoEnum,
-    onEvent: (StatsEvent) -> Unit
+    onEvent: (StatsEvent) -> Unit,
+    showTitleAndInfo: Boolean = true
 ) {
     val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
     val onSurfaceColor = MaterialTheme.colorScheme.onPrimary.toArgb()
@@ -49,76 +50,56 @@ fun OutputBarChart(
             MaterialTheme.colorScheme.surface, Shapes.large
         )
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
+        if (showTitleAndInfo) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .padding(5.dp),
-                verticalArrangement = Arrangement.SpaceEvenly
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 10.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .fillMaxWidth()
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 10.dp, end = 10.dp)
-                    ) {
-                        SmallTitleText(description)
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth(0.2f),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            LittleIconButton(
-                                imageVector = Icons.Filled.Info,
-                                onClick = { onEvent(StatsEvent.ShowInfo(statsLoadInfo)) }
-                            )
-                        }
-                    }
-                }
-                AndroidView(modifier = Modifier.fillMaxSize(), factory = { context ->
-                    val barChart = styleBarChart(
-                        BarChart(context),
-                        surfaceColor,
-                        barEntryList,
-                        ratio,
-                        categories
-                    )
-                    val formatter: ValueFormatter = object : ValueFormatter() {
-                        override fun getFormattedValue(value: Float): String {
-                            return value.toInt().toString()
-                        }
-                    }
-                    val leftAxis: YAxis = barChart.getAxisLeft()
-                    leftAxis.setValueFormatter(formatter)
-                    val dataset =
-                        BarDataSet(barEntryList, description).apply {
-                            color = onSurfaceColor
-                            valueTextColor = onSurfaceColor
-                            valueTextSize = inChartTextSize
-                            setDrawValues(true)
-                            if (integerValues) {
-                                valueFormatter = IntegerValueFormatter()
-                            }
-                            isHighlightEnabled = true
-                            setGradientColor(surfaceColor, onSurfaceColor)
-                            styleXAxis(barChart, onSurfaceColor, categories)
-                        }
-                    val barData = BarData(dataset)
-                    barChart.data = barData
-                    barChart.setFitBars(true);
-                    barChart.animateY(300, Easing.EaseInOutQuad);
-                    barChart.invalidate()
-                    barChart
-                })
+                SmallTitleText(description)
+                LittleIconButton(
+                    imageVector = Icons.Filled.Info,
+                    onClick = { onEvent(StatsEvent.ShowInfo(statsLoadInfo)) }
+                )
             }
         }
+        AndroidView(modifier = Modifier.fillMaxSize(), factory = { context ->
+            val barChart = styleBarChart(
+                BarChart(context),
+                surfaceColor,
+                barEntryList,
+                ratio,
+                categories
+            )
+            val formatter: ValueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    return value.toInt().toString()
+                }
+            }
+            val leftAxis: YAxis = barChart.getAxisLeft()
+            leftAxis.setValueFormatter(formatter)
+            val dataset =
+                BarDataSet(barEntryList, description).apply {
+                    color = onSurfaceColor
+                    valueTextColor = onSurfaceColor
+                    valueTextSize = inChartTextSize
+                    setDrawValues(true)
+                    if (integerValues) {
+                        valueFormatter = IntegerValueFormatter()
+                    }
+                    isHighlightEnabled = true
+                    setGradientColor(surfaceColor, onSurfaceColor)
+                    styleXAxis(barChart, onSurfaceColor, categories)
+                }
+            val barData = BarData(dataset)
+            barChart.data = barData
+            barChart.setFitBars(true);
+            barChart.animateY(300, Easing.EaseInOutQuad);
+            barChart.invalidate()
+            barChart
+        })
     }
 }
 
