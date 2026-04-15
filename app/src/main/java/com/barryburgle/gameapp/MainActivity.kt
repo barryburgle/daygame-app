@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp
 
 import android.Manifest
+import android.Manifest.permission.READ_CONTACTS
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.NotificationChannel
@@ -25,6 +26,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModel
@@ -114,7 +116,12 @@ class MainActivity : ComponentActivity() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return db?.let {
                     ToolViewModel(
-                        it.abstractSessionDao, it.leadDao, it.dateDao, it.setDao, it.challengeDao, it.settingDao
+                        it.abstractSessionDao,
+                        it.leadDao,
+                        it.dateDao,
+                        it.setDao,
+                        it.challengeDao,
+                        it.settingDao
                     )
                 } as T
             }
@@ -247,8 +254,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun checkPermission(context: Context): Boolean {
+        val readContacts = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.READ_CONTACTS
+        ) == PackageManager.PERMISSION_GRANTED
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            Environment.isExternalStorageManager()
+            Environment.isExternalStorageManager() && readContacts
         } else {
             val readFile = ContextCompat.checkSelfPermission(
                 context, Manifest.permission.READ_EXTERNAL_STORAGE
@@ -256,7 +266,7 @@ class MainActivity : ComponentActivity() {
             val writeFile = ContextCompat.checkSelfPermission(
                 context, Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED
-            readFile && writeFile
+            readFile && writeFile && readContacts
         }
     }
 
@@ -267,6 +277,7 @@ class MainActivity : ComponentActivity() {
             intent.data = Uri.parse(String.format("package:%s", context.packageName))
             intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent)
+            ActivityCompat.requestPermissions(this, arrayOf(READ_CONTACTS), 1)
         } else {
             val requestReadWritePermissionLauncher = registerForActivityResult(
                 ActivityResultContracts.RequestMultiplePermissions()
@@ -276,14 +287,14 @@ class MainActivity : ComponentActivity() {
                     if (it.value == true) {
                         count++
                     }
-                    if (count == 2) {
+                    if (count == 3) {
                         Toast.makeText(
-                            applicationContext, "File access permission granted", Toast.LENGTH_SHORT
+                            applicationContext, "Permissions granted", Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         Toast.makeText(
                             applicationContext,
-                            "File access permission not granted",
+                            "Permissions not granted",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -291,7 +302,7 @@ class MainActivity : ComponentActivity() {
             }
             requestReadWritePermissionLauncher.launch(
                 arrayOf(
-                    READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
+                    READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE, READ_CONTACTS
                 )
             )
         }
