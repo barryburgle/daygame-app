@@ -15,7 +15,7 @@ class PhoneBookService {
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 arrayOf(
                     ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                    ContactsContract.CommonDataKinds.Phone.NUMBER
+                    ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY
                 ),
                 null,
                 null,
@@ -24,12 +24,13 @@ class PhoneBookService {
             cursor?.use {
                 val nameIndex =
                     it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-                val numberIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                val lookupKeyIndex =
+                    it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY)
                 while (it.moveToNext()) {
                     val contactName = it.getString(nameIndex)
-                    val contactNumber = it.getString(numberIndex)
+                    val contactLookupKey = it.getString(lookupKeyIndex)
                     if (isSimilar(leadName.lowercase(), contactName.lowercase())) {
-                        return Pair(contactName, contactNumber)
+                        return Pair(contactName, contactLookupKey)
                     }
                 }
             }
