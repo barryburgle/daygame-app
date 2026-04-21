@@ -23,7 +23,7 @@ import com.barryburgle.gameapp.model.setting.Setting
 
 @Database(
     entities = [AbstractSession::class, Setting::class, Lead::class, Date::class, SingleSet::class, Challenge::class],
-    version = 6
+    version = 7
 )
 abstract class GameAppDatabase : RoomDatabase() {
     abstract val abstractSessionDao: AbstractSessionDao
@@ -84,6 +84,14 @@ abstract class GameAppDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_6_7: Migration = object : Migration(6, 7) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "ALTER TABLE lead ADD COLUMN contact_lookup_key TEXT, ADD COLUMN instagram_url TEXT;"
+                )
+            }
+        }
+
         fun getInstance(context: Context): GameAppDatabase? {
             if (INSTANCE == null) {
                 synchronized(GameAppDatabase::class) {
@@ -92,7 +100,7 @@ abstract class GameAppDatabase : RoomDatabase() {
                         GameAppDatabase::class.java, DATABASE_NAME
                     ).addMigrations(MIGRATION_1_2).addMigrations(MIGRATION_2_3)
                         .addMigrations(MIGRATION_3_4).addMigrations(MIGRATION_4_5)
-                        .addMigrations(MIGRATION_5_6).build()
+                        .addMigrations(MIGRATION_5_6).addMigrations(MIGRATION_6_7).build()
                 }
             }
             return INSTANCE

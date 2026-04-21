@@ -12,7 +12,9 @@ open class Lead(
     @ColumnInfo(name = "name") var name: String,
     @ColumnInfo(name = "contact") var contact: String,
     @ColumnInfo(name = "nationality") var nationality: String,
-    @ColumnInfo(name = "age") var age: Long
+    @ColumnInfo(name = "age") var age: Long,
+    @ColumnInfo(name = "contact_lookup_key") var contactLookupKey: String? = null,
+    @ColumnInfo(name = "instagram_url") var instagramUrl: String? = null
 ) {
-    constructor() : this(0, "", null, "", "", "", 20)
+    constructor() : this(0, "", null, "", "", "", 20, null)
 }
