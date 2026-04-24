@@ -1,8 +1,11 @@
 package com.barryburgle.gameapp.ui.input.card
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.provider.ContactsContract
 import android.widget.Toast
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,10 +17,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Timer
@@ -35,6 +38,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,6 +47,7 @@ import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
@@ -80,6 +86,7 @@ fun EventCard(
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val localContext = LocalContext.current.applicationContext
+    val uriHandler = LocalUriHandler.current
     var liveSessionTime: Long = 0
     var liveSessionLeads: Int = 0
     Card(
@@ -493,7 +500,13 @@ fun EventCard(
                                 } else {
                                     LittleBodyText("Leads:")
                                     Spacer(modifier = Modifier.height(7.dp))
-                                    LeadsRow(semiOpaqueBackground, leads, onEvent)
+                                    LeadsRow(
+                                        semiOpaqueBackground,
+                                        leads,
+                                        localContext,
+                                        uriHandler,
+                                        onEvent
+                                    )
                                 }
                             }
                         }
@@ -591,6 +604,8 @@ fun EventCard(
 private fun LeadsRow(
     semiOpaqueBackground: Color,
     leads: List<Lead>,
+    localContext: Context,
+    uriHandler: UriHandler,
     onEvent: (GameEvent) -> Unit
 ) {
     LazyRow(
@@ -613,19 +628,42 @@ private fun LeadsRow(
         for (lead in leads) {
             item {
                 Row(
-                    modifier = Modifier.clickable {
-                        onEvent(GameEvent.SetIsInOverlayToTrue)
-                        onEvent(
-                            GameEvent.EditLead(
-                                lead, true
+                    modifier = Modifier.combinedClickable(
+                        onClick = {
+                            onEvent(GameEvent.SetIsInOverlayToTrue)
+                            onEvent(
+                                GameEvent.EditLead(
+                                    lead, true
+                                )
                             )
-                        )
-                        onEvent(
-                            GameEvent.ShowLeadDialog(
-                                false, false
+                            onEvent(
+                                GameEvent.ShowLeadDialog(
+                                    false, false
+                                )
                             )
-                        )
-                    },
+                        },
+                        onLongClick = {
+                            if (lead.contact == ContactTypeEnum.NUMBER.getField() && lead.contactLookupKey != null) {
+                                try {
+                                    val uri = Uri.withAppendedPath(
+                                        ContactsContract.Contacts.CONTENT_LOOKUP_URI,
+                                        lead.contactLookupKey
+                                    )
+                                    uriHandler.openUri(uri.toString())
+                                } catch (e: Exception) {
+                                    Toast.makeText(
+                                        localContext,
+                                        "Could not open contact",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            } else if (lead.contact == ContactTypeEnum.SOCIAL.getField() && lead.instagramUrl != null && lead.instagramUrl!!.isNotBlank()) {
+                                uriHandler.openUri(lead.instagramUrl!!)
+                            } else {
+                                Toast.makeText(localContext, "No contact found", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        }),
                     horizontalArrangement = Arrangement.spacedBy(
                         7.dp
                     )
