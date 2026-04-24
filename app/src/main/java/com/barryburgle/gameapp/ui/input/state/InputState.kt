@@ -57,6 +57,8 @@ data class InputState(
     val leadContact: String = "",
     val leadNationality: String = "",
     val leadAge: Long = 20,
+    val leadContactLookupKey: String? = null,
+    val leadInstagramUrl: String? = null,
     val countrySearch: String = "",
     val countryName: String = "",
     val notificationTime: String = "",
