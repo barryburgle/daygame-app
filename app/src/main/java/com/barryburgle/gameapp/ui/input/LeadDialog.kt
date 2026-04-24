@@ -251,9 +251,6 @@ fun LeadDialog(
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 onEvent(GameEvent.SetLeadContactLookupKey(contactInfo!!.second))
-                            } else {
-                                Toast.makeText(context, "Contact not found", Toast.LENGTH_SHORT)
-                                    .show()
                             }
                         }
                         ToggleIcon(
