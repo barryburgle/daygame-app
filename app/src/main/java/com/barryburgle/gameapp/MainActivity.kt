@@ -1,6 +1,5 @@
 package com.barryburgle.gameapp
 
-import android.Manifest
 import android.Manifest.permission.READ_CONTACTS
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -26,7 +25,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModel
@@ -44,7 +42,6 @@ import com.barryburgle.gameapp.ui.output.OutputViewModel
 import com.barryburgle.gameapp.ui.stats.StatsViewModel
 import com.barryburgle.gameapp.ui.theme.GameAppOriginalTheme
 import com.barryburgle.gameapp.ui.tool.ToolViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -132,14 +129,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         createNotificationChannel()
-        val scope = CoroutineScope(Dispatchers.Default)
-        scope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             checkForUpdates()
         }
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        if (!checkPermission(applicationContext)) {
-            requestPermission(applicationContext)
-        }
+        handlePermissionsFlow()
         setContent {
             val inputState by inputViewModel.state.collectAsState()
             val outputState by outputViewModel.state.collectAsState()
@@ -161,6 +155,60 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(
             window, false
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
+                if (ContextCompat.checkSelfPermission(
+                        this,
+                        READ_CONTACTS
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    requestContactPermissionLauncher.launch(READ_CONTACTS)
+                }
+            }
+        }
+    }
+
+    private fun handlePermissionsFlow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
+                    addCategory("android.intent.category.DEFAULT")
+                    data = Uri.parse("package:$packageName")
+                    flags = FLAG_ACTIVITY_NEW_TASK
+                }
+                startActivity(intent)
+            } else if (ContextCompat.checkSelfPermission(
+                    this,
+                    READ_CONTACTS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestContactPermissionLauncher.launch(READ_CONTACTS)
+            }
+        } else {
+            val permissions = mutableListOf<String>()
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    READ_CONTACTS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                permissions.add(READ_CONTACTS)
+            }
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                permissions.add(READ_EXTERNAL_STORAGE)
+                permissions.add(WRITE_EXTERNAL_STORAGE)
+            }
+            if (permissions.isNotEmpty()) {
+                requestLegacyPermissionsLauncher.launch(permissions.toTypedArray())
+            }
+        }
     }
 
     private suspend fun checkForUpdates() {
@@ -253,58 +301,25 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun checkPermission(context: Context): Boolean {
-        val readContacts = ContextCompat.checkSelfPermission(
-            context, Manifest.permission.READ_CONTACTS
-        ) == PackageManager.PERMISSION_GRANTED
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            Environment.isExternalStorageManager() && readContacts
+    private val requestContactPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Toast.makeText(this, "Contact permission granted", Toast.LENGTH_SHORT).show()
         } else {
-            val readFile = ContextCompat.checkSelfPermission(
-                context, Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-            val writeFile = ContextCompat.checkSelfPermission(
-                context, Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-            readFile && writeFile && readContacts
+            Toast.makeText(this, "Contact permissions denied", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun requestPermission(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-            intent.addCategory("android.intent.category.DEFAULT")
-            intent.data = Uri.parse(String.format("package:%s", context.packageName))
-            intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent)
-            ActivityCompat.requestPermissions(this, arrayOf(READ_CONTACTS), 1)
+    private val requestLegacyPermissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result ->
+        val allGranted = result.values.all { it }
+        if (allGranted) {
+            Toast.makeText(this, "Storage permissions granted", Toast.LENGTH_SHORT).show()
         } else {
-            val requestReadWritePermissionLauncher = registerForActivityResult(
-                ActivityResultContracts.RequestMultiplePermissions()
-            ) { result ->
-                var count: kotlin.Int = 0
-                result.entries.forEach {
-                    if (it.value == true) {
-                        count++
-                    }
-                    if (count == 3) {
-                        Toast.makeText(
-                            applicationContext, "Permissions granted", Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        Toast.makeText(
-                            applicationContext,
-                            "Permissions not granted",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
-            requestReadWritePermissionLauncher.launch(
-                arrayOf(
-                    READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE, READ_CONTACTS
-                )
-            )
+            Toast.makeText(this, "Storage permissions denied", Toast.LENGTH_SHORT).show()
         }
     }
+
 }
