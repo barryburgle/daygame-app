@@ -21,6 +21,8 @@ class LeadCsvService : AbstractCsvService<Lead>() {
         leadFieldList.add(lead.contact)
         leadFieldList.add(lead.nationality)
         leadFieldList.add(lead.age.toString())
+        leadFieldList.add(lead.contactLookupKey ?: "")
+        leadFieldList.add(lead.instagramUrl ?: "")
         return leadFieldList.toTypedArray()
     }
 
@@ -34,6 +36,8 @@ class LeadCsvService : AbstractCsvService<Lead>() {
         leadFieldList.add("contact")
         leadFieldList.add("nationality")
         leadFieldList.add("age")
+        leadFieldList.add("contact_lookup_key")
+        leadFieldList.add("instagram_url")
         return leadFieldList.toTypedArray()
     }
 
@@ -48,6 +52,8 @@ class LeadCsvService : AbstractCsvService<Lead>() {
             fields[4],
             fields[5],
             if (age != null) age else 20L,
+            if (fields.size > 7) fields[7].ifEmpty { null } else null,
+            if (fields.size > 8) fields[8].ifEmpty { null } else null
         )
     }
 
