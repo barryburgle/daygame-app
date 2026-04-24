@@ -880,6 +880,22 @@ class InputViewModel(
                 }
             }
 
+            is GameEvent.SetLeadContactLookupKey -> {
+                _state.update {
+                    it.copy(
+                        leadContactLookupKey = event.contactLookupKey
+                    )
+                }
+            }
+
+            is GameEvent.SetLeadInstagramUrl -> {
+                _state.update {
+                    it.copy(
+                        leadInstagramUrl = event.instagramUrl
+                    )
+                }
+            }
+
             is GameEvent.SwitchJustSaved -> {
                 _state.update {
                     it.copy(

@@ -73,6 +73,8 @@ sealed interface GameEvent : GenericEvent {
     data class SetLeadCountryName(val countryName: String) : GameEvent
     data class SetLeadNationality(val nationality: String) : GameEvent
     data class SetLeadAge(val age: String) : GameEvent
+    data class SetLeadContactLookupKey(val contactLookupKey: String) : GameEvent
+    data class SetLeadInstagramUrl(val instagramUrl: String) : GameEvent
     object SwitchJustSaved : GameEvent
     data class SwitchShowFlag(val flagNumber: Int) : GameEvent
 
