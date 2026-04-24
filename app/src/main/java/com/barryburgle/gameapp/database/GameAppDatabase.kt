@@ -86,9 +86,8 @@ abstract class GameAppDatabase : RoomDatabase() {
 
         val MIGRATION_6_7: Migration = object : Migration(6, 7) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL(
-                    "ALTER TABLE lead ADD COLUMN contact_lookup_key TEXT, ADD COLUMN instagram_url TEXT;"
-                )
+                database.execSQL("ALTER TABLE lead ADD COLUMN contact_lookup_key TEXT")
+                database.execSQL("ALTER TABLE lead ADD COLUMN instagram_url TEXT")
             }
         }
 
