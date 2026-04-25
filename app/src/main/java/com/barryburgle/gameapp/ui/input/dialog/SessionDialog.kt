@@ -3,18 +3,20 @@ package com.barryburgle.gameapp.ui.input.dialog
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -26,7 +28,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -60,7 +61,6 @@ import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogTimeFormSection
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
-import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -418,32 +418,35 @@ fun leadName(
                         style = MaterialTheme.typography.bodyMedium,
                         color = textColor
                     )
-                    if (lead.contact == ContactTypeEnum.NUMBER.getField()) {
-                        Box(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .aspectRatio(1f)
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.whatsapp_w),
-                                contentDescription = "Whatsapp Icon",
-                                alignment = Alignment.Center,
-                                contentScale = ContentScale.Crop,
-                                colorFilter = ColorFilter.tint(textColor)
-                            )
+                    Box(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .padding(2.dp)
+                    ) {
+                        val iconRes = if (lead.contact == ContactTypeEnum.NUMBER.getField()) {
+                            R.drawable.whatsapp_w
+                        } else {
+                            R.drawable.instagram_w
                         }
-                    } else {
-                        Box(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .aspectRatio(1f)
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.instagram_w),
-                                contentDescription = "Instagram Icon",
-                                alignment = Alignment.Center,
-                                contentScale = ContentScale.Crop,
-                                colorFilter = ColorFilter.tint(textColor)
+                        Image(
+                            painter = painterResource(iconRes),
+                            contentDescription = "Contact Icon",
+                            modifier = Modifier.fillMaxSize(),
+                            alignment = Alignment.Center,
+                            contentScale = ContentScale.Fit,
+                            colorFilter = ColorFilter.tint(textColor)
+                        )
+
+                        if ((!lead.contactLookupKey.isNullOrBlank() && lead.contact == ContactTypeEnum.NUMBER.getField()) || (!lead.instagramUrl.isNullOrBlank() && lead.contact == ContactTypeEnum.SOCIAL.getField())) {
+                            Box(
+                                modifier = Modifier
+                                    .size(12.dp)
+                                    .align(Alignment.TopEnd)
+                                    .background(
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        shape = CircleShape
+                                    )
+                                    .border(1.dp, backgroundColor, CircleShape)
                             )
                         }
                     }
