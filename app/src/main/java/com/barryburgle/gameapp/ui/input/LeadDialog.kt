@@ -228,48 +228,64 @@ fun LeadDialog(
                 ) {
                     val isDarkTheme = isSystemInDarkTheme()
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxHeight()
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth(0.65f)
                     ) {
-                        Text(text = "", textAlign = TextAlign.Center)
-                        ToggleIcon(
-                            "Whatsapp",
-                            ContactTypeEnum.NUMBER.getField().equals(state.leadContact),
-                            false,
-                            if (isDarkTheme) R.drawable.whatsapp_w else R.drawable.whatsapp_b
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceAround,
+                            modifier = Modifier
+                                .fillMaxWidth()
                         ) {
-                            onEvent(GameEvent.SetLeadContact(ContactTypeEnum.NUMBER.getField()))
-                            val contactInfo = PhoneBookService.findSimilarContact(
-                                localContext.contentResolver,
-                                state.leadName
-                            )
-                            if (contactInfo != null) {
-                                Toast.makeText(
-                                    context,
-                                    "Contact found",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                onEvent(GameEvent.SetLeadContactLookupKey(contactInfo!!.second))
+                            Text(text = "", textAlign = TextAlign.Center)
+                            ToggleIcon(
+                                "",
+                                ContactTypeEnum.NUMBER.getField().equals(state.leadContact),
+                                false,
+                                if (isDarkTheme) R.drawable.whatsapp_w else R.drawable.whatsapp_b
+                            ) {
+                                onEvent(GameEvent.SetLeadContact(ContactTypeEnum.NUMBER.getField()))
+                                val contactInfo = PhoneBookService.findSimilarContact(
+                                    localContext.contentResolver,
+                                    state.leadName
+                                )
+                                if (contactInfo != null) {
+                                    Toast.makeText(
+                                        context,
+                                        "Contact found",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    onEvent(GameEvent.SetLeadContactLookupKey(contactInfo!!.second))
+                                }
+                            }
+                            ToggleIcon(
+                                "",
+                                ContactTypeEnum.SOCIAL.getField().equals(state.leadContact),
+                                false,
+                                if (isDarkTheme) R.drawable.instagram_w else R.drawable.instagram_b
+                            ) {
+                                // TODO: put this logic in a centralized service:
+                                var instagramUrl: String = clipboardManager.getText()!!.toString()
+                                if (instagramUrl.startsWith("https://www.instagram.com/")) {
+                                    onEvent(GameEvent.SetLeadInstagramUrl(instagramUrl))
+                                    Toast.makeText(
+                                        localContext,
+                                        "Copied profile url",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                onEvent(GameEvent.SetLeadContact(ContactTypeEnum.SOCIAL.getField()))
                             }
                         }
-                        ToggleIcon(
-                            "Instagram",
-                            ContactTypeEnum.SOCIAL.getField().equals(state.leadContact),
-                            false,
-                            if (isDarkTheme) R.drawable.instagram_w else R.drawable.instagram_b
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            modifier = Modifier
+                                .fillMaxWidth()
                         ) {
-                            // TODO: put this logic in a centralized service:
-                            var instagramUrl: String = clipboardManager.getText()!!.toString()
-                            if (instagramUrl.startsWith("https://www.instagram.com/")) {
-                                onEvent(GameEvent.SetLeadInstagramUrl(instagramUrl))
-                                Toast.makeText(
-                                    localContext,
-                                    "Copied profile url",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                            onEvent(GameEvent.SetLeadContact(ContactTypeEnum.SOCIAL.getField()))
+                            LittleBodyText("Whatsapp will trigger a name-based phonebook contact search.\nInstagram copies profile url from clipboard.")
                         }
                     }
                     Column(
