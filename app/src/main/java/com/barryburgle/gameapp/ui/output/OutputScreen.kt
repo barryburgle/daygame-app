@@ -1,7 +1,11 @@
 package com.barryburgle.gameapp.ui.output
 
 import android.annotation.SuppressLint
+import android.net.Uri
+import android.provider.ContactsContract
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,10 +35,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.HeatmapEntityEnum
 import com.barryburgle.gameapp.model.lead.Lead
@@ -67,6 +74,8 @@ fun OutputScreen(
 ) {
     // TODO: make cards with injectable type of charts
     // TODO: make different types of charts injectable with arrays
+    val localContext = LocalContext.current.applicationContext
+    val uriHandler = LocalUriHandler.current
     var heatmapEntitySelectorExpanded by remember { mutableStateOf(false) }
     var heatmapEntitySelected by remember { mutableStateOf(HeatmapEntityEnum.SETS) }
     Scaffold(
@@ -220,7 +229,39 @@ fun OutputScreen(
                         }
                         for (lead in state.allLeads) {
                             item {
-                                Row {
+                                Row(
+                                    modifier = Modifier.combinedClickable(
+                                        onClick = {},
+                                        onLongClick = {
+                                            if (lead.contact == ContactTypeEnum.NUMBER.getField() && lead.contactLookupKey != null) {
+                                                try {
+                                                    val uri = Uri.withAppendedPath(
+                                                        ContactsContract.Contacts.CONTENT_LOOKUP_URI,
+                                                        lead.contactLookupKey
+                                                    )
+                                                    uriHandler.openUri(uri.toString())
+                                                } catch (e: Exception) {
+                                                    Toast.makeText(
+                                                        localContext,
+                                                        "Could not open contact",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            } else if (lead.contact == ContactTypeEnum.SOCIAL.getField() && lead.instagramUrl != null && lead.instagramUrl!!.isNotBlank()) {
+                                                uriHandler.openUri(lead.instagramUrl!!)
+                                            } else {
+                                                Toast.makeText(
+                                                    localContext,
+                                                    "No contact found",
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                    .show()
+                                            }
+                                        }),
+                                    horizontalArrangement = Arrangement.spacedBy(
+                                        7.dp
+                                    )
+                                ) {
                                     leadName(
                                         lead = lead,
                                         backgroundColor = MaterialTheme.colorScheme.surface,
