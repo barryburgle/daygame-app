@@ -244,7 +244,8 @@ fun LeadDialog(
                                 "",
                                 ContactTypeEnum.NUMBER.getField().equals(state.leadContact),
                                 false,
-                                if (isDarkTheme) R.drawable.whatsapp_w else R.drawable.whatsapp_b
+                                if (isDarkTheme) R.drawable.whatsapp_w else R.drawable.whatsapp_b,
+                                !state.leadContactLookupKey.isNullOrBlank() && state.leadContact == ContactTypeEnum.NUMBER.getField()
                             ) {
                                 onEvent(GameEvent.SetLeadContact(ContactTypeEnum.NUMBER.getField()))
                                 val contactInfo = PhoneBookService.findSimilarContact(
@@ -264,7 +265,8 @@ fun LeadDialog(
                                 "",
                                 ContactTypeEnum.SOCIAL.getField().equals(state.leadContact),
                                 false,
-                                if (isDarkTheme) R.drawable.instagram_w else R.drawable.instagram_b
+                                if (isDarkTheme) R.drawable.instagram_w else R.drawable.instagram_b,
+                                !state.leadInstagramUrl.isNullOrBlank() && state.leadContact == ContactTypeEnum.SOCIAL.getField()
                             ) {
                                 // TODO: put this logic in a centralized service:
                                 var instagramUrl: String = clipboardManager.getText()!!.toString()

@@ -22,6 +22,7 @@ fun ToggleIcon(
     flag: Boolean,
     smallerIcon: Boolean,
     @DrawableRes icon: Int,
+    dotCondition: Boolean? = false,
     onCheckedChange: () -> Unit
 ) {
     // TODO: instead of having descriptions with or without "Not", display a little badge (Icons.Filled.CheckCircle) with a tick on the bottom right of the icon [v1.7.3]
@@ -47,7 +48,8 @@ fun ToggleIcon(
             color = MaterialTheme.colorScheme.background,
             iconColor = iconColor,
             modifier = iconModifier,
-            boxModifier = Modifier.size(50.dp)
+            boxModifier = Modifier.size(50.dp),
+            dotCondition = dotCondition
         )
         Spacer(modifier = Modifier.height(5.dp))
         LittleBodyText(description.replaceFirstChar { it.uppercase() })

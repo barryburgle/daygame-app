@@ -2,8 +2,14 @@ package com.barryburgle.gameapp.ui.utilities.button
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +28,8 @@ fun ImageShadowButton(
     contentDescription: String?,
     title: String? = null,
     color: Color? = null,
-    iconColor: Color? = null
+    iconColor: Color? = null,
+    dotCondition: Boolean? = false
 ) {
     GenericShadowButton(
         onClick = onClick,
@@ -31,15 +38,32 @@ fun ImageShadowButton(
         title = title,
         color = color
     ) {
-        Image(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(3.dp),
-            painter = painterResource(icon),
-            contentDescription = contentDescription,
-            alignment = Alignment.Center,
-            contentScale = ContentScale.Fit,
-            colorFilter = if (iconColor != null) ColorFilter.tint(iconColor) else null
-        )
+                .padding(4.dp)
+        ) {
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(3.dp),
+                painter = painterResource(icon),
+                contentDescription = contentDescription,
+                alignment = Alignment.Center,
+                contentScale = ContentScale.Fit,
+                colorFilter = if (iconColor != null) ColorFilter.tint(iconColor) else null
+            )
+            if (dotCondition!!) {
+                Box(
+                    modifier = Modifier
+                        .size(12.dp)
+                        .align(Alignment.TopEnd)
+                        .background(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            shape = CircleShape
+                        )
+                        .border(1.dp, MaterialTheme.colorScheme.primaryContainer, CircleShape)
+                )
+            }
+        }
     }
 }
