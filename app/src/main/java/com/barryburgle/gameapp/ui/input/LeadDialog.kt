@@ -269,14 +269,18 @@ fun LeadDialog(
                                 !state.leadInstagramUrl.isNullOrBlank() && state.leadContact == ContactTypeEnum.SOCIAL.getField()
                             ) {
                                 // TODO: put this logic in a centralized service:
-                                var instagramUrl: String = clipboardManager.getText()!!.toString()
-                                if (instagramUrl.startsWith("https://www.instagram.com/")) {
-                                    onEvent(GameEvent.SetLeadInstagramUrl(instagramUrl))
-                                    Toast.makeText(
-                                        localContext,
-                                        "Copied profile url",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                val textFromClipboard = clipboardManager.getText()
+                                if (textFromClipboard != null) {
+                                    var instagramUrl: String =
+                                        textFromClipboard!!.toString()
+                                    if (instagramUrl.startsWith("https://www.instagram.com/")) {
+                                        onEvent(GameEvent.SetLeadInstagramUrl(instagramUrl))
+                                        Toast.makeText(
+                                            localContext,
+                                            "Copied profile url",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
                                 onEvent(GameEvent.SetLeadContact(ContactTypeEnum.SOCIAL.getField()))
                             }
