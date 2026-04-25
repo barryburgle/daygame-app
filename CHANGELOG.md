@@ -1,4 +1,4 @@
-# Version 1.11.0 (2026-04-dd)
+# Version 1.11.0 (2026-04-25)
 **Features**
 - Link your contacts: use auto-find in phone book for Whatsapp or Instagram profile link copy when importing a new contact for a lead ✨
 - Android 16 support 🤖
