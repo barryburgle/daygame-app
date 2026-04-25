@@ -123,7 +123,7 @@ fun InputScreen(
             }
         },
         floatingActionButton = {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(horizontalAlignment = Alignment.End) {
                 Column(
                     modifier = Modifier
                         .height(400.dp)
