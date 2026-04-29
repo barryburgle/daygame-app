@@ -216,9 +216,10 @@ fun InputScreen(
                                     dateTime.dropLast(7)
                                 )
                             )
+                            val liveSessionStartHour = dateTime.substring(11, 16)
                             onEvent(
                                 GameEvent.SetStartHour(
-                                    dateTime.substring(11, 16)
+                                    liveSessionStartHour
                                 )
                             )
                             onEvent(GameEvent.SaveAbstractSession)
@@ -233,7 +234,10 @@ fun InputScreen(
                                 .show()
                             val intent =
                                 Intent(context, PersistentNotificationService::class.java).apply {
-                                    putExtra("EVENT_NAME", "Live session")
+                                    putExtra(
+                                        PersistentNotificationService.LIVE_SESSIONS_START_HOUR,
+                                        liveSessionStartHour
+                                    )
                                 }
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 context.startForegroundService(intent)
