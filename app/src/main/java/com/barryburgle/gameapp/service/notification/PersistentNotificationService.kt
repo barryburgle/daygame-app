@@ -34,9 +34,11 @@ class PersistentNotificationService : Service() {
         )
             .setSmallIcon(R.drawable.notification)
             .setContentTitle("Live session")
-            .setContentText("Tap to open or use buttons below")
+            .setContentText("[Start time here + recap] + tap to add lead")
             .setOngoing(true)
-            .addAction(R.drawable.badge, "Stop Session", stopPendingIntent)
+            .addAction(0, "New set", stopPendingIntent)
+            .addAction(0, "New conversation", stopPendingIntent)
+            .addAction(0, "New contact", stopPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
 
