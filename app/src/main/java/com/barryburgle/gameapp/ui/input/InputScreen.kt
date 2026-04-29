@@ -1,5 +1,7 @@
 package com.barryburgle.gameapp.ui.input
 
+import android.content.Intent
+import android.os.Build
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
@@ -70,6 +72,7 @@ import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
+import com.barryburgle.gameapp.service.notification.PersistentNotificationService
 import com.barryburgle.gameapp.ui.input.card.EventCard
 import com.barryburgle.gameapp.ui.input.card.SummaryCard
 import com.barryburgle.gameapp.ui.input.dialog.ChallengeDialog
@@ -228,6 +231,15 @@ fun InputScreen(
                                 Toast.LENGTH_SHORT
                             )
                                 .show()
+                            val intent =
+                                Intent(context, PersistentNotificationService::class.java).apply {
+                                    putExtra("EVENT_NAME", "Live session")
+                                }
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                context.startForegroundService(intent)
+                            } else {
+                                context.startService(intent)
+                            }
                         }
                     }
                 }
