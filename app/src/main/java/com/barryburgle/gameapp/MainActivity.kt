@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.Manifest.permission.READ_CONTACTS
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -173,6 +174,13 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handlePermissionsFlow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestNotificationPermissionLauncher.launch(POST_NOTIFICATIONS)
+            }
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (!Environment.isExternalStorageManager()) {
                 val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
@@ -208,6 +216,17 @@ class MainActivity : ComponentActivity() {
             if (permissions.isNotEmpty()) {
                 requestLegacyPermissionsLauncher.launch(permissions.toTypedArray())
             }
+        }
+    }
+
+    private val requestNotificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            Toast.makeText(this, "Notifications enabled", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Notifications disabled", Toast.LENGTH_LONG)
+                .show()
         }
     }
 
