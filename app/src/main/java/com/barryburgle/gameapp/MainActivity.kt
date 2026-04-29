@@ -308,15 +308,22 @@ class MainActivity : ComponentActivity() {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
+            val stickingPointsNotificationChannel = NotificationChannel(
                 NotificationService.STICKING_POINT_NOTIFICATION_CHANNEL_ID,
                 NotificationService.STICKING_POINT_NOTIFICATION_CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
             )
-            channel.description = "Daygame sticking point notification"
+            stickingPointsNotificationChannel.description = "Daygame sticking point notification"
+            val liveSessionNotificationChannel = NotificationChannel(
+                NotificationService.LIVE_SESSION_NOTIFICATION_CHANNEL_ID,
+                NotificationService.LIVE_SESSION_NOTIFICATION_CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            liveSessionNotificationChannel.description = "Live session persistent notification"
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+            notificationManager.createNotificationChannel(stickingPointsNotificationChannel)
+            notificationManager.createNotificationChannel(liveSessionNotificationChannel)
         }
     }
 

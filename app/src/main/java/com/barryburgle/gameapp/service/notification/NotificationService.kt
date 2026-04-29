@@ -21,6 +21,8 @@ class NotificationService(
     companion object {
         const val STICKING_POINT_NOTIFICATION_CHANNEL_ID = "sticking_points_reminder"
         const val STICKING_POINT_NOTIFICATION_CHANNEL_NAME = "Sticking points reminder"
+        const val LIVE_SESSION_NOTIFICATION_CHANNEL_ID = "live_session_persistent"
+        const val LIVE_SESSION_NOTIFICATION_CHANNEL_NAME = "Live Session"
 
         fun createNotificationState(
             notificationDate: String,
