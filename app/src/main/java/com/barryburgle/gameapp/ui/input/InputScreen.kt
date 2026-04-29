@@ -97,7 +97,8 @@ fun InputScreen(
     val spaceFromNavBar = 80.dp
     var isRotated by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(false) }
-    val localContext = LocalContext.current.applicationContext
+    val context = LocalContext.current
+    val localContext = context.applicationContext
     val blurBackground by animateDpAsState(
         targetValue = if (isExpanded or state.isInOverlay) 10.dp else 0.dp,
         animationSpec = tween(durationMillis = 350),

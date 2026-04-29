@@ -56,6 +56,7 @@ import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.EntityService.Companion.getParsedHour
 import com.barryburgle.gameapp.service.EntityService.Companion.getTime
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.service.notification.PersistentNotificationService
 import com.barryburgle.gameapp.ui.input.card.body.ChallengeBody
 import com.barryburgle.gameapp.ui.input.card.body.DateBody
 import com.barryburgle.gameapp.ui.input.card.body.LiveSessionBody
@@ -85,7 +86,8 @@ fun EventCard(
     followCount: Boolean = true
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
-    val localContext = LocalContext.current.applicationContext
+    val context = LocalContext.current
+    val localContext = context.applicationContext
     val uriHandler = LocalUriHandler.current
     var liveSessionTime: Long = 0
     var liveSessionLeads: Int = 0
