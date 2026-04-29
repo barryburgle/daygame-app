@@ -375,6 +375,11 @@ fun EventCard(
                                         onEvent(
                                             GameEvent.StopLiveSession(sortableGameEvent.event as AbstractSession)
                                         )
+                                        val intent = Intent(
+                                            context,
+                                            PersistentNotificationService::class.java
+                                        )
+                                        context.stopService(intent)
                                     },
                                     imageVector = Icons.Default.Stop,
                                     contentDescription = "Stop Live Session",
