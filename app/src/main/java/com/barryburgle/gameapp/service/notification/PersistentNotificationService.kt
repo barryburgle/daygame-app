@@ -10,10 +10,13 @@ import androidx.core.app.NotificationCompat
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.database.GameAppDatabase
+import com.barryburgle.gameapp.service.batch.BatchSessionService
+import com.barryburgle.gameapp.service.notification.PersistentNotificationService.Companion.LIVE_SESSIONS_START_HOUR
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PersistentNotificationService : Service() {
 
@@ -24,82 +27,129 @@ class PersistentNotificationService : Service() {
         const val ACTION_NEW_CONTACT = "ACTION_NEW_CONTACT"
     }
 
-    private fun handleNewSetAction(intent: Intent?, abstractSessionDao: AbstractSessionDao): Int {
+    private var startHour: String? = null
+
+    private fun setStartHour(intent: Intent?) {
+        startHour = intent?.getStringExtra(LIVE_SESSIONS_START_HOUR)
+    }
+
+    private fun handleNewSetAction(intent: Intent?, abstractSessionDao: AbstractSessionDao) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                val batchSessionService = BatchSessionService()
                 val lastSession = abstractSessionDao.getLastSession().first()
                 lastSession.let { session ->
-                    val updatedSets = session.sets + 1
-                    val updatedSession = session.copy(sets = updatedSets)
+                    val updatedSession = batchSessionService.init(
+                        session.id.toString(),
+                        session.date.substring(0, 10),
+                        session.startHour.substring(11, 16),
+                        session.endHour.substring(11, 16),
+                        (session.sets + 1).toString(),
+                        session.convos
+                            .toString(),
+                        session.contacts.toString(),
+                        session.stickingPoints
+                    )
                     abstractSessionDao.insert(updatedSession)
+                    withContext(Dispatchers.Main) {
+                        updateNotification(intent)
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-        return updateNotification(intent)
     }
 
+    // TODO: use follow count
     private fun handleNewConversationAction(
         intent: Intent?,
         abstractSessionDao: AbstractSessionDao
-    ): Int {
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                val batchSessionService = BatchSessionService()
                 val lastSession = abstractSessionDao.getLastSession().first()
                 lastSession.let { session ->
-                    val updatedConversations = session.conversations + 1
-                    val updatedSession = session.copy(conversations = updatedConversations)
+                    val updatedSession = batchSessionService.init(
+                        session.id.toString(),
+                        session.date.substring(0, 10),
+                        session.startHour.substring(11, 16),
+                        session.endHour.substring(11, 16),
+                        session.sets.toString(),
+                        (session.convos + 1).toString(),
+                        session.contacts.toString(),
+                        session.stickingPoints
+                    )
                     abstractSessionDao.insert(updatedSession)
+                    withContext(Dispatchers.Main) {
+                        updateNotification(intent)
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-        return updateNotification(intent)
     }
 
+    // TODO: use follow count
     private fun handleNewContactAction(
         intent: Intent?,
         abstractSessionDao: AbstractSessionDao
-    ): Int {
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                val batchSessionService = BatchSessionService()
                 val lastSession = abstractSessionDao.getLastSession().first()
                 lastSession.let { session ->
-                    val updatedContacts = session.contacts + 1
-                    val updatedSession = session.copy(contacts = updatedContacts)
+                    val updatedSession = batchSessionService.init(
+                        session.id.toString(),
+                        session.date.substring(0, 10),
+                        session.startHour.substring(11, 16),
+                        session.endHour.substring(11, 16),
+                        session.sets.toString(),
+                        session.convos
+                            .toString(),
+                        (session.contacts + 1).toString(),
+                        session.stickingPoints
+                    )
                     abstractSessionDao.insert(updatedSession)
+                    withContext(Dispatchers.Main) {
+                        updateNotification(intent)
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-        return updateNotification(intent)
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        setStartHour(intent)
         val database = GameAppDatabase.getInstance(applicationContext)
         val abstractSessionDao = database!!.abstractSessionDao
         when (intent?.action) {
             ACTION_NEW_SET -> {
-                return handleNewSetAction(intent, abstractSessionDao)
+                handleNewSetAction(intent, abstractSessionDao)
+                return START_STICKY
             }
 
             ACTION_NEW_CONVERSATION -> {
+                handleNewConversationAction(intent, abstractSessionDao)
                 return START_STICKY
             }
 
             ACTION_NEW_CONTACT -> {
+                handleNewContactAction(intent, abstractSessionDao)
                 return START_STICKY
             }
         }
         return updateNotification(intent)
     }
 
+    // TODO: WHy when i do press new set or new conversation the "Started at HH:mm" disappears and it not written again?
     fun updateNotification(intent: Intent?): Int {
-        val parsedStartHour = "Started at " + intent?.getStringExtra(LIVE_SESSIONS_START_HOUR)
         val newSetPendingIntent = PendingIntent.getService(
             this,
             0,
@@ -124,13 +174,14 @@ class PersistentNotificationService : Service() {
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+        // TODO: how to make the notification unswipeable until I send the "disappear notification" message on channel?
         val notification = NotificationCompat.Builder(
             this,
             NotificationService.LIVE_SESSION_NOTIFICATION_CHANNEL_ID
         )
             .setSmallIcon(R.drawable.notification)
             .setContentTitle("Live session")
-            .setContentText("${parsedStartHour} [ + recap + tap to add lead]")
+            .setContentText(if (startHour != null) "Started at " + startHour else "")
             .setOngoing(true)
             .addAction(0, "New set", newSetPendingIntent)
             .addAction(0, "New conversation", newConversationPendingIntent)
