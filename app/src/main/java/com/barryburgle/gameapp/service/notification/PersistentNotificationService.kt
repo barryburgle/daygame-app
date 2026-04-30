@@ -185,6 +185,7 @@ class PersistentNotificationService : Service() {
             .setContentTitle("Live session")
             .setContentText(if (startHour != null) "Started at " + startHour else "")
             .setOngoing(true)
+            .setOnlyAlertOnce(true)
             .addAction(0, "New set", newSetPendingIntent)
             .addAction(0, "New conversation", newConversationPendingIntent)
             .addAction(0, "New contact", newContactPendingIntent)
