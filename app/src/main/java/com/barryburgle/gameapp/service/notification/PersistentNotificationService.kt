@@ -58,7 +58,11 @@ class PersistentNotificationService : Service() {
                     )
                     abstractSessionDao.insert(updatedSession)
                     withContext(Dispatchers.Main) {
-                        updateNotification()
+                        updateNotification(
+                            updatedSession.sets,
+                            updatedSession.convos,
+                            updatedSession.contacts
+                        )
                     }
                 }
             } catch (e: Exception) {
@@ -87,7 +91,11 @@ class PersistentNotificationService : Service() {
                     )
                     abstractSessionDao.insert(updatedSession)
                     withContext(Dispatchers.Main) {
-                        updateNotification()
+                        updateNotification(
+                            updatedSession.sets,
+                            updatedSession.convos,
+                            updatedSession.contacts
+                        )
                     }
                 }
             } catch (e: Exception) {
@@ -116,7 +124,11 @@ class PersistentNotificationService : Service() {
                     )
                     abstractSessionDao.insert(updatedSession)
                     withContext(Dispatchers.Main) {
-                        updateNotification()
+                        updateNotification(
+                            updatedSession.sets,
+                            updatedSession.convos,
+                            updatedSession.contacts
+                        )
                     }
                 }
             } catch (e: Exception) {
@@ -146,10 +158,10 @@ class PersistentNotificationService : Service() {
                 return START_STICKY
             }
         }
-        return updateNotification()
+        return updateNotification(0, 0, 0)
     }
 
-    fun updateNotification(): Int {
+    fun updateNotification(sets: Int, conversations: Int, contacts: Int): Int {
         val newSetPendingIntent = PendingIntent.getService(
             this, 0, Intent(this, PersistentNotificationService::class.java).apply {
                 action = ACTION_NEW_SET
@@ -170,11 +182,30 @@ class PersistentNotificationService : Service() {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
             }, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        // TODO: how to make the notification unswipeable until I send the "disappear notification" message on channel?
+        var contentText = ""
+        if (sets > 0) {
+            contentText += "$sets set"
+            if (sets > 1) {
+                contentText += "s"
+            }
+        }
+        if (conversations > 0) {
+            contentText += ", $conversations conversation"
+            if (conversations > 1) {
+                contentText += "s"
+            }
+        }
+        if (contacts > 0) {
+            contentText += ", $contacts contact"
+            if (contacts > 1) {
+                contentText += "s"
+            }
+        }
         val notification = NotificationCompat.Builder(
             this, NotificationService.LIVE_SESSION_NOTIFICATION_CHANNEL_ID
-        ).setSmallIcon(R.drawable.notification).setContentTitle("Live session")
-            .setContentText(if (startHour != null) "Started at " + startHour else "")
+        ).setSmallIcon(R.drawable.notification)
+            .setContentTitle("Session started at " + startHour)
+            .setContentText(contentText)
             .setOngoing(true).setOnlyAlertOnce(true).setContentIntent(tapPendingIntent)
             .addAction(R.drawable.set_action, "New set", newSetPendingIntent)
             .addAction(
