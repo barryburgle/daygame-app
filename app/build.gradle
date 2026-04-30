@@ -78,4 +78,5 @@ dependencies {
     implementation libs.converter.gson
     implementation libs.ui
     implementation libs.compose.markdown
+    implementation libs.media
 }
