@@ -30,7 +30,10 @@ class PersistentNotificationService : Service() {
     private var startHour: String? = null
 
     private fun setStartHour(intent: Intent?) {
-        startHour = intent?.getStringExtra(LIVE_SESSIONS_START_HOUR)
+        val hour = intent?.getStringExtra(LIVE_SESSIONS_START_HOUR)
+        if (hour != null) {
+            startHour = hour
+        }
     }
 
     private fun handleNewSetAction(intent: Intent?, abstractSessionDao: AbstractSessionDao) {
@@ -52,7 +55,7 @@ class PersistentNotificationService : Service() {
                     )
                     abstractSessionDao.insert(updatedSession)
                     withContext(Dispatchers.Main) {
-                        updateNotification(intent)
+                        updateNotification()
                     }
                 }
             } catch (e: Exception) {
@@ -83,7 +86,7 @@ class PersistentNotificationService : Service() {
                     )
                     abstractSessionDao.insert(updatedSession)
                     withContext(Dispatchers.Main) {
-                        updateNotification(intent)
+                        updateNotification()
                     }
                 }
             } catch (e: Exception) {
@@ -115,7 +118,7 @@ class PersistentNotificationService : Service() {
                     )
                     abstractSessionDao.insert(updatedSession)
                     withContext(Dispatchers.Main) {
-                        updateNotification(intent)
+                        updateNotification()
                     }
                 }
             } catch (e: Exception) {
@@ -145,11 +148,10 @@ class PersistentNotificationService : Service() {
                 return START_STICKY
             }
         }
-        return updateNotification(intent)
+        return updateNotification()
     }
 
-    // TODO: WHy when i do press new set or new conversation the "Started at HH:mm" disappears and it not written again?
-    fun updateNotification(intent: Intent?): Int {
+    fun updateNotification(): Int {
         val newSetPendingIntent = PendingIntent.getService(
             this,
             0,
