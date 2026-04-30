@@ -154,53 +154,41 @@ class PersistentNotificationService : Service() {
 
     fun updateNotification(): Int {
         val newSetPendingIntent = PendingIntent.getService(
-            this,
-            0,
-            Intent(this, PersistentNotificationService::class.java).apply {
+            this, 0, Intent(this, PersistentNotificationService::class.java).apply {
                 action = ACTION_NEW_SET
-            },
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            }, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val newConversationPendingIntent = PendingIntent.getService(
-            this,
-            1,
-            Intent(this, PersistentNotificationService::class.java).apply {
+            this, 1, Intent(this, PersistentNotificationService::class.java).apply {
                 action = ACTION_NEW_CONVERSATION
-            },
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            }, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val newContactPendingIntent = PendingIntent.getService(
-            this,
-            2,
-            Intent(this, PersistentNotificationService::class.java).apply {
+            this, 2, Intent(this, PersistentNotificationService::class.java).apply {
                 action = ACTION_NEW_CONTACT
-            },
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            }, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val tapPendingIntent = PendingIntent.getActivity(
-            this,
-            3,
-            Intent(this, MainActivity::class.java).apply {
+            this, 3, Intent(this, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            },
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            }, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         // TODO: how to make the notification unswipeable until I send the "disappear notification" message on channel?
         val notification = NotificationCompat.Builder(
-            this,
-            NotificationService.LIVE_SESSION_NOTIFICATION_CHANNEL_ID
-        )
-            .setSmallIcon(R.drawable.notification)
-            .setContentTitle("Live session")
+            this, NotificationService.LIVE_SESSION_NOTIFICATION_CHANNEL_ID
+        ).setSmallIcon(R.drawable.notification).setContentTitle("Live session")
             .setContentText(if (startHour != null) "Started at " + startHour else "")
-            .setOngoing(true)
-            .setOnlyAlertOnce(true)
-            .setContentIntent(tapPendingIntent)
-            .addAction(0, "New set", newSetPendingIntent)
-            .addAction(0, "New conversation", newConversationPendingIntent)
-            .addAction(0, "New contact", newContactPendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .build()
+            .setOngoing(true).setOnlyAlertOnce(true).setContentIntent(tapPendingIntent)
+            .addAction(R.drawable.set_action, "New set", newSetPendingIntent)
+            .addAction(
+                R.drawable.conversation_action,
+                "New conversation",
+                newConversationPendingIntent
+            )
+            .addAction(R.drawable.contact_action, "New contact", newContactPendingIntent).setStyle(
+                androidx.media.app.NotificationCompat.MediaStyle()
+                    .setShowActionsInCompactView(0, 1, 2)
+            ).setPriority(NotificationCompat.PRIORITY_LOW).build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(100, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
