@@ -7,6 +7,7 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.barryburgle.gameapp.MainActivity
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.database.GameAppDatabase
@@ -176,6 +177,14 @@ class PersistentNotificationService : Service() {
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+        val tapPendingIntent = PendingIntent.getActivity(
+            this,
+            3,
+            Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
         // TODO: how to make the notification unswipeable until I send the "disappear notification" message on channel?
         val notification = NotificationCompat.Builder(
             this,
@@ -186,6 +195,7 @@ class PersistentNotificationService : Service() {
             .setContentText(if (startHour != null) "Started at " + startHour else "")
             .setOngoing(true)
             .setOnlyAlertOnce(true)
+            .setContentIntent(tapPendingIntent)
             .addAction(0, "New set", newSetPendingIntent)
             .addAction(0, "New conversation", newConversationPendingIntent)
             .addAction(0, "New contact", newContactPendingIntent)
