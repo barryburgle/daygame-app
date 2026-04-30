@@ -12,7 +12,6 @@ import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.database.GameAppDatabase
 import com.barryburgle.gameapp.service.batch.BatchSessionService
-import com.barryburgle.gameapp.service.notification.PersistentNotificationService.Companion.LIVE_SESSIONS_START_HOUR
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -23,17 +22,21 @@ class PersistentNotificationService : Service() {
 
     companion object {
         const val LIVE_SESSIONS_START_HOUR = "LIVE SESSIONS START HOUR"
+        const val IS_FOLLOW_COUNT_ACTIVE = "IS FOLLOW COUNT ACTIVE"
         const val ACTION_NEW_SET = "ACTION_NEW_SET"
         const val ACTION_NEW_CONVERSATION = "ACTION_NEW_CONVERSATION"
         const val ACTION_NEW_CONTACT = "ACTION_NEW_CONTACT"
     }
 
     private var startHour: String? = null
+    private var isFollowCountActive: Boolean = false
 
-    private fun setStartHour(intent: Intent?) {
-        val hour = intent?.getStringExtra(LIVE_SESSIONS_START_HOUR)
-        if (hour != null) {
-            startHour = hour
+    private fun updateServiceState(intent: Intent?) {
+        if (intent?.hasExtra(LIVE_SESSIONS_START_HOUR) == true) {
+            startHour = intent.getStringExtra(LIVE_SESSIONS_START_HOUR)
+        }
+        if (intent?.hasExtra(IS_FOLLOW_COUNT_ACTIVE) == true) {
+            isFollowCountActive = intent.getBooleanExtra(IS_FOLLOW_COUNT_ACTIVE, false)
         }
     }
 
@@ -49,8 +52,7 @@ class PersistentNotificationService : Service() {
                         session.startHour.substring(11, 16),
                         session.endHour.substring(11, 16),
                         (session.sets + 1).toString(),
-                        session.convos
-                            .toString(),
+                        session.convos.toString(),
                         session.contacts.toString(),
                         session.stickingPoints
                     )
@@ -65,10 +67,8 @@ class PersistentNotificationService : Service() {
         }
     }
 
-    // TODO: use follow count
     private fun handleNewConversationAction(
-        intent: Intent?,
-        abstractSessionDao: AbstractSessionDao
+        intent: Intent?, abstractSessionDao: AbstractSessionDao
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -80,7 +80,7 @@ class PersistentNotificationService : Service() {
                         session.date.substring(0, 10),
                         session.startHour.substring(11, 16),
                         session.endHour.substring(11, 16),
-                        session.sets.toString(),
+                        if (isFollowCountActive) (session.sets + 1).toString() else session.sets.toString(),
                         (session.convos + 1).toString(),
                         session.contacts.toString(),
                         session.stickingPoints
@@ -96,10 +96,8 @@ class PersistentNotificationService : Service() {
         }
     }
 
-    // TODO: use follow count
     private fun handleNewContactAction(
-        intent: Intent?,
-        abstractSessionDao: AbstractSessionDao
+        intent: Intent?, abstractSessionDao: AbstractSessionDao
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -111,9 +109,8 @@ class PersistentNotificationService : Service() {
                         session.date.substring(0, 10),
                         session.startHour.substring(11, 16),
                         session.endHour.substring(11, 16),
-                        session.sets.toString(),
-                        session.convos
-                            .toString(),
+                        if (isFollowCountActive) (session.sets + 1).toString() else session.sets.toString(),
+                        if (isFollowCountActive) (session.convos + 1).toString() else session.convos.toString(),
                         (session.contacts + 1).toString(),
                         session.stickingPoints
                     )
@@ -130,7 +127,7 @@ class PersistentNotificationService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        setStartHour(intent)
+        updateServiceState(intent)
         val database = GameAppDatabase.getInstance(applicationContext)
         val abstractSessionDao = database!!.abstractSessionDao
         when (intent?.action) {

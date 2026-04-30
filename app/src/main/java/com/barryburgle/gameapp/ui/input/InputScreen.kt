@@ -238,6 +238,10 @@ fun InputScreen(
                                         PersistentNotificationService.LIVE_SESSIONS_START_HOUR,
                                         liveSessionStartHour
                                     )
+                                    putExtra(
+                                        PersistentNotificationService.IS_FOLLOW_COUNT_ACTIVE,
+                                        state.followCount
+                                    )
                                 }
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 context.startForegroundService(intent)
