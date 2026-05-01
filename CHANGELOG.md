@@ -1,6 +1,7 @@
 # Version 1.12.0 (2026-05-03)
 **Features**
 - Live session persistent notification 💬
+- Hold the Daygame App icon for live session shortcut ↪️
 
 # Version 1.11.0 (2026-04-25)
 **Features**
