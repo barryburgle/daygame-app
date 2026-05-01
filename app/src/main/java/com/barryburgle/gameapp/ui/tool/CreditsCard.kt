@@ -161,7 +161,6 @@ fun versionInfo(
             ) {
                 if (state.latestAvailable != null && !state.latestAvailable.isEmpty()) {
                     changelog(latestVersion, state, onEvent)
-
                 } else {
                     SmallTitleText(info)
                 }
