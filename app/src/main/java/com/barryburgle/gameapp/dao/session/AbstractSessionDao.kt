@@ -84,4 +84,7 @@ interface AbstractSessionDao {
 
     @Query("SELECT * from abstract_session ORDER BY session_date DESC, end_hour DESC LIMIT 1")
     fun getLastSession(): Flow<AbstractSession>
+
+    @Query("SELECT * from abstract_session WHERE start_hour = end_hour ORDER BY session_date DESC, end_hour DESC LIMIT 1")
+    fun getLastLiveSession(): Flow<AbstractSession>
 }
