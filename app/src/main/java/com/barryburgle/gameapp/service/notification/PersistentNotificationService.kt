@@ -12,9 +12,10 @@ import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.database.GameAppDatabase
 import com.barryburgle.gameapp.service.batch.BatchSessionService
+import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -44,26 +45,39 @@ class PersistentNotificationService : Service() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val batchSessionService = BatchSessionService()
-                val lastSession = abstractSessionDao.getLastSession().first()
-                lastSession.let { session ->
-                    val updatedSession = batchSessionService.init(
-                        session.id.toString(),
-                        session.date.substring(0, 10),
-                        session.startHour.substring(11, 16),
-                        session.endHour.substring(11, 16),
-                        (session.sets + 1).toString(),
-                        session.convos.toString(),
-                        session.contacts.toString(),
-                        session.stickingPoints
+                val liveSession = abstractSessionDao.getLastLiveSession().firstOrNull()
+                val updatedSession = if (liveSession != null) {
+                    batchSessionService.init(
+                        liveSession.id.toString(),
+                        liveSession.date.substring(0, 10),
+                        liveSession.startHour.substring(11, 16),
+                        liveSession.endHour.substring(11, 16),
+                        (liveSession.sets + 1).toString(),
+                        liveSession.convos.toString(),
+                        liveSession.contacts.toString(),
+                        liveSession.stickingPoints
                     )
-                    abstractSessionDao.insert(updatedSession)
-                    withContext(Dispatchers.Main) {
-                        updateNotification(
-                            updatedSession.sets,
-                            updatedSession.convos,
-                            updatedSession.contacts
-                        )
-                    }
+                } else {
+                    val dateTime = passInitialValue(true, null, "")
+                    batchSessionService.init(
+                        null,
+                        dateTime.substring(0, 10),
+                        startHour!!,
+                        startHour!!,
+                        "1",
+                        "0",
+                        "0",
+                        ""
+                    )
+                }
+
+                abstractSessionDao.insert(updatedSession)
+                withContext(Dispatchers.Main) {
+                    updateNotification(
+                        updatedSession.sets,
+                        updatedSession.convos,
+                        updatedSession.contacts
+                    )
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -77,26 +91,38 @@ class PersistentNotificationService : Service() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val batchSessionService = BatchSessionService()
-                val lastSession = abstractSessionDao.getLastSession().first()
-                lastSession.let { session ->
-                    val updatedSession = batchSessionService.init(
-                        session.id.toString(),
-                        session.date.substring(0, 10),
-                        session.startHour.substring(11, 16),
-                        session.endHour.substring(11, 16),
-                        if (isFollowCountActive) (session.sets + 1).toString() else session.sets.toString(),
-                        (session.convos + 1).toString(),
-                        session.contacts.toString(),
-                        session.stickingPoints
+                val liveSession = abstractSessionDao.getLastLiveSession().firstOrNull()
+                val updatedSession = if (liveSession != null) {
+                    batchSessionService.init(
+                        liveSession.id.toString(),
+                        liveSession.date.substring(0, 10),
+                        liveSession.startHour.substring(11, 16),
+                        liveSession.endHour.substring(11, 16),
+                        if (isFollowCountActive) (liveSession.sets + 1).toString() else liveSession.sets.toString(),
+                        (liveSession.convos + 1).toString(),
+                        liveSession.contacts.toString(),
+                        liveSession.stickingPoints
                     )
-                    abstractSessionDao.insert(updatedSession)
-                    withContext(Dispatchers.Main) {
-                        updateNotification(
-                            updatedSession.sets,
-                            updatedSession.convos,
-                            updatedSession.contacts
-                        )
-                    }
+                } else {
+                    val dateTime = passInitialValue(true, null, "")
+                    batchSessionService.init(
+                        null,
+                        dateTime.substring(0, 10),
+                        startHour!!,
+                        startHour!!,
+                        if (isFollowCountActive) "1" else "0",
+                        "1",
+                        "0",
+                        ""
+                    )
+                }
+                abstractSessionDao.insert(updatedSession)
+                withContext(Dispatchers.Main) {
+                    updateNotification(
+                        updatedSession.sets,
+                        updatedSession.convos,
+                        updatedSession.contacts
+                    )
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -110,26 +136,38 @@ class PersistentNotificationService : Service() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val batchSessionService = BatchSessionService()
-                val lastSession = abstractSessionDao.getLastSession().first()
-                lastSession.let { session ->
-                    val updatedSession = batchSessionService.init(
-                        session.id.toString(),
-                        session.date.substring(0, 10),
-                        session.startHour.substring(11, 16),
-                        session.endHour.substring(11, 16),
-                        if (isFollowCountActive) (session.sets + 1).toString() else session.sets.toString(),
-                        if (isFollowCountActive) (session.convos + 1).toString() else session.convos.toString(),
-                        (session.contacts + 1).toString(),
-                        session.stickingPoints
+                val liveSession = abstractSessionDao.getLastLiveSession().firstOrNull()
+                val updatedSession = if (liveSession != null) {
+                    batchSessionService.init(
+                        liveSession.id.toString(),
+                        liveSession.date.substring(0, 10),
+                        liveSession.startHour.substring(11, 16),
+                        liveSession.endHour.substring(11, 16),
+                        if (isFollowCountActive) (liveSession.sets + 1).toString() else liveSession.sets.toString(),
+                        if (isFollowCountActive) (liveSession.convos + 1).toString() else liveSession.convos.toString(),
+                        (liveSession.contacts + 1).toString(),
+                        liveSession.stickingPoints
                     )
-                    abstractSessionDao.insert(updatedSession)
-                    withContext(Dispatchers.Main) {
-                        updateNotification(
-                            updatedSession.sets,
-                            updatedSession.convos,
-                            updatedSession.contacts
-                        )
-                    }
+                } else {
+                    val dateTime = passInitialValue(true, null, "")
+                    batchSessionService.init(
+                        null,
+                        dateTime.substring(0, 10),
+                        startHour!!,
+                        startHour!!,
+                        if (isFollowCountActive) "1" else "0",
+                        if (isFollowCountActive) "1" else "0",
+                        "1",
+                        ""
+                    )
+                }
+                abstractSessionDao.insert(updatedSession)
+                withContext(Dispatchers.Main) {
+                    updateNotification(
+                        updatedSession.sets,
+                        updatedSession.convos,
+                        updatedSession.contacts
+                    )
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
