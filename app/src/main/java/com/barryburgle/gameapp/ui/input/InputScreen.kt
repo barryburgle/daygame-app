@@ -17,7 +17,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,12 +32,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Timer
@@ -49,6 +56,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,7 +66,9 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -71,6 +81,7 @@ import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
+import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.service.notification.PersistentNotificationService
 import com.barryburgle.gameapp.ui.input.card.EventCard
@@ -84,7 +95,10 @@ import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
 import com.barryburgle.gameapp.ui.utilities.selection.MultiChoiceButton
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,7 +110,8 @@ fun InputScreen(
     spaceFromTop: Dp,
     spaceFromBottom: Dp
 ) {
-    // TODO: integrate on the right a scrollbar (mainly invisible) that allows to easily jump to a session around a certain date
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
     val spaceFromNavBar = 80.dp
     var isRotated by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(false) }
@@ -112,158 +127,148 @@ fun InputScreen(
         animationSpec = tween(durationMillis = 650),
         label = "rotationAngle"
     )
-    Scaffold(
-        topBar = {
-            Row(
+    Scaffold(topBar = {
+        Row(
+            modifier = Modifier
+                .blur(blurBackground)
+                .fillMaxHeight()
+        ) {
+            gameTopBar(
+                state, onEvent, spaceFromLeft
+            )
+        }
+    }, floatingActionButton = {
+        Column(horizontalAlignment = Alignment.End) {
+            Column(
                 modifier = Modifier
-                    .blur(blurBackground)
-                    .fillMaxHeight()
+                    .height(400.dp)
+                    .offset(y = -100.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceAround
             ) {
-                gameTopBar(
-                    state,
-                    onEvent,
-                    spaceFromLeft
-                )
-            }
-        },
-        floatingActionButton = {
-            Column(horizontalAlignment = Alignment.End) {
-                Column(
-                    modifier = Modifier
-                        .height(400.dp)
-                        .offset(y = -100.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceAround
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = floatingButtonEnterTransition(300),
+                    exit = floatingButtonExitTransition(300)
                 ) {
-                    AnimatedVisibility(
-                        visible = isExpanded,
-                        enter = floatingButtonEnterTransition(300),
-                        exit = floatingButtonExitTransition(300)
+                    floatingAddButton(
+                        EventTypeEnum.DATE.getIcon()!!, EventTypeEnum.DATE.getField(), false
                     ) {
-                        floatingAddButton(
-                            EventTypeEnum.DATE.getIcon()!!,
-                            EventTypeEnum.DATE.getField(),
-                            false
-                        ) {
-                            onEvent(GameEvent.SetIsInOverlayToTrue)
-                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.DATE))
-                            isExpanded = false
-                            isRotated = false
-                        }
+                        onEvent(GameEvent.SetIsInOverlayToTrue)
+                        onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.DATE))
+                        isExpanded = false
+                        isRotated = false
                     }
-                    AnimatedVisibility(
-                        visible = isExpanded,
-                        enter = floatingButtonEnterTransition(500),
-                        exit = floatingButtonExitTransition(500)
+                }
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = floatingButtonEnterTransition(500),
+                    exit = floatingButtonExitTransition(500)
+                ) {
+                    floatingAddButton(
+                        EventTypeEnum.SET.getIcon()!!, EventTypeEnum.SET.getField(), false
                     ) {
-                        floatingAddButton(
-                            EventTypeEnum.SET.getIcon()!!,
-                            EventTypeEnum.SET.getField(), false
-                        ) {
-                            onEvent(GameEvent.SetIsInOverlayToTrue)
-                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SET))
-                            isExpanded = false
-                            isRotated = false
-                        }
+                        onEvent(GameEvent.SetIsInOverlayToTrue)
+                        onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SET))
+                        isExpanded = false
+                        isRotated = false
                     }
-                    AnimatedVisibility(
-                        visible = isExpanded,
-                        enter = floatingButtonEnterTransition(700),
-                        exit = floatingButtonExitTransition(700)
+                }
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = floatingButtonEnterTransition(700),
+                    exit = floatingButtonExitTransition(700)
+                ) {
+                    floatingAddButton(
+                        EventTypeEnum.SESSION.getIcon()!!,
+                        EventTypeEnum.SESSION.getField(),
+                        false
                     ) {
-                        floatingAddButton(
-                            EventTypeEnum.SESSION.getIcon()!!,
-                            EventTypeEnum.SESSION.getField(), false
-                        ) {
-                            onEvent(GameEvent.SetIsInOverlayToTrue)
-                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SESSION))
-                            isExpanded = false
-                            isRotated = false
-                        }
+                        onEvent(GameEvent.SetIsInOverlayToTrue)
+                        onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SESSION))
+                        isExpanded = false
+                        isRotated = false
                     }
-                    AnimatedVisibility(
-                        visible = isExpanded,
-                        enter = floatingButtonEnterTransition(900),
-                        exit = floatingButtonExitTransition(900)
+                }
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = floatingButtonEnterTransition(900),
+                    exit = floatingButtonExitTransition(900)
+                ) {
+                    floatingAddButton(
+                        EventTypeEnum.CHALLENGE.getIcon()!!,
+                        EventTypeEnum.CHALLENGE.getField(),
+                        false
                     ) {
-                        floatingAddButton(
-                            EventTypeEnum.CHALLENGE.getIcon()!!,
-                            EventTypeEnum.CHALLENGE.getField(), false
-                        ) {
-                            onEvent(GameEvent.SetIsInOverlayToTrue)
-                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.CHALLENGE))
-                            isExpanded = false
-                            isRotated = false
-                        }
+                        onEvent(GameEvent.SetIsInOverlayToTrue)
+                        onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.CHALLENGE))
+                        isExpanded = false
+                        isRotated = false
                     }
-                    AnimatedVisibility(
-                        visible = isExpanded,
-                        enter = floatingButtonEnterTransition(1100),
-                        exit = floatingButtonExitTransition(1100)
+                }
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = floatingButtonEnterTransition(1100),
+                    exit = floatingButtonExitTransition(1100)
+                ) {
+                    floatingAddButton(
+                        Icons.Default.Timer, "Live\nSession", true, Color.Red
                     ) {
-                        floatingAddButton(
-                            Icons.Default.Timer,
-                            "Live\nSession",
-                            true,
-                            Color.Red
-                        ) {
-                            val dateTime = passInitialValue(true, null, "")
-                            onEvent(
-                                GameEvent.SetIsAddingLiveSession
+                        val dateTime = passInitialValue(true, null, "")
+                        onEvent(
+                            GameEvent.SetIsAddingLiveSession
+                        )
+                        onEvent(
+                            GameEvent.SetDate(
+                                dateTime.dropLast(7)
                             )
-                            onEvent(
-                                GameEvent.SetDate(
-                                    dateTime.dropLast(7)
-                                )
+                        )
+                        val liveSessionStartHour = dateTime.substring(11, 16)
+                        onEvent(
+                            GameEvent.SetStartHour(
+                                liveSessionStartHour
                             )
-                            val liveSessionStartHour = dateTime.substring(11, 16)
-                            onEvent(
-                                GameEvent.SetStartHour(
+                        )
+                        onEvent(GameEvent.SaveAbstractSession)
+                        onEvent(GameEvent.SetIsInOverlayToFalse)
+                        isExpanded = false
+                        isRotated = false
+                        Toast.makeText(
+                            localContext, "Live session started", Toast.LENGTH_SHORT
+                        ).show()
+                        val intent =
+                            Intent(context, PersistentNotificationService::class.java).apply {
+                                putExtra(
+                                    PersistentNotificationService.LIVE_SESSIONS_START_HOUR,
                                     liveSessionStartHour
                                 )
-                            )
-                            onEvent(GameEvent.SaveAbstractSession)
-                            onEvent(GameEvent.SetIsInOverlayToFalse)
-                            isExpanded = false
-                            isRotated = false
-                            Toast.makeText(
-                                localContext,
-                                "Live session started",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                            val intent =
-                                Intent(context, PersistentNotificationService::class.java).apply {
-                                    putExtra(
-                                        PersistentNotificationService.LIVE_SESSIONS_START_HOUR,
-                                        liveSessionStartHour
-                                    )
-                                    putExtra(
-                                        PersistentNotificationService.IS_FOLLOW_COUNT_ACTIVE,
-                                        state.followCount
-                                    )
-                                }
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                context.startForegroundService(intent)
-                            } else {
-                                context.startService(intent)
+                                putExtra(
+                                    PersistentNotificationService.IS_FOLLOW_COUNT_ACTIVE,
+                                    state.followCount
+                                )
                             }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            context.startForegroundService(intent)
+                        } else {
+                            context.startService(intent)
                         }
                     }
                 }
-                IconShadowButton(
-                    onClick = {
-                        isRotated = !isRotated
-                        isExpanded = !isExpanded
-                    },
-                    boxModifier = Modifier
-                        .offset(y = -spaceFromNavBar)
-                        .scale(1.3f)
-                        .rotate(rotationAngle),
-                    imageVector = Icons.Default.Add, contentDescription = "Add an event"
-                )
             }
-        }) { padding ->
+            IconShadowButton(
+                onClick = {
+                    isRotated = !isRotated
+                    isExpanded = !isExpanded
+                },
+                boxModifier = Modifier
+                    .offset(y = -spaceFromNavBar)
+                    .scale(1.3f)
+                    .rotate(rotationAngle),
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add an event"
+            )
+        }
+    }) { padding ->
         if (state.isAddingSession) {
             SessionDialog(state = state, onEvent = onEvent, "Add a session")
         }
@@ -306,111 +311,159 @@ fun InputScreen(
             onEvent(GameEvent.SwitchJustSaved)
         }
         InsertInvite(state)
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .blur(blurBackground)
-                .offset(
-                    y = spaceFromLeft - 20.dp
-                ), verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
-        ) {
-            item {
-                Spacer(modifier = Modifier.height(120.dp))
-            }
-            var showingLiveSessionCard = false
-            if (!state.allEvents.isEmpty()) {
-                val sessionList =
-                    state.allEvents.filter { it.classType == AbstractSession::class.java.simpleName }
-                if (!sessionList.isEmpty()) {
-                    val lastSession = sessionList.first().event as AbstractSession
-                    if (lastSession.startHour == lastSession.endHour) {
-                        showingLiveSessionCard = true
-                        item {
-                            Row(modifier = Modifier.fillMaxWidth()) {
-                                Spacer(modifier = Modifier.width(spaceFromLeft))
-                                EventCard(
-                                    sessionList.first(),
-                                    getLeads(state, sessionList.first()),
-                                    onEvent,
-                                    Modifier
-                                        .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
-                                        .shadow(
-                                            elevation = 5.dp, shape = MaterialTheme.shapes.large
-                                        ),
-                                    state.simplePlusOneReport,
-                                    state.neverShareLeadInfo,
-                                    state.copyReportOnClipboard,
-                                    true,
-                                    state.followCount
-                                )
+        Box(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                state = listState, modifier = Modifier
+                    .fillMaxSize()
+                    .blur(blurBackground)
+                    .offset(
+                        y = spaceFromLeft - 20.dp
+                    ), verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(120.dp))
+                }
+                var showingLiveSessionCard = false
+                if (!state.allEvents.isEmpty()) {
+                    val sessionList =
+                        state.allEvents.filter { it.classType == AbstractSession::class.java.simpleName }
+                    if (!sessionList.isEmpty()) {
+                        val lastSession = sessionList.first().event as AbstractSession
+                        if (lastSession.startHour == lastSession.endHour) {
+                            showingLiveSessionCard = true
+                            item {
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                                    EventCard(
+                                        sessionList.first(),
+                                        getLeads(state, sessionList.first()),
+                                        onEvent,
+                                        Modifier
+                                            .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
+                                            .shadow(
+                                                elevation = 5.dp, shape = MaterialTheme.shapes.large
+                                            ),
+                                        state.simplePlusOneReport,
+                                        state.neverShareLeadInfo,
+                                        state.copyReportOnClipboard,
+                                        true,
+                                        state.followCount
+                                    )
+                                }
                             }
                         }
                     }
                 }
-            }
-            if (state.showCurrentWeekSummary || state.showCurrentMonthSummary || state.showCurrentChallengeSummary) {
-                item {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Spacer(modifier = Modifier.width(spaceFromLeft))
-                        SummaryCard(
-                            state,
-                            Modifier
-                                .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
-                                .shadow(
-                                    elevation = 5.dp, shape = MaterialTheme.shapes.large
-                                )
-                        )
+                if (state.showCurrentWeekSummary || state.showCurrentMonthSummary || state.showCurrentChallengeSummary) {
+                    item {
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Spacer(modifier = Modifier.width(spaceFromLeft))
+                            SummaryCard(
+                                state,
+                                Modifier
+                                    .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
+                                    .shadow(
+                                        elevation = 5.dp, shape = MaterialTheme.shapes.large
+                                    )
+                            )
+                        }
                     }
                 }
-            }
-            itemsIndexed(state.allEvents) { index, sortableGameEvent ->
-                if (!(index == 0 && showingLiveSessionCard)) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Spacer(modifier = Modifier.width(spaceFromLeft))
-                        EventCard(
-                            sortableGameEvent,
-                            getLeads(state, sortableGameEvent),
-                            onEvent,
-                            Modifier
-                                .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
-                                .shadow(
-                                    elevation = 5.dp, shape = MaterialTheme.shapes.large
-                                ),
-                            state.simplePlusOneReport,
-                            state.neverShareLeadInfo,
-                            state.copyReportOnClipboard
-                        )
+                itemsIndexed(state.allEvents) { index, sortableGameEvent ->
+                    if (!(index == 0 && showingLiveSessionCard)) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Spacer(modifier = Modifier.width(spaceFromLeft))
+                            EventCard(
+                                sortableGameEvent,
+                                getLeads(state, sortableGameEvent),
+                                onEvent,
+                                Modifier
+                                    .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
+                                    .shadow(
+                                        elevation = 5.dp, shape = MaterialTheme.shapes.large
+                                    ),
+                                state.simplePlusOneReport,
+                                state.neverShareLeadInfo,
+                                state.copyReportOnClipboard
+                            )
+                        }
                     }
                 }
+                item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom * 2 + spaceFromLeft * 3)) {} }
             }
-            item { Row(modifier = Modifier.height(spaceFromTop + spaceFromBottom * 2 + spaceFromLeft * 3)) {} }
+            EventFastScroller(
+                events = state.allEvents, listState = listState, coroutineScope = coroutineScope
+            )
+        }
+    }
+}
+
+@Composable
+fun BoxScope.EventFastScroller(
+    events: List<SortableGameEvent>, listState: LazyListState, coroutineScope: CoroutineScope
+) {
+    if (events.isEmpty()) return
+    var hoveredDate by remember { mutableStateOf<String?>(null) }
+    var fingerY by remember { mutableStateOf(0f) }
+    Box(
+        modifier = Modifier
+            .fillMaxHeight(0.60f)
+            .width(25.dp)
+            .align(Alignment.CenterEnd)
+            .pointerInput(events) {
+                detectDragGestures(onDragStart = { offset ->
+                    fingerY = offset.y
+                    val percentage = (offset.y / size.height).coerceIn(0f, 1f)
+                    val index = (events.size * percentage).toInt().coerceIn(0, events.size - 1)
+                    hoveredDate = events[index].eventDate
+                    val targetScrollIndex = if (index == 0) 0 else index + 2
+                    coroutineScope.launch { listState.scrollToItem(targetScrollIndex) }
+                }, onDrag = { change, _ ->
+                    fingerY = change.position.y
+                    val percentage = (change.position.y / size.height).coerceIn(0f, 1f)
+                    val index = (events.size * percentage).toInt().coerceIn(0, events.size - 1)
+                    hoveredDate = events[index].eventDate
+                    val targetScrollIndex = if (index == 0) 0 else index + 2
+                    coroutineScope.launch { listState.scrollToItem(targetScrollIndex) }
+                }, onDragEnd = { hoveredDate = null }, onDragCancel = { hoveredDate = null })
+            }) {
+        hoveredDate?.let { date ->
+            Box(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .offset(x = (-80).dp)
+                    .graphicsLayer {
+                        translationY = fingerY.minus(700)
+                    }
+                    .requiredWidth(90.dp)
+                    .fillMaxWidth()
+                    .shadow(8.dp, RoundedCornerShape(8.dp))
+                    .background(
+                        MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp)
+                    )
+                    .padding(horizontal = 12.dp, vertical = 6.dp)
+            ) {
+                LittleBodyText(
+                    FormatService.getDate(date),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            }
         }
     }
 }
 
 private fun showAllSorter(
-    showSessions: Boolean,
-    showSets: Boolean,
-    showDates: Boolean,
-    showChallenges: Boolean
+    showSessions: Boolean, showSets: Boolean, showDates: Boolean, showChallenges: Boolean
 ): Boolean {
-    if ((showSessions && showSets)
-        || (showSessions && showDates)
-        || (showSessions && showChallenges)
-        || (showSets && showDates)
-        || (showSets && showChallenges)
-        || (showDates && showChallenges)
-    ) {
+    if ((showSessions && showSets) || (showSessions && showDates) || (showSessions && showChallenges) || (showSets && showDates) || (showSets && showChallenges) || (showDates && showChallenges)) {
         return true
     }
     return false
 }
 
 private fun showSessionSorter(
-    showSessions: Boolean,
-    showSets: Boolean,
-    showDates: Boolean,
-    showChallenges: Boolean
+    showSessions: Boolean, showSets: Boolean, showDates: Boolean, showChallenges: Boolean
 ): Boolean {
     if (showSessions && !showSets && !showDates && !showChallenges) {
         return true
@@ -419,10 +472,7 @@ private fun showSessionSorter(
 }
 
 private fun showSetSorter(
-    showSessions: Boolean,
-    showSets: Boolean,
-    showDates: Boolean,
-    showChallenges: Boolean
+    showSessions: Boolean, showSets: Boolean, showDates: Boolean, showChallenges: Boolean
 ): Boolean {
     if (!showSessions && showSets && !showDates && !showChallenges) {
         return true
@@ -431,10 +481,7 @@ private fun showSetSorter(
 }
 
 private fun showDateSorter(
-    showSessions: Boolean,
-    showSets: Boolean,
-    showDates: Boolean,
-    showChallenges: Boolean
+    showSessions: Boolean, showSets: Boolean, showDates: Boolean, showChallenges: Boolean
 ): Boolean {
     if (!showSessions && !showSets && showDates && !showChallenges) {
         return true
@@ -443,10 +490,7 @@ private fun showDateSorter(
 }
 
 private fun showChallengeSorter(
-    showSessions: Boolean,
-    showSets: Boolean,
-    showDates: Boolean,
-    showChallenges: Boolean
+    showSessions: Boolean, showSets: Boolean, showDates: Boolean, showChallenges: Boolean
 ): Boolean {
     if (!showSessions && !showSets && !showDates && showChallenges) {
         return true
@@ -456,14 +500,12 @@ private fun showChallengeSorter(
 
 @Composable
 private fun floatingButtonExitTransition(time: Int) = slideOutVertically(
-    targetOffsetY = { fullHeight -> -fullHeight },
-    animationSpec = tween(durationMillis = time)
+    targetOffsetY = { fullHeight -> -fullHeight }, animationSpec = tween(durationMillis = time)
 ) + fadeOut()
 
 @Composable
 private fun floatingButtonEnterTransition(time: Int) = slideInVertically(
-    initialOffsetY = { fullHeight -> fullHeight },
-    animationSpec = tween(durationMillis = time)
+    initialOffsetY = { fullHeight -> fullHeight }, animationSpec = tween(durationMillis = time)
 ) + fadeIn()
 
 fun getLeads(state: InputState, sortableGameEvent: SortableGameEvent): List<Lead> {
@@ -491,8 +533,7 @@ fun floatingAddButton(
     onClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier.height(80.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.height(80.dp), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         FloatingActionButton(
             onClick = {
@@ -511,8 +552,7 @@ fun floatingAddButton(
                 )
             } else {
                 Icon(
-                    imageVector = icon,
-                    contentDescription = description
+                    imageVector = icon, contentDescription = description
                 )
             }
         }
@@ -528,9 +568,7 @@ fun floatingAddButton(
 
 @Composable
 fun gameTopBar(
-    state: InputState,
-    onEvent: (GameEvent) -> Unit,
-    spaceFromLeft: Dp
+    state: InputState, onEvent: (GameEvent) -> Unit, spaceFromLeft: Dp
 ) {
     val selectedOptions = remember {
         mutableStateListOf(true, true, true, true)
@@ -550,20 +588,18 @@ fun gameTopBar(
                 .background(color = MaterialTheme.colorScheme.background)
         ) {}
         Row(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             Column(
-                modifier = Modifier
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                semiOpaqueBackground,
-                                semiOpaqueBackground.copy(alpha = 0.7f),
-                                androidx.compose.ui.graphics.Color.Transparent
-                            ),
-                        )
-                    ),
+                modifier = Modifier.background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            semiOpaqueBackground,
+                            semiOpaqueBackground.copy(alpha = 0.7f),
+                            androidx.compose.ui.graphics.Color.Transparent
+                        ),
+                    )
+                ),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row(
@@ -575,10 +611,7 @@ fun gameTopBar(
                 ) {
                     Spacer(modifier = Modifier.width(10.dp))
                     MultiChoiceButton(
-                        EventTypeEnum.getChoiceValues(),
-                        Modifier
-                            .height(50.dp),
-                        selectedOptions
+                        EventTypeEnum.getChoiceValues(), Modifier.height(50.dp), selectedOptions
                     ) {
                         onEvent(GameEvent.SwitchShowFlag(it))
                     }
@@ -586,54 +619,28 @@ fun gameTopBar(
                 }
                 EntitySorter(
                     showAllSorter(
-                        state.showSessions,
-                        state.showSets,
-                        state.showDates,
-                        state.showChallenges
-                    ),
-                    spaceFromLeft,
-                    EventTypeEnum.ALL,
-                    state,
-                    onEvent
+                        state.showSessions, state.showSets, state.showDates, state.showChallenges
+                    ), spaceFromLeft, EventTypeEnum.ALL, state, onEvent
                 )
                 EntitySorter(
                     showSessionSorter(
-                        state.showSessions,
-                        state.showSets,
-                        state.showDates,
-                        state.showChallenges
-                    ),
-                    spaceFromLeft,
-                    EventTypeEnum.SESSION,
-                    state,
-                    onEvent
+                        state.showSessions, state.showSets, state.showDates, state.showChallenges
+                    ), spaceFromLeft, EventTypeEnum.SESSION, state, onEvent
                 )
                 EntitySorter(
                     showSetSorter(
-                        state.showSessions,
-                        state.showSets,
-                        state.showDates,
-                        state.showChallenges
-                    ),
-                    spaceFromLeft, EventTypeEnum.SET, state, onEvent
+                        state.showSessions, state.showSets, state.showDates, state.showChallenges
+                    ), spaceFromLeft, EventTypeEnum.SET, state, onEvent
                 )
                 EntitySorter(
                     showDateSorter(
-                        state.showSessions,
-                        state.showSets,
-                        state.showDates,
-                        state.showChallenges
-                    ),
-                    spaceFromLeft, EventTypeEnum.DATE, state, onEvent
+                        state.showSessions, state.showSets, state.showDates, state.showChallenges
+                    ), spaceFromLeft, EventTypeEnum.DATE, state, onEvent
                 )
                 EntitySorter(
                     showChallengeSorter(
-                        state.showSessions,
-                        state.showSets,
-                        state.showDates,
-                        state.showChallenges
-                    ),
-                    spaceFromLeft, EventTypeEnum.CHALLENGE, state, onEvent
+                        state.showSessions, state.showSets, state.showDates, state.showChallenges
+                    ), spaceFromLeft, EventTypeEnum.CHALLENGE, state, onEvent
                 )
             }
         }
@@ -642,8 +649,7 @@ fun gameTopBar(
 
 @Composable
 fun liveSessionPulsingColor(
-    initialColor: Color? = Color.Red,
-    durationMillis: Int = 2000
+    initialColor: Color? = Color.Red, durationMillis: Int = 2000
 ): Color {
     val infiniteTransition = rememberInfiniteTransition(label = "icon-pulse-transition")
     val animatedColor by infiniteTransition.animateColor(

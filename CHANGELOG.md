@@ -2,6 +2,7 @@
 **Features**
 - Live session persistent notification 💬
 - Hold the Daygame App icon for live session shortcut ↪️
+- Hold & drag the right endside in Game section to jump to date 📆
 
 # Version 1.11.0 (2026-04-25)
 **Features**
