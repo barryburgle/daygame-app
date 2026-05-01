@@ -3,4 +3,6 @@
     <string name="title_input">Input</string>
     <string name="title_output">Output</string>
     <string name="title_tool">Tool</string>
+    <string name="shortcut_short">Live session</string>
+    <string name="shortcut_long">Live session</string>
 </resources>
