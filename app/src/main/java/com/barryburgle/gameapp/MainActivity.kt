@@ -35,14 +35,18 @@ import com.barryburgle.gameapp.api.RetrofitInstance
 import com.barryburgle.gameapp.api.response.github.GithubLatestResponse
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.database.GameAppDatabase
+import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.service.notification.NotificationService
+import com.barryburgle.gameapp.service.notification.PersistentNotificationService
 import com.barryburgle.gameapp.ui.input.InputViewModel
+import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.navigation.Navigation
 import com.barryburgle.gameapp.ui.output.OutputViewModel
 import com.barryburgle.gameapp.ui.stats.StatsViewModel
 import com.barryburgle.gameapp.ui.theme.GameAppOriginalTheme
 import com.barryburgle.gameapp.ui.tool.ToolViewModel
+import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -126,9 +130,39 @@ class MainActivity : ComponentActivity() {
         }
     })
 
+    private fun triggerLiveSession(onEvent: (GameEvent) -> Unit, state: InputState) {
+        val dateTime = passInitialValue(true, null, "")
+        val context = this
+        val intent =
+            Intent(context, PersistentNotificationService::class.java).apply {
+                putExtra(
+                    PersistentNotificationService.LIVE_SESSIONS_START_HOUR,
+                    dateTime.substring(11, 16)
+                )
+                putExtra(
+                    PersistentNotificationService.IS_FOLLOW_COUNT_ACTIVE,
+                    state.followCount
+                )
+            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent)
+        } else {
+            context.startService(intent)
+        }
+        Toast.makeText(this, "Live session started", Toast.LENGTH_SHORT).show()
+        moveTaskToBack(true)
+    }
+
+    private fun handleShortcut(intent: Intent?) {
+        if (intent?.getStringExtra("shortcut_type") == "add_item") {
+            triggerLiveSession(inputViewModel::onEvent, inputViewModel.state.value)
+            intent.removeExtra("shortcut_type")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        handleShortcut(intent)
         createNotificationChannel()
         lifecycleScope.launch(Dispatchers.IO) {
             checkForUpdates()
