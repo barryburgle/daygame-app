@@ -84,7 +84,7 @@ interface SettingDao {
         const val DEFAULT_IMPORT_HEADER_FLAG: String = "false"
         const val DEFAULT_BACKUP_ACTIVE_FLAG: String = "true"
         const val DEFAULT_GENERATE_IDATE_FLAG: String = "true"
-        const val DEFAULT_FOLLOW_COUNT_FLAG: String = "false"
+        const val DEFAULT_FOLLOW_COUNT_FLAG: String = "true"
         const val DEFAULT_SUGGEST_LEADS_NATIONALITY_FLAG: String = "true"
         const val DEFAULT_SHOWN_NATIONALITIES: String = "6"
         const val DEFAULT_ARCHIVE_BACKUP_FOLDER_FLAG: String = "true"
