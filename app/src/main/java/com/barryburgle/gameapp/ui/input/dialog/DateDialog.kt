@@ -289,7 +289,7 @@ fun DateDialog(
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 InputCountComponent(
-                    inputTitle = "Date Number",
+                    inputTitle = "Date",
                     modifier = Modifier,
                     style = MaterialTheme.typography.titleSmall,
                     onEvent = onEvent as (GenericEvent) -> Unit,
@@ -298,7 +298,7 @@ fun DateDialog(
                     zeroValue = "iDate"
                 )
                 InputCountComponent(
-                    inputTitle = "Cost [€]",
+                    inputTitle = "€",
                     modifier = Modifier,
                     style = MaterialTheme.typography.titleSmall,
                     onEvent = onEvent as (GenericEvent) -> Unit,

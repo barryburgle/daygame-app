@@ -300,7 +300,7 @@ fun LeadDialog(
                             .width(60.dp)
                     ) {
                         InputCountComponent(
-                            inputTitle = "Age",
+                            inputTitle = "Years old",
                             modifier = Modifier,
                             style = MaterialTheme.typography.titleSmall,
                             onEvent = onEvent as (GenericEvent) -> Unit,
