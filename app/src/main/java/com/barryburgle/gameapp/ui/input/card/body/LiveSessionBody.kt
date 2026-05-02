@@ -81,8 +81,8 @@ fun LiveSessionBody(
                 imageVector = Icons.Default.Add,
                 contentDescription = "More"
             )
-            // TODO: use counters in SessionDialog as here, withotu remember and without follow count on FE
         }
+        // TODO: use counters in SessionDialog as here, withotu remember and without follow count on FE
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
