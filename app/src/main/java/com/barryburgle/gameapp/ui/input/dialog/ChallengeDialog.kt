@@ -154,8 +154,7 @@ fun ChallengeDialog(
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 InputCountComponent(
-                    inputTitle = if (updatedChallengeType.equals("Type")) "Goal" else updatedChallengeType,
-                    modifier = Modifier,
+                    inputTitle = if (updatedChallengeType.equals("Type")) "Choose goal" else updatedChallengeType,
                     style = MaterialTheme.typography.titleSmall,
                     onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingChallenge) state.defaultChallengeGoal else state.challengeGoal.toInt(),
@@ -164,7 +163,6 @@ fun ChallengeDialog(
                 )
                 InputCountComponent(
                     inputTitle = "Days",
-                    modifier = Modifier,
                     style = MaterialTheme.typography.titleSmall,
                     onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingChallenge) 1 else state.challengeDuration.toInt() + 1,

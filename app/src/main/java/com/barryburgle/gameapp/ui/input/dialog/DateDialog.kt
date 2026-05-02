@@ -290,7 +290,6 @@ fun DateDialog(
             ) {
                 InputCountComponent(
                     inputTitle = "Date",
-                    modifier = Modifier,
                     style = MaterialTheme.typography.titleSmall,
                     onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingDate) 0 else state.editDate?.dateNumber,
@@ -299,7 +298,6 @@ fun DateDialog(
                 )
                 InputCountComponent(
                     inputTitle = "€",
-                    modifier = Modifier,
                     style = MaterialTheme.typography.titleSmall,
                     onEvent = onEvent as (GenericEvent) -> Unit,
                     countStart = if (state.isAddingDate) 0 else state.editDate?.cost,
