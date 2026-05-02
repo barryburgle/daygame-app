@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.input.card.body
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,14 +13,13 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.AbstractSessionService
@@ -49,7 +49,6 @@ fun LiveSessionBody(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LittleBodyText("Sets")
             IconShadowButton(
                 onClick = {
                     onEvent(GameEvent.SetSetsLive(abstractSession, setsCount - 1))
@@ -57,11 +56,24 @@ fun LiveSessionBody(
                 imageVector = Icons.Default.Remove,
                 contentDescription = "Less"
             )
-            InputCounter(
-                count = setsCount,
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier
-            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                InputCounter(
+                    count = setsCount,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier
+                )
+                Image(
+                    painter = painterResource(R.drawable.set_action),
+                    contentDescription = "sets",
+                    alignment = Alignment.Center,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .height(30.dp)
+                )
+            }
+            LittleBodyText("Sets")
+            Spacer(modifier = Modifier.height(4.dp))
             IconShadowButton(
                 onClick = {
                     onEvent(GameEvent.SetSetsLive(abstractSession, setsCount + 1))
@@ -74,7 +86,6 @@ fun LiveSessionBody(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LittleBodyText("Conversations")
             IconShadowButton(
                 onClick = {
                     onEvent(GameEvent.SetConvosLive(abstractSession, convosCount - 1, false))
@@ -82,11 +93,24 @@ fun LiveSessionBody(
                 imageVector = Icons.Default.Remove,
                 contentDescription = "Less"
             )
-            InputCounter(
-                count = convosCount,
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier
-            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                InputCounter(
+                    count = convosCount,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier
+                )
+                Image(
+                    painter = painterResource(R.drawable.conversation_action),
+                    contentDescription = "conversations",
+                    alignment = Alignment.Center,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .height(30.dp)
+                )
+            }
+            LittleBodyText("Conversations")
+            Spacer(modifier = Modifier.height(4.dp))
             IconShadowButton(
                 onClick = {
                     onEvent(GameEvent.SetConvosLive(abstractSession, convosCount + 1, true))
@@ -98,7 +122,6 @@ fun LiveSessionBody(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LittleBodyText("Contacts")
             IconShadowButton(
                 onClick = {
                     onEvent(GameEvent.SetContactsLive(abstractSession, contactsCount - 1, false))
@@ -106,11 +129,24 @@ fun LiveSessionBody(
                 imageVector = Icons.Default.Remove,
                 contentDescription = "Less"
             )
-            InputCounter(
-                count = contactsCount,
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier
-            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                InputCounter(
+                    count = contactsCount,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier
+                )
+                Image(
+                    painter = painterResource(R.drawable.contact_action),
+                    contentDescription = "contacts",
+                    alignment = Alignment.Center,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .height(30.dp)
+                )
+            }
+            LittleBodyText("Contacts")
+            Spacer(modifier = Modifier.height(4.dp))
             IconShadowButton(
                 onClick = {
                     onEvent(GameEvent.SetContactsLive(abstractSession, contactsCount + 1, true))
