@@ -32,6 +32,7 @@ fun SessionCounters(
     convosCount: Int,
     contactsCount: Int,
 ) {
+    // TODO: integrate this in session dialog: it works but only on the backend, leaving stale unchanged values on the dialog
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
