@@ -59,229 +59,235 @@ fun SetDialog(
     if (state.isUpdatingSet) {
         setUpdatingState(state)
     }
-    AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
-        onEvent(GameEvent.SetIsInOverlayToFalse)
-        onEvent(GameEvent.HideDialog)
-    }, title = {
-        LargeTitleText(text = description)
-    }, text = {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH),
-                horizontalArrangement = Arrangement.SpaceBetween
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier.shadow(elevation = 10.dp),
+        onDismissRequest = {
+            onEvent(GameEvent.SetIsInOverlayToFalse)
+            onEvent(GameEvent.HideDialog)
+        },
+        title = {
+            LargeTitleText(text = description)
+        },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Column(
-                            modifier = Modifier.width(DialogConstant.TIME_COLUMN_WIDTH)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            DialogFormSectionDescription(
-                                "Set set's:",
-                                DialogConstant.DESCRIPTION_FONT_SIZE
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(10.dp))
-                        var leadIcon = Icons.Default.Add
-                        var editLead: Boolean = false
-                        if (!state.isUpdatingSet) {
                             Column(
-                                modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH - DialogConstant.ADD_LEAD_COLUMN_WIDTH)
+                                modifier = Modifier.width(DialogConstant.TIME_COLUMN_WIDTH)
                             ) {
-                                if (state.leads.isEmpty()) {
-                                    DialogFormSectionDescription(
-                                        "Add lead:",
-                                        DialogConstant.DESCRIPTION_FONT_SIZE
-                                    )
-                                } else {
-                                    val lead = state.leads.get(0)
-                                    DialogFormSectionDescription(
-                                        CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age,
-                                        DialogConstant.DESCRIPTION_FONT_SIZE
-                                    )
-                                    leadIcon = Icons.Default.SwapHoriz
-                                    editLead = true
-                                }
-                            }
-                            Column(
-                                modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                            ) {
-                                IconShadowButton(
-                                    onClick = {
-                                        if (editLead) {
-                                            onEvent(GameEvent.EmptyLeads)
-                                        }
-                                        onEvent(GameEvent.ShowLeadDialog(true, false))
-                                    },
-                                    imageVector = leadIcon,
-                                    contentDescription = "Add a lead"
+                                DialogFormSectionDescription(
+                                    "Set set's:",
+                                    DialogConstant.DESCRIPTION_FONT_SIZE
                                 )
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            var leadIcon = Icons.Default.Add
+                            var editLead: Boolean = false
+                            if (!state.isUpdatingSet) {
+                                Column(
+                                    modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH - DialogConstant.ADD_LEAD_COLUMN_WIDTH)
+                                ) {
+                                    if (state.leads.isEmpty()) {
+                                        DialogFormSectionDescription(
+                                            "Add lead:",
+                                            DialogConstant.DESCRIPTION_FONT_SIZE
+                                        )
+                                    } else {
+                                        val lead = state.leads.get(0)
+                                        DialogFormSectionDescription(
+                                            CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age,
+                                            DialogConstant.DESCRIPTION_FONT_SIZE
+                                        )
+                                        leadIcon = Icons.Default.SwapHoriz
+                                        editLead = true
+                                    }
+                                }
+                                Column(
+                                    modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
+                                ) {
+                                    IconShadowButton(
+                                        onClick = {
+                                            if (editLead) {
+                                                onEvent(GameEvent.EmptyLeads)
+                                            }
+                                            onEvent(GameEvent.ShowLeadDialog(true, false))
+                                        },
+                                        imageVector = leadIcon,
+                                        contentDescription = "Add a lead"
+                                    )
+                                }
                             }
                         }
                     }
                 }
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                DialogTimeFormSection(
-                    state,
-                    onEvent,
-                    latestDateValue,
-                    latestStartHour,
-                    latestEndHour
-                )
-                Spacer(modifier = Modifier.width(5.dp))
-                Column {
-                    // TODO: insert here a button that allows to choose from a list of sessions to which the set belongs to  [v1.10.0]
-                    IconShadowButton(
-                        onClick = {
-                            locationTextFieldExpanded = !locationTextFieldExpanded
-                        },
-                        imageVector = Icons.Default.PinDrop,
-                        contentDescription = "Location",
-                        title = "Location",
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(35.dp)
-                    )
-                }
-            }
-            BasicAnimatedVisibility(
-                visibilityFlag = locationTextFieldExpanded,
-            ) {
-                Spacer(modifier = Modifier.height(7.dp))
-                OutlinedTextField(
-                    value = state.location,
-                    onValueChange = { onEvent(GameEvent.SetLocation(it)) },
-                    placeholder = { LittleBodyText("Location") },
-                    shape = MaterialTheme.shapes.large,
-                    modifier = Modifier.height(80.dp)
-                )
-                Spacer(modifier = Modifier.height(7.dp))
-            }
-            BasicAnimatedVisibility(
-                visibilityFlag = !locationTextFieldExpanded,
-            ) {
-                Spacer(modifier = Modifier.height(7.dp))
-                // TODO: refactor the following row to use it in SetDialog, DateDialog, SessionDialog and ChallengeDialog
-                // taking in input the state field, the event method, placeholder and height
-                DialogTextComponent(
-                    state.stickingPoints,
-                    "Sticking points",
-                    100.dp,
-                    ""
-                ) {
-                    onEvent(GameEvent.SetStickingPoints(it))
-                }
-                /*Row(
+                Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    OutlinedTextField(
-                        value = state.stickingPoints,
-                        onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
-                        placeholder = { LittleBodyText("Sticking points") },
-                        shape = MaterialTheme.shapes.large,
-                        modifier = Modifier
-                            .height(100.dp)
-                            .fillMaxWidth(0.75f)
+                    DialogTimeFormSection(
+                        state,
+                        onEvent,
+                        latestDateValue,
+                        latestStartHour,
+                        latestEndHour
                     )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Column(
-                        modifier = Modifier
-                            .height(100.dp),
-                        verticalArrangement = Arrangement.Center
-                    ) {
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Column {
+                        // TODO: insert here a button that allows to choose from a list of sessions to which the set belongs to  [v1.10.0]
                         IconShadowButton(
                             onClick = {
-                                onEvent(GameEvent.SetStickingPoints(InputDialogConstant.EMPTY_STICKING_POINTS))
+                                locationTextFieldExpanded = !locationTextFieldExpanded
                             },
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete Sticking Points"
+                            imageVector = Icons.Default.PinDrop,
+                            contentDescription = "Location",
+                            title = "Location",
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(35.dp)
                         )
                     }
-                }*/
-                Spacer(modifier = Modifier.height(7.dp))
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                ToggleIcon(
-                    SetSortType.CONVERSATION.getField(),
-                    state.conversation,
-                    true,
-                    R.drawable.chat_b
-                ) {
-                    onEvent(GameEvent.SwitchConversation)
                 }
-                ToggleIcon(
-                    "contact",
-                    state.contact,
-                    true,
-                    R.drawable.contact_b
+                BasicAnimatedVisibility(
+                    visibilityFlag = locationTextFieldExpanded,
                 ) {
-                    onEvent(GameEvent.SwitchContact)
+                    Spacer(modifier = Modifier.height(7.dp))
+                    OutlinedTextField(
+                        value = state.location,
+                        onValueChange = { onEvent(GameEvent.SetLocation(it)) },
+                        placeholder = { LittleBodyText("Location") },
+                        shape = MaterialTheme.shapes.large,
+                        modifier = Modifier.height(80.dp)
+                    )
+                    Spacer(modifier = Modifier.height(7.dp))
                 }
-                ToggleIcon(
-                    "instant\ndate",
-                    state.instantDate,
-                    true,
-                    R.drawable.idate_b
+                BasicAnimatedVisibility(
+                    visibilityFlag = !locationTextFieldExpanded,
                 ) {
-                    onEvent(GameEvent.SwitchInstantDate)
-                    if (!state.instantDate && state.generateiDate) {
-                        Toast.makeText(
-                            localContext,
-                            "Generating related iDate",
-                            Toast.LENGTH_SHORT
+                    Spacer(modifier = Modifier.height(7.dp))
+                    // TODO: refactor the following row to use it in SetDialog, DateDialog, SessionDialog and ChallengeDialog
+                    // taking in input the state field, the event method, placeholder and height
+                    DialogTextComponent(
+                        state.stickingPoints,
+                        "Sticking points",
+                        100.dp,
+                        ""
+                    ) {
+                        onEvent(GameEvent.SetStickingPoints(it))
+                    }
+                    /*Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        OutlinedTextField(
+                            value = state.stickingPoints,
+                            onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
+                            placeholder = { LittleBodyText("Sticking points") },
+                            shape = MaterialTheme.shapes.large,
+                            modifier = Modifier
+                                .height(100.dp)
+                                .fillMaxWidth(0.75f)
                         )
-                            .show()
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Column(
+                            modifier = Modifier
+                                .height(100.dp),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            IconShadowButton(
+                                onClick = {
+                                    onEvent(GameEvent.SetStickingPoints(InputDialogConstant.EMPTY_STICKING_POINTS))
+                                },
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete Sticking Points"
+                            )
+                        }
+                    }*/
+                    Spacer(modifier = Modifier.height(7.dp))
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    ToggleIcon(
+                        SetSortType.CONVERSATION.getField(),
+                        state.conversation,
+                        true,
+                        R.drawable.chat_b
+                    ) {
+                        onEvent(GameEvent.SwitchConversation)
+                    }
+                    ToggleIcon(
+                        "contact",
+                        state.contact,
+                        true,
+                        R.drawable.contact_b
+                    ) {
+                        onEvent(GameEvent.SwitchContact)
+                    }
+                    ToggleIcon(
+                        "instant\ndate",
+                        state.instantDate,
+                        true,
+                        R.drawable.idate_b
+                    ) {
+                        onEvent(GameEvent.SwitchInstantDate)
+                        if (!state.instantDate && state.generateiDate) {
+                            Toast.makeText(
+                                localContext,
+                                "Generating related iDate",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                    }
+                    ToggleIcon(
+                        "recorded",
+                        state.recorded,
+                        true,
+                        R.drawable.microphone_b
+                    ) {
+                        onEvent(GameEvent.SwitchRecorded)
                     }
                 }
-                ToggleIcon(
-                    "recorded",
-                    state.recorded,
-                    true,
-                    R.drawable.microphone_b
+            }
+        },
+        confirmButton = {
+            ConfirmButton {
+                if (EntityService.getParsedHour(
+                        state.date,
+                        state.startHour
+                    ) > EntityService.getParsedHour(state.date, state.endHour)
                 ) {
-                    onEvent(GameEvent.SwitchRecorded)
+                    Toast.makeText(
+                        localContext,
+                        "Please choose valid hours",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    onEvent(GameEvent.SaveSet)
+                    onEvent(GameEvent.SetIsInOverlayToFalse)
+                    onEvent(GameEvent.HideDialog)
+                    onEvent(GameEvent.SwitchJustSaved)
+                    Toast.makeText(localContext, "Set saved", Toast.LENGTH_SHORT).show()
                 }
             }
-        }
-    }, confirmButton = {
-        ConfirmButton {
-            if (EntityService.getParsedHour(
-                    state.date,
-                    state.startHour
-                ) > EntityService.getParsedHour(state.date, state.endHour)
-            ) {
-                Toast.makeText(
-                    localContext,
-                    "Please choose valid hours",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                onEvent(GameEvent.SaveSet)
-                onEvent(GameEvent.SetIsInOverlayToFalse)
-                onEvent(GameEvent.HideDialog)
-                onEvent(GameEvent.SwitchJustSaved)
-                Toast.makeText(localContext, "Set saved", Toast.LENGTH_SHORT).show()
-            }
-        }
-    },
+        },
         dismissButton = {
             DismissButton {
                 onEvent(GameEvent.SetIsInOverlayToFalse)

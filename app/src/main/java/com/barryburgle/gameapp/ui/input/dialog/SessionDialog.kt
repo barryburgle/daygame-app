@@ -90,276 +90,288 @@ fun SessionDialog(
     if (state.isUpdatingSession) {
         setUpdatingState(state)
     }
-    AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
-        onEvent(GameEvent.SetIsInOverlayToFalse)
-        onEvent(GameEvent.HideDialog)
-    }, title = {
-        LargeTitleText(description)
-    }, text = {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
-                            modifier = Modifier.width(DialogConstant.TIME_COLUMN_WIDTH)
-                        ) {
-                            DialogFormSectionDescription(
-                                "Set session's:",
-                                DialogConstant.DESCRIPTION_FONT_SIZE
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Column(
-                            modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH - DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                        ) {
-                            DialogFormSectionDescription(
-                                "Add leads:",
-                                DialogConstant.DESCRIPTION_FONT_SIZE
-                            )
-                        }
-                        Column(
-                            modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                        ) {
-                            IconShadowButton(
-                                onClick = {
-                                    onEvent(GameEvent.ShowLeadDialog(true, false))
-                                    if (state.followCount) {
-                                        setsCount++
-                                        convosCount++
-                                        contactsCount++
-                                        onEvent(GameEvent.SetContacts(contactsCount.toString()))
-                                    }
-                                },
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "Add a lead"
-                                // TODO: the blur stys set on when inserting a lead on the session and then getting back to game events view
-                            )
-                        }
-                    }
-                }
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                DialogTimeFormSection(
-                    state,
-                    onEvent,
-                    latestDateValue,
-                    latestStartHour,
-                    latestEndHour
-                )
-                Column(
-                    modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH),
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    for (lead in state.leads) {
-                        Row(
-                            verticalAlignment = Alignment.Top,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Box(modifier = Modifier.clickable {
-                                onEvent(GameEvent.EditLead(lead, true))
-                                onEvent(
-                                    GameEvent.ShowLeadDialog(false, true)
-                                )
-                            }) {
-                                leadName(
-                                    lead = lead,
-                                    backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                                    outputShow = false,
-                                    cardShow = false
-                                )
-                            }
-                            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
-                                IconButton(onClick = {
-                                    onEvent(
-                                        GameEvent.DeleteLead(
-                                            lead
-                                        )
-                                    )
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Delete,
-                                        contentDescription = "Delete Lead",
-                                        tint = MaterialTheme.colorScheme.onErrorContainer
-                                    )
-                                }
-                            }
-                        }
-                        Spacer(
-                            modifier = Modifier.height(5.dp)
-                        )
-                    }
-                }
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    IconShadowButton(
-                        onClick = {
-                            setsCount--
-                            onEvent(GameEvent.SetSets(setsCount.toString()))
-                        },
-                        imageVector = Icons.Default.Remove,
-                        contentDescription = "Less"
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        InputCounter(count = setsCount, style = MaterialTheme.typography.titleSmall)
-                        Image(
-                            painter = painterResource(R.drawable.set_action),
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                            contentDescription = "sets",
-                            modifier = Modifier.height(30.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                    }
-                    LittleBodyText(if (setsCount != 1) "Sets" else "Set")
-                    Spacer(modifier = Modifier.height(4.dp))
-                    IconShadowButton(
-                        onClick = {
-                            setsCount++
-                            onEvent(GameEvent.SetSets(setsCount.toString()))
-                        },
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "More"
-                    )
-                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    IconShadowButton(
-                        onClick = {
-                            convosCount--
-                            onEvent(GameEvent.SetConvos(convosCount.toString()))
-                        },
-                        imageVector = Icons.Default.Remove,
-                        contentDescription = "Less"
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        InputCounter(
-                            count = convosCount,
-                            style = MaterialTheme.typography.titleSmall
-                        )
-                        Image(
-                            painter = painterResource(R.drawable.conversation_action),
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                            contentDescription = "conversations",
-                            modifier = Modifier.height(30.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                    }
-                    LittleBodyText(if (convosCount != 1) "Conversations" else "Conversation")
-                    Spacer(modifier = Modifier.height(4.dp))
-                    IconShadowButton(
-                        onClick = {
-                            convosCount++
-                            onEvent(GameEvent.SetConvos(convosCount.toString()))
-                            if (state.followCount) {
-                                setsCount++
-                            }
-                        },
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "More"
-                    )
-                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    IconShadowButton(
-                        onClick = {
-                            contactsCount--
-                            onEvent(GameEvent.SetContacts(contactsCount.toString()))
-                        },
-                        imageVector = Icons.Default.Remove,
-                        contentDescription = "Less"
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        InputCounter(
-                            count = contactsCount,
-                            style = MaterialTheme.typography.titleSmall
-                        )
-                        Image(
-                            painter = painterResource(R.drawable.contact_action),
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                            contentDescription = "contacts",
-                            modifier = Modifier.height(30.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                    }
-                    LittleBodyText(if (contactsCount != 1) "Contacts" else "Contact")
-                    Spacer(modifier = Modifier.height(4.dp))
-                    IconShadowButton(
-                        onClick = {
-                            contactsCount++
-                            onEvent(GameEvent.SetContacts(contactsCount.toString()))
-                            if (state.followCount) {
-                                setsCount++
-                                convosCount++
-                            }
-                        },
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "More"
-                    )
-                }
-            }
-            DialogTextComponent(
-                state.stickingPoints,
-                "Sticking points",
-                100.dp,
-                ""
-            ) {
-                onEvent(GameEvent.SetStickingPoints(it))
-            }
-        }
-    }, confirmButton = {
-        ConfirmButton {
-            if (EntityService.getParsedHour(
-                    state.date,
-                    state.startHour
-                ) > EntityService.getParsedHour(state.date, state.endHour)
-            ) {
-                Toast.makeText(
-                    localContext,
-                    "Please choose valid hours",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                onEvent(GameEvent.SaveAbstractSession)
-                onEvent(GameEvent.SetIsInOverlayToFalse)
-                onEvent(GameEvent.HideDialog)
-                onEvent(GameEvent.SwitchJustSaved)
-                Toast.makeText(
-                    localContext,
-                    "Session saved",
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-            }
-        }
-    }, dismissButton = {
-        DismissButton {
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier.shadow(elevation = 10.dp),
+        onDismissRequest = {
             onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideDialog)
+        },
+        title = {
+            LargeTitleText(description)
+        },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                modifier = Modifier.width(DialogConstant.TIME_COLUMN_WIDTH)
+                            ) {
+                                DialogFormSectionDescription(
+                                    "Set session's:",
+                                    DialogConstant.DESCRIPTION_FONT_SIZE
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column(
+                                modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH - DialogConstant.ADD_LEAD_COLUMN_WIDTH)
+                            ) {
+                                DialogFormSectionDescription(
+                                    "Add leads:",
+                                    DialogConstant.DESCRIPTION_FONT_SIZE
+                                )
+                            }
+                            Column(
+                                modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
+                            ) {
+                                IconShadowButton(
+                                    onClick = {
+                                        onEvent(GameEvent.ShowLeadDialog(true, false))
+                                        if (state.followCount) {
+                                            setsCount++
+                                            convosCount++
+                                            contactsCount++
+                                            onEvent(GameEvent.SetContacts(contactsCount.toString()))
+                                        }
+                                    },
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "Add a lead"
+                                    // TODO: the blur stys set on when inserting a lead on the session and then getting back to game events view
+                                )
+                            }
+                        }
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    DialogTimeFormSection(
+                        state,
+                        onEvent,
+                        latestDateValue,
+                        latestStartHour,
+                        latestEndHour
+                    )
+                    Column(
+                        modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH),
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        for (lead in state.leads) {
+                            Row(
+                                verticalAlignment = Alignment.Top,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Box(modifier = Modifier.clickable {
+                                    onEvent(GameEvent.EditLead(lead, true))
+                                    onEvent(
+                                        GameEvent.ShowLeadDialog(false, true)
+                                    )
+                                }) {
+                                    leadName(
+                                        lead = lead,
+                                        backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                                        outputShow = false,
+                                        cardShow = false
+                                    )
+                                }
+                                CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+                                    IconButton(onClick = {
+                                        onEvent(
+                                            GameEvent.DeleteLead(
+                                                lead
+                                            )
+                                        )
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.Default.Delete,
+                                            contentDescription = "Delete Lead",
+                                            tint = MaterialTheme.colorScheme.onErrorContainer
+                                        )
+                                    }
+                                }
+                            }
+                            Spacer(
+                                modifier = Modifier.height(5.dp)
+                            )
+                        }
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        IconShadowButton(
+                            onClick = {
+                                setsCount--
+                                onEvent(GameEvent.SetSets(setsCount.toString()))
+                            },
+                            imageVector = Icons.Default.Remove,
+                            contentDescription = "Less"
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            InputCounter(
+                                count = setsCount,
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                            Image(
+                                painter = painterResource(R.drawable.set_action),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
+                                contentDescription = "sets",
+                                modifier = Modifier.height(30.dp),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                        LittleBodyText(if (setsCount != 1) "Sets" else "Set")
+                        Spacer(modifier = Modifier.height(4.dp))
+                        IconShadowButton(
+                            onClick = {
+                                setsCount++
+                                onEvent(GameEvent.SetSets(setsCount.toString()))
+                            },
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "More"
+                        )
+                    }
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        IconShadowButton(
+                            onClick = {
+                                convosCount--
+                                onEvent(GameEvent.SetConvos(convosCount.toString()))
+                            },
+                            imageVector = Icons.Default.Remove,
+                            contentDescription = "Less"
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            InputCounter(
+                                count = convosCount,
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                            Image(
+                                painter = painterResource(R.drawable.conversation_action),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
+                                contentDescription = "conversations",
+                                modifier = Modifier.height(30.dp),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                        LittleBodyText(if (convosCount != 1) "Conversations" else "Conversation")
+                        Spacer(modifier = Modifier.height(4.dp))
+                        IconShadowButton(
+                            onClick = {
+                                convosCount++
+                                onEvent(GameEvent.SetConvos(convosCount.toString()))
+                                if (state.followCount) {
+                                    setsCount++
+                                }
+                            },
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "More"
+                        )
+                    }
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        IconShadowButton(
+                            onClick = {
+                                contactsCount--
+                                onEvent(GameEvent.SetContacts(contactsCount.toString()))
+                            },
+                            imageVector = Icons.Default.Remove,
+                            contentDescription = "Less"
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            InputCounter(
+                                count = contactsCount,
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                            Image(
+                                painter = painterResource(R.drawable.contact_action),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
+                                contentDescription = "contacts",
+                                modifier = Modifier.height(30.dp),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                        LittleBodyText(if (contactsCount != 1) "Contacts" else "Contact")
+                        Spacer(modifier = Modifier.height(4.dp))
+                        IconShadowButton(
+                            onClick = {
+                                contactsCount++
+                                onEvent(GameEvent.SetContacts(contactsCount.toString()))
+                                if (state.followCount) {
+                                    setsCount++
+                                    convosCount++
+                                }
+                            },
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "More"
+                        )
+                    }
+                }
+                DialogTextComponent(
+                    state.stickingPoints,
+                    "Sticking points",
+                    100.dp,
+                    ""
+                ) {
+                    onEvent(GameEvent.SetStickingPoints(it))
+                }
+            }
+        },
+        confirmButton = {
+            ConfirmButton {
+                if (EntityService.getParsedHour(
+                        state.date,
+                        state.startHour
+                    ) > EntityService.getParsedHour(state.date, state.endHour)
+                ) {
+                    Toast.makeText(
+                        localContext,
+                        "Please choose valid hours",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    onEvent(GameEvent.SaveAbstractSession)
+                    onEvent(GameEvent.SetIsInOverlayToFalse)
+                    onEvent(GameEvent.HideDialog)
+                    onEvent(GameEvent.SwitchJustSaved)
+                    Toast.makeText(
+                        localContext,
+                        "Session saved",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
+            }
+        },
+        dismissButton = {
+            DismissButton {
+                onEvent(GameEvent.SetIsInOverlayToFalse)
+                onEvent(GameEvent.HideDialog)
+            }
         }
-    }
     )
 }
 

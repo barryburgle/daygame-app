@@ -48,142 +48,148 @@ fun ChallengeDialog(
 ) {
     val localContext = LocalContext.current.applicationContext
     var challengeTypesExpanded by remember { mutableStateOf(false) }
-    AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
-        onEvent(GameEvent.SetIsInOverlayToFalse)
-        onEvent(GameEvent.HideDialog)
-    }, title = {
-        LargeTitleText(text = description)
-    }, text = {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            DialogTextComponent(state.challengeName, "Challenge name", 60.dp, "") {
-                onEvent(GameEvent.SetChallengeName(it))
-            }
-            Spacer(modifier = Modifier.height(7.dp))
-            DialogTextComponent(
-                state.challengeDescription,
-                "Challenge description",
-                80.dp,
-                ""
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier.shadow(elevation = 10.dp),
+        onDismissRequest = {
+            onEvent(GameEvent.SetIsInOverlayToFalse)
+            onEvent(GameEvent.HideDialog)
+        },
+        title = {
+            LargeTitleText(text = description)
+        },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                onEvent(GameEvent.SetChallengeDescription(it))
-            }
-            Spacer(modifier = Modifier.height(7.dp))
-            var updatedChallengeType = ChallengeTypeEnum.getDescription(state.challengeType)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                DropdownMenu(
-                    modifier = Modifier
-                        .width(175.dp)
-                        .height(220.dp),
-                    expanded = challengeTypesExpanded,
-                    onDismissRequest = { challengeTypesExpanded = false }
-                ) {
-                    ChallengeTypeEnum.values().forEach { challengeType ->
-                        DropdownMenuItem(
-                            text = {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceAround,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Icon(
-                                        imageVector = challengeType.getIcon(),
-                                        contentDescription = state.challengeType,
-                                        tint = MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier
-                                            .height(15.dp)
-                                    )
-                                    LittleBodyText(challengeType.getDescription())
-                                }
-                            },
-                            onClick = {
-                                onEvent(GameEvent.SetChallengeType(challengeType.getType()))
-                                challengeTypesExpanded = false
-                            }
-                        )
-                    }
+                DialogTextComponent(state.challengeName, "Challenge name", 60.dp, "") {
+                    onEvent(GameEvent.SetChallengeName(it))
                 }
-                IconShadowButton(
-                    onClick = {
-                        challengeTypesExpanded = true
-                    },
-                    imageVector = ChallengeTypeEnum.getIcon(state.challengeType),
-                    contentDescription = "Challenge type",
-                    title = updatedChallengeType,
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .height(35.dp)
-                )
-                Spacer(modifier = Modifier.width(5.dp))
-                val clipboardManager: ClipboardManager = LocalClipboardManager.current
-                val localContext = LocalContext.current.applicationContext
-                IconShadowButton(
-                    onClick = {
-                        // TODO: put this logic in a centralized service:
-                        var tweetUrl: String = clipboardManager.getText()!!.toString()
-                        if (tweetUrl.startsWith("https://x.com/")) {
-                            onEvent(GameEvent.SetChallengeTweetUrl(tweetUrl))
-                            Toast.makeText(
-                                localContext,
-                                "Copied tweet url",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                Spacer(modifier = Modifier.height(7.dp))
+                DialogTextComponent(
+                    state.challengeDescription,
+                    "Challenge description",
+                    80.dp,
+                    ""
+                ) {
+                    onEvent(GameEvent.SetChallengeDescription(it))
+                }
+                Spacer(modifier = Modifier.height(7.dp))
+                var updatedChallengeType = ChallengeTypeEnum.getDescription(state.challengeType)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    DropdownMenu(
+                        modifier = Modifier
+                            .width(175.dp)
+                            .height(220.dp),
+                        expanded = challengeTypesExpanded,
+                        onDismissRequest = { challengeTypesExpanded = false }
+                    ) {
+                        ChallengeTypeEnum.values().forEach { challengeType ->
+                            DropdownMenuItem(
+                                text = {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceAround,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Icon(
+                                            imageVector = challengeType.getIcon(),
+                                            contentDescription = state.challengeType,
+                                            tint = MaterialTheme.colorScheme.onPrimary,
+                                            modifier = Modifier
+                                                .height(15.dp)
+                                        )
+                                        LittleBodyText(challengeType.getDescription())
+                                    }
+                                },
+                                onClick = {
+                                    onEvent(GameEvent.SetChallengeType(challengeType.getType()))
+                                    challengeTypesExpanded = false
+                                }
+                            )
                         }
-                    },
-                    imageVector = Icons.Default.ContentPaste,
-                    contentDescription = "Tweet Url",
-                    title = "Tweet Url",
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(35.dp)
-                )
+                    }
+                    IconShadowButton(
+                        onClick = {
+                            challengeTypesExpanded = true
+                        },
+                        imageVector = ChallengeTypeEnum.getIcon(state.challengeType),
+                        contentDescription = "Challenge type",
+                        title = updatedChallengeType,
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .height(35.dp)
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    val clipboardManager: ClipboardManager = LocalClipboardManager.current
+                    val localContext = LocalContext.current.applicationContext
+                    IconShadowButton(
+                        onClick = {
+                            // TODO: put this logic in a centralized service:
+                            var tweetUrl: String = clipboardManager.getText()!!.toString()
+                            if (tweetUrl.startsWith("https://x.com/")) {
+                                onEvent(GameEvent.SetChallengeTweetUrl(tweetUrl))
+                                Toast.makeText(
+                                    localContext,
+                                    "Copied tweet url",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
+                        imageVector = Icons.Default.ContentPaste,
+                        contentDescription = "Tweet Url",
+                        title = "Tweet Url",
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(35.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(7.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    InputCountComponent(
+                        inputTitle = if (updatedChallengeType.equals("Type")) "Choose goal" else updatedChallengeType,
+                        style = MaterialTheme.typography.titleSmall,
+                        onEvent = onEvent as (GenericEvent) -> Unit,
+                        countStart = if (state.isAddingChallenge) state.defaultChallengeGoal else state.challengeGoal.toInt(),
+                        increment = state.incrementChallengeGoal,
+                        saveEvent = GameEvent::SetChallengeGoal,
+                    )
+                    InputCountComponent(
+                        inputTitle = "Days",
+                        style = MaterialTheme.typography.titleSmall,
+                        onEvent = onEvent as (GenericEvent) -> Unit,
+                        countStart = if (state.isAddingChallenge) 1 else state.challengeDuration.toInt() + 1,
+                        saveEvent = GameEvent::SetChallengeDuration,
+                    )
+                }
             }
-            Spacer(modifier = Modifier.height(7.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                InputCountComponent(
-                    inputTitle = if (updatedChallengeType.equals("Type")) "Choose goal" else updatedChallengeType,
-                    style = MaterialTheme.typography.titleSmall,
-                    onEvent = onEvent as (GenericEvent) -> Unit,
-                    countStart = if (state.isAddingChallenge) state.defaultChallengeGoal else state.challengeGoal.toInt(),
-                    increment = state.incrementChallengeGoal,
-                    saveEvent = GameEvent::SetChallengeGoal,
-                )
-                InputCountComponent(
-                    inputTitle = "Days",
-                    style = MaterialTheme.typography.titleSmall,
-                    onEvent = onEvent as (GenericEvent) -> Unit,
-                    countStart = if (state.isAddingChallenge) 1 else state.challengeDuration.toInt() + 1,
-                    saveEvent = GameEvent::SetChallengeDuration,
-                )
+        },
+        confirmButton = {
+            ConfirmButton {
+                if (state.challengeType.isBlank()) {
+                    Toast.makeText(localContext, "Please choose a type", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    onEvent(GameEvent.SaveChallenge)
+                    onEvent(GameEvent.SetIsInOverlayToFalse)
+                    onEvent(GameEvent.HideDialog)
+                    onEvent(GameEvent.SwitchJustSaved)
+                    Toast.makeText(localContext, "Challenge saved", Toast.LENGTH_SHORT).show()
+                }
             }
-        }
-    }, confirmButton = {
-        ConfirmButton {
-            if (state.challengeType.isBlank()) {
-                Toast.makeText(localContext, "Please choose a type", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                onEvent(GameEvent.SaveChallenge)
-                onEvent(GameEvent.SetIsInOverlayToFalse)
-                onEvent(GameEvent.HideDialog)
-                onEvent(GameEvent.SwitchJustSaved)
-                Toast.makeText(localContext, "Challenge saved", Toast.LENGTH_SHORT).show()
-            }
-        }
-    },
+        },
         dismissButton = {
             DismissButton {
                 onEvent(GameEvent.SetIsInOverlayToFalse)

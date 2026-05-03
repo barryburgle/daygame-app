@@ -57,8 +57,7 @@ fun LeadDialog(
     state: InputState,
     onEvent: (GameEvent) -> Unit,
     description: String,
-    modifier: Modifier = Modifier
-        .height(480.dp)
+    modifier: Modifier = Modifier.height(480.dp)
 ) {
     val lead = Lead()
     val localContext = LocalContext.current
@@ -75,19 +74,21 @@ fun LeadDialog(
             .fillMaxWidth()
     }
     AlertDialog(
-        modifier = modifier
-            .shadow(elevation = 10.dp), onDismissRequest = {
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier.shadow(elevation = 10.dp),
+        onDismissRequest = {
             onEvent(GameEvent.SwitchSaveLeadToLiveSession)
             onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideLeadDialog)
-        }, title = {
+        },
+        title = {
             LargeTitleText(description)
-        }, text = {
+        },
+        text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxHeight()
+                modifier = Modifier.fillMaxHeight()
             ) {
                 Row(
                     modifier = Modifier
@@ -173,43 +174,37 @@ fun LeadDialog(
                     expanded = expanded,
                     onDismissRequest = {
                         expanded = false
-                    }
-                ) {
+                    }) {
                     var count = 0
                     CountryEnum.getInsertCountries(
                         state.mostPopularLeadsNationalities,
                         state.suggestLeadsNationality,
                         state.countrySearch
-                    )
-                        .forEach { country ->
+                    ).forEach { country ->
                             count++
-                            DropdownMenuItem(
-                                text = {
-                                    Row(
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        LittleBodyText(
-                                            country.flag + "  " + country.countryName
+                            DropdownMenuItem(text = {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    LittleBodyText(
+                                        country.flag + "  " + country.countryName
+                                    )
+                                    if (count <= state.shownNationalities && state.suggestLeadsNationality) {
+                                        Icon(
+                                            imageVector = Icons.Default.Star,
+                                            contentDescription = "Suggested country",
+                                            tint = MaterialTheme.colorScheme.inversePrimary,
+                                            modifier = Modifier.height(50.dp)
                                         )
-                                        if (count <= state.shownNationalities && state.suggestLeadsNationality) {
-                                            Icon(
-                                                imageVector = Icons.Default.Star,
-                                                contentDescription = "Suggested country",
-                                                tint = MaterialTheme.colorScheme.inversePrimary,
-                                                modifier = Modifier
-                                                    .height(50.dp)
-                                            )
-                                        }
                                     }
-                                },
-                                onClick = {
-                                    onEvent(GameEvent.SetLeadCountrySearch(""))
-                                    onEvent(GameEvent.SetLeadNationality(country.alpha3))
-                                    expanded = false
                                 }
-                            )
+                            }, onClick = {
+                                onEvent(GameEvent.SetLeadCountrySearch(""))
+                                onEvent(GameEvent.SetLeadNationality(country.alpha3))
+                                expanded = false
+                            })
                             if (count == state.shownNationalities && state.suggestLeadsNationality) {
                                 Row(
                                     modifier = Modifier
@@ -221,8 +216,7 @@ fun LeadDialog(
                         }
                 }
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -236,8 +230,7 @@ fun LeadDialog(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceAround,
-                            modifier = Modifier
-                                .fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(text = "", textAlign = TextAlign.Center)
                             ToggleIcon(
@@ -249,14 +242,11 @@ fun LeadDialog(
                             ) {
                                 onEvent(GameEvent.SetLeadContact(ContactTypeEnum.NUMBER.getField()))
                                 val contactInfo = PhoneBookService.findSimilarContact(
-                                    localContext.contentResolver,
-                                    state.leadName
+                                    localContext.contentResolver, state.leadName
                                 )
                                 if (contactInfo != null) {
                                     Toast.makeText(
-                                        context,
-                                        "Contact found",
-                                        Toast.LENGTH_SHORT
+                                        context, "Contact found", Toast.LENGTH_SHORT
                                     ).show()
                                     onEvent(GameEvent.SetLeadContactLookupKey(contactInfo!!.second))
                                 }
@@ -271,14 +261,11 @@ fun LeadDialog(
                                 // TODO: put this logic in a centralized service:
                                 val textFromClipboard = clipboardManager.getText()
                                 if (textFromClipboard != null) {
-                                    var instagramUrl: String =
-                                        textFromClipboard!!.toString()
+                                    var instagramUrl: String = textFromClipboard!!.toString()
                                     if (instagramUrl.startsWith("https://www.instagram.com/")) {
                                         onEvent(GameEvent.SetLeadInstagramUrl(instagramUrl))
                                         Toast.makeText(
-                                            localContext,
-                                            "Copied profile url",
-                                            Toast.LENGTH_SHORT
+                                            localContext, "Copied profile url", Toast.LENGTH_SHORT
                                         ).show()
                                     }
                                 }
@@ -288,16 +275,14 @@ fun LeadDialog(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceEvenly,
-                            modifier = Modifier
-                                .fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             LittleBodyText("Whatsapp will trigger a name-based phonebook contact search.\nInstagram copies profile url from clipboard.")
                         }
                     }
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .width(60.dp)
+                        modifier = Modifier.width(60.dp)
                     ) {
                         InputCountComponent(
                             inputTitle = "Years old",
@@ -310,7 +295,8 @@ fun LeadDialog(
                     }
                 }
             }
-        }, confirmButton = {
+        },
+        confirmButton = {
             ConfirmButton {
                 if (state.isUpdatingLead || state.saveLeadToLiveSession) {
                     lead.id = state.leadId

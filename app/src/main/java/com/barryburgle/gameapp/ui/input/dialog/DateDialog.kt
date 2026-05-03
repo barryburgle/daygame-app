@@ -68,312 +68,319 @@ fun DateDialog(
     if (state.isUpdatingDate) {
         setUpdatingState(state)
     }
-    AlertDialog(modifier = modifier.shadow(elevation = 10.dp), onDismissRequest = {
-        onEvent(GameEvent.SetIsInOverlayToFalse)
-        onEvent(GameEvent.HideDialog)
-    }, title = {
-        LargeTitleText(text = description)
-    }, text = {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH),
-                horizontalArrangement = Arrangement.SpaceBetween
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier.shadow(elevation = 10.dp),
+        onDismissRequest = {
+            onEvent(GameEvent.SetIsInOverlayToFalse)
+            onEvent(GameEvent.HideDialog)
+        },
+        title = {
+            LargeTitleText(text = description)
+        },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
-                            modifier = Modifier.width(DialogConstant.TIME_COLUMN_WIDTH)
-                        ) {
-                            DialogFormSectionDescription(
-                                "Set date's:",
-                                DialogConstant.DESCRIPTION_FONT_SIZE
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(10.dp))
-                        var leadIcon = Icons.Default.Add
-                        Column(
-                            modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH - DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                        ) {
-                            if (state.leadId == 0L) {
-                                DialogFormSectionDescription(
-                                    "Add lead:",
-                                    DialogConstant.DESCRIPTION_FONT_SIZE
-                                )
-                            } else {
-                                val foundLead =
-                                    state.allLeads.filter { lead -> lead.id == state.leadId }
-                                if (foundLead.size != 0) {
-                                    val lead = foundLead.get(0)
-                                    DialogFormSectionDescription(
-                                        CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age,
-                                        DialogConstant.DESCRIPTION_FONT_SIZE
-                                    )
-                                    leadIcon = Icons.Default.SwapHoriz
-                                }
-                            }
-                        }
-                        Column(
-                            modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
-                        ) {
-                            IconShadowButton(
-                                onClick = {
-                                    leadsExpanded = true
-                                },
-                                imageVector = leadIcon,
-                                contentDescription = "Add lead"
-                            )
-                        }
-                        DropdownMenu(
-                            modifier = Modifier
-                                .width(200.dp)
-                                .height(450.dp),
-                            expanded = leadsExpanded,
-                            onDismissRequest = { leadsExpanded = false }
-                        ) {
-                            state.allLeads.forEach { lead ->
-                                DropdownMenuItem(
-                                    text = { LittleBodyText(CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age) },
-                                    onClick = {
-                                        onEvent(GameEvent.SetLeadId(lead.id))
-                                        leadsExpanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                DialogTimeFormSection(
-                    state,
-                    onEvent,
-                    latestDateValue,
-                    latestStartHour,
-                    latestEndHour
-                )
-                Spacer(modifier = Modifier.width(5.dp))
-                Column(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(135.dp),
-                    verticalArrangement = Arrangement.Top
+                        .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    DropdownMenu(
-                        modifier = Modifier
-                            .width(175.dp)
-                            .height(280.dp),
-                        expanded = dateTypesExpanded,
-                        onDismissRequest = { dateTypesExpanded = false }
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        DateTypeEnum.values().forEach { dateType ->
-                            DropdownMenuItem(
-                                text = {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceAround,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Icon(
-                                            imageVector = DateTypeEnum.getIcon(dateType.getType()),
-                                            contentDescription = state.dateType,
-                                            tint = MaterialTheme.colorScheme.onPrimary,
-                                            modifier = Modifier
-                                                .height(15.dp)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                modifier = Modifier.width(DialogConstant.TIME_COLUMN_WIDTH)
+                            ) {
+                                DialogFormSectionDescription(
+                                    "Set date's:",
+                                    DialogConstant.DESCRIPTION_FONT_SIZE
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            var leadIcon = Icons.Default.Add
+                            Column(
+                                modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH - DialogConstant.ADD_LEAD_COLUMN_WIDTH)
+                            ) {
+                                if (state.leadId == 0L) {
+                                    DialogFormSectionDescription(
+                                        "Add lead:",
+                                        DialogConstant.DESCRIPTION_FONT_SIZE
+                                    )
+                                } else {
+                                    val foundLead =
+                                        state.allLeads.filter { lead -> lead.id == state.leadId }
+                                    if (foundLead.size != 0) {
+                                        val lead = foundLead.get(0)
+                                        DialogFormSectionDescription(
+                                            CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age,
+                                            DialogConstant.DESCRIPTION_FONT_SIZE
                                         )
-                                        LittleBodyText(dateType.getType()
-                                            .replaceFirstChar { it.uppercase() })
+                                        leadIcon = Icons.Default.SwapHoriz
                                     }
-                                },
-                                onClick = {
-                                    onEvent(GameEvent.SetDateType(dateType.getType()))
-                                    dateTypesExpanded = false
                                 }
-                            )
+                            }
+                            Column(
+                                modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
+                            ) {
+                                IconShadowButton(
+                                    onClick = {
+                                        leadsExpanded = true
+                                    },
+                                    imageVector = leadIcon,
+                                    contentDescription = "Add lead"
+                                )
+                            }
+                            DropdownMenu(
+                                modifier = Modifier
+                                    .width(200.dp)
+                                    .height(450.dp),
+                                expanded = leadsExpanded,
+                                onDismissRequest = { leadsExpanded = false }
+                            ) {
+                                state.allLeads.forEach { lead ->
+                                    DropdownMenuItem(
+                                        text = { LittleBodyText(CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age) },
+                                        onClick = {
+                                            onEvent(GameEvent.SetLeadId(lead.id))
+                                            leadsExpanded = false
+                                        }
+                                    )
+                                }
+                            }
                         }
                     }
-                    IconShadowButton(
-                        onClick = {
-                            dateTypesExpanded = true
-                        },
-                        imageVector = DateTypeEnum.getIcon(state.dateType),
-                        contentDescription = "Date type",
-                        title = if (state.dateType.isBlank()) "Date type" else state.dateType.replaceFirstChar { it.uppercase() },
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    DialogTimeFormSection(
+                        state,
+                        onEvent,
+                        latestDateValue,
+                        latestStartHour,
+                        latestEndHour
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(35.dp)
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    IconShadowButton(
-                        onClick = {
-                            locationTextFieldExpanded = !locationTextFieldExpanded
-                        },
-                        imageVector = Icons.Default.PinDrop,
-                        contentDescription = "Location",
-                        title = "Location",
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(35.dp)
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    val clipboardManager: ClipboardManager = LocalClipboardManager.current
-                    val localContext = LocalContext.current.applicationContext
-                    IconShadowButton(
-                        onClick = {
-                            var tweetUrl: String = clipboardManager.getText()!!.toString()
-                            if (tweetUrl.startsWith("https://x.com/")) {
-                                onEvent(GameEvent.SetTweetUrl(tweetUrl))
-                                Toast.makeText(
-                                    localContext,
-                                    "Copied tweet url",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                            .height(135.dp),
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        DropdownMenu(
+                            modifier = Modifier
+                                .width(175.dp)
+                                .height(280.dp),
+                            expanded = dateTypesExpanded,
+                            onDismissRequest = { dateTypesExpanded = false }
+                        ) {
+                            DateTypeEnum.values().forEach { dateType ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.SpaceAround,
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            Icon(
+                                                imageVector = DateTypeEnum.getIcon(dateType.getType()),
+                                                contentDescription = state.dateType,
+                                                tint = MaterialTheme.colorScheme.onPrimary,
+                                                modifier = Modifier
+                                                    .height(15.dp)
+                                            )
+                                            LittleBodyText(
+                                                dateType.getType()
+                                                    .replaceFirstChar { it.uppercase() })
+                                        }
+                                    },
+                                    onClick = {
+                                        onEvent(GameEvent.SetDateType(dateType.getType()))
+                                        dateTypesExpanded = false
+                                    }
+                                )
                             }
-                        },
-                        imageVector = Icons.Default.ContentPaste,
-                        contentDescription = "Tweet Url",
-                        title = "Tweet Url",
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(35.dp)
+                        }
+                        IconShadowButton(
+                            onClick = {
+                                dateTypesExpanded = true
+                            },
+                            imageVector = DateTypeEnum.getIcon(state.dateType),
+                            contentDescription = "Date type",
+                            title = if (state.dateType.isBlank()) "Date type" else state.dateType.replaceFirstChar { it.uppercase() },
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(35.dp)
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        IconShadowButton(
+                            onClick = {
+                                locationTextFieldExpanded = !locationTextFieldExpanded
+                            },
+                            imageVector = Icons.Default.PinDrop,
+                            contentDescription = "Location",
+                            title = "Location",
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(35.dp)
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        val clipboardManager: ClipboardManager = LocalClipboardManager.current
+                        val localContext = LocalContext.current.applicationContext
+                        IconShadowButton(
+                            onClick = {
+                                var tweetUrl: String = clipboardManager.getText()!!.toString()
+                                if (tweetUrl.startsWith("https://x.com/")) {
+                                    onEvent(GameEvent.SetTweetUrl(tweetUrl))
+                                    Toast.makeText(
+                                        localContext,
+                                        "Copied tweet url",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            },
+                            imageVector = Icons.Default.ContentPaste,
+                            contentDescription = "Tweet Url",
+                            title = "Tweet Url",
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(35.dp)
+                        )
+                    }
+                }
+                BasicAnimatedVisibility(
+                    visibilityFlag = locationTextFieldExpanded,
+                ) {
+                    Spacer(modifier = Modifier.height(7.dp))
+                    OutlinedTextField(
+                        value = state.location,
+                        onValueChange = { onEvent(GameEvent.SetLocation(it)) },
+                        placeholder = { LittleBodyText("Location") },
+                        shape = MaterialTheme.shapes.large,
+                        modifier = Modifier.height(80.dp)
+                    )
+                    Spacer(modifier = Modifier.height(7.dp))
+                }
+                BasicAnimatedVisibility(
+                    visibilityFlag = !locationTextFieldExpanded,
+                ) {
+                    Spacer(modifier = Modifier.height(7.dp))
+                    DialogTextComponent(
+                        state.stickingPoints,
+                        "Sticking points",
+                        100.dp,
+                        ""
+                    ) {
+                        onEvent(GameEvent.SetStickingPoints(it))
+                    }
+                    Spacer(modifier = Modifier.height(7.dp))
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    InputCountComponent(
+                        inputTitle = "Date",
+                        style = MaterialTheme.typography.titleSmall,
+                        onEvent = onEvent as (GenericEvent) -> Unit,
+                        countStart = if (state.isAddingDate) 0 else state.editDate?.dateNumber,
+                        saveEvent = GameEvent::SetDateNumber,
+                        zeroValue = "iDate"
+                    )
+                    InputCountComponent(
+                        inputTitle = "€",
+                        style = MaterialTheme.typography.titleSmall,
+                        onEvent = onEvent as (GenericEvent) -> Unit,
+                        countStart = if (state.isAddingDate) 0 else state.editDate?.cost,
+                        saveEvent = GameEvent::SetCost
                     )
                 }
-            }
-            BasicAnimatedVisibility(
-                visibilityFlag = locationTextFieldExpanded,
-            ) {
-                Spacer(modifier = Modifier.height(7.dp))
-                OutlinedTextField(
-                    value = state.location,
-                    onValueChange = { onEvent(GameEvent.SetLocation(it)) },
-                    placeholder = { LittleBodyText("Location") },
-                    shape = MaterialTheme.shapes.large,
-                    modifier = Modifier.height(80.dp)
-                )
-                Spacer(modifier = Modifier.height(7.dp))
-            }
-            BasicAnimatedVisibility(
-                visibilityFlag = !locationTextFieldExpanded,
-            ) {
-                Spacer(modifier = Modifier.height(7.dp))
-                DialogTextComponent(
-                    state.stickingPoints,
-                    "Sticking points",
-                    100.dp,
-                    ""
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    onEvent(GameEvent.SetStickingPoints(it))
-                }
-                Spacer(modifier = Modifier.height(7.dp))
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                InputCountComponent(
-                    inputTitle = "Date",
-                    style = MaterialTheme.typography.titleSmall,
-                    onEvent = onEvent as (GenericEvent) -> Unit,
-                    countStart = if (state.isAddingDate) 0 else state.editDate?.dateNumber,
-                    saveEvent = GameEvent::SetDateNumber,
-                    zeroValue = "iDate"
-                )
-                InputCountComponent(
-                    inputTitle = "€",
-                    style = MaterialTheme.typography.titleSmall,
-                    onEvent = onEvent as (GenericEvent) -> Unit,
-                    countStart = if (state.isAddingDate) 0 else state.editDate?.cost,
-                    saveEvent = GameEvent::SetCost
-                )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                ToggleIcon(
-                    "pull",
-                    state.pull,
-                    false,
-                    R.drawable.pull_b
-                ) {
-                    onEvent(GameEvent.SwitchPull)
-                }
-                ToggleIcon(
-                    "bounce",
-                    state.bounce,
-                    false,
-                    R.drawable.bounce_b
-                ) {
-                    onEvent(GameEvent.SwitchBounce)
-                }
-                ToggleIcon(
-                    "kiss",
-                    state.kiss,
-                    false,
-                    R.drawable.kiss_b
-                ) {
-                    onEvent(GameEvent.SwitchKiss)
-                }
-                ToggleIcon(
-                    "lay",
-                    state.lay,
-                    false,
-                    R.drawable.bed_b
-                ) {
-                    onEvent(GameEvent.SwitchLay)
-                }
-                ToggleIcon(
-                    "recorded",
-                    state.recorded,
-                    true,
-                    R.drawable.microphone_b
-                ) {
-                    onEvent(GameEvent.SwitchRecorded)
+                    ToggleIcon(
+                        "pull",
+                        state.pull,
+                        false,
+                        R.drawable.pull_b
+                    ) {
+                        onEvent(GameEvent.SwitchPull)
+                    }
+                    ToggleIcon(
+                        "bounce",
+                        state.bounce,
+                        false,
+                        R.drawable.bounce_b
+                    ) {
+                        onEvent(GameEvent.SwitchBounce)
+                    }
+                    ToggleIcon(
+                        "kiss",
+                        state.kiss,
+                        false,
+                        R.drawable.kiss_b
+                    ) {
+                        onEvent(GameEvent.SwitchKiss)
+                    }
+                    ToggleIcon(
+                        "lay",
+                        state.lay,
+                        false,
+                        R.drawable.bed_b
+                    ) {
+                        onEvent(GameEvent.SwitchLay)
+                    }
+                    ToggleIcon(
+                        "recorded",
+                        state.recorded,
+                        true,
+                        R.drawable.microphone_b
+                    ) {
+                        onEvent(GameEvent.SwitchRecorded)
+                    }
                 }
             }
-        }
-    }, confirmButton = {
-        ConfirmButton {
-            if (EntityService.getParsedHour(
-                    state.date,
-                    state.startHour
-                ) > EntityService.getParsedHour(state.date, state.endHour)
-            ) {
-                Toast.makeText(
-                    localContext,
-                    "Please choose valid hours",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else if (state.leadId == 0L) {
-                Toast.makeText(localContext, "Please choose a lead", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                onEvent(GameEvent.SaveDate)
-                onEvent(GameEvent.SetIsInOverlayToFalse)
-                onEvent(GameEvent.HideDialog)
-                onEvent(GameEvent.SwitchJustSaved)
-                Toast.makeText(localContext, "Date saved", Toast.LENGTH_SHORT).show()
+        },
+        confirmButton = {
+            ConfirmButton {
+                if (EntityService.getParsedHour(
+                        state.date,
+                        state.startHour
+                    ) > EntityService.getParsedHour(state.date, state.endHour)
+                ) {
+                    Toast.makeText(
+                        localContext,
+                        "Please choose valid hours",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else if (state.leadId == 0L) {
+                    Toast.makeText(localContext, "Please choose a lead", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    onEvent(GameEvent.SaveDate)
+                    onEvent(GameEvent.SetIsInOverlayToFalse)
+                    onEvent(GameEvent.HideDialog)
+                    onEvent(GameEvent.SwitchJustSaved)
+                    Toast.makeText(localContext, "Date saved", Toast.LENGTH_SHORT).show()
+                }
             }
-        }
-    },
+        },
         dismissButton = {
             DismissButton {
                 onEvent(GameEvent.SetIsInOverlayToFalse)

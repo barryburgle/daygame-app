@@ -47,174 +47,180 @@ fun InfoDialog(
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val localContext = LocalContext.current.applicationContext
-    val semiOpaqueBackground = MaterialTheme.colorScheme.surface
+    val semiOpaqueBackground = MaterialTheme.colorScheme.surfaceVariant
     val perfFontSize = 15.sp
     val descriptionFontSize = 10.sp
     if (state.completeHistogram.isNotEmpty()) {
         val descriptionFrequencyPairs = getHistogramDataPoints(state.completeHistogram)
-        AlertDialog(modifier = Modifier.shadow(elevation = 10.dp), onDismissRequest = {
-            onEvent(StatsEvent.HideInfo)
-        }, title = {
-            Column(
-                modifier = Modifier
-                    .padding(5.dp)
-                    .fillMaxWidth()
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
+        AlertDialog(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            modifier = Modifier.shadow(elevation = 10.dp),
+            onDismissRequest = {
+                onEvent(StatsEvent.HideInfo)
+            },
+            title = {
+                Column(
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxWidth()
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(5.dp)
-                            .fillMaxWidth(0.65f),
-                        horizontalAlignment = Alignment.Start,
-                        verticalArrangement = Arrangement.Center
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        LargeTitleText(state.infoDialogTitle)
-                        LittleBodyText(state.trackedEntity + " grouped by " + state.infoDialogTitle.lowercase())
-                    }
-                    Column(
-                        modifier = Modifier
-                            .padding(5.dp),
-                        horizontalAlignment = Alignment.End,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        IconShadowButton(
-                            onClick = {
-                                var histogramData = exportHistogramDataPoints(
-                                    state.infoDialogTitle,
-                                    state.trackedEntity,
-                                    descriptionFrequencyPairs
-                                )
-                                if (state.copyReportOnClipboard) {
-                                    clipboardManager.setText(
-                                        AnnotatedString(
+                        Column(
+                            modifier = Modifier
+                                .padding(5.dp)
+                                .fillMaxWidth(0.65f),
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            LargeTitleText(state.infoDialogTitle)
+                            LittleBodyText(state.trackedEntity + " grouped by " + state.infoDialogTitle.lowercase())
+                        }
+                        Column(
+                            modifier = Modifier
+                                .padding(5.dp),
+                            horizontalAlignment = Alignment.End,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            IconShadowButton(
+                                onClick = {
+                                    var histogramData = exportHistogramDataPoints(
+                                        state.infoDialogTitle,
+                                        state.trackedEntity,
+                                        descriptionFrequencyPairs
+                                    )
+                                    if (state.copyReportOnClipboard) {
+                                        clipboardManager.setText(
+                                            AnnotatedString(
+                                                histogramData
+                                            )
+                                        )
+                                        Toast.makeText(
+                                            localContext,
+                                            "Histogram copied",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                    val sendIntent: Intent = Intent().apply {
+                                        action = Intent.ACTION_SEND
+                                        putExtra(
+                                            Intent.EXTRA_TEXT,
                                             histogramData
                                         )
+                                        type = "text/plain"
+                                    }
+                                    val shareIntent = Intent.createChooser(
+                                        sendIntent,
+                                        "Share histogram"
                                     )
-                                    Toast.makeText(
-                                        localContext,
-                                        "Histogram copied",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                                val sendIntent: Intent = Intent().apply {
-                                    action = Intent.ACTION_SEND
-                                    putExtra(
-                                        Intent.EXTRA_TEXT,
-                                        histogramData
-                                    )
-                                    type = "text/plain"
-                                }
-                                val shareIntent = Intent.createChooser(
-                                    sendIntent,
-                                    "Share histogram"
-                                )
-                                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                localContext.startActivity(shareIntent)
-                            },
-                            imageVector = Icons.Default.Share,
-                            contentDescription = "Share Histogram"
-                        )
+                                    shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    localContext.startActivity(shareIntent)
+                                },
+                                imageVector = Icons.Default.Share,
+                                contentDescription = "Share Histogram"
+                            )
+                        }
                     }
                 }
-            }
-        }, text = {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 5.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Scaffold(
-                    topBar = {
-                        Row(
-                            modifier = getBlurBarModifier(
-                                listOf(
-                                    semiOpaqueBackground,
-                                    semiOpaqueBackground.copy(0.5f),
-                                    semiOpaqueBackground.copy(0.01f),
-                                )
-                            )
-                        ) {}
-                    },
-                    bottomBar = {
-                        Row(
-                            modifier = getBlurBarModifier(
-                                listOf(
-                                    semiOpaqueBackground.copy(0.01f),
-                                    semiOpaqueBackground.copy(0.5f),
-                                    semiOpaqueBackground,
-                                )
-                            )
-                        ) {}
-                    },
+            },
+            text = {
+                Column(
                     modifier = Modifier
-                        .height(300.dp)
-                        .background(MaterialTheme.colorScheme.surface)
-                        .fillMaxWidth()
-                ) { padding ->
-                    LazyColumn(
+                        .padding(horizontal = 5.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Scaffold(
+                        topBar = {
+                            Row(
+                                modifier = getBlurBarModifier(
+                                    listOf(
+                                        semiOpaqueBackground,
+                                        semiOpaqueBackground.copy(0.5f),
+                                        semiOpaqueBackground.copy(0.01f),
+                                    )
+                                )
+                            ) {}
+                        },
+                        bottomBar = {
+                            Row(
+                                modifier = getBlurBarModifier(
+                                    listOf(
+                                        semiOpaqueBackground.copy(0.01f),
+                                        semiOpaqueBackground.copy(0.5f),
+                                        semiOpaqueBackground,
+                                    )
+                                )
+                            ) {}
+                        },
                         modifier = Modifier
                             .height(300.dp)
-                            .background(MaterialTheme.colorScheme.surface)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                             .fillMaxWidth()
-                    ) {
-                        item {
-                            Spacer(modifier = Modifier.height(10.dp))
-                        }
-                        for (pair in descriptionFrequencyPairs) {
+                    ) { padding ->
+                        LazyColumn(
+                            modifier = Modifier
+                                .height(300.dp)
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                                .fillMaxWidth()
+                        ) {
                             item {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 4.dp)
-                                        .background(
-                                            color = MaterialTheme.colorScheme.primaryContainer,
-                                            shape = RoundedCornerShape(10.dp)
-                                        ),
-                                    horizontalArrangement = Arrangement.SpaceAround
-                                ) {
-                                    Column(
+                                Spacer(modifier = Modifier.height(10.dp))
+                            }
+                            for (pair in descriptionFrequencyPairs) {
+                                item {
+                                    Row(
                                         modifier = Modifier
-                                            .fillMaxWidth(0.7f),
-                                        horizontalAlignment = Alignment.CenterHorizontally
+                                            .fillMaxWidth()
+                                            .padding(vertical = 4.dp)
+                                            .background(
+                                                color = MaterialTheme.colorScheme.primary,
+                                                shape = RoundedCornerShape(10.dp)
+                                            ),
+                                        horizontalArrangement = Arrangement.SpaceAround
                                     ) {
-                                        DescribedQuantifier(
-                                            quantity = pair.first,
-                                            quantityFontSize = perfFontSize,
-                                            description = state.infoDialogTitle,
-                                            descriptionFontSize = descriptionFontSize
-                                        )
-                                    }
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth(),
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        DescribedQuantifier(
-                                            quantity = pair.second,
-                                            quantityFontSize = perfFontSize,
-                                            description = state.trackedEntity,
-                                            descriptionFontSize = descriptionFontSize
-                                        )
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth(0.7f),
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            DescribedQuantifier(
+                                                quantity = pair.first,
+                                                quantityFontSize = perfFontSize,
+                                                description = state.infoDialogTitle,
+                                                descriptionFontSize = descriptionFontSize
+                                            )
+                                        }
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth(),
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            DescribedQuantifier(
+                                                quantity = pair.second,
+                                                quantityFontSize = perfFontSize,
+                                                description = state.trackedEntity,
+                                                descriptionFontSize = descriptionFontSize
+                                            )
+                                        }
                                     }
                                 }
                             }
-                        }
-                        item {
-                            Spacer(modifier = Modifier.height(10.dp))
+                            item {
+                                Spacer(modifier = Modifier.height(10.dp))
+                            }
                         }
                     }
                 }
-            }
-        }, confirmButton = {
-            ConfirmButton {
-                onEvent(StatsEvent.HideInfo)
-            }
-        })
+            },
+            confirmButton = {
+                ConfirmButton {
+                    onEvent(StatsEvent.HideInfo)
+                }
+            })
     }
 }
 
