@@ -223,6 +223,7 @@ fun SessionDialog(
                         InputCounter(count = setsCount, style = MaterialTheme.typography.titleSmall)
                         Image(
                             painter = painterResource(R.drawable.set_action),
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                             contentDescription = "sets",
                             modifier = Modifier.height(30.dp),
                             contentScale = ContentScale.Fit
@@ -258,6 +259,7 @@ fun SessionDialog(
                         )
                         Image(
                             painter = painterResource(R.drawable.conversation_action),
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                             contentDescription = "conversations",
                             modifier = Modifier.height(30.dp),
                             contentScale = ContentScale.Fit
@@ -296,6 +298,7 @@ fun SessionDialog(
                         )
                         Image(
                             painter = painterResource(R.drawable.contact_action),
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                             contentDescription = "contacts",
                             modifier = Modifier.height(30.dp),
                             contentScale = ContentScale.Fit
