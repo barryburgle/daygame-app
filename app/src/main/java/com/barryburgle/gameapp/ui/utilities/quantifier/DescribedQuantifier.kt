@@ -32,6 +32,7 @@ fun DescribedQuantifier(
     description: String,
     descriptionFontSize: TextUnit
 ) {
+    // TODO: extend to support draawable icons on the right side of sets/convos/contacts
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
