@@ -210,7 +210,6 @@ fun SessionDialog(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    LittleBodyText("Sets")
                     IconShadowButton(
                         onClick = {
                             setsCount--
@@ -219,11 +218,18 @@ fun SessionDialog(
                         imageVector = Icons.Default.Remove,
                         contentDescription = "Less"
                     )
-                    InputCounter(
-                        count = setsCount,
-                        style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier
-                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        InputCounter(count = setsCount, style = MaterialTheme.typography.titleSmall)
+                        Image(
+                            painter = painterResource(R.drawable.set_action),
+                            contentDescription = "sets",
+                            modifier = Modifier.height(30.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                    LittleBodyText(if (setsCount != 1) "Sets" else "Set")
+                    Spacer(modifier = Modifier.height(4.dp))
                     IconShadowButton(
                         onClick = {
                             setsCount++
@@ -236,7 +242,6 @@ fun SessionDialog(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    LittleBodyText("Conversations")
                     IconShadowButton(
                         onClick = {
                             convosCount--
@@ -245,11 +250,21 @@ fun SessionDialog(
                         imageVector = Icons.Default.Remove,
                         contentDescription = "Less"
                     )
-                    InputCounter(
-                        count = convosCount,
-                        style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier
-                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        InputCounter(
+                            count = convosCount,
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                        Image(
+                            painter = painterResource(R.drawable.conversation_action),
+                            contentDescription = "conversations",
+                            modifier = Modifier.height(30.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                    LittleBodyText(if (convosCount != 1) "Conversations" else "Conversation")
+                    Spacer(modifier = Modifier.height(4.dp))
                     IconShadowButton(
                         onClick = {
                             convosCount++
@@ -265,7 +280,6 @@ fun SessionDialog(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    LittleBodyText("Contacts")
                     IconShadowButton(
                         onClick = {
                             contactsCount--
@@ -274,11 +288,21 @@ fun SessionDialog(
                         imageVector = Icons.Default.Remove,
                         contentDescription = "Less"
                     )
-                    InputCounter(
-                        count = contactsCount,
-                        style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier
-                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        InputCounter(
+                            count = contactsCount,
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                        Image(
+                            painter = painterResource(R.drawable.contact_action),
+                            contentDescription = "contacts",
+                            modifier = Modifier.height(30.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                    LittleBodyText(if (contactsCount != 1) "Contacts" else "Contact")
+                    Spacer(modifier = Modifier.height(4.dp))
                     IconShadowButton(
                         onClick = {
                             contactsCount++
