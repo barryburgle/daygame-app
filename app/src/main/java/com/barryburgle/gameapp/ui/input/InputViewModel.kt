@@ -622,26 +622,16 @@ class InputViewModel(
             }
 
             is GameEvent.SetConvos -> {
-                _state.update {
-                    it.copy(
-                        convos = event.convos
-                    )
-                }
-                if (state.value.followCount) {
-                    var sets = 0
-                    if (_state.value.sets.isEmpty()) {
-                        if (_state.value.editAbstractSession != null) {
-                            sets = _state.value.editAbstractSession!!.sets
-                        }
-                    } else {
-                        sets = _state.value.sets.toInt()
-                    }
-                    sets++
-                    _state.update {
-                        it.copy(
-                            sets = sets.toString()
-                        )
-                    }
+                val oldConvos =
+                    _state.value.convos.toIntOrNull() ?: _state.value.editAbstractSession?.convos
+                    ?: 0
+                val newConvos = event.convos.toIntOrNull() ?: 0
+                _state.update { it.copy(convos = event.convos) }
+                if (state.value.followCount && newConvos > oldConvos) {
+                    val currentSets =
+                        (_state.value.sets.toIntOrNull() ?: _state.value.editAbstractSession?.sets
+                        ?: 0) + 1
+                    _state.update { it.copy(sets = currentSets.toString()) }
                 }
             }
 
@@ -659,38 +649,20 @@ class InputViewModel(
             }
 
             is GameEvent.SetContacts -> {
-                _state.update {
-                    it.copy(
-                        contacts = event.contacts
-                    )
-                }
-                if (state.value.followCount) {
-                    var sets = 0
-                    if (_state.value.sets.isEmpty()) {
-                        if (_state.value.editAbstractSession != null) {
-                            sets = _state.value.editAbstractSession!!.sets
-                        }
-                    } else {
-                        sets = _state.value.sets.toInt()
-                    }
-                    sets++
+                val oldContacts = _state.value.contacts.toIntOrNull()
+                    ?: _state.value.editAbstractSession?.contacts ?: 0
+                val newContacts = event.contacts.toIntOrNull() ?: 0
+                _state.update { it.copy(contacts = event.contacts) }
+                if (state.value.followCount && newContacts > oldContacts) {
+                    val currentSets =
+                        (_state.value.sets.toIntOrNull() ?: _state.value.editAbstractSession?.sets
+                        ?: 0) + 1
+                    val currentConvos = (_state.value.convos.toIntOrNull()
+                        ?: _state.value.editAbstractSession?.convos ?: 0) + 1
                     _state.update {
                         it.copy(
-                            sets = sets.toString()
-                        )
-                    }
-                    var convos = 0
-                    if (_state.value.convos.isEmpty()) {
-                        if (_state.value.editAbstractSession != null) {
-                            convos = _state.value.editAbstractSession!!.convos
-                        }
-                    } else {
-                        convos = _state.value.convos.toInt()
-                    }
-                    convos++
-                    _state.update {
-                        it.copy(
-                            convos = convos.toString()
+                            sets = currentSets.toString(),
+                            convos = currentConvos.toString()
                         )
                     }
                 }

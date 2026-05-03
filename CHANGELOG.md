@@ -3,6 +3,9 @@
 - Live session persistent notification 💬
 - Hold the Daygame App icon for live session shortcut ↪️
 - Hold & drag the right endside in Game section to jump to date 📆
+  
+**Bugfixes**
+- Contacts & conversation follow count in Session acquisition
 
 # Version 1.11.0 (2026-04-25)
 **Features**
