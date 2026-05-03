@@ -53,7 +53,7 @@ fun SessionCounters(
         )
         CounterColumn(
             count = contactsCount,
-            label = "Contacts",
+            label = if (contactsCount != 1) "Contacts" else "Contact",
             iconRes = R.drawable.contact_action,
             onIncrement = { onContactsChange(contactsCount + 1, true) },
             onDecrement = { onContactsChange(contactsCount - 1, false) }
