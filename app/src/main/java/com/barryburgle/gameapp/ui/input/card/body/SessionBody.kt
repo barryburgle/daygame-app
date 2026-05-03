@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
@@ -33,19 +34,22 @@ fun SessionBody(
             quantity = "${abstractSession.sets}",
             quantityFontSize = countFontSize,
             description = "Sets",
-            descriptionFontSize = descriptionFontSize
+            descriptionFontSize = descriptionFontSize,
+            drawableIcon = R.drawable.set_action
         )
         DescribedQuantifier(
             quantity = "${abstractSession.convos}",
             quantityFontSize = countFontSize,
             description = "Conversations",
-            descriptionFontSize = descriptionFontSize
+            descriptionFontSize = descriptionFontSize,
+            drawableIcon = R.drawable.conversation_action
         )
         DescribedQuantifier(
             quantity = "${abstractSession.contacts}",
             quantityFontSize = countFontSize,
             description = "Contacts",
-            descriptionFontSize = descriptionFontSize
+            descriptionFontSize = descriptionFontSize,
+            drawableIcon = R.drawable.contact_action
         )
     }
     Spacer(modifier = Modifier.height(12.dp))
