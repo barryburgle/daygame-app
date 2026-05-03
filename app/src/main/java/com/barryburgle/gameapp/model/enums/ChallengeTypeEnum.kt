@@ -1,11 +1,11 @@
 package com.barryburgle.gameapp.model.enums
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ContactPhone
+import androidx.compose.material.icons.filled.ChatBubble
+import androidx.compose.material.icons.filled.Contacts
 import androidx.compose.material.icons.filled.DirectionsRun
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.RecordVoiceOver
 import androidx.compose.ui.graphics.vector.ImageVector
 
 enum class ChallengeTypeEnum(
@@ -15,8 +15,8 @@ enum class ChallengeTypeEnum(
     private val icon: ImageVector
 ) {
     SET("set", "Sets", "done", Icons.Default.DirectionsRun),
-    CONVERSATION("conversation", "Conversations", "had", Icons.Default.RecordVoiceOver),
-    CONTACT("contact", "Contacts", "taken", Icons.Default.ContactPhone),
+    CONVERSATION("conversation", "Conversations", "had", Icons.Default.ChatBubble),
+    CONTACT("contact", "Contacts", "taken", Icons.Default.Contacts),
     DATE("date", "Dates", "had", Icons.Default.Favorite);
     // TODO: add here goals on percs and indexes later. For a future task, the challenge type will determine how the challenge completion is computed from raw data (sessions, dates, sets)
 
