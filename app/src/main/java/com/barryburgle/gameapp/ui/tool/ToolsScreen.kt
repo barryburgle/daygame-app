@@ -192,6 +192,14 @@ fun ToolsScreen(
             item {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
+                    LiveSessionCard(
+                        state = state, onEvent = onEvent, modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
                     ThemeCard(
                         state = state, onEvent = onEvent, modifier = settingsCardModifier
                     )
