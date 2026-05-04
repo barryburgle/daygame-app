@@ -27,8 +27,13 @@ open class ExportState(
     open var backupActive: Boolean = true,
     open var lastBackup: Int = 3,
     open var justSaved: Boolean = false,
-    open var generateiDate: Boolean = true
-) : AllEntityState(
+    open var generateiDate: Boolean = true,
+    open var liveSessionNotificationEnabled: Boolean = true,
+    open var liveSessionSittingReminderEnabled: Boolean = true,
+    open var liveSessionSittingReminderInterval: Int = 30,
+    open var liveSessionShareEnabled: Boolean = true
+
+    ) : AllEntityState(
     allSessions,
     allLeads,
     allDates,
