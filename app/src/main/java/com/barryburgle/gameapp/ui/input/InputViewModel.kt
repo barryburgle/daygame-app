@@ -35,8 +35,8 @@ import com.barryburgle.gameapp.ui.CombineFifteen
 import com.barryburgle.gameapp.ui.CombineFive
 import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.CombineSeven
-import com.barryburgle.gameapp.ui.CombineSix
 import com.barryburgle.gameapp.ui.CombineSixteen
+import com.barryburgle.gameapp.ui.CombineTen
 import com.barryburgle.gameapp.ui.input.dialog.InputDialogConstant
 import com.barryburgle.gameapp.ui.input.state.DialogSettingsState
 import com.barryburgle.gameapp.ui.input.state.ExportSettingsState
@@ -171,6 +171,12 @@ class InputViewModel(
     private val _showCurrentMonthSummary = settingDao.getShowCurrentMonthSummary()
     private val _showCurrentChallengeSummary = settingDao.getShowCurrentChallengeSummary()
     private val _theme = settingDao.getTheme()
+    private val _liveSessionNotificationEnabled = settingDao.getLiveSessionNotificationEnabled()
+    private val _liveSessionSittingReminderEnabled =
+        settingDao.getLiveSessionSittingReminderEnabled()
+    private val _liveSessionSittingReminderInterval =
+        settingDao.getLiveSessionSittingReminderInterval()
+    private val _liveSessionShareEnabled = settingDao.getLiveSessionShareEnabled()
     private val _sessionsByWeek = aggregatedSessionsDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _sessionsByMonth = aggregatedSessionsDao.groupStatsByMonth()
@@ -319,14 +325,18 @@ class InputViewModel(
             lastBackup = lastBackup.toInt()
         )
     }
-    val _dialogSettings = CombineSix(
+    val _dialogSettings = CombineTen(
         _notificationTime,
         _generateiDate,
         _followCount,
         _suggestLeadsNationality,
         _incrementChallengeGoal,
-        _defaultChallengeGoal
-    ) { notificationTime, generateiDate, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal ->
+        _defaultChallengeGoal,
+        _liveSessionNotificationEnabled,
+        _liveSessionSittingReminderEnabled,
+        _liveSessionSittingReminderInterval,
+        _liveSessionShareEnabled
+    ) { notificationTime, generateiDate, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
         DialogSettingsState(
             notificationTime = notificationTime,
             generateiDate = generateiDate.toBoolean(),
@@ -334,6 +344,10 @@ class InputViewModel(
             suggestLeadsNationality = suggestLeadsNationality.toBoolean(),
             incrementChallengeGoal = incrementChallengeGoal,
             defaultChallengeGoal = defaultChallengeGoal,
+            liveSessionNotificationEnabled = liveSessionNotificationEnabled.toBoolean(),
+            liveSessionSittingReminderEnabled = liveSessionSittingReminderEnabled.toBoolean(),
+            liveSessionSittingReminderInterval = liveSessionSittingReminderInterval.toInt(),
+            liveSessionShareEnabled = liveSessionShareEnabled.toBoolean()
         )
     }
     val _shareSettings = CombineSeven(
@@ -343,7 +357,7 @@ class InputViewModel(
         _copyReportOnClipboard,
         _showCurrentWeekSummary,
         _showCurrentMonthSummary,
-        _showCurrentChallengeSummary
+        _showCurrentChallengeSummary,
     ) { shownNationalities, simplePlusOneReport, neverShareLeadInfo, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary ->
         ShareSettingsState(
             shownNationalities = shownNationalities.toInt(),
@@ -428,6 +442,10 @@ class InputViewModel(
             showCurrentMonthSummary = shareSettings.showCurrentMonthSummary,
             showCurrentChallengeSummary = shareSettings.showCurrentChallengeSummary,
             theme = theme,
+            liveSessionNotificationEnabled = dialogSettings.liveSessionNotificationEnabled,
+            liveSessionSittingReminderEnabled = dialogSettings.liveSessionSittingReminderEnabled,
+            liveSessionSittingReminderInterval = dialogSettings.liveSessionSittingReminderInterval,
+            liveSessionShareEnabled = dialogSettings.liveSessionShareEnabled,
             mostPopularLeadsNationalities = mostPopularLeadsNationalities,
             sessionsByWeek = sessionsByWeek,
             sessionsByMonth = sessionsByMonth,
