@@ -18,6 +18,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -138,135 +139,150 @@ fun InputScreen(
             )
         }
     }, floatingActionButton = {
-        Column(horizontalAlignment = Alignment.End) {
-            Column(
-                modifier = Modifier
-                    .height(400.dp)
-                    .offset(y = -100.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceAround
-            ) {
-                AnimatedVisibility(
-                    visible = isExpanded,
-                    enter = floatingButtonEnterTransition(300),
-                    exit = floatingButtonExitTransition(300)
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
+            if (isExpanded) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .pointerInput(Unit) {
+                            detectTapGestures(onTap = {
+                                isExpanded = false
+                                isRotated = false
+                            })
+                        }
+                        .background(Color.Black.copy(alpha = 0.01f)) // Almost invisible
+                )
+            }
+            Column(horizontalAlignment = Alignment.End) {
+                Column(
+                    modifier = Modifier
+                        .height(400.dp)
+                        .offset(y = -100.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceAround
                 ) {
-                    floatingAddButton(
-                        EventTypeEnum.DATE.getIcon()!!, EventTypeEnum.DATE.getField(), false
+                    AnimatedVisibility(
+                        visible = isExpanded,
+                        enter = floatingButtonEnterTransition(300),
+                        exit = floatingButtonExitTransition(300)
                     ) {
-                        onEvent(GameEvent.SetIsInOverlayToTrue)
-                        onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.DATE))
-                        isExpanded = false
-                        isRotated = false
+                        floatingAddButton(
+                            EventTypeEnum.DATE.getIcon()!!, EventTypeEnum.DATE.getField(), false
+                        ) {
+                            onEvent(GameEvent.SetIsInOverlayToTrue)
+                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.DATE))
+                            isExpanded = false
+                            isRotated = false
+                        }
                     }
-                }
-                AnimatedVisibility(
-                    visible = isExpanded,
-                    enter = floatingButtonEnterTransition(500),
-                    exit = floatingButtonExitTransition(500)
-                ) {
-                    floatingAddButton(
-                        EventTypeEnum.SET.getIcon()!!, EventTypeEnum.SET.getField(), false
+                    AnimatedVisibility(
+                        visible = isExpanded,
+                        enter = floatingButtonEnterTransition(500),
+                        exit = floatingButtonExitTransition(500)
                     ) {
-                        onEvent(GameEvent.SetIsInOverlayToTrue)
-                        onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SET))
-                        isExpanded = false
-                        isRotated = false
+                        floatingAddButton(
+                            EventTypeEnum.SET.getIcon()!!, EventTypeEnum.SET.getField(), false
+                        ) {
+                            onEvent(GameEvent.SetIsInOverlayToTrue)
+                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SET))
+                            isExpanded = false
+                            isRotated = false
+                        }
                     }
-                }
-                AnimatedVisibility(
-                    visible = isExpanded,
-                    enter = floatingButtonEnterTransition(700),
-                    exit = floatingButtonExitTransition(700)
-                ) {
-                    floatingAddButton(
-                        EventTypeEnum.SESSION.getIcon()!!,
-                        EventTypeEnum.SESSION.getField(),
-                        false
+                    AnimatedVisibility(
+                        visible = isExpanded,
+                        enter = floatingButtonEnterTransition(700),
+                        exit = floatingButtonExitTransition(700)
                     ) {
-                        onEvent(GameEvent.SetIsInOverlayToTrue)
-                        onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SESSION))
-                        isExpanded = false
-                        isRotated = false
+                        floatingAddButton(
+                            EventTypeEnum.SESSION.getIcon()!!,
+                            EventTypeEnum.SESSION.getField(),
+                            false
+                        ) {
+                            onEvent(GameEvent.SetIsInOverlayToTrue)
+                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SESSION))
+                            isExpanded = false
+                            isRotated = false
+                        }
                     }
-                }
-                AnimatedVisibility(
-                    visible = isExpanded,
-                    enter = floatingButtonEnterTransition(900),
-                    exit = floatingButtonExitTransition(900)
-                ) {
-                    floatingAddButton(
-                        EventTypeEnum.CHALLENGE.getIcon()!!,
-                        EventTypeEnum.CHALLENGE.getField(),
-                        false
+                    AnimatedVisibility(
+                        visible = isExpanded,
+                        enter = floatingButtonEnterTransition(900),
+                        exit = floatingButtonExitTransition(900)
                     ) {
-                        onEvent(GameEvent.SetIsInOverlayToTrue)
-                        onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.CHALLENGE))
-                        isExpanded = false
-                        isRotated = false
+                        floatingAddButton(
+                            EventTypeEnum.CHALLENGE.getIcon()!!,
+                            EventTypeEnum.CHALLENGE.getField(),
+                            false
+                        ) {
+                            onEvent(GameEvent.SetIsInOverlayToTrue)
+                            onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.CHALLENGE))
+                            isExpanded = false
+                            isRotated = false
+                        }
                     }
-                }
-                AnimatedVisibility(
-                    visible = isExpanded,
-                    enter = floatingButtonEnterTransition(1100),
-                    exit = floatingButtonExitTransition(1100)
-                ) {
-                    floatingAddButton(
-                        Icons.Default.Timer, "Live\nSession", true, Color.Red
+                    AnimatedVisibility(
+                        visible = isExpanded,
+                        enter = floatingButtonEnterTransition(1100),
+                        exit = floatingButtonExitTransition(1100)
                     ) {
-                        val dateTime = passInitialValue(true, null, "")
-                        onEvent(
-                            GameEvent.SetIsAddingLiveSession
-                        )
-                        onEvent(
-                            GameEvent.SetDate(
-                                dateTime.dropLast(7)
+                        floatingAddButton(
+                            Icons.Default.Timer, "Live\nSession", true, Color.Red
+                        ) {
+                            val dateTime = passInitialValue(true, null, "")
+                            onEvent(
+                                GameEvent.SetIsAddingLiveSession
                             )
-                        )
-                        val liveSessionStartHour = dateTime.substring(11, 16)
-                        onEvent(
-                            GameEvent.SetStartHour(
-                                liveSessionStartHour
+                            onEvent(
+                                GameEvent.SetDate(
+                                    dateTime.dropLast(7)
+                                )
                             )
-                        )
-                        onEvent(GameEvent.SaveAbstractSession)
-                        onEvent(GameEvent.SetIsInOverlayToFalse)
-                        isExpanded = false
-                        isRotated = false
-                        Toast.makeText(
-                            localContext, "Live session started", Toast.LENGTH_SHORT
-                        ).show()
-                        val intent =
-                            Intent(context, PersistentNotificationService::class.java).apply {
-                                putExtra(
-                                    PersistentNotificationService.LIVE_SESSIONS_START_HOUR,
+                            val liveSessionStartHour = dateTime.substring(11, 16)
+                            onEvent(
+                                GameEvent.SetStartHour(
                                     liveSessionStartHour
                                 )
-                                putExtra(
-                                    PersistentNotificationService.IS_FOLLOW_COUNT_ACTIVE,
-                                    state.followCount
-                                )
+                            )
+                            onEvent(GameEvent.SaveAbstractSession)
+                            onEvent(GameEvent.SetIsInOverlayToFalse)
+                            isExpanded = false
+                            isRotated = false
+                            Toast.makeText(
+                                localContext, "Live session started", Toast.LENGTH_SHORT
+                            ).show()
+                            val intent =
+                                Intent(context, PersistentNotificationService::class.java).apply {
+                                    putExtra(
+                                        PersistentNotificationService.LIVE_SESSIONS_START_HOUR,
+                                        liveSessionStartHour
+                                    )
+                                    putExtra(
+                                        PersistentNotificationService.IS_FOLLOW_COUNT_ACTIVE,
+                                        state.followCount
+                                    )
+                                }
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                context.startForegroundService(intent)
+                            } else {
+                                context.startService(intent)
                             }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            context.startForegroundService(intent)
-                        } else {
-                            context.startService(intent)
                         }
                     }
                 }
+                IconShadowButton(
+                    onClick = {
+                        isRotated = !isRotated
+                        isExpanded = !isExpanded
+                    },
+                    boxModifier = Modifier
+                        .offset(y = -spaceFromNavBar)
+                        .scale(1.3f)
+                        .rotate(rotationAngle),
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add an event"
+                )
             }
-            IconShadowButton(
-                onClick = {
-                    isRotated = !isRotated
-                    isExpanded = !isExpanded
-                },
-                boxModifier = Modifier
-                    .offset(y = -spaceFromNavBar)
-                    .scale(1.3f)
-                    .rotate(rotationAngle),
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add an event"
-            )
         }
     }) { padding ->
         if (state.isAddingSession) {

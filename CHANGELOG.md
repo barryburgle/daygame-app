@@ -7,6 +7,7 @@
 **Bugfixes**
 - Contacts & conversation follow count in Session acquisition
 - Insert event dialogs colors
+- Disable touch under buttons when inserting new event
 
 # Version 1.11.0 (2026-04-25)
 **Features**
