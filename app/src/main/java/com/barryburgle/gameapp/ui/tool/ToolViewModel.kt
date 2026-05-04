@@ -82,7 +82,7 @@ class ToolViewModel(
             isCleaning = isCleaning
         )
     }
-    val _generalSettingState: Flow<GeneralSettingState> = CombineThirteen(
+    val _generalSettingState: Flow<GeneralSettingState> = CombineSeventeen(
         settingDao.getGenerateiDate(),
         settingDao.getNotificationTime(),
         settingDao.getFollowCount(),
@@ -95,8 +95,12 @@ class ToolViewModel(
         settingDao.getCopyReportOnClipboard(),
         settingDao.getShowCurrentWeekSummary(),
         settingDao.getShowCurrentMonthSummary(),
-        settingDao.getShowCurrentChallengeSummary()
-    ) { generateiDate, notificationTime, followCount, suggestLeadsNationality, shownNationalities, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary ->
+        settingDao.getShowCurrentChallengeSummary(),
+        settingDao.getLiveSessionNotificationEnabled(),
+        settingDao.getLiveSessionSittingReminderEnabled(),
+        settingDao.getLiveSessionSittingReminderInterval(),
+        settingDao.getLiveSessionShareEnabled(),
+    ) { generateiDate, notificationTime, followCount, suggestLeadsNationality, shownNationalities, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
         GeneralSettingState(
             generateiDate = generateiDate,
             notificationTime = notificationTime,
@@ -110,7 +114,11 @@ class ToolViewModel(
             copyReportOnClipboard = copyReportOnClipboard,
             showCurrentWeekSummary = showCurrentWeekSummary,
             showCurrentMonthSummary = showCurrentMonthSummary,
-            showCurrentChallengeSummary = showCurrentChallengeSummary
+            showCurrentChallengeSummary = showCurrentChallengeSummary,
+            liveSessionNotificationEnabled = liveSessionNotificationEnabled,
+            liveSessionSittingReminderEnabled = liveSessionSittingReminderEnabled,
+            liveSessionSittingReminderInterval = liveSessionSittingReminderInterval,
+            liveSessionShareEnabled = liveSessionShareEnabled
         )
     }
     private val _averageLast = settingDao.getAverageLast()
@@ -188,7 +196,11 @@ class ToolViewModel(
                 copyReportOnClipboard = generalSettingState.copyReportOnClipboard.toBoolean(),
                 showCurrentWeekSummary = generalSettingState.showCurrentWeekSummary.toBoolean(),
                 showCurrentMonthSummary = generalSettingState.showCurrentMonthSummary.toBoolean(),
-                showCurrentChallengeSummary = generalSettingState.showCurrentChallengeSummary.toBoolean()
+                showCurrentChallengeSummary = generalSettingState.showCurrentChallengeSummary.toBoolean(),
+                liveSessionNotificationEnabled = generalSettingState.liveSessionNotificationEnabled.toBoolean(),
+                liveSessionSittingReminderEnabled = generalSettingState.liveSessionSittingReminderEnabled.toBoolean(),
+                liveSessionSittingReminderInterval = generalSettingState.liveSessionSittingReminderInterval.toInt(),
+                liveSessionShareEnabled = generalSettingState.liveSessionShareEnabled.toBoolean(),
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ToolsState())
 
@@ -910,5 +922,9 @@ data class GeneralSettingState(
     val copyReportOnClipboard: String,
     val showCurrentWeekSummary: String,
     val showCurrentMonthSummary: String,
-    val showCurrentChallengeSummary: String
+    val showCurrentChallengeSummary: String,
+    val liveSessionNotificationEnabled: String,
+    val liveSessionSittingReminderEnabled: String,
+    val liveSessionSittingReminderInterval: String,
+    val liveSessionShareEnabled: String
 )
