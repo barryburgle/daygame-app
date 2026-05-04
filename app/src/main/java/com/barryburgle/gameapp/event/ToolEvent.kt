@@ -69,4 +69,9 @@ sealed interface ToolEvent : GenericEvent {
     object DeleteAllSets : ToolEvent
     object DeleteAllChallenges : ToolEvent
     object DeleteAllSettings : ToolEvent
+
+    object SwitchLiveSessionNotification : ToolEvent
+    object SwitchLiveSessionSittingReminder : ToolEvent
+    class SetLiveSessionSittingReminderInterval(val interval: String) : ToolEvent
+    object SwitchLiveSessionShare : ToolEvent
 }
