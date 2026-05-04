@@ -68,7 +68,11 @@ data class ToolsState(
     val incrementChallengeGoal: Int = 5,
     val defaultChallengeGoal: Int = 20,
     var theme: String = ThemeEnum.LIGHT.type,
-    var deleteConfirmationPrompt: String = ""
+    var deleteConfirmationPrompt: String = "",
+    override var liveSessionNotificationEnabled: Boolean = true,
+    override var liveSessionSittingReminderEnabled: Boolean = true,
+    override var liveSessionSittingReminderInterval: Int = 30,
+    override var liveSessionShareEnabled: Boolean = true
 ) : ExportState(
     null,
     exportSessionsFileName,
