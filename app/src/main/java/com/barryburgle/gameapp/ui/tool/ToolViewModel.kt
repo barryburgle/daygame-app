@@ -872,6 +872,68 @@ class ToolViewModel(
             is ToolEvent.DeleteAllSettings -> {
                 viewModelScope.launch { settingDao.deleteAll() }
             }
+
+            is ToolEvent.SwitchLiveSessionNotification -> {
+                _state.update {
+                    it.copy(
+                        liveSessionNotificationEnabled = _state.value.liveSessionNotificationEnabled.not()
+                    )
+                }
+                val liveSessionNotificationEnabled = _state.value.liveSessionNotificationEnabled
+                val setting =
+                    Setting(
+                        SettingDao.LIVE_SESSION_NOTIFICATION_ENABLED_ID,
+                        liveSessionNotificationEnabled.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SwitchLiveSessionSittingReminder -> {
+                _state.update {
+                    it.copy(
+                        liveSessionSittingReminderEnabled = _state.value.liveSessionSittingReminderEnabled.not()
+                    )
+                }
+                val liveSessionSittingReminderEnabled =
+                    _state.value.liveSessionSittingReminderEnabled
+                val setting =
+                    Setting(
+                        SettingDao.LIVE_SESSION_SITTING_REMINDER_ENABLED_ID,
+                        liveSessionSittingReminderEnabled.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetLiveSessionSittingReminderInterval -> {
+                _state.update {
+                    it.copy(
+                        liveSessionSittingReminderInterval = event.interval.toInt()
+                    )
+                }
+                val liveSessionSittingReminderInterval =
+                    _state.value.liveSessionSittingReminderInterval
+                val setting =
+                    Setting(
+                        SettingDao.LIVE_SESSION_SITTING_REMINDER_INTERVAL_ID,
+                        liveSessionSittingReminderInterval.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SwitchLiveSessionShare -> {
+                _state.update {
+                    it.copy(
+                        liveSessionShareEnabled = _state.value.liveSessionShareEnabled.not()
+                    )
+                }
+                val liveSessionShareEnabled = _state.value.liveSessionShareEnabled
+                val setting =
+                    Setting(
+                        SettingDao.LIVE_SESSION_SHARE_ENABLED_ID,
+                        liveSessionShareEnabled.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
         }
     }
 
