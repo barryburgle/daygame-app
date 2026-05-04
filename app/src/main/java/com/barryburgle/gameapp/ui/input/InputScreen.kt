@@ -70,8 +70,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -111,6 +114,7 @@ fun InputScreen(
     spaceFromTop: Dp,
     spaceFromBottom: Dp
 ) {
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val spaceFromNavBar = 80.dp
@@ -271,6 +275,44 @@ fun InputScreen(
                                 } else {
                                     context.startService(intent)
                                 }
+                            }
+                            if (state.liveSessionShareEnabled) {
+                                val liveSessionReport =
+                                    "\uD83D\uDD34 Live Session started at ${
+                                        FormatService.getTime(
+                                            dateTime
+                                        )
+                                    } on ${
+                                        FormatService.getDate(
+                                            dateTime
+                                        )
+                                    }"
+                                if (state.copyReportOnClipboard) {
+                                    clipboardManager.setText(
+                                        AnnotatedString(
+                                            liveSessionReport
+                                        )
+                                    )
+                                    Toast.makeText(
+                                        localContext,
+                                        "Live Session copied",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                val sendIntent: Intent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(
+                                        Intent.EXTRA_TEXT,
+                                        liveSessionReport
+                                    )
+                                    type = "text/plain"
+                                }
+                                val shareIntent = Intent.createChooser(
+                                    sendIntent,
+                                    "Share summary"
+                                )
+                                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                localContext.startActivity(shareIntent)
                             }
                         }
                     }
