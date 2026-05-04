@@ -61,6 +61,12 @@ interface SettingDao {
         const val INCREMENT_CHALLENGE_GOAL_ID: String = "increment_challenge_goal"
         const val DEFAULT_CHALLENGE_GOAL_ID: String = "default_challenge_goal"
         const val THEME_ID: String = "theme_id"
+        const val LIVE_SESSION_NOTIFICATION_ENABLED_ID: String = "live_session_notification_enabled"
+        const val LIVE_SESSION_SITTING_REMINDER_ENABLED_ID: String =
+            "live_session_sitting_reminder_enabled"
+        const val LIVE_SESSION_SITTING_REMINDER_INTERVAL_ID: String =
+            "live_session_sitting_reminder_interval"
+        const val LIVE_SESSION_SHARE_ENABLED_ID: String = "live_session_share_enabled"
         const val DEFAULT_LEADS_EXPORT_FILE_NAME: String = "leads_export"
         const val DEFAULT_LEADS_IMPORT_FILE_NAME: String = "leads_export_yyyy_mm_dd_hh_mm.csv"
         const val DEFAULT_DATES_EXPORT_FILE_NAME: String = "dates_export"
@@ -102,6 +108,10 @@ interface SettingDao {
         const val DEFAULT_BACKUP_NUMBER: String = "3"
         const val DEFAULT_NOTIFICATION_TIME: String = "18:00"
 
+        const val DEFAULT_LIVE_SESSION_NOTIFICATION_FLAG: String = "true"
+        const val DEFAULT_LIVE_SESSION_SITTING_REMINDER_FLAG: String = "true"
+        const val DEFAULT_LIVE_SESSION_SITTING_REMINDER_INTERVAL: String = "30"
+        const val DEFAULT_LIVE_SESSION_SHARE_FLAG: String = "false"
         const val QUERY_LAST_SESSIONS_SHOWN =
             "SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LAST_SESSIONS_SHOWN}' ELSE value END FROM setting WHERE id = '${LAST_SESSIONS_SHOWN_ID}'"
         const val QUERY_LAST_WEEKS_SHOWN =
@@ -200,6 +210,7 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SUGGEST_LEADS_NATIONALITY_FLAG}' ELSE value END FROM setting WHERE id = '${SUGGEST_LEADS_NATIONALITY_ID}'")
     fun getSuggestLeadsNationality(): Flow<String>
+
     @Query(QUERY_SHOWN_NATIONALITIES)
     fun getShownNationalities(): Flow<String>
 
@@ -262,4 +273,16 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LATEST_DOWNLOAD_URL}' ELSE value END FROM setting WHERE id = '${LATEST_DOWNLOAD_URL_ID}'")
     fun getLatestDownloadUrl(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LIVE_SESSION_NOTIFICATION_FLAG}' ELSE value END FROM setting WHERE id = '${LIVE_SESSION_NOTIFICATION_ENABLED_ID}'")
+    fun getLiveSessionNotificationEnabled(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LIVE_SESSION_SITTING_REMINDER_FLAG}' ELSE value END FROM setting WHERE id = '${LIVE_SESSION_SITTING_REMINDER_ENABLED_ID}'")
+    fun getLiveSessionSittingReminderEnabled(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LIVE_SESSION_SITTING_REMINDER_INTERVAL}' ELSE value END FROM setting WHERE id = '${LIVE_SESSION_SITTING_REMINDER_INTERVAL_ID}'")
+    fun getLiveSessionSittingReminderInterval(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LIVE_SESSION_SHARE_FLAG}' ELSE value END FROM setting WHERE id = '${LIVE_SESSION_SHARE_ENABLED_ID}'")
+    fun getLiveSessionShareEnabled(): Flow<String>
 }
