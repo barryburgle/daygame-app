@@ -251,21 +251,26 @@ fun InputScreen(
                             Toast.makeText(
                                 localContext, "Live session started", Toast.LENGTH_SHORT
                             ).show()
-                            val intent =
-                                Intent(context, PersistentNotificationService::class.java).apply {
-                                    putExtra(
-                                        PersistentNotificationService.LIVE_SESSIONS_START_HOUR,
-                                        liveSessionStartHour
-                                    )
-                                    putExtra(
-                                        PersistentNotificationService.IS_FOLLOW_COUNT_ACTIVE,
-                                        state.followCount
-                                    )
+                            if (state.liveSessionNotificationEnabled) {
+                                val intent =
+                                    Intent(
+                                        context,
+                                        PersistentNotificationService::class.java
+                                    ).apply {
+                                        putExtra(
+                                            PersistentNotificationService.LIVE_SESSIONS_START_HOUR,
+                                            liveSessionStartHour
+                                        )
+                                        putExtra(
+                                            PersistentNotificationService.IS_FOLLOW_COUNT_ACTIVE,
+                                            state.followCount
+                                        )
+                                    }
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    context.startForegroundService(intent)
+                                } else {
+                                    context.startService(intent)
                                 }
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                context.startForegroundService(intent)
-                            } else {
-                                context.startService(intent)
                             }
                         }
                     }
