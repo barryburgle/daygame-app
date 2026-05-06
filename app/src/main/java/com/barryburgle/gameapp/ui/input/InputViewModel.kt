@@ -25,7 +25,7 @@ import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.notification.AndroidNotificationScheduler
-import com.barryburgle.gameapp.notification.state.NotificationState
+import com.barryburgle.gameapp.notification.state.ScheduledNotificationState
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
@@ -70,7 +70,7 @@ class InputViewModel(
 ) : ViewModel() {
 
     val notificationScheduler = AndroidNotificationScheduler(context)
-    var notificationState: NotificationState? = null
+    var scheduledNotificationState: ScheduledNotificationState? = null
 
     private val _batchSessionService = BatchSessionService()
     private val _dateService = DateService()

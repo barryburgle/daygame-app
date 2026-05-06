@@ -4,7 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.barryburgle.gameapp.notification.state.NotificationState
+import com.barryburgle.gameapp.notification.state.ScheduledNotificationState
 import java.time.ZoneId
 
 class AndroidNotificationScheduler(
@@ -18,7 +18,7 @@ class AndroidNotificationScheduler(
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
-    override fun schedule(item: NotificationState) {
+    override fun schedule(item: ScheduledNotificationState) {
         val alarmPendingIntent = Intent(context, NotificationReceiver::class.java).apply {
             putExtra(NOTIFICATION_TITLE, item.title)
             putExtra(NOTIFICATION_CONTENT, item.content)
@@ -35,7 +35,7 @@ class AndroidNotificationScheduler(
         )
     }
 
-    override fun cancel(item: NotificationState) {
+    override fun cancel(item: ScheduledNotificationState) {
         alarmManager.cancel(
             PendingIntent.getBroadcast(
                 context,

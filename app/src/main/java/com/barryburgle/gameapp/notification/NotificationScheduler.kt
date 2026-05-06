@@ -1,8 +1,8 @@
 package com.barryburgle.gameapp.notification
 
-import com.barryburgle.gameapp.notification.state.NotificationState
+import com.barryburgle.gameapp.notification.state.ScheduledNotificationState
 
 interface NotificationScheduler {
-    fun schedule(item: NotificationState)
-    fun cancel(item: NotificationState)
+    fun schedule(item: ScheduledNotificationState)
+    fun cancel(item: ScheduledNotificationState)
 }
