@@ -6,7 +6,6 @@ import android.content.Intent
 import android.util.Log
 import com.barryburgle.gameapp.database.GameAppDatabase
 import com.barryburgle.gameapp.service.FormatService
-import com.barryburgle.gameapp.service.notification.NotificationService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -34,7 +33,8 @@ class BootCompletedReceiver : BroadcastReceiver() {
                                 .toString() + 'T' + notificationTime
                         ),
                         lastSession.date,
-                        lastSession.stickingPoints
+                        lastSession.stickingPoints,
+                        null
                     )
                 } catch (e: Exception) {
                     Log.e("BootReceiver", "Error scheduling: ${e.message}")

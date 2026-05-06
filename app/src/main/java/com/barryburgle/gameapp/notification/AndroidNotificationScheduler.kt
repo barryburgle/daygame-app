@@ -13,6 +13,7 @@ class AndroidNotificationScheduler(
 ) : NotificationScheduler {
 
     companion object {
+        const val RECURRING_NOTIFICATION_INTERVAL: String = "interval"
         const val NOTIFICATION_TITLE: String = "title"
         const val NOTIFICATION_CONTENT: String = "content"
     }
@@ -22,11 +23,15 @@ class AndroidNotificationScheduler(
     override fun schedule(
         time: LocalDateTime,
         title: String,
-        content: String
+        content: String,
+        interval: Int?
     ) {
         val alarmPendingIntent = Intent(context, NotificationReceiver::class.java).apply {
             putExtra(NOTIFICATION_TITLE, title)
             putExtra(NOTIFICATION_CONTENT, content)
+        }
+        if (interval != null) {
+            alarmPendingIntent.putExtra(RECURRING_NOTIFICATION_INTERVAL, interval)
         }
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,

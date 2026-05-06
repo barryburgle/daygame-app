@@ -6,6 +6,7 @@ interface NotificationScheduler {
     fun schedule(
         time: LocalDateTime,
         title: String,
-        content: String
+        content: String,
+        interval: Int?
     )
 }

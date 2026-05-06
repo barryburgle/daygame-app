@@ -546,7 +546,8 @@ class InputViewModel(
                 notificationScheduler.schedule(
                     time,
                     "Time to sit down!",
-                    "You've been walking way too much, make your session more sustainable and rest a bit"
+                    "You've been walking way too much, make your session more sustainable and rest a bit",
+                    event.interval
                 )
             }
 
@@ -573,7 +574,8 @@ class InputViewModel(
                         notificationScheduler.schedule(
                             LocalDateTime.of(tomorrowDate, time),
                             "Review last session sticking points",
-                            "Here you are the sticking points from last session on ${abstractSession.date}:\n\n${abstractSession.stickingPoints}"
+                            "Here you are the sticking points from last session on ${abstractSession.date}:\n\n${abstractSession.stickingPoints}",
+                            null
                         )
                     } else if (state.value.isUpdatingSession) {
                         abstractSession.id = state.value.editAbstractSession!!.id
