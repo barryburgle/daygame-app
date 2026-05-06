@@ -11,21 +11,21 @@ class AndroidNotificationScheduler(
     private val context: Context
 ) : NotificationScheduler {
 
-    companion object{
-        const val STICKING_POINTS_ID: String = "stiking-points"
-        const val DATE_ID: String = "date"
+    companion object {
+        const val NOTIFICATION_TITLE: String = "title"
+        const val NOTIFICATION_CONTENT: String = "content"
     }
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
     override fun schedule(item: NotificationState) {
         val alarmPendingIntent = Intent(context, NotificationReceiver::class.java).apply {
-            putExtra(STICKING_POINTS_ID, item.lastSessionStickingPoints)
-            putExtra(DATE_ID, item.lastSessionDate)
+            putExtra(NOTIFICATION_TITLE, item.title)
+            putExtra(NOTIFICATION_CONTENT, item.content)
         }
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            item.notificationTime.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
+            item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
             PendingIntent.getBroadcast(
                 context,
                 item.hashCode(),
