@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 class BootCompletedReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -27,16 +28,14 @@ class BootCompletedReceiver : BroadcastReceiver() {
                 try {
                     val notificationTime = database.settingDao.getNotificationTime().first()
                     val lastSession = database.abstractSessionDao.getLastSession().first()
-
-                    val notificationState = NotificationService.createStickingPointsNotificationState(
-                        FormatService.parseDate(lastSession.date).plusDays(1)
-                            .toString() + 'T' + notificationTime,
+                    notificationScheduler.schedule(
+                        LocalDateTime.parse(
+                            FormatService.parseDate(lastSession.date).plusDays(1)
+                                .toString() + 'T' + notificationTime
+                        ),
                         lastSession.date,
                         lastSession.stickingPoints
                     )
-                    notificationState?.let {
-                        notificationScheduler.schedule(it)
-                    }
                 } catch (e: Exception) {
                     Log.e("BootReceiver", "Error scheduling: ${e.message}")
                 } finally {
