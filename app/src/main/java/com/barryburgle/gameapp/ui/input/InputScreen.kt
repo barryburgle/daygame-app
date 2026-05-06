@@ -276,6 +276,9 @@ fun InputScreen(
                                     context.startService(intent)
                                 }
                             }
+                            if (state.liveSessionSittingReminderEnabled) {
+                                onEvent(GameEvent.ScheduleLiveSessionSittingReminder(state.liveSessionSittingReminderInterval))
+                            }
                             if (state.liveSessionShareEnabled) {
                                 val liveSessionReport =
                                     "\uD83D\uDD34 Live Session started at ${
