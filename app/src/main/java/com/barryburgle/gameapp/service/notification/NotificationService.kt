@@ -46,7 +46,7 @@ class NotificationService(
     private val notificationManager =
         context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    fun showNotification(lastSessionDate: String, lastSessionStickingPoints: String) {
+    fun showNotification(title: String, content: String) {
         val mainActivityIntent = Intent(context, MainActivity::class.java)
         val mainActivityPendingIntent = PendingIntent.getActivity(
             context,
@@ -57,8 +57,8 @@ class NotificationService(
         val notification =
             NotificationCompat.Builder(context!!, STICKING_POINT_NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification)
-                .setContentTitle("Sticking points from ${lastSessionDate} session")
-                .setContentText(lastSessionStickingPoints)
+                .setContentTitle(title)
+                .setContentText(content)
                 .setContentIntent(mainActivityPendingIntent)
                 .build()
         notificationManager.notify(1, notification)
