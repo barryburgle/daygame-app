@@ -25,11 +25,9 @@ import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.notification.AndroidNotificationScheduler
-import com.barryburgle.gameapp.notification.state.ScheduledNotificationState
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
-import com.barryburgle.gameapp.service.notification.NotificationService
 import com.barryburgle.gameapp.service.set.SetService
 import com.barryburgle.gameapp.ui.CombineFifteen
 import com.barryburgle.gameapp.ui.CombineFive
@@ -54,7 +52,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class InputViewModel(
@@ -70,7 +70,6 @@ class InputViewModel(
 ) : ViewModel() {
 
     val notificationScheduler = AndroidNotificationScheduler(context)
-    var scheduledNotificationState: ScheduledNotificationState? = null
 
     private val _batchSessionService = BatchSessionService()
     private val _dateService = DateService()
@@ -557,12 +556,16 @@ class InputViewModel(
                     var sessionId: Long? = 0L
                     if (state.value.isAddingSession || state.value.isAddingLiveSession) {
                         sessionId = abstractSessionDao.insert(abstractSession)
-                        notificationState = NotificationService.createStickingPointsNotificationState(
+                        val time = LocalTime.parse(
                             state.value.notificationTime,
-                            abstractSession.date,
-                            abstractSession.stickingPoints
+                            DateTimeFormatter.ofPattern("HH:mm")
                         )
-                        notificationScheduler.schedule(notificationState!!)
+                        val tomorrowDate = LocalDate.now().plusDays(1)
+                        notificationScheduler.schedule(
+                            LocalDateTime.of(tomorrowDate, time),
+                            "Review last session sticking points",
+                            "Here you are the sticking points from last session on ${abstractSession.date}:\n\n${abstractSession.stickingPoints}"
+                        )
                     } else if (state.value.isUpdatingSession) {
                         abstractSession.id = state.value.editAbstractSession!!.id
                         sessionId = abstractSession.id
