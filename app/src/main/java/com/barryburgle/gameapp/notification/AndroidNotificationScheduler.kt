@@ -4,8 +4,9 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.barryburgle.gameapp.notification.state.ScheduledNotificationState
+import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.UUID
 
 class AndroidNotificationScheduler(
     private val context: Context
@@ -18,29 +19,22 @@ class AndroidNotificationScheduler(
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
-    override fun schedule(item: ScheduledNotificationState) {
+    override fun schedule(
+        time: LocalDateTime,
+        title: String,
+        content: String
+    ) {
         val alarmPendingIntent = Intent(context, NotificationReceiver::class.java).apply {
-            putExtra(NOTIFICATION_TITLE, item.title)
-            putExtra(NOTIFICATION_CONTENT, item.content)
+            putExtra(NOTIFICATION_TITLE, title)
+            putExtra(NOTIFICATION_CONTENT, content)
         }
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
+            time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
             PendingIntent.getBroadcast(
                 context,
-                item.hashCode(),
+                UUID.randomUUID().hashCode(),
                 alarmPendingIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-        )
-    }
-
-    override fun cancel(item: ScheduledNotificationState) {
-        alarmManager.cancel(
-            PendingIntent.getBroadcast(
-                context,
-                item.hashCode(),
-                Intent(context, NotificationReceiver::class.java),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         )

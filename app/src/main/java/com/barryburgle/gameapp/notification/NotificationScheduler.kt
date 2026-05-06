@@ -1,8 +1,11 @@
 package com.barryburgle.gameapp.notification
 
-import com.barryburgle.gameapp.notification.state.ScheduledNotificationState
+import java.time.LocalDateTime
 
 interface NotificationScheduler {
-    fun schedule(item: ScheduledNotificationState)
-    fun cancel(item: ScheduledNotificationState)
+    fun schedule(
+        time: LocalDateTime,
+        title: String,
+        content: String
+    )
 }
