@@ -557,7 +557,7 @@ class InputViewModel(
                     var sessionId: Long? = 0L
                     if (state.value.isAddingSession || state.value.isAddingLiveSession) {
                         sessionId = abstractSessionDao.insert(abstractSession)
-                        notificationState = NotificationService.createNotificationState(
+                        notificationState = NotificationService.createStickingPointsNotificationState(
                             state.value.notificationTime,
                             abstractSession.date,
                             abstractSession.stickingPoints

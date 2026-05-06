@@ -24,7 +24,7 @@ class NotificationService(
         const val LIVE_SESSION_NOTIFICATION_CHANNEL_ID = "live_session_persistent"
         const val LIVE_SESSION_NOTIFICATION_CHANNEL_NAME = "Live Session"
 
-        fun createNotificationState(
+        fun createStickingPointsNotificationState(
             notificationDate: String,
             lastSessionDate: String,
             lastSessionStickingPoints: String

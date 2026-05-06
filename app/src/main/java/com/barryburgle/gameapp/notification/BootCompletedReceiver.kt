@@ -28,7 +28,7 @@ class BootCompletedReceiver : BroadcastReceiver() {
                     val notificationTime = database.settingDao.getNotificationTime().first()
                     val lastSession = database.abstractSessionDao.getLastSession().first()
 
-                    val notificationState = NotificationService.createNotificationState(
+                    val notificationState = NotificationService.createStickingPointsNotificationState(
                         FormatService.parseDate(lastSession.date).plusDays(1)
                             .toString() + 'T' + notificationTime,
                         lastSession.date,
