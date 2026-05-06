@@ -541,6 +541,15 @@ class InputViewModel(
                 }
             }
 
+            is GameEvent.ScheduleLiveSessionSittingReminder -> {
+                val time = LocalDateTime.now().plusMinutes(event.interval.toLong())
+                notificationScheduler.schedule(
+                    time,
+                    "Time to sit down!",
+                    "You've been walking way too much, make your session more sustainable and rest a bit"
+                )
+            }
+
             GameEvent.SaveAbstractSession ->
                 viewModelScope.launch {
                     val abstractSession = _batchSessionService.init(
