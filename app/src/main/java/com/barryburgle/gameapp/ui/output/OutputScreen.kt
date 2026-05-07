@@ -21,8 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,6 +52,7 @@ import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.barryburgle.gameapp.ui.theme.AlertHigh
 import com.barryburgle.gameapp.ui.theme.AlertLow
 import com.barryburgle.gameapp.ui.theme.AlertMid
+import com.barryburgle.gameapp.ui.tool.ScrollableSelector
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.BlurStatusBar
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
@@ -76,7 +75,6 @@ fun OutputScreen(
     // TODO: make different types of charts injectable with arrays
     val localContext = LocalContext.current.applicationContext
     val uriHandler = LocalUriHandler.current
-    var heatmapEntitySelectorExpanded by remember { mutableStateOf(false) }
     var heatmapEntitySelected by remember { mutableStateOf(HeatmapEntityEnum.SETS) }
     Scaffold(
         topBar = {
@@ -113,41 +111,13 @@ fun OutputScreen(
                             sectionTitleAndDescription(
                                 "History", "Have a look at your past:"
                             )
-                            Row(
-                                modifier = Modifier.width(125.dp),
-                                horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                LittleBodyText(heatmapEntitySelected.getField())
-                                IconButton(onClick = {
-                                    heatmapEntitySelectorExpanded = !heatmapEntitySelectorExpanded
-                                }) {
-                                    Icon(
-                                        imageVector = if (state.showLeadsLegend) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
-                                        contentDescription = "Heatmap Entity Selection",
-                                        tint = MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier
-                                            .height(50.dp)
-                                    )
-                                }
-                                DropdownMenu(
-                                    modifier = Modifier
-                                        .width(120.dp)
-                                        .height(485.dp),
-                                    expanded = heatmapEntitySelectorExpanded,
-                                    onDismissRequest = { heatmapEntitySelectorExpanded = false }
-                                ) {
-                                    HeatmapEntityEnum.values().forEach { enumValue ->
-                                        DropdownMenuItem(
-                                            text = { LittleBodyText(enumValue.getField()) },
-                                            onClick = {
-                                                heatmapEntitySelected = enumValue
-                                                heatmapEntitySelectorExpanded = false
-                                            }
-                                        )
-                                    }
-                                }
-                            }
+                        }
+                    }
+                    Row {
+                        ScrollableSelector(
+                            spaceFromLeft, HeatmapEntityEnum.values(), heatmapEntitySelected
+                        ) { newValue ->
+                            heatmapEntitySelected = newValue as HeatmapEntityEnum
                         }
                     }
                     HeatmapCalendar(
