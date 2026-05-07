@@ -44,4 +44,17 @@ class AndroidNotificationScheduler(
             )
         )
     }
+
+    override fun cancel(
+        requestCode: Int
+    ) {
+        alarmManager.cancel(
+            PendingIntent.getBroadcast(
+                context,
+                requestCode,
+                Intent(context, NotificationReceiver::class.java),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        )
+    }
 }

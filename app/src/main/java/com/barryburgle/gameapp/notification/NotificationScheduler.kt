@@ -9,4 +9,6 @@ interface NotificationScheduler {
         content: String,
         interval: Int?
     )
+
+    fun cancel(requestCode: Int)
 }
