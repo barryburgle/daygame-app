@@ -14,6 +14,8 @@ class NotificationReceiver : BroadcastReceiver() {
             AndroidNotificationScheduler.RECURRING_NOTIFICATION_INTERVAL,
             0
         )
+        val requestCode =
+            intent?.getIntExtra(AndroidNotificationScheduler.REQUEST_CODE, 1) ?: return
         val notificationTitle =
             intent?.getStringExtra(AndroidNotificationScheduler.NOTIFICATION_TITLE) ?: return
         val notificationContent =
@@ -23,6 +25,7 @@ class NotificationReceiver : BroadcastReceiver() {
             val notificationScheduler = AndroidNotificationScheduler(context)
             val time = LocalDateTime.now().plusMinutes(receivedInterval.toLong())
             notificationScheduler.schedule(
+                requestCode,
                 time,
                 notificationTitle,
                 notificationContent,

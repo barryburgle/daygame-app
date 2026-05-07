@@ -28,6 +28,7 @@ class BootCompletedReceiver : BroadcastReceiver() {
                     val notificationTime = database.settingDao.getNotificationTime().first()
                     val lastSession = database.abstractSessionDao.getLastSession().first()
                     notificationScheduler.schedule(
+                        AndroidNotificationScheduler.STICKING_POINTS_REQUEST_CODE,
                         LocalDateTime.parse(
                             FormatService.parseDate(lastSession.date).plusDays(1)
                                 .toString() + 'T' + notificationTime

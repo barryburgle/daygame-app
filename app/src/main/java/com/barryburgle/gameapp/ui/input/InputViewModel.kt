@@ -544,6 +544,7 @@ class InputViewModel(
             is GameEvent.ScheduleLiveSessionSittingReminder -> {
                 val time = LocalDateTime.now().plusMinutes(event.interval.toLong())
                 notificationScheduler.schedule(
+                    AndroidNotificationScheduler.SITTING_REMINDER_REQUEST_CODE,
                     time,
                     "Time to sit down!",
                     "You've been walking way too much, make your session more sustainable and rest a bit",
@@ -572,6 +573,7 @@ class InputViewModel(
                         )
                         val tomorrowDate = LocalDate.now().plusDays(1)
                         notificationScheduler.schedule(
+                            AndroidNotificationScheduler.STICKING_POINTS_REQUEST_CODE,
                             LocalDateTime.of(tomorrowDate, time),
                             "Review last session sticking points",
                             "Here you are the sticking points from last session on ${abstractSession.date}:\n\n${abstractSession.stickingPoints}",
