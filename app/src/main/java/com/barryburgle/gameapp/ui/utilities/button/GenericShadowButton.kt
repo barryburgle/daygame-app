@@ -1,7 +1,15 @@
 package com.barryburgle.gameapp.ui.utilities.button
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.StartOffset
+import androidx.compose.animation.core.StartOffsetType
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -21,6 +29,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -38,14 +48,14 @@ fun GenericShadowButton(
     modifier: Modifier = Modifier,
     title: String? = null,
     color: Color? = null,
+    glowing: Boolean? = false,
     iconComposable: (@Composable () -> Unit)? = null
 ) {
     var buttonState by remember { mutableStateOf(IconShadowButtonState.IDLE) }
     val scale by animateFloatAsState(
         targetValue = if (buttonState == IconShadowButtonState.PRESSED) 0.92f else 1f,
         animationSpec = spring(
-            dampingRatio = 0.7f,
-            stiffness = 400f
+            dampingRatio = 0.7f, stiffness = 400f
         ),
         label = "ButtonScaleAnimation"
     )
@@ -53,6 +63,30 @@ fun GenericShadowButton(
     var backgroundColor = MaterialTheme.colorScheme.tertiary
     if (color != null) {
         backgroundColor = color
+    }
+
+    val infiniteTransition = rememberInfiniteTransition(label = "WaveTransition")
+    val waveProgress by infiniteTransition.animateFloat(
+        initialValue = 0f, targetValue = 2f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse,
+            initialStartOffset = StartOffset(
+                10000, StartOffsetType.Delay
+            )
+        ), label = "WaveProgress"
+    )
+    val wavyBrush = Brush.linearGradient(
+        0.0f to backgroundColor,
+        0.5f to MaterialTheme.colorScheme.secondary,
+        1.0f to backgroundColor,
+        start = Offset(0f, 1000f * (1f - waveProgress)),
+        end = Offset(1000f * waveProgress, 0f)
+    )
+    val backgroundModifier = if (glowing == true) {
+        Modifier.background(wavyBrush, shape = RoundedCornerShape(30.dp))
+    } else {
+        Modifier.background(backgroundColor, shape = RoundedCornerShape(30.dp))
     }
     Box(
         modifier = boxModifier
@@ -72,19 +106,11 @@ fun GenericShadowButton(
                 scaleY = scale
             }
             .shadow(
-                elevation = 10.dp,
-                shape = CircleShape,
-                clip = false
+                elevation = 10.dp, shape = CircleShape, clip = false
             )
-            .background(
-                color = backgroundColor,
-                shape = RoundedCornerShape(30.dp)
-            ),
-        contentAlignment = Alignment.Center
-    ) {
+            .then(backgroundModifier), contentAlignment = Alignment.Center) {
         IconButton(
-            modifier = modifier,
-            onClick = {
+            modifier = modifier, onClick = {
                 onClick()
             }) {
             Row(

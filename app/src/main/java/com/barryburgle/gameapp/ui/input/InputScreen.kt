@@ -330,7 +330,8 @@ fun InputScreen(
                         .scale(1.3f)
                         .rotate(rotationAngle),
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add an event"
+                    contentDescription = "Add an event",
+                    glowing = true
                 )
             }
         }

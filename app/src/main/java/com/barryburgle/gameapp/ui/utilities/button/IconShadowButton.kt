@@ -19,6 +19,7 @@ fun IconShadowButton(
     contentDescription: String?,
     title: String? = null,
     color: Color? = null,
+    glowing: Boolean? = false,
     iconColor: Color? = null
 ) {
     var iconTint = MaterialTheme.colorScheme.inversePrimary
@@ -31,6 +32,7 @@ fun IconShadowButton(
         modifier = modifier,
         title = title,
         color = color,
+        glowing = glowing
     ) {
         Icon(
             imageVector = imageVector,
