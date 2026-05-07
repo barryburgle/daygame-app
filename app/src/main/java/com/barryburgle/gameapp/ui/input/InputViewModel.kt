@@ -719,6 +719,7 @@ class InputViewModel(
             }
 
             is GameEvent.StopLiveSession -> {
+                notificationScheduler.cancel(AndroidNotificationScheduler.SITTING_REMINDER_REQUEST_CODE)
                 viewModelScope.launch {
                     val abstractSession = _batchSessionService.init(
                         id = event.abstractSession.id.toString(),
