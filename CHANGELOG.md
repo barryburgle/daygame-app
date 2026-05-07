@@ -4,6 +4,7 @@
 - Hold the Daygame App icon for live session shortcut ↪️
 - Hold & drag the right endside in Game section to jump to date 📆
 - Horizontal scrollable heatmap selection menu ➡️
+- Floating navbar ☁️
 
 **Bugfixes**
 - Contacts & conversation follow count in Session acquisition

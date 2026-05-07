@@ -161,7 +161,7 @@ fun InputScreen(
                 Column(
                     modifier = Modifier
                         .height(400.dp)
-                        .offset(y = -100.dp),
+                        .offset(y = -120.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceAround
                 ) {
@@ -326,7 +326,7 @@ fun InputScreen(
                         isExpanded = !isExpanded
                     },
                     boxModifier = Modifier
-                        .offset(y = -spaceFromNavBar)
+                        .offset(y = -spaceFromNavBar - 18.dp)
                         .scale(1.3f)
                         .rotate(rotationAngle),
                     imageVector = Icons.Default.Add,

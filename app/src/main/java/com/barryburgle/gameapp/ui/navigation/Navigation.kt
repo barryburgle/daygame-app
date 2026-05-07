@@ -7,6 +7,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -90,44 +91,54 @@ fun Navigation(
     Scaffold(
         modifier = Modifier.navigationBarsPadding(),
         bottomBar = {
-            NavigationBar(
-                containerColor = MaterialTheme.colorScheme.primary
+            androidx.compose.material3.Surface(
+                modifier = Modifier
+                    .padding(start = 34.dp, end = 34.dp, bottom = 18.dp)
+                    .navigationBarsPadding(),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(30.dp),
+                color = MaterialTheme.colorScheme.secondary,
+                tonalElevation = 8.dp,
+                shadowElevation = 12.dp
             ) {
-                items.forEachIndexed { index, item ->
-                    item.selected = selectedItemIndex == index
-                    val selectedColor =
-                        if (item.selected) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimary
-                    NavigationBarItem(
-                        selected = item.selected,
-                        onClick = {
-                            selectedItemIndex = index
-                            navController.navigate(item.destinationScreen)
-                        },
-                        label = { Text(text = item.title, color = selectedColor) },
-                        icon = {
-                            BadgedBox(
-                                badge = {
-                                    if (item.badgeCount != null) {
-                                        Badge {
-                                            Text(
-                                                text = item.badgeCount.toString()
-                                            )
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    items.forEachIndexed { index, item ->
+                        item.selected = selectedItemIndex == index
+                        val selectedColor =
+                            if (item.selected) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimary
+                        NavigationBarItem(
+                            selected = item.selected,
+                            onClick = {
+                                selectedItemIndex = index
+                                navController.navigate(item.destinationScreen)
+                            },
+                            label = { Text(text = item.title, color = selectedColor) },
+                            icon = {
+                                BadgedBox(
+                                    badge = {
+                                        if (item.badgeCount != null) {
+                                            Badge {
+                                                Text(
+                                                    text = item.badgeCount.toString()
+                                                )
+                                            }
+                                        } else if (item.hasNews) {
+                                            Badge()
                                         }
-                                    } else if (item.hasNews) {
-                                        Badge()
                                     }
+                                ) {
+                                    if (isSystemInDarkTheme()) {
+                                    }
+                                    Icon(
+                                        painter = item.icon,
+                                        contentDescription = item.title,
+                                        tint = selectedColor,
+                                        modifier = item.modifier
+                                    )
                                 }
-                            ) {
-                                if (isSystemInDarkTheme()) {
-                                }
-                                Icon(
-                                    painter = item.icon,
-                                    contentDescription = item.title,
-                                    tint = selectedColor,
-                                    modifier = item.modifier
-                                )
-                            }
-                        })
+                            })
+                    }
                 }
             }
         }
@@ -136,7 +147,8 @@ fun Navigation(
         val spaceFromTop = 20.dp
         val spaceFromBottom = 60.dp
         NavHost(navController = navController, startDestination = Screen.InputScreen.route) {
-            composable(route = Screen.InputScreen.route,
+            composable(
+                route = Screen.InputScreen.route,
                 enterTransition = {
                     screenEnterTransition()
                 },
@@ -152,7 +164,8 @@ fun Navigation(
                     spaceFromBottom = spaceFromBottom
                 )
             }
-            composable(route = Screen.OutputScreen.route,
+            composable(
+                route = Screen.OutputScreen.route,
                 enterTransition = {
                     screenEnterTransition()
                 },
@@ -168,7 +181,8 @@ fun Navigation(
                     spaceFromBottom = spaceFromBottom
                 )
             }
-            composable(route = Screen.StatsScreen.route,
+            composable(
+                route = Screen.StatsScreen.route,
                 enterTransition = {
                     screenEnterTransition()
                 },
@@ -184,7 +198,8 @@ fun Navigation(
                     onEvent = statsOnEvent
                 )
             }
-            composable(route = Screen.ToolScreen.route,
+            composable(
+                route = Screen.ToolScreen.route,
                 enterTransition = {
                     screenEnterTransition()
                 },
