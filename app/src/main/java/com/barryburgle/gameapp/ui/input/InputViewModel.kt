@@ -1115,9 +1115,35 @@ class InputViewModel(
                 _state.update {
                     it.copy(
                         editDate = event.date,
+                        leadId = event.date.leadId ?: 0L,
+                        location = event.date.location ?: "",
+                        date = if (event.date.date != null && event.date.date!!.length >= 10) event.date.date!!.substring(
+                            0,
+                            10
+                        ) else event.date.date ?: "",
+                        startHour = if (event.date.startHour.length >= 16) event.date.startHour.substring(
+                            11,
+                            16
+                        ) else event.date.startHour,
+                        endHour = if (event.date.endHour.length >= 16) event.date.endHour.substring(
+                            11,
+                            16
+                        ) else event.date.endHour,
+                        cost = (event.date.cost ?: 0).toString(),
+                        dateNumber = event.date.dateNumber.toString(),
+                        dateType = event.date.dateType,
+                        pull = event.date.pull,
+                        bounce = event.date.bounce,
+                        kiss = event.date.kiss,
+                        lay = event.date.lay,
+                        recorded = event.date.recorded,
+                        stickingPoints = if (event.date.stickingPoints == InputDialogConstant.EMPTY_STICKING_POINTS) "" else event.date.stickingPoints
+                            ?: "",
+                        tweetUrl = event.date.tweetUrl ?: ""
                     )
                 }
             }
+
 
             is GameEvent.EmptyLead -> {
                 _state.update {

@@ -1,3 +1,9 @@
+# Version 1.13.0 (2026-06-dd)
+**Features**
+
+**Bugfixes**
+- Bugfix dates edit
+
 # Version 1.12.0 (2026-05-08)
 **Features**
 - Live session persistent notification & sitting reminder 💬

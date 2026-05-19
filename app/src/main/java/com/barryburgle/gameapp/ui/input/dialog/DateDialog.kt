@@ -65,9 +65,6 @@ fun DateDialog(
     var leadsExpanded by remember { mutableStateOf(false) }
     var dateTypesExpanded by remember { mutableStateOf(false) }
     var locationTextFieldExpanded by remember { mutableStateOf(false) }
-    if (state.isUpdatingDate) {
-        setUpdatingState(state)
-    }
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier.shadow(elevation = 10.dp),
@@ -388,31 +385,4 @@ fun DateDialog(
             }
         }
     )
-}
-
-private fun setUpdatingState(
-    state: InputState
-) {
-    if (state.editDate != null) {
-        if (state.leadId == 0L) {
-            state.leadId = state.editDate.leadId!!
-        }
-        if (state.location.isBlank()) {
-            state.location = state.editDate.location!!
-        }
-        state.date = state.editDate.date!!.substring(0, 10)
-        state.startHour = state.editDate.startHour.substring(11, 16)
-        state.endHour = state.editDate.endHour.substring(11, 16)
-        state.cost = state.editDate.cost.toString()
-        state.dateNumber = state.editDate.dateNumber.toString()
-        if (state.dateType.isBlank()) {
-            state.dateType = state.editDate.dateType
-        }
-        if (state.stickingPoints.equals(InputDialogConstant.EMPTY_STICKING_POINTS)) {
-            state.stickingPoints = ""
-        } else if (state.stickingPoints.isBlank()) {
-            state.stickingPoints = state.editDate.stickingPoints!!
-        }
-        state.tweetUrl = state.editDate.tweetUrl!!
-    }
 }
