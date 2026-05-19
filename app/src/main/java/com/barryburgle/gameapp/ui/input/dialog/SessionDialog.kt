@@ -87,9 +87,6 @@ fun SessionDialog(
     var contactsCount by remember {
         mutableStateOf(if (contactsCountStart == null) 0 else contactsCountStart)
     }
-    if (state.isUpdatingSession) {
-        setUpdatingState(state)
-    }
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier.shadow(elevation = 10.dp),
@@ -373,25 +370,6 @@ fun SessionDialog(
             }
         }
     )
-}
-
-private fun setUpdatingState(
-    state: InputState
-) {
-    // TODO: consider removing methods like this from every dialog since the setting of state to edit by dialog is done by GameEvent methods called in the event card ()
-    if (state.editAbstractSession != null) {
-        state.date = state.editAbstractSession.date.substring(0, 10)
-        state.startHour = state.editAbstractSession.startHour.substring(11, 16)
-        state.endHour = state.editAbstractSession.endHour.substring(11, 16)
-        state.sets = state.editAbstractSession.sets.toString()
-        state.convos = state.editAbstractSession.convos.toString()
-        state.contacts = state.editAbstractSession.contacts.toString()
-        if (state.stickingPoints.equals(InputDialogConstant.EMPTY_STICKING_POINTS)) {
-            state.stickingPoints = ""
-        } else if (state.stickingPoints.isBlank()) {
-            state.stickingPoints = state.editAbstractSession.stickingPoints
-        }
-    }
 }
 
 @Composable

@@ -460,6 +460,13 @@ class InputViewModel(
                 _state.update {
                     it.copy(
                         editAbstractSession = event.abstractSession,
+                        date = if (event.abstractSession.date.length >= 10) event.abstractSession.date.substring(0, 10) else event.abstractSession.date,
+                        startHour = if (event.abstractSession.startHour.length >= 16) event.abstractSession.startHour.substring(11, 16) else event.abstractSession.startHour,
+                        endHour = if (event.abstractSession.endHour.length >= 16) event.abstractSession.endHour.substring(11, 16) else event.abstractSession.endHour,
+                        sets = event.abstractSession.sets.toString(),
+                        convos = event.abstractSession.convos.toString(),
+                        contacts = event.abstractSession.contacts.toString(),
+                        stickingPoints = if (event.abstractSession.stickingPoints == InputDialogConstant.EMPTY_STICKING_POINTS) "" else event.abstractSession.stickingPoints
                     )
                 }
             }
@@ -1316,7 +1323,19 @@ class InputViewModel(
             is GameEvent.EditSet -> {
                 _state.update {
                     it.copy(
-                        editSet = event.set
+                        editSet = event.set,
+                        date = if (event.set.date.length >= 10) event.set.date.substring(0, 10) else event.set.date,
+                        startHour = if (event.set.startHour.length >= 16) event.set.startHour.substring(11, 16) else event.set.startHour,
+                        endHour = if (event.set.endHour.length >= 16) event.set.endHour.substring(11, 16) else event.set.endHour,
+                        sessionId = event.set.sessionId ?: 0L,
+                        location = event.set.location ?: "",
+                        leadId = event.set.leadId ?: 0L,
+                        stickingPoints = if (event.set.stickingPoints == InputDialogConstant.EMPTY_STICKING_POINTS) "" else event.set.stickingPoints,
+                        tweetUrl = event.set.tweetUrl ?: "",
+                        conversation = event.set.conversation,
+                        contact = event.set.contact,
+                        instantDate = event.set.instantDate,
+                        recorded = event.set.recorded
                     )
                 }
             }

@@ -56,9 +56,6 @@ fun SetDialog(
     var latestStartHour = state.startHour
     var latestEndHour = state.endHour
     var locationTextFieldExpanded by remember { mutableStateOf(false) }
-    if (state.isUpdatingSet) {
-        setUpdatingState(state)
-    }
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier.shadow(elevation = 10.dp),
@@ -294,26 +291,4 @@ fun SetDialog(
                 onEvent(GameEvent.HideDialog)
             }
         })
-}
-
-private fun setUpdatingState(
-    state: InputState
-) {
-    if (state.editSet != null) {
-        state.date = state.editSet.date.substring(0, 10)
-        state.startHour = state.editSet.startHour.substring(11, 16)
-        state.endHour = state.editSet.endHour.substring(11, 16)
-        // TODO: solve following [v1.7.3]
-        // state.sessionId = state.editSet.sessionId!!
-        if (state.location.isBlank()) {
-            state.location = state.editSet.location!!
-        }
-        state.leadId = state.editSet.leadId!!
-        if (state.stickingPoints.equals(InputDialogConstant.EMPTY_STICKING_POINTS)) {
-            state.stickingPoints = ""
-        } else if (state.stickingPoints.isBlank()) {
-            state.stickingPoints = state.editSet.stickingPoints!!
-        }
-        state.tweetUrl = state.editSet.tweetUrl!!
-    }
 }
