@@ -1,5 +1,6 @@
 # Version 1.13.0 (2026-06-dd)
 **Features**
+- Delete Live Session without saving results 🛑
 
 **Bugfixes**
 - Bugfix dates edit

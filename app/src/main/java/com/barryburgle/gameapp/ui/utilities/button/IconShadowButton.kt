@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun IconShadowButton(
     onClick: () -> Unit,
+    onLongClick: (() -> Unit)? = null,
     boxModifier: Modifier = Modifier,
     modifier: Modifier = Modifier,
     imageVector: ImageVector,
@@ -28,6 +29,7 @@ fun IconShadowButton(
     }
     GenericShadowButton(
         onClick = onClick,
+        onLongClick = onLongClick,
         boxModifier = boxModifier,
         modifier = modifier,
         title = title,

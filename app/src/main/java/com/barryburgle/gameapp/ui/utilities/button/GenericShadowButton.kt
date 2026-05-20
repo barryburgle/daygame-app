@@ -36,6 +36,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.size
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 
@@ -44,6 +46,7 @@ enum class IconShadowButtonState { PRESSED, IDLE }
 @Composable
 fun GenericShadowButton(
     onClick: () -> Unit,
+    onLongClick: (() -> Unit)? = null,
     boxModifier: Modifier = Modifier,
     modifier: Modifier = Modifier,
     title: String? = null,
@@ -109,20 +112,45 @@ fun GenericShadowButton(
                 elevation = 10.dp, shape = CircleShape, clip = false
             )
             .then(backgroundModifier), contentAlignment = Alignment.Center) {
-        IconButton(
-            modifier = modifier, onClick = {
-                onClick()
-            }) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
+        if (onLongClick != null) {
+            Box(
+                modifier = modifier
+                    .size(48.dp)
+                    .combinedClickable(
+                        onClick = onClick,
+                        onLongClick = onLongClick
+                    ),
+                contentAlignment = Alignment.Center
             ) {
-                if (iconComposable != null) {
-                    iconComposable()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (iconComposable != null) {
+                        iconComposable()
+                    }
+                    if (title != null && !title.isBlank()) {
+                        SmallTitleText(title)
+                    }
                 }
-                if (title != null && !title.isBlank()) {
-                    SmallTitleText(title)
+            }
+        } else {
+            IconButton(
+                modifier = modifier, onClick = {
+                    onClick()
+                }) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (iconComposable != null) {
+                        iconComposable()
+                    }
+                    if (title != null && !title.isBlank()) {
+                        SmallTitleText(title)
+                    }
                 }
             }
         }
