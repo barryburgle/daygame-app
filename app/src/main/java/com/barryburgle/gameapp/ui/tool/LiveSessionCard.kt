@@ -42,7 +42,7 @@ fun LiveSessionCard(
         Spacer(modifier = Modifier.width(5.dp))
         SwitchSetting(
             "Share Live Session", state.liveSessionShareEnabled,
-            description = "After starting Live Sessions copies a shareable tweet to clipboard and opens share menu. Useful for starting a thread on X to share your session"
+            description = "After starting Live Sessions or inserting any event allows sharing a tweet about it"
         ) {
             onEvent(ToolEvent.SwitchLiveSessionShare)
         }
