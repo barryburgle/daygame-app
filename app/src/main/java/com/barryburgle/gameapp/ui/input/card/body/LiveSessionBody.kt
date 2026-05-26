@@ -25,7 +25,9 @@ fun LiveSessionBody(
     perfFontSize: TextUnit,
     onEvent: (GameEvent) -> Unit,
     abstractSession: AbstractSession,
-    liveSessionLeads: Int
+    liveSessionLeads: Int,
+    liveSessionShareEnabled: Boolean,
+    copyReportOnClipboard: Boolean
 ) {
     var setsCount = abstractSession.sets + liveSessionLeads
     var convosCount = abstractSession.convos + liveSessionLeads
@@ -44,7 +46,9 @@ fun LiveSessionBody(
         },
         onContactsChange = { newVal, isIncreasing ->
             onEvent(GameEvent.SetContactsLive(abstractSession, newVal, isIncreasing))
-        }
+        },
+        liveSessionShareEnabled = liveSessionShareEnabled,
+        copyReportOnClipboard = copyReportOnClipboard
     )
     Spacer(modifier = Modifier.height(12.dp))
     Row(
