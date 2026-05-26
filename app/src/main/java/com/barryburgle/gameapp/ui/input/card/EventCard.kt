@@ -70,6 +70,7 @@ import com.barryburgle.gameapp.ui.input.card.body.SessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SetBody
 import com.barryburgle.gameapp.ui.input.dialog.component.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.dialog.leadName
+import com.barryburgle.gameapp.ui.input.dialog.shareEvent
 import com.barryburgle.gameapp.ui.input.liveSessionPulsingColor
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
@@ -263,6 +264,15 @@ fun EventCard(
                                         onEvent(GameEvent.SetLeadSessionId(liveSession.id!!))
                                         onEvent(GameEvent.SwitchJustSaved)
                                         onEvent(GameEvent.ShowLeadDialog(true, false))
+                                        shareEvent(
+                                            liveSessionShareEnabled,
+                                            copyReportOnClipboard,
+                                            "lead",
+                                            "\uD83D\uDC67",
+                                            localContext,
+                                            clipboardManager
+                                        )
+
                                     },
                                     imageVector = Icons.Default.PersonAddAlt1,
                                     contentDescription = "Add Lead to Live Session"

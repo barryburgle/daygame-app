@@ -103,7 +103,7 @@ fun SessionCounters(
     }
 }
 
-private fun shareEvent(
+fun shareEvent(
     liveSessionShareEnabled: Boolean,
     copyReportOnClipboard: Boolean,
     eventType: String,
