@@ -91,7 +91,8 @@ fun EventCard(
     neverShareLeadInfo: Boolean,
     copyReportOnClipboard: Boolean,
     isLiveSession: Boolean = false,
-    followCount: Boolean = true
+    followCount: Boolean = true,
+    liveSessionShareEnabled: Boolean = false
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
@@ -512,7 +513,9 @@ fun EventCard(
                                     15.sp,
                                     onEvent,
                                     sortableGameEvent.event as AbstractSession,
-                                    liveSessionLeads
+                                    liveSessionLeads,
+                                    liveSessionShareEnabled,
+                                    copyReportOnClipboard
                                 )
                             } else if (AbstractSession::class.java.simpleName.equals(
                                     sortableGameEvent.classType

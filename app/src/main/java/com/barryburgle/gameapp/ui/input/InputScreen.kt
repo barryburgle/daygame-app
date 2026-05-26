@@ -414,7 +414,8 @@ fun InputScreen(
                                         state.neverShareLeadInfo,
                                         state.copyReportOnClipboard,
                                         true,
-                                        state.followCount
+                                        state.followCount,
+                                        state.liveSessionShareEnabled
                                     )
                                 }
                             }
