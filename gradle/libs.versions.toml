@@ -13,6 +13,7 @@ junit = "4.13.2"
 junitVersion = "1.3.0"
 kotlin = "2.3.20"
 lifecycle = "2.10.0"
+location = "21.3.0"
 material = "1.13.0"
 material3 = "1.4.0"
 materialIconsExtended = "1.7.8"
@@ -41,6 +42,7 @@ junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "ju
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
 lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "location" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
 material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }

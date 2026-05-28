@@ -1,5 +1,7 @@
 package com.barryburgle.gameapp
 
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.POST_NOTIFICATIONS
 import android.Manifest.permission.READ_CONTACTS
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
@@ -197,25 +199,22 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
-                if (ContextCompat.checkSelfPermission(
-                        this,
-                        READ_CONTACTS
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    requestContactPermissionLauncher.launch(READ_CONTACTS)
-                }
+                checkAndRequestContactsPermission()
             }
         }
     }
 
     private fun handlePermissionsFlow() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED
-            ) {
+            if (ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 requestNotificationPermissionLauncher.launch(POST_NOTIFICATIONS)
+                return
             }
         }
+        checkAndRequestStoragePermission()
+    }
+
+    private fun checkAndRequestStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (!Environment.isExternalStorageManager()) {
                 val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
@@ -224,33 +223,37 @@ class MainActivity : ComponentActivity() {
                     flags = FLAG_ACTIVITY_NEW_TASK
                 }
                 startActivity(intent)
-            } else if (ContextCompat.checkSelfPermission(
-                    this,
-                    READ_CONTACTS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestContactPermissionLauncher.launch(READ_CONTACTS)
+                return
             }
         } else {
-            val permissions = mutableListOf<String>()
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    READ_CONTACTS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                permissions.add(READ_CONTACTS)
+            val legacyStoragePermissions = mutableListOf<String>()
+            if (ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                legacyStoragePermissions.add(READ_EXTERNAL_STORAGE)
+                legacyStoragePermissions.add(WRITE_EXTERNAL_STORAGE)
             }
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    READ_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                permissions.add(READ_EXTERNAL_STORAGE)
-                permissions.add(WRITE_EXTERNAL_STORAGE)
+            if (legacyStoragePermissions.isNotEmpty()) {
+                requestLegacyPermissionsLauncher.launch(legacyStoragePermissions.toTypedArray())
+                return
             }
-            if (permissions.isNotEmpty()) {
-                requestLegacyPermissionsLauncher.launch(permissions.toTypedArray())
-            }
+        }
+        checkAndRequestContactsPermission()
+    }
+
+    private fun checkAndRequestContactsPermission() {
+        if (ContextCompat.checkSelfPermission(this, READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestContactPermissionLauncher.launch(READ_CONTACTS)
+        } else {
+            checkAndRequestLocationPermission()
+        }
+    }
+
+    private fun checkAndRequestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestLocationPermissionLauncher.launch(
+                arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)
+            )
         }
     }
 
@@ -260,8 +263,47 @@ class MainActivity : ComponentActivity() {
         if (isGranted) {
             Toast.makeText(this, "Notifications enabled", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, "Notifications disabled", Toast.LENGTH_LONG)
-                .show()
+            Toast.makeText(this, "Notifications disabled", Toast.LENGTH_LONG).show()
+        }
+        checkAndRequestStoragePermission()
+    }
+
+    private val requestLegacyPermissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result ->
+        val allGranted = result.values.all { it }
+        if (allGranted) {
+            Toast.makeText(this, "Storage permissions granted", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Storage permissions denied", Toast.LENGTH_SHORT).show()
+        }
+        checkAndRequestContactsPermission()
+    }
+
+    private val requestContactPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Toast.makeText(this, "Contact permission granted", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Contact permissions denied", Toast.LENGTH_SHORT).show()
+        }
+        checkAndRequestLocationPermission()
+    }
+
+    private val requestLocationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        when {
+            permissions.getOrDefault(ACCESS_FINE_LOCATION, false) -> {
+                Toast.makeText(this, "Precise location enabled", Toast.LENGTH_SHORT).show()
+            }
+            permissions.getOrDefault(ACCESS_COARSE_LOCATION, false) -> {
+                Toast.makeText(this, "Approximate location enabled", Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -361,26 +403,4 @@ class MainActivity : ComponentActivity() {
             notificationManager.createNotificationChannel(liveSessionNotificationChannel)
         }
     }
-
-    private val requestContactPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            Toast.makeText(this, "Contact permission granted", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "Contact permissions denied", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private val requestLegacyPermissionsLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { result ->
-        val allGranted = result.values.all { it }
-        if (allGranted) {
-            Toast.makeText(this, "Storage permissions granted", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "Storage permissions denied", Toast.LENGTH_SHORT).show()
-        }
-    }
-
 }

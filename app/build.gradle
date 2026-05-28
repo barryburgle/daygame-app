@@ -79,4 +79,5 @@ dependencies {
     implementation libs.ui
     implementation libs.compose.markdown
     implementation libs.media
+    implementation libs.location
 }
