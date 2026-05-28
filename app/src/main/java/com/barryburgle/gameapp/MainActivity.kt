@@ -71,7 +71,8 @@ class MainActivity : ComponentActivity() {
                         it.setDao,
                         it.challengeDao,
                         it.aggregatedSessionsDao,
-                        it.aggregatedDatesDao
+                        it.aggregatedDatesDao,
+                        it.pinpointDao
                     )
                 } as T
             }

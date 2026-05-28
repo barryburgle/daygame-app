@@ -7,23 +7,25 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.barryburgle.gameapp.dao.challenge.ChallengeDao
+import com.barryburgle.gameapp.dao.date.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
+import com.barryburgle.gameapp.dao.pinpoint.PinPointDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
-import com.barryburgle.gameapp.dao.date.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
 import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
-import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
+import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.setting.Setting
 
 @Database(
-    entities = [AbstractSession::class, Setting::class, Lead::class, Date::class, SingleSet::class, Challenge::class],
-    version = 7
+    entities = [AbstractSession::class, Setting::class, Lead::class, Date::class, SingleSet::class, Challenge::class, PinPoint::class],
+    version = 8
 )
 abstract class GameAppDatabase : RoomDatabase() {
     abstract val abstractSessionDao: AbstractSessionDao
@@ -34,6 +36,7 @@ abstract class GameAppDatabase : RoomDatabase() {
     abstract val dateDao: DateDao
     abstract val setDao: SetDao
     abstract val challengeDao: ChallengeDao
+    abstract val pinpointDao: PinPointDao
 
     companion object {
         private const val DATABASE_NAME = "game_app_db"
@@ -91,6 +94,14 @@ abstract class GameAppDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_7_8: Migration = object : Migration(7, 8) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `pinpoint` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `session_id` INTEGER NOT NULL, `pinpoint_type` TEXT NOT NULL, `utc_timestamp` TEXT NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL);"
+                )
+            }
+        }
+
         fun getInstance(context: Context): GameAppDatabase? {
             if (INSTANCE == null) {
                 synchronized(GameAppDatabase::class) {
@@ -99,7 +110,8 @@ abstract class GameAppDatabase : RoomDatabase() {
                         GameAppDatabase::class.java, DATABASE_NAME
                     ).addMigrations(MIGRATION_1_2).addMigrations(MIGRATION_2_3)
                         .addMigrations(MIGRATION_3_4).addMigrations(MIGRATION_4_5)
-                        .addMigrations(MIGRATION_5_6).addMigrations(MIGRATION_6_7).build()
+                        .addMigrations(MIGRATION_5_6).addMigrations(MIGRATION_6_7)
+                        .addMigrations(MIGRATION_7_8).build()
                 }
             }
             return INSTANCE
