@@ -1,12 +1,17 @@
 package com.barryburgle.gameapp.ui.input
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.challenge.ChallengeDao
 import com.barryburgle.gameapp.dao.date.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
+import com.barryburgle.gameapp.dao.pinpoint.PinPointDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
 import com.barryburgle.gameapp.dao.set.SetDao
@@ -22,7 +27,9 @@ import com.barryburgle.gameapp.model.enums.GameEventSortType
 import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
+import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.notification.AndroidNotificationScheduler
 import com.barryburgle.gameapp.service.batch.BatchSessionService
@@ -41,6 +48,7 @@ import com.barryburgle.gameapp.ui.input.state.ExportSettingsState
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.input.state.ShareSettingsState
 import com.barryburgle.gameapp.ui.input.state.SortTypeState
+import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,11 +74,12 @@ class InputViewModel(
     private val setDao: SetDao,
     private val challengeDao: ChallengeDao,
     private val aggregatedSessionsDao: AggregatedSessionsDao,
-    private val aggregatedDatesDao: AggregatedDatesDao
+    private val aggregatedDatesDao: AggregatedDatesDao,
+    private val pinPointDao: PinPointDao,
 ) : ViewModel() {
 
     val notificationScheduler = AndroidNotificationScheduler(context)
-
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
     private val _batchSessionService = BatchSessionService()
     private val _dateService = DateService()
     private val _setService = SetService()
@@ -460,9 +469,18 @@ class InputViewModel(
                 _state.update {
                     it.copy(
                         editAbstractSession = event.abstractSession,
-                        date = if (event.abstractSession.date.length >= 10) event.abstractSession.date.substring(0, 10) else event.abstractSession.date,
-                        startHour = if (event.abstractSession.startHour.length >= 16) event.abstractSession.startHour.substring(11, 16) else event.abstractSession.startHour,
-                        endHour = if (event.abstractSession.endHour.length >= 16) event.abstractSession.endHour.substring(11, 16) else event.abstractSession.endHour,
+                        date = if (event.abstractSession.date.length >= 10) event.abstractSession.date.substring(
+                            0,
+                            10
+                        ) else event.abstractSession.date,
+                        startHour = if (event.abstractSession.startHour.length >= 16) event.abstractSession.startHour.substring(
+                            11,
+                            16
+                        ) else event.abstractSession.startHour,
+                        endHour = if (event.abstractSession.endHour.length >= 16) event.abstractSession.endHour.substring(
+                            11,
+                            16
+                        ) else event.abstractSession.endHour,
                         sets = event.abstractSession.sets.toString(),
                         convos = event.abstractSession.convos.toString(),
                         contacts = event.abstractSession.contacts.toString(),
@@ -657,6 +675,12 @@ class InputViewModel(
             is GameEvent.SetSetsLive -> {
                 viewModelScope.launch {
                     var abstractSession = event.abstractSession
+                    if (event.sets > abstractSession.sets) {
+                        savePinPointWithLocation(
+                            PinPointTypeEnum.SET,
+                            abstractSession.id!!
+                        )
+                    }
                     abstractSession.sets = event.sets
                     abstractSessionDao.insert(abstractSession)
                 }
@@ -679,10 +703,20 @@ class InputViewModel(
             is GameEvent.SetConvosLive -> {
                 viewModelScope.launch {
                     var abstractSession = event.abstractSession
-                    if (state.value.followCount && event.isIncreasing) {
-                        var sets = abstractSession.sets
-                        sets++
-                        abstractSession.sets = sets
+                    if (event.isIncreasing) {
+                        if (state.value.followCount) {
+                            var sets = abstractSession.sets
+                            sets++
+                            abstractSession.sets = sets
+                            savePinPointWithLocation(
+                                PinPointTypeEnum.SET,
+                                abstractSession.id!!
+                            )
+                        }
+                        savePinPointWithLocation(
+                            PinPointTypeEnum.CONVERSATION,
+                            abstractSession.id!!
+                        )
                     }
                     abstractSession.convos = event.convos
                     abstractSessionDao.insert(abstractSession)
@@ -712,19 +746,34 @@ class InputViewModel(
             is GameEvent.SetContactsLive -> {
                 viewModelScope.launch {
                     var abstractSession = event.abstractSession
-                    if (state.value.followCount && event.isIncreasing) {
-                        var sets = abstractSession.sets
-                        sets++
-                        abstractSession.sets = sets
-                        var convos = abstractSession.convos
-                        convos++
-                        abstractSession.convos = convos
+                    if (event.isIncreasing) {
+                        if (state.value.followCount) {
+                            var sets = abstractSession.sets
+                            sets++
+                            abstractSession.sets = sets
+                            savePinPointWithLocation(
+                                PinPointTypeEnum.SET,
+                                abstractSession.id!!
+                            )
+                            var convos = abstractSession.convos
+                            convos++
+                            abstractSession.convos = convos
+                            savePinPointWithLocation(
+                                PinPointTypeEnum.CONVERSATION,
+                                abstractSession.id!!
+                            )
+                        }
+                        savePinPointWithLocation(
+                            PinPointTypeEnum.CONTACT,
+                            abstractSession.id!!
+                        )
                     }
                     abstractSession.contacts = event.contacts
                     abstractSessionDao.insert(abstractSession)
                 }
             }
 
+            // TODO: set pos and time for new lead acquired function
             is GameEvent.StopLiveSession -> {
                 notificationScheduler.cancel(AndroidNotificationScheduler.SITTING_REMINDER_REQUEST_CODE)
                 viewModelScope.launch {
@@ -1324,9 +1373,18 @@ class InputViewModel(
                 _state.update {
                     it.copy(
                         editSet = event.set,
-                        date = if (event.set.date.length >= 10) event.set.date.substring(0, 10) else event.set.date,
-                        startHour = if (event.set.startHour.length >= 16) event.set.startHour.substring(11, 16) else event.set.startHour,
-                        endHour = if (event.set.endHour.length >= 16) event.set.endHour.substring(11, 16) else event.set.endHour,
+                        date = if (event.set.date.length >= 10) event.set.date.substring(
+                            0,
+                            10
+                        ) else event.set.date,
+                        startHour = if (event.set.startHour.length >= 16) event.set.startHour.substring(
+                            11,
+                            16
+                        ) else event.set.startHour,
+                        endHour = if (event.set.endHour.length >= 16) event.set.endHour.substring(
+                            11,
+                            16
+                        ) else event.set.endHour,
                         sessionId = event.set.sessionId ?: 0L,
                         location = event.set.location ?: "",
                         leadId = event.set.leadId ?: 0L,
@@ -1500,6 +1558,36 @@ class InputViewModel(
                     )
                 }
             }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun savePinPointWithLocation(type: PinPointTypeEnum, sessionId: Long) {
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location ->
+                    val longitude = location?.longitude ?: 0.0
+                    val latitude = location?.latitude ?: 0.0
+                    viewModelScope.launch {
+                        pinPointDao.insert(
+                            PinPoint(
+                                id = null,
+                                sessionId = sessionId,
+                                pinPointType = type.getField(),
+                                utcTimestamp = LocalDateTime.now().toString().substring(0, 19) + "Z",
+                                longitude = longitude,
+                                latitude = latitude
+                            )
+                        )
+                    }
+                }
         }
     }
 }
