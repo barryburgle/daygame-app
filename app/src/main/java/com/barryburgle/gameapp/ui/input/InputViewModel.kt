@@ -708,10 +708,6 @@ class InputViewModel(
                             var sets = abstractSession.sets
                             sets++
                             abstractSession.sets = sets
-                            savePinPointWithLocation(
-                                PinPointTypeEnum.SET,
-                                abstractSession.id!!
-                            )
                         }
                         savePinPointWithLocation(
                             PinPointTypeEnum.CONVERSATION,
@@ -751,17 +747,9 @@ class InputViewModel(
                             var sets = abstractSession.sets
                             sets++
                             abstractSession.sets = sets
-                            savePinPointWithLocation(
-                                PinPointTypeEnum.SET,
-                                abstractSession.id!!
-                            )
                             var convos = abstractSession.convos
                             convos++
                             abstractSession.convos = convos
-                            savePinPointWithLocation(
-                                PinPointTypeEnum.CONVERSATION,
-                                abstractSession.id!!
-                            )
                         }
                         savePinPointWithLocation(
                             PinPointTypeEnum.CONTACT,
