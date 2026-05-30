@@ -36,7 +36,7 @@ abstract class GameAppDatabase : RoomDatabase() {
     abstract val dateDao: DateDao
     abstract val setDao: SetDao
     abstract val challengeDao: ChallengeDao
-    abstract val pinpointDao: PinPointDao
+    abstract val pinPointDao: PinPointDao
 
     companion object {
         private const val DATABASE_NAME = "game_app_db"
