@@ -680,6 +680,11 @@ class InputViewModel(
                             PinPointTypeEnum.SET,
                             abstractSession.id!!
                         )
+                    } else if (event.sets < abstractSession.sets) {
+                        pinPointDao.deleteLastPinPointBySessionIdAndType(
+                            abstractSession.id!!,
+                            PinPointTypeEnum.SET.getField()
+                        )
                     }
                     abstractSession.sets = event.sets
                     abstractSessionDao.insert(abstractSession)
@@ -712,6 +717,11 @@ class InputViewModel(
                         savePinPointWithLocation(
                             PinPointTypeEnum.CONVERSATION,
                             abstractSession.id!!
+                        )
+                    } else if (event.convos < abstractSession.convos) {
+                        pinPointDao.deleteLastPinPointBySessionIdAndType(
+                            abstractSession.id!!,
+                            PinPointTypeEnum.CONVERSATION.getField()
                         )
                     }
                     abstractSession.convos = event.convos
@@ -754,6 +764,11 @@ class InputViewModel(
                         savePinPointWithLocation(
                             PinPointTypeEnum.CONTACT,
                             abstractSession.id!!
+                        )
+                    } else if (event.contacts < abstractSession.contacts) {
+                        pinPointDao.deleteLastPinPointBySessionIdAndType(
+                            abstractSession.id!!,
+                            PinPointTypeEnum.CONTACT.getField()
                         )
                     }
                     abstractSession.contacts = event.contacts
@@ -1569,7 +1584,8 @@ class InputViewModel(
                                 id = null,
                                 sessionId = sessionId,
                                 pinPointType = type.getField(),
-                                utcTimestamp = LocalDateTime.now().toString().substring(0, 19) + "Z",
+                                utcTimestamp = LocalDateTime.now().toString()
+                                    .substring(0, 19) + "Z",
                                 longitude = longitude,
                                 latitude = latitude
                             )
