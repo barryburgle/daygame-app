@@ -1,23 +1,36 @@
 package com.barryburgle.gameapp.service.notification
 
+import android.Manifest
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
+import android.location.Location
 import android.os.Build
 import android.os.IBinder
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.barryburgle.gameapp.MainActivity
 import com.barryburgle.gameapp.R
+import com.barryburgle.gameapp.dao.pinpoint.PinPointDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.database.GameAppDatabase
+import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
+import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
+import kotlin.coroutines.resume
 
 class PersistentNotificationService : Service() {
 
@@ -31,6 +44,9 @@ class PersistentNotificationService : Service() {
 
     private var startHour: String? = null
     private var isFollowCountActive: Boolean = false
+    private val fusedLocationClient by lazy {
+        LocationServices.getFusedLocationProviderClient(this)
+    }
 
     private fun updateServiceState(intent: Intent?) {
         if (intent?.hasExtra(LIVE_SESSIONS_START_HOUR) == true) {
@@ -41,7 +57,10 @@ class PersistentNotificationService : Service() {
         }
     }
 
-    private fun handleNewSetAction(intent: Intent?, abstractSessionDao: AbstractSessionDao) {
+    private fun handleNewSetAction(
+        abstractSessionDao: AbstractSessionDao,
+        pinPointDao: PinPointDao
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val batchSessionService = BatchSessionService()
@@ -70,8 +89,21 @@ class PersistentNotificationService : Service() {
                         ""
                     )
                 }
-
-                abstractSessionDao.insert(updatedSession)
+                val sessionId = abstractSessionDao.insert(updatedSession)
+                val location = getLocation()
+                if (location != null) {
+                    pinPointDao.insert(
+                        PinPoint(
+                            id = null,
+                            sessionId = sessionId,
+                            pinPointType = PinPointTypeEnum.SET.getField(),
+                            utcTimestamp = LocalDateTime.now().toString()
+                                .substring(0, 19) + "Z",
+                            longitude = location?.longitude ?: 0.0,
+                            latitude = location?.latitude ?: 0.0
+                        )
+                    )
+                }
                 withContext(Dispatchers.Main) {
                     updateNotification(
                         updatedSession.sets,
@@ -86,7 +118,7 @@ class PersistentNotificationService : Service() {
     }
 
     private fun handleNewConversationAction(
-        intent: Intent?, abstractSessionDao: AbstractSessionDao
+        abstractSessionDao: AbstractSessionDao, pinPointDao: PinPointDao
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -116,7 +148,21 @@ class PersistentNotificationService : Service() {
                         ""
                     )
                 }
-                abstractSessionDao.insert(updatedSession)
+                val sessionId = abstractSessionDao.insert(updatedSession)
+                val location = getLocation()
+                if (location != null) {
+                    pinPointDao.insert(
+                        PinPoint(
+                            id = null,
+                            sessionId = sessionId,
+                            pinPointType = PinPointTypeEnum.CONVERSATION.getField(),
+                            utcTimestamp = LocalDateTime.now().toString()
+                                .substring(0, 19) + "Z",
+                            longitude = location?.longitude ?: 0.0,
+                            latitude = location?.latitude ?: 0.0
+                        )
+                    )
+                }
                 withContext(Dispatchers.Main) {
                     updateNotification(
                         updatedSession.sets,
@@ -131,7 +177,7 @@ class PersistentNotificationService : Service() {
     }
 
     private fun handleNewContactAction(
-        intent: Intent?, abstractSessionDao: AbstractSessionDao
+        abstractSessionDao: AbstractSessionDao, pinPointDao: PinPointDao
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -161,7 +207,21 @@ class PersistentNotificationService : Service() {
                         ""
                     )
                 }
-                abstractSessionDao.insert(updatedSession)
+                val sessionId = abstractSessionDao.insert(updatedSession)
+                val location = getLocation()
+                if (location != null) {
+                    pinPointDao.insert(
+                        PinPoint(
+                            id = null,
+                            sessionId = sessionId,
+                            pinPointType = PinPointTypeEnum.CONTACT.getField(),
+                            utcTimestamp = LocalDateTime.now().toString()
+                                .substring(0, 19) + "Z",
+                            longitude = location?.longitude ?: 0.0,
+                            latitude = location?.latitude ?: 0.0
+                        )
+                    )
+                }
                 withContext(Dispatchers.Main) {
                     updateNotification(
                         updatedSession.sets,
@@ -175,24 +235,69 @@ class PersistentNotificationService : Service() {
         }
     }
 
+    private suspend fun getLocation(): Location? {
+        val hasFine = ActivityCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val hasCoarse = ActivityCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (!hasFine && !hasCoarse) {
+            return null
+        }
+        val cachedLocation = suspendCancellableCoroutine<Location?> { continuation ->
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location ->
+                    if (continuation.isActive) continuation.resume(location)
+                }
+                .addOnFailureListener {
+                    if (continuation.isActive) continuation.resume(null)
+                }
+        }
+        if (cachedLocation != null) {
+            return cachedLocation
+        }
+        return suspendCancellableCoroutine { continuation ->
+            val cts = CancellationTokenSource()
+            fusedLocationClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                cts.token
+            )
+                .addOnSuccessListener { location ->
+                    if (continuation.isActive) continuation.resume(location)
+                }
+                .addOnFailureListener { exception ->
+                    exception.printStackTrace()
+                    if (continuation.isActive) continuation.resume(null)
+                }
+            continuation.invokeOnCancellation {
+                cts.cancel()
+            }
+        }
+    }
+
     override fun onBind(intent: Intent?): IBinder? = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         updateServiceState(intent)
         val database = GameAppDatabase.getInstance(applicationContext)
         val abstractSessionDao = database!!.abstractSessionDao
+        val pinPointDao = database!!.pinPointDao
         when (intent?.action) {
             ACTION_NEW_SET -> {
-                handleNewSetAction(intent, abstractSessionDao)
+                handleNewSetAction(abstractSessionDao, pinPointDao)
                 return START_STICKY
             }
 
             ACTION_NEW_CONVERSATION -> {
-                handleNewConversationAction(intent, abstractSessionDao)
+                handleNewConversationAction(abstractSessionDao, pinPointDao)
                 return START_STICKY
             }
 
             ACTION_NEW_CONTACT -> {
-                handleNewContactAction(intent, abstractSessionDao)
+                handleNewContactAction(abstractSessionDao, pinPointDao)
                 return START_STICKY
             }
         }
