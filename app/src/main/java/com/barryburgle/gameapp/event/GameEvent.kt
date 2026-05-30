@@ -49,6 +49,10 @@ sealed interface GameEvent : GenericEvent {
         val isIncreasing: Boolean
     ) : GameEvent
 
+    data class RollbackContactPinPointForLeadInsertDismissal(
+        val sessionId: Long
+    ) : GameEvent
+
     data class StopLiveSession(
         val abstractSession: AbstractSession
     ) : GameEvent

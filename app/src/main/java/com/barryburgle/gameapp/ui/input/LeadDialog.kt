@@ -77,6 +77,7 @@ fun LeadDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier.shadow(elevation = 10.dp),
         onDismissRequest = {
+            onEvent(GameEvent.RollbackContactPinPointForLeadInsertDismissal(state.leadSessionId!!))
             onEvent(GameEvent.SwitchSaveLeadToLiveSession)
             onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideLeadDialog)
@@ -181,39 +182,39 @@ fun LeadDialog(
                         state.suggestLeadsNationality,
                         state.countrySearch
                     ).forEach { country ->
-                            count++
-                            DropdownMenuItem(text = {
-                                Row(
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    LittleBodyText(
-                                        country.flag + "  " + country.countryName
+                        count++
+                        DropdownMenuItem(text = {
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                LittleBodyText(
+                                    country.flag + "  " + country.countryName
+                                )
+                                if (count <= state.shownNationalities && state.suggestLeadsNationality) {
+                                    Icon(
+                                        imageVector = Icons.Default.Star,
+                                        contentDescription = "Suggested country",
+                                        tint = MaterialTheme.colorScheme.inversePrimary,
+                                        modifier = Modifier.height(50.dp)
                                     )
-                                    if (count <= state.shownNationalities && state.suggestLeadsNationality) {
-                                        Icon(
-                                            imageVector = Icons.Default.Star,
-                                            contentDescription = "Suggested country",
-                                            tint = MaterialTheme.colorScheme.inversePrimary,
-                                            modifier = Modifier.height(50.dp)
-                                        )
-                                    }
                                 }
-                            }, onClick = {
-                                onEvent(GameEvent.SetLeadCountrySearch(""))
-                                onEvent(GameEvent.SetLeadNationality(country.alpha3))
-                                expanded = false
-                            })
-                            if (count == state.shownNationalities && state.suggestLeadsNationality) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(0.5.dp)
-                                        .background(color = MaterialTheme.colorScheme.inversePrimary)
-                                ) {}
                             }
+                        }, onClick = {
+                            onEvent(GameEvent.SetLeadCountrySearch(""))
+                            onEvent(GameEvent.SetLeadNationality(country.alpha3))
+                            expanded = false
+                        })
+                        if (count == state.shownNationalities && state.suggestLeadsNationality) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(0.5.dp)
+                                    .background(color = MaterialTheme.colorScheme.inversePrimary)
+                            ) {}
                         }
+                    }
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -336,6 +337,7 @@ fun LeadDialog(
         },
         dismissButton = {
             DismissButton {
+                onEvent(GameEvent.RollbackContactPinPointForLeadInsertDismissal(state.leadSessionId!!))
                 onEvent(GameEvent.SwitchSaveLeadToLiveSession)
                 onEvent(GameEvent.SetIsInOverlayToFalse)
                 onEvent(GameEvent.HideLeadDialog)

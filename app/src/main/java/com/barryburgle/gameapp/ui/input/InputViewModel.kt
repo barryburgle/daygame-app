@@ -776,7 +776,15 @@ class InputViewModel(
                 }
             }
 
-            // TODO: set pos and time for new lead acquired function
+            is GameEvent.RollbackContactPinPointForLeadInsertDismissal -> {
+                viewModelScope.launch {
+                    pinPointDao.deleteLastPinPointBySessionIdAndType(
+                        event.sessionId,
+                        PinPointTypeEnum.CONTACT.getField()
+                    )
+                }
+            }
+
             is GameEvent.StopLiveSession -> {
                 notificationScheduler.cancel(AndroidNotificationScheduler.SITTING_REMINDER_REQUEST_CODE)
                 viewModelScope.launch {
