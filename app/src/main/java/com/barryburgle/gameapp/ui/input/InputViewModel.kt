@@ -524,6 +524,7 @@ class InputViewModel(
             is GameEvent.DeleteSession -> {
                 viewModelScope.launch {
                     abstractSessionDao.delete(event.abstractSession)
+                    pinPointDao.deleteBySessionId(event.abstractSession.id!!)
                 }
             }
 
