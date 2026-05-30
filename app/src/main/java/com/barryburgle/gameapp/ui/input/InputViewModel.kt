@@ -785,6 +785,15 @@ class InputViewModel(
                 }
             }
 
+            is GameEvent.RollbackAllPinPoints -> {
+                var abstractSession = event.abstractSession
+                viewModelScope.launch {
+                    pinPointDao.deleteBySessionId(
+                        abstractSession.id!!
+                    )
+                }
+            }
+
             is GameEvent.StopLiveSession -> {
                 notificationScheduler.cancel(AndroidNotificationScheduler.SITTING_REMINDER_REQUEST_CODE)
                 viewModelScope.launch {

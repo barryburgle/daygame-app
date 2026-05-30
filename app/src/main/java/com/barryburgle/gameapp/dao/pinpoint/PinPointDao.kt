@@ -25,6 +25,9 @@ interface PinPointDao {
     @Query(DELETE_LAST_QUERY)
     suspend fun deleteLastPinPointBySessionIdAndType(sessionId: Long, pinpointType: String)
 
+    @Query("DELETE FROM pinpoint WHERE session_id = :sessionId")
+    suspend fun deleteBySessionId(sessionId: Long)
+
     @Query("DELETE FROM pinpoint")
     suspend fun deleteAll()
 

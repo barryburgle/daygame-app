@@ -53,6 +53,10 @@ sealed interface GameEvent : GenericEvent {
         val sessionId: Long
     ) : GameEvent
 
+    data class RollbackAllPinPoints(
+        val abstractSession: AbstractSession
+    ) : GameEvent
+
     data class StopLiveSession(
         val abstractSession: AbstractSession
     ) : GameEvent

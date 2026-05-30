@@ -118,6 +118,7 @@ fun EventCard(
             },
             confirmButton = {
                 ConfirmButton {
+                    onEvent(GameEvent.RollbackAllPinPoints(sortableGameEvent.event as AbstractSession))
                     onEvent(GameEvent.DeleteSession(sortableGameEvent.event as AbstractSession))
                     val intent = Intent(context, PersistentNotificationService::class.java)
                     context.stopService(intent)
