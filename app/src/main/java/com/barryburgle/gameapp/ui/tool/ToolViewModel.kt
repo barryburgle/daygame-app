@@ -429,6 +429,16 @@ class ToolViewModel(
                 viewModelScope.launch { challengeDao.batchInsert(allChallenges.map { it.challenge }) }
             }
 
+            is ToolEvent.SetAllPinPoints -> {
+                _state.update {
+                    it.copy(
+                        allPinPoints = event.allPinPoints
+                    )
+                }
+                val allPinPoints = _state.value.allPinPoints
+                viewModelScope.launch { pinPointDao.batchInsert(allPinPoints) }
+            }
+
             is ToolEvent.SetAllSettings -> {
                 _state.update {
                     it.copy(
