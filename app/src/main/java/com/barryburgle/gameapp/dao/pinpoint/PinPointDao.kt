@@ -17,6 +17,9 @@ interface PinPointDao {
     }
 
     @Insert(onConflict = REPLACE)
+    suspend fun batchInsert(pinpoints: List<PinPoint>)
+
+    @Insert(onConflict = REPLACE)
     suspend fun insert(pinpoint: PinPoint): Long
 
     @Delete
