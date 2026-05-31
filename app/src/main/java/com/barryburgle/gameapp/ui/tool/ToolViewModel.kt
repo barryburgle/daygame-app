@@ -11,8 +11,8 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
-import com.barryburgle.gameapp.ui.CombineSeventeen
-import com.barryburgle.gameapp.ui.CombineThirteen
+import com.barryburgle.gameapp.ui.CombineEighteen
+import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.CombineTwenty
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.Flow
@@ -38,6 +38,7 @@ class ToolViewModel(
     private val _allDates = dateDao.getAll()
     private val _allSets = setDao.getAll()
     private val _allChallenges = challengeDao.getAll()
+    private val _allPinPoints = pinPointDao.getAll()
     private val _allSettings = settingDao.getAll()
     val _importExportSettingState: Flow<ImportExportSettingState> = CombineTwenty(
         settingDao.getExportFolder(),
@@ -56,11 +57,11 @@ class ToolViewModel(
         settingDao.getImportSetsFilename(),
         settingDao.getExportChallengesFilename(),
         settingDao.getImportChallengesFilename(),
+        settingDao.getExportPinPointsFilename(),
+        settingDao.getImportPinPointsFilename(),
         settingDao.getExportSettingsFilename(),
-        settingDao.getImportSettingsFilename(),
-        settingDao.getArchiveBackupFolder(),
-        settingDao.getIsCleaning()
-    ) { exportFolder, importFolder, backupFolder, exportHeader, importHeader, backupActive, exportSessions, importSessions, exportLeads, importLeads, exportDates, importDates, exportSets, importSets, exportChallenges, importChallenges, exportSettings, importSettings, archiveBackupFolder, isCleaning ->
+        settingDao.getImportSettingsFilename()
+    ) { exportFolder, importFolder, backupFolder, exportHeader, importHeader, backupActive, exportSessions, importSessions, exportLeads, importLeads, exportDates, importDates, exportSets, importSets, exportChallenges, importChallenges, exportPinPoints, importPinPoints, exportSettings, importSettings ->
         ImportExportSettingState(
             exportFolder = exportFolder,
             importFolder = importFolder,
@@ -78,13 +79,13 @@ class ToolViewModel(
             importSetsFilename = importSets,
             exportChallengesFilename = exportChallenges,
             importChallengesFilename = importChallenges,
+            exportPinPointsFilename = exportPinPoints,
+            importPinPointsFilename = importPinPoints,
             exportSettingsFilename = exportSettings,
             importSettingsFilename = importSettings,
-            archiveBackupFolder = archiveBackupFolder,
-            isCleaning = isCleaning
         )
     }
-    val _generalSettingState: Flow<GeneralSettingState> = CombineSeventeen(
+    val _generalSettingState: Flow<GeneralSettingState> = CombineNineteen(
         settingDao.getGenerateiDate(),
         settingDao.getNotificationTime(),
         settingDao.getFollowCount(),
@@ -102,7 +103,9 @@ class ToolViewModel(
         settingDao.getLiveSessionSittingReminderEnabled(),
         settingDao.getLiveSessionSittingReminderInterval(),
         settingDao.getLiveSessionShareEnabled(),
-    ) { generateiDate, notificationTime, followCount, suggestLeadsNationality, shownNationalities, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
+        settingDao.getArchiveBackupFolder(),
+        settingDao.getIsCleaning()
+    ) { generateiDate, notificationTime, followCount, suggestLeadsNationality, shownNationalities, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled, archiveBackupFolder, isCleaning ->
         GeneralSettingState(
             generateiDate = generateiDate,
             notificationTime = notificationTime,
@@ -120,7 +123,9 @@ class ToolViewModel(
             liveSessionNotificationEnabled = liveSessionNotificationEnabled,
             liveSessionSittingReminderEnabled = liveSessionSittingReminderEnabled,
             liveSessionSittingReminderInterval = liveSessionSittingReminderInterval,
-            liveSessionShareEnabled = liveSessionShareEnabled
+            liveSessionShareEnabled = liveSessionShareEnabled,
+            archiveBackupFolder = archiveBackupFolder,
+            isCleaning = isCleaning
         )
     }
     private val _averageLast = settingDao.getAverageLast()
@@ -132,13 +137,14 @@ class ToolViewModel(
     private val _lastWeeksShown = settingDao.getLastWeeksShown()
     private val _lastMonthsShown = settingDao.getLastMonthsShown()
     val state =
-        CombineSeventeen(
+        CombineEighteen(
             _state,
             _allSessions,
             _allLeads,
             _allDates,
             _allSets,
             _allChallenges,
+            _allPinPoints,
             _allSettings,
             _importExportSettingState,
             _generalSettingState,
@@ -150,7 +156,7 @@ class ToolViewModel(
             _lastSessionsShown,
             _lastWeeksShown,
             _lastMonthsShown
-        ) { state, allSessions, allLeads, allDates, allSets, allChallenges, allSettings, importExportSettingState, generalSettingState, averageLast, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown ->
+        ) { state, allSessions, allLeads, allDates, allSets, allChallenges, allPinPoints, allSettings, importExportSettingState, generalSettingState, averageLast, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown ->
             state.copy(
                 exportSessionsFileName = importExportSettingState.exportSessionsFilename,
                 importSessionsFileName = importExportSettingState.importSessionsFilename,
@@ -162,10 +168,12 @@ class ToolViewModel(
                 importSetsFileName = importExportSettingState.importSetsFilename,
                 exportChallengesFileName = importExportSettingState.exportChallengesFilename,
                 importChallengesFileName = importExportSettingState.importChallengesFilename,
+                exportPinPointsFileName = importExportSettingState.exportPinPointsFilename,
+                importPinPointsFileName = importExportSettingState.importPinPointsFilename,
                 exportSettingsFileName = importExportSettingState.exportSettingsFilename,
                 importSettingsFileName = importExportSettingState.importSettingsFilename,
-                archiveBackupFolder = importExportSettingState.archiveBackupFolder.toBoolean(),
-                isCleaning = importExportSettingState.isCleaning.toBoolean(),
+                archiveBackupFolder = generalSettingState.archiveBackupFolder.toBoolean(),
+                isCleaning = generalSettingState.isCleaning.toBoolean(),
                 themeSysFollow = generalSettingState.themeSysFollow.toBoolean(),
                 theme = generalSettingState.themeId,
                 exportFolder = importExportSettingState.exportFolder,
@@ -177,6 +185,7 @@ class ToolViewModel(
                 allDates = allDates,
                 allSets = allSets,
                 allChallenges = allChallenges,
+                allPinPoints = allPinPoints,
                 allSettings = allSettings,
                 lastSessionAverageQuantity = averageLast,
                 exportHeader = importExportSettingState.exportHeader.toBoolean(),
@@ -1013,10 +1022,10 @@ data class ImportExportSettingState(
     val importSetsFilename: String,
     val exportChallengesFilename: String,
     val importChallengesFilename: String,
+    val exportPinPointsFilename: String,
+    val importPinPointsFilename: String,
     val exportSettingsFilename: String,
-    val importSettingsFilename: String,
-    val archiveBackupFolder: String,
-    val isCleaning: String
+    val importSettingsFilename: String
 )
 
 data class GeneralSettingState(
@@ -1036,5 +1045,7 @@ data class GeneralSettingState(
     val liveSessionNotificationEnabled: String,
     val liveSessionSittingReminderEnabled: String,
     val liveSessionSittingReminderInterval: String,
-    val liveSessionShareEnabled: String
+    val liveSessionShareEnabled: String,
+    val archiveBackupFolder: String,
+    val isCleaning: String
 )
