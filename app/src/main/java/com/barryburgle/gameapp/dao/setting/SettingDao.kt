@@ -43,6 +43,8 @@ interface SettingDao {
         const val IMPORT_SETS_FILE_NAME_ID: String = "import_sets_file_name"
         const val EXPORT_CHALLENGES_FILE_NAME_ID: String = "export_challenges_file_name"
         const val IMPORT_CHALLENGES_FILE_NAME_ID: String = "import_challenges_file_name"
+        const val EXPORT_PINPOINTS_FILE_NAME_ID: String = "export_pinpoints_file_name"
+        const val IMPORT_PINPOINTS_FILE_NAME_ID: String = "import_pinpoints_file_name"
         const val EXPORT_SETTINGS_FILE_NAME_ID: String = "export_settings_file_name"
         const val IMPORT_SETTINGS_FILE_NAME_ID: String = "import_settings_file_name"
         const val GENERATE_IDATE_ID: String = "generate_idate"
@@ -76,6 +78,9 @@ interface SettingDao {
         const val DEFAULT_CHALLENGES_EXPORT_FILE_NAME: String = "challenges_export"
         const val DEFAULT_CHALLENGES_IMPORT_FILE_NAME: String =
             "challenges_export_yyyy_mm_dd_hh_mm.csv"
+        const val DEFAULT_PINPOINTS_EXPORT_FILE_NAME: String = "pinpoints_export"
+        const val DEFAULT_PINPOINTS_IMPORT_FILE_NAME: String =
+            "pinpoints_export_yyyy_mm_dd_hh_mm.csv"
         const val DEFAULT_SETTINGS_EXPORT_FILE_NAME: String = "settings_export"
         const val DEFAULT_SETTINGS_IMPORT_FILE_NAME: String =
             "settings_export_yyyy_mm_dd_hh_mm.csv"
@@ -171,6 +176,12 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_CHALLENGES_IMPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${IMPORT_CHALLENGES_FILE_NAME_ID}'")
     fun getImportChallengesFilename(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_PINPOINTS_EXPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${EXPORT_PINPOINTS_FILE_NAME_ID}'")
+    fun getExportPinPointsFilename(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_PINPOINTS_IMPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${IMPORT_PINPOINTS_FILE_NAME_ID}'")
+    fun getImportPinPointsFilename(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SETTINGS_EXPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${EXPORT_SETTINGS_FILE_NAME_ID}'")
     fun getExportSettingsFilename(): Flow<String>
