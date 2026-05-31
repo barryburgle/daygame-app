@@ -26,6 +26,7 @@ import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.csv.ChallengeCsvService
 import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
+import com.barryburgle.gameapp.service.csv.PinPointCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.service.csv.SetCsvService
 import com.barryburgle.gameapp.service.csv.SettingCsvService
@@ -50,6 +51,7 @@ fun ToolsScreen(
     val dateCsvService = DateCsvService()
     val setCsvService = SetCsvService()
     val challengeCsvService = ChallengeCsvService()
+    val pinPointCsvService = PinPointCsvService()
     val settingCsvService = SettingCsvService()
     val csvFindService = CSVFindService()
     if (state.isCleaning) {
@@ -61,7 +63,7 @@ fun ToolsScreen(
         },
     ) { padding ->
         val dataExchangeCardModifier = Modifier
-            .height(780.dp)
+            .height(850.dp)
             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
             .shadow(
                 elevation = 5.dp, shape = MaterialTheme.shapes.large
@@ -109,6 +111,7 @@ fun ToolsScreen(
                         dateCsvService = dateCsvService,
                         setCsvService = setCsvService,
                         challengeCsvService = challengeCsvService,
+                        pinPointCsvService = pinPointCsvService,
                         settingCsvService = settingCsvService,
                         csvFindService = csvFindService
                     )
@@ -128,6 +131,7 @@ fun ToolsScreen(
                         dateCsvService = dateCsvService,
                         setCsvService = setCsvService,
                         challengeCsvService = challengeCsvService,
+                        pinPointCsvService = pinPointCsvService,
                         settingCsvService = settingCsvService,
                         csvFindService = csvFindService
                     )
