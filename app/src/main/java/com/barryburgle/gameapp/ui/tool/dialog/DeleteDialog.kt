@@ -100,6 +100,12 @@ fun DeleteDialog(
                             ToolEvent.SwitchDeleteChallenges
                         )
                         deleteTableSwitch(
+                            "pinpoints",
+                            state.deletePinPoints,
+                            onEvent,
+                            ToolEvent.SwitchDeletePinPoints
+                        )
+                        deleteTableSwitch(
                             "settings",
                             state.deleteSettings,
                             onEvent,
@@ -144,6 +150,9 @@ fun DeleteDialog(
                     if (state.deleteChallenges) {
                         onEvent(ToolEvent.DeleteAllChallenges)
                     }
+                    if (state.deletePinPoints) {
+                        onEvent(ToolEvent.DeleteAllPinPoints)
+                    }
                     if (state.deleteSettings) {
                         onEvent(ToolEvent.DeleteAllSettings)
                     }
@@ -165,7 +174,7 @@ fun DeleteDialog(
 }
 
 private fun getDeleteDescription(state: ToolsState): String {
-    if (!state.deleteSessions && !state.deleteLeads && !state.deleteDates && !state.deleteSets && !state.deleteChallenges) {
+    if (!state.deleteSessions && !state.deleteLeads && !state.deleteDates && !state.deleteSets && !state.deleteChallenges && !state.deletePinPoints) {
         return "No tables will be deleted, please select at least one option"
     }
     val deleteSessionsDescription =
@@ -175,8 +184,10 @@ private fun getDeleteDescription(state: ToolsState): String {
     val deleteSetsDescription = if (state.deleteSets) " ${state.allSets.size} sets," else ""
     val deleteChallengesDescription =
         if (state.deleteChallenges) " ${state.allChallenges.size} challenges," else ""
+    val deletePinPointsDescription =
+        if (state.deletePinPoints) " ${state.allPinPoints.size} pinpoints," else ""
     val deleteDescription =
-        "Deleting${deleteSessionsDescription}${deleteLeadsDescription}${deleteDatesDescription}${deleteSetsDescription}${deleteChallengesDescription}"
+        "Deleting${deleteSessionsDescription}${deleteLeadsDescription}${deleteDatesDescription}${deleteSetsDescription}${deleteChallengesDescription}${deletePinPointsDescription}"
     return deleteDescription.dropLast(1)
 }
 
