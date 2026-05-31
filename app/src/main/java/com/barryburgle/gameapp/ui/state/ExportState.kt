@@ -5,6 +5,7 @@ import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.FieldEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.setting.Setting
 
@@ -23,6 +24,7 @@ open class ExportState(
     override var allDates: List<Date> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
     override var allChallenges: List<AchievedChallenge> = emptyList(),
+    override var allPinPoints: List<PinPoint> = emptyList(),
     override var allSettings: List<Setting> = emptyList(),
     open var backupActive: Boolean = true,
     open var lastBackup: Int = 3,

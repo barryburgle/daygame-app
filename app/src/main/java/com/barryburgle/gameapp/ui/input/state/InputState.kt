@@ -11,6 +11,7 @@ import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.model.stat.AggregatedDates
@@ -74,6 +75,7 @@ data class InputState(
     var allEvents: List<SortableGameEvent> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
     override var allChallenges: List<AchievedChallenge> = emptyList(),
+    override var allPinPoints: List<PinPoint> = emptyList(),
     override var allSettings: List<Setting> = emptyList(),
     override var backupActive: Boolean = true,
     override var lastBackup: Int = 3,
@@ -143,6 +145,7 @@ data class InputState(
     allDates,
     allSets,
     allChallenges,
+    allPinPoints,
     allSettings,
     backupActive,
     lastBackup,

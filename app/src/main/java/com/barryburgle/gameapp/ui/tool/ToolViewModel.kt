@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.challenge.ChallengeDao
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
+import com.barryburgle.gameapp.dao.pinpoint.PinPointDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
@@ -27,6 +28,7 @@ class ToolViewModel(
     private val dateDao: DateDao,
     private val setDao: SetDao,
     private val challengeDao: ChallengeDao,
+    private val pinPointDao: PinPointDao,
     private val settingDao: SettingDao
 ) : ViewModel() {
     private val _state =

@@ -72,9 +72,9 @@ class MainActivity : ComponentActivity() {
                         it.dateDao,
                         it.setDao,
                         it.challengeDao,
+                        it.pinPointDao,
                         it.aggregatedSessionsDao,
-                        it.aggregatedDatesDao,
-                        it.pinPointDao
+                        it.aggregatedDatesDao
                     )
                 } as T
             }
@@ -126,6 +126,7 @@ class MainActivity : ComponentActivity() {
                         it.dateDao,
                         it.setDao,
                         it.challengeDao,
+                        it.pinPointDao,
                         it.settingDao
                     )
                 } as T
