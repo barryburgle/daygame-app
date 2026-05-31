@@ -60,6 +60,7 @@ data class ToolsState(
     var deleteDates: Boolean = false,
     var deleteSets: Boolean = false,
     var deleteChallenges: Boolean = false,
+    var deletePinPoints: Boolean = false,
     var deleteSettings: Boolean = false,
     var isCleaning: Boolean = false,
     var themeSysFollow: Boolean = false,

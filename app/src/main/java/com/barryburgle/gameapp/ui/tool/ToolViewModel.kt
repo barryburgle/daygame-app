@@ -322,6 +322,30 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SetExportPinPointsFileName -> {
+                _state.update {
+                    it.copy(
+                        exportPinPointsFileName = event.exportPinPointsFileName
+                    )
+                }
+                val exportPinPointsFileName = _state.value.exportPinPointsFileName
+                val setting =
+                    Setting(SettingDao.EXPORT_PINPOINTS_FILE_NAME_ID, exportPinPointsFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetImportPinPointsFileName -> {
+                _state.update {
+                    it.copy(
+                        importPinPointsFileName = event.importPinPointsFileName
+                    )
+                }
+                val importPinPointsFileName = _state.value.importPinPointsFileName
+                val setting =
+                    Setting(SettingDao.IMPORT_PINPOINTS_FILE_NAME_ID, importPinPointsFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetExportSettingsFileName -> {
                 _state.update {
                     it.copy(
@@ -682,6 +706,14 @@ class ToolViewModel(
                 }
             }
 
+            is ToolEvent.SwitchDeletePinPoints -> {
+                _state.update {
+                    it.copy(
+                        deletePinPoints = _state.value.deletePinPoints.not()
+                    )
+                }
+            }
+
             is ToolEvent.SwitchDeleteSettings -> {
                 _state.update {
                     it.copy(
@@ -879,6 +911,10 @@ class ToolViewModel(
 
             is ToolEvent.DeleteAllChallenges -> {
                 viewModelScope.launch { challengeDao.deleteAll() }
+            }
+
+            is ToolEvent.DeleteAllPinPoints -> {
+                viewModelScope.launch { pinPointDao.deleteAll() }
             }
 
             is ToolEvent.DeleteAllSettings -> {

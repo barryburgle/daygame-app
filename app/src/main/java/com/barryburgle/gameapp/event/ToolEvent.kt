@@ -19,6 +19,8 @@ sealed interface ToolEvent : GenericEvent {
     data class SetImportSetsFileName(val importSetsFileName: String) : ToolEvent
     data class SetExportChallengesFileName(val exportChallengesFileName: String) : ToolEvent
     data class SetImportChallengesFileName(val importChallengesFileName: String) : ToolEvent
+    data class SetExportPinPointsFileName(val exportPinPointsFileName: String) : ToolEvent
+    data class SetImportPinPointsFileName(val importPinPointsFileName: String) : ToolEvent
     data class SetExportSettingsFileName(val exportSettingsFileName: String) : ToolEvent
     data class SetImportSettingsFileName(val importSettingsFileName: String) : ToolEvent
     data class SetExportFolder(val exportFolder: String) : ToolEvent
@@ -52,6 +54,7 @@ sealed interface ToolEvent : GenericEvent {
     object SwitchDeleteDates : ToolEvent
     object SwitchDeleteSets : ToolEvent
     object SwitchDeleteChallenges : ToolEvent
+    object SwitchDeletePinPoints : ToolEvent
     object SwitchDeleteSettings : ToolEvent
     object SwitchIsCleaning : ToolEvent
     object SwitchThemeSysFollow : ToolEvent
@@ -70,6 +73,7 @@ sealed interface ToolEvent : GenericEvent {
     object DeleteAllDates : ToolEvent
     object DeleteAllSets : ToolEvent
     object DeleteAllChallenges : ToolEvent
+    object DeleteAllPinPoints : ToolEvent
     object DeleteAllSettings : ToolEvent
 
     object SwitchLiveSessionNotification : ToolEvent
