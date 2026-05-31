@@ -16,6 +16,7 @@ open class ExportState(
     open var exportDatesFileName: String = "",
     open var exportSetsFileName: String = "",
     open var exportChallengesFileName: String = "",
+    open var exportPinPointsFileName: String = "",
     open var exportSettingsFileName: String = "",
     open var exportFolder: String = "",
     open var backupFolder: String = "",

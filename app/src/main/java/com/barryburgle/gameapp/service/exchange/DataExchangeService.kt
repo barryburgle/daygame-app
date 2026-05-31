@@ -7,12 +7,14 @@ import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.csv.ChallengeCsvService
 import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
+import com.barryburgle.gameapp.service.csv.PinPointCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.service.csv.SetCsvService
 import com.barryburgle.gameapp.service.csv.SettingCsvService
@@ -29,6 +31,7 @@ class DataExchangeService {
         val dateCsvService: DateCsvService = DateCsvService()
         val setCsvService: SetCsvService = SetCsvService()
         val challengeCsvService: ChallengeCsvService = ChallengeCsvService()
+        val pinPointCsvService: PinPointCsvService = PinPointCsvService()
         val settingCsvService: SettingCsvService = SettingCsvService()
 
         fun backup(
@@ -62,6 +65,10 @@ class DataExchangeService {
                 state.exportFolder + "/" + state.backupFolder,
                 state.lastBackup
             )
+            pinPointCsvService.cleanBackupFolder(
+                state.exportFolder + "/" + state.backupFolder,
+                state.lastBackup
+            )
             settingCsvService.cleanBackupFolder(
                 state.exportFolder + "/" + state.backupFolder,
                 state.lastBackup
@@ -86,6 +93,9 @@ class DataExchangeService {
             challengeCsvService.validateExport(
                 state.exportFolder + "/" + state.backupFolder
             )
+            pinPointCsvService.validateExport(
+                state.exportFolder + "/" + state.backupFolder
+            )
         }
 
         fun export(
@@ -99,6 +109,8 @@ class DataExchangeService {
             exportSetsFileName: String,
             allChallenges: List<AchievedChallenge>,
             exportChallengesFileName: String,
+            allPinPoints: List<PinPoint>,
+            exportPinPointsFileName: String,
             allSettings: List<Setting>,
             exportFolder: String
         ) {
@@ -132,6 +144,12 @@ class DataExchangeService {
                 exportChallengesFileName,
                 true
             )
+            pinPointCsvService.setExportObjects(allPinPoints)
+            pinPointCsvService.exportRows(
+                exportFolder,
+                exportPinPointsFileName,
+                true
+            )
             settingCsvService.setExportObjects(allSettings)
             settingCsvService.exportRows(
                 exportFolder,
@@ -146,6 +164,7 @@ class DataExchangeService {
             importDatesFileName: String,
             importSetsFileName: String,
             importChallengesFileName: String,
+            importPinPointsFileName: String,
             importSettingsFileName: String,
             importFolder: String,
             importHeader: Boolean,
@@ -197,6 +216,15 @@ class DataExchangeService {
                 )
             )
             onEvent(
+                ToolEvent.SetAllPinPoints(
+                    pinPointCsvService.importRows(
+                        importFolder,
+                        importPinPointsFileName,
+                        importHeader
+                    )
+                )
+            )
+            onEvent(
                 ToolEvent.SetAllSettings(
                     settingCsvService.importRows(
                         importFolder,
@@ -221,6 +249,8 @@ class DataExchangeService {
                 setCsvService.getBackupFileName(),
                 state.allChallenges,
                 challengeCsvService.getBackupFileName(),
+                state.allPinPoints,
+                pinPointCsvService.getBackupFileName(),
                 state.allSettings,
                 state.exportFolder + "/" + state.backupFolder
             )
@@ -241,6 +271,8 @@ class DataExchangeService {
                 state.exportSetsFileName,
                 state.allChallenges,
                 state.exportChallengesFileName,
+                state.allPinPoints,
+                state.exportPinPointsFileName,
                 state.allSettings,
                 state.exportFolder
             )
@@ -284,6 +316,11 @@ class DataExchangeService {
                         state.importFolder + "/" + state.backupFolder,
                         "challenge"
                     )
+                val importPinPointsFileName =
+                    if (!fromBackupFolder) state.importPinPointsFileName else csvFindService.getLastFilenameInFolder(
+                        state.importFolder + "/" + state.backupFolder,
+                        "pinpoint"
+                    )
                 val importSettingsFileName =
                     if (!fromBackupFolder) state.importSettingsFileName else csvFindService.getLastFilenameInFolder(
                         state.importFolder + "/" + state.backupFolder,
@@ -297,6 +334,7 @@ class DataExchangeService {
                     importDatesFileName,
                     importSetsFileName,
                     importChallengesFileName,
+                    importPinPointsFileName,
                     importSettingsFileName,
                     importFolder,
                     true,

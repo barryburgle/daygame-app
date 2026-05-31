@@ -69,6 +69,7 @@ data class InputState(
     override var exportDatesFileName: String = "",
     override var exportSetsFileName: String = "",
     override var exportChallengesFileName: String = "",
+    override var exportPinPointsFileName: String = "",
     override var exportFolder: String = "",
     override var backupFolder: String = "",
     override var allDates: List<Date> = emptyList(),
@@ -137,6 +138,7 @@ data class InputState(
     exportDatesFileName,
     exportSetsFileName,
     exportChallengesFileName,
+    exportPinPointsFileName,
     "",// Not passing a valid exportSettingFileName because it is not used from InputScreen features for any settings export
     exportFolder,
     backupFolder,
