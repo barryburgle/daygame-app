@@ -15,7 +15,8 @@ class PinPointCsvService : AbstractCsvService<PinPoint>() {
     override fun exportSingleRow(pinPoint: PinPoint): Array<String> {
         val pinPointList = mutableListOf<String>()
         pinPointList.add(pinPoint.id.toString())
-        pinPointList.add(pinPoint.sessionId.toString())
+        pinPointList.add(pinPoint.sourceEventId.toString())
+        pinPointList.add(pinPoint.sourceEventType)
         pinPointList.add(pinPoint.pinPointType)
         pinPointList.add(pinPoint.utcTimestamp)
         pinPointList.add(pinPoint.latitude.toString())
@@ -26,7 +27,8 @@ class PinPointCsvService : AbstractCsvService<PinPoint>() {
     override fun generateHeader(): Array<String> {
         val pinPointListFieldList = mutableListOf<String>()
         pinPointListFieldList.add("id")
-        pinPointListFieldList.add("session_id")
+        pinPointListFieldList.add("source_event_id")
+        pinPointListFieldList.add("source_event_type")
         pinPointListFieldList.add("pinpoint_type")
         pinPointListFieldList.add("utc_timestamp")
         pinPointListFieldList.add("latitude")
@@ -40,8 +42,9 @@ class PinPointCsvService : AbstractCsvService<PinPoint>() {
             fields[1].toLong(),
             fields[2],
             fields[3],
-            fields[4].toDouble(),
-            fields[5].toDouble()
+            fields[4],
+            fields[5].toDouble(),
+            fields[6].toDouble(),
         )
     }
 
