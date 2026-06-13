@@ -11,11 +11,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PinPointDao {
 
-    companion object {
-        const val DELETE_LAST_QUERY: String =
-            "DELETE FROM pinpoint WHERE id = (SELECT id FROM pinpoint WHERE session_id = :sessionId AND pinpoint_type = :pinpointType ORDER BY id DESC LIMIT 1)"
-    }
-
     @Insert(onConflict = REPLACE)
     suspend fun batchInsert(pinpoints: List<PinPoint>)
 
@@ -25,11 +20,11 @@ interface PinPointDao {
     @Delete
     suspend fun delete(pinpoint: PinPoint)
 
-    @Query(DELETE_LAST_QUERY)
-    suspend fun deleteLastPinPointBySessionIdAndType(sessionId: Long, pinpointType: String)
-
-    @Query("DELETE FROM pinpoint WHERE session_id = :sessionId")
-    suspend fun deleteBySessionId(sessionId: Long)
+    @Query("DELETE FROM pinpoint WHERE id = (SELECT id FROM pinpoint WHERE source_event_id = :sourceEventId AND source_event_type = :sourceEventType ORDER BY id DESC LIMIT 1)")
+    suspend fun deleteBySourceEventIdAndSourceEventType(
+        sourceEventId: Long,
+        sourceEventType: String
+    )
 
     @Query("DELETE FROM pinpoint")
     suspend fun deleteAll()
