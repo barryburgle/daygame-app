@@ -720,7 +720,8 @@ class InputViewModel(
                         }
                         savePinPointWithLocation(
                             PinPointTypeEnum.CONVERSATION,
-                            abstractSession.id!!
+                            abstractSession.id!!,
+                            EventTypeEnum.SESSION
                         )
                     } else if (event.convos < abstractSession.convos) {
                         pinPointDao.deleteLastPinPointBySessionIdAndType(
@@ -767,7 +768,8 @@ class InputViewModel(
                         }
                         savePinPointWithLocation(
                             PinPointTypeEnum.CONTACT,
-                            abstractSession.id!!
+                            abstractSession.id!!,
+                            EventTypeEnum.SESSION
                         )
                     } else if (event.contacts < abstractSession.contacts) {
                         pinPointDao.deleteLastPinPointBySessionIdAndType(
@@ -1294,6 +1296,25 @@ class InputViewModel(
                         set.insertTime = state.value.editSet!!.insertTime
                     }
                     setDao.insert(set)
+                    if (!_state.value.contact) {
+                        savePinPointWithLocation(
+                            PinPointTypeEnum.CONTACT,
+                            set.id!!,
+                            EventTypeEnum.SET
+                        )
+                    } else if (!_state.value.conversation) {
+                        savePinPointWithLocation(
+                            PinPointTypeEnum.CONVERSATION,
+                            set.id!!,
+                            EventTypeEnum.SET
+                        )
+                    } else {
+                        savePinPointWithLocation(
+                            PinPointTypeEnum.SET,
+                            set.id!!,
+                            EventTypeEnum.SET
+                        )
+                    }
                     if (isAddingSet && !isUpdatingSet && _state.value.generateiDate && _state.value.instantDate) {
                         val date = _dateService.init(
                             id = dateId.toString(),
@@ -1586,7 +1607,11 @@ class InputViewModel(
     }
 
     @SuppressLint("MissingPermission")
-    private fun savePinPointWithLocation(type: PinPointTypeEnum, sessionId: Long) {
+    private fun savePinPointWithLocation(
+        pinPointType: PinPointTypeEnum,
+        sourceEventId: Long,
+        sourceEventType: EventTypeEnum
+    ) {
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -1603,8 +1628,9 @@ class InputViewModel(
                         pinPointDao.insert(
                             PinPoint(
                                 id = null,
-                                sessionId = sessionId,
-                                pinPointType = type.getField(),
+                                sourceEventId = sourceEventId,
+                                sourceEventType = sourceEventType.getField(),
+                                pinPointType = pinPointType.getField(),
                                 utcTimestamp = LocalDateTime.now().toString()
                                     .substring(0, 19) + "Z",
                                 longitude = longitude,
