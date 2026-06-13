@@ -32,8 +32,8 @@ interface PinPointDao {
     @Query("SELECT * from pinpoint ORDER BY id DESC, utc_timestamp DESC")
     fun getAll(): Flow<List<PinPoint>>
 
-    @Query("SELECT * FROM pinpoint WHERE session_id=:sessionId")
-    fun getBySessionId(sessionId: Long): Flow<PinPoint>
+    @Query("SELECT * FROM pinpoint WHERE source_event_id=:sourceEventId AND source_event_type=:sourceEventType ORDER BY id DESC LIMIT 1")
+    fun getBySourceEventIdAndSourceEventType(sourceEventId: Long, sourceEventType: String): Flow<PinPoint>
 
     @Query("SELECT * from pinpoint WHERE pinpoint_type IN ('set', 'conversation', 'contact') ORDER BY id DESC, utc_timestamp DESC")
     fun getSets(): Flow<List<PinPoint>>
