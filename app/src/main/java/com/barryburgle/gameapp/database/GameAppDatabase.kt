@@ -97,7 +97,7 @@ abstract class GameAppDatabase : RoomDatabase() {
         val MIGRATION_7_8: Migration = object : Migration(7, 8) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `pinpoint` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `session_id` INTEGER NOT NULL, `pinpoint_type` TEXT NOT NULL, `utc_timestamp` TEXT NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL);"
+                    "CREATE TABLE IF NOT EXISTS `pinpoint` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `source_event_id` INTEGER NOT NULL, `source_event_type` TEXT NOT NULL, `pinpoint_type` TEXT NOT NULL, `utc_timestamp` TEXT NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL);"
                 )
             }
         }

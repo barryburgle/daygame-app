@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "pinpoint")
 open class PinPoint(
     @PrimaryKey(autoGenerate = true) var id: Long?,
-    @ColumnInfo(name = "session_id") var sessionId: Long,
+    @ColumnInfo(name = "source_event_id") var sourceEventId: Long,
+    @ColumnInfo(name = "source_event_type") var sourceEventType: String,
     @ColumnInfo(name = "pinpoint_type") var pinPointType: String,
     @ColumnInfo(name = "utc_timestamp") var utcTimestamp: String,
     @ColumnInfo(name = "latitude") var latitude: Double,
