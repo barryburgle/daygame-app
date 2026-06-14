@@ -20,6 +20,12 @@ interface PinPointDao {
     @Delete
     suspend fun delete(pinpoint: PinPoint)
 
+    @Query("UPDATE pinpoint SET pinpoint_type = :newPinpointType WHERE id = (SELECT id FROM pinpoint WHERE source_event_id = :sourceEventId AND source_event_type = \"set\" ORDER BY id DESC LIMIT 1)")
+    suspend fun updatePinpointTypeForSetPinPoint(
+        sourceEventId: Long,
+        newPinpointType: String
+    )
+
     @Query("DELETE FROM pinpoint WHERE id in (SELECT id FROM pinpoint WHERE source_event_id = :sourceEventId AND source_event_type = :sourceEventType)")
     suspend fun deleteAllBySourceEventIdAndSourceEventType(
         sourceEventId: Long, sourceEventType: String
