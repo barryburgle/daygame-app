@@ -16,6 +16,7 @@ import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.dao.pinpoint.PinPointDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.database.GameAppDatabase
+import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.batch.BatchSessionService
@@ -95,7 +96,8 @@ class PersistentNotificationService : Service() {
                     pinPointDao.insert(
                         PinPoint(
                             id = null,
-                            sessionId = sessionId,
+                            sourceEventId = sessionId,
+                            sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
                             pinPointType = PinPointTypeEnum.SET.getField(),
                             utcTimestamp = LocalDateTime.now().toString()
                                 .substring(0, 19) + "Z",
@@ -154,7 +156,8 @@ class PersistentNotificationService : Service() {
                     pinPointDao.insert(
                         PinPoint(
                             id = null,
-                            sessionId = sessionId,
+                            sourceEventId = sessionId,
+                            sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
                             pinPointType = PinPointTypeEnum.CONVERSATION.getField(),
                             utcTimestamp = LocalDateTime.now().toString()
                                 .substring(0, 19) + "Z",
@@ -213,7 +216,8 @@ class PersistentNotificationService : Service() {
                     pinPointDao.insert(
                         PinPoint(
                             id = null,
-                            sessionId = sessionId,
+                            sourceEventId = sessionId,
+                            sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
                             pinPointType = PinPointTypeEnum.CONTACT.getField(),
                             utcTimestamp = LocalDateTime.now().toString()
                                 .substring(0, 19) + "Z",
