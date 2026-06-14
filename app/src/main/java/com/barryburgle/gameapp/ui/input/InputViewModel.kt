@@ -526,8 +526,11 @@ class InputViewModel(
 
             is GameEvent.DeleteSession -> {
                 viewModelScope.launch {
+                    pinPointDao.deleteAllBySourceEventIdAndSourceEventType(
+                        event.abstractSession.id!!,
+                        EventTypeEnum.SESSION.getField().lowercase()
+                    )
                     abstractSessionDao.delete(event.abstractSession)
-                    pinPointDao.deleteBySessionId(event.abstractSession.id!!)
                 }
             }
 
@@ -682,11 +685,13 @@ class InputViewModel(
                     if (event.sets > abstractSession.sets) {
                         savePinPointWithLocation(
                             PinPointTypeEnum.SET,
-                            abstractSession.id!!
+                            abstractSession.id!!,
+                            EventTypeEnum.SESSION
                         )
                     } else if (event.sets < abstractSession.sets) {
-                        pinPointDao.deleteLastPinPointBySessionIdAndType(
+                        pinPointDao.deleteLastPinPointBySourceEventIdAndSourceEventTypeAndType(
                             abstractSession.id!!,
+                            EventTypeEnum.SESSION.getField(),
                             PinPointTypeEnum.SET.getField()
                         )
                     }
@@ -724,8 +729,9 @@ class InputViewModel(
                             EventTypeEnum.SESSION
                         )
                     } else if (event.convos < abstractSession.convos) {
-                        pinPointDao.deleteLastPinPointBySessionIdAndType(
+                        pinPointDao.deleteLastPinPointBySourceEventIdAndSourceEventTypeAndType(
                             abstractSession.id!!,
+                            EventTypeEnum.SESSION.getField(),
                             PinPointTypeEnum.CONVERSATION.getField()
                         )
                     }
@@ -772,8 +778,9 @@ class InputViewModel(
                             EventTypeEnum.SESSION
                         )
                     } else if (event.contacts < abstractSession.contacts) {
-                        pinPointDao.deleteLastPinPointBySessionIdAndType(
+                        pinPointDao.deleteLastPinPointBySourceEventIdAndSourceEventTypeAndType(
                             abstractSession.id!!,
+                            EventTypeEnum.SESSION.getField(),
                             PinPointTypeEnum.CONTACT.getField()
                         )
                     }
@@ -784,18 +791,19 @@ class InputViewModel(
 
             is GameEvent.RollbackContactPinPointForLeadInsertDismissal -> {
                 viewModelScope.launch {
-                    pinPointDao.deleteLastPinPointBySessionIdAndType(
+                    pinPointDao.deleteLastPinPointBySourceEventIdAndSourceEventTypeAndType(
                         event.sessionId,
+                        EventTypeEnum.SESSION.getField(),
                         PinPointTypeEnum.CONTACT.getField()
                     )
                 }
             }
 
             is GameEvent.RollbackAllPinPoints -> {
-                var abstractSession = event.abstractSession
                 viewModelScope.launch {
-                    pinPointDao.deleteBySessionId(
-                        abstractSession.id!!
+                    pinPointDao.deleteAllBySourceEventIdAndSourceEventType(
+                        event.abstractSession.id!!,
+                        EventTypeEnum.SESSION.getField().lowercase()
                     )
                 }
             }
@@ -1410,6 +1418,10 @@ class InputViewModel(
 
             is GameEvent.DeleteSet -> {
                 viewModelScope.launch {
+                    pinPointDao.deleteAllBySourceEventIdAndSourceEventType(
+                        event.set.id!!,
+                        EventTypeEnum.SET.getField().lowercase()
+                    )
                     setDao.delete(event.set)
                 }
             }
@@ -1629,7 +1641,7 @@ class InputViewModel(
                             PinPoint(
                                 id = null,
                                 sourceEventId = sourceEventId,
-                                sourceEventType = sourceEventType.getField(),
+                                sourceEventType = sourceEventType.getField().lowercase(),
                                 pinPointType = pinPointType.getField(),
                                 utcTimestamp = LocalDateTime.now().toString()
                                     .substring(0, 19) + "Z",
