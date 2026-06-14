@@ -16,7 +16,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.ui.state.AllEntityState
@@ -24,7 +26,7 @@ import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 
 @Composable
-fun InsertInvite(state: AllEntityState) {
+fun InsertInvite(state: AllEntityState, blurBackground: Dp) {
     if (state.allSessions.isEmpty() &&
         state.allDates.isEmpty() &&
         state.allSets.isEmpty() &&
@@ -33,6 +35,7 @@ fun InsertInvite(state: AllEntityState) {
     ) {
         Row(
             modifier = Modifier
+                .blur(blurBackground)
                 .fillMaxWidth()
                 .fillMaxHeight(),
             verticalAlignment = Alignment.CenterVertically,

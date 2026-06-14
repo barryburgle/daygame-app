@@ -377,7 +377,7 @@ fun InputScreen(
             }
             onEvent(GameEvent.SwitchJustSaved)
         }
-        InsertInvite(state)
+        InsertInvite(state, blurBackground)
         Box(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
                 state = listState, modifier = Modifier

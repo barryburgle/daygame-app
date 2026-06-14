@@ -58,7 +58,7 @@ fun StatsScreen(
                 state = state, onEvent = onEvent
             )
         }
-        InsertInvite(state)
+        InsertInvite(state, 0.dp)
         val cardModifier = Modifier
             .shadow(
                 elevation = 5.dp, shape = MaterialTheme.shapes.large

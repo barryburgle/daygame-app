@@ -81,7 +81,7 @@ fun OutputScreen(
             BlurStatusBar()
         },
     ) { padding ->
-        InsertInvite(state)
+        InsertInvite(state, 0.dp)
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
