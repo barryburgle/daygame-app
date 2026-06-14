@@ -1303,23 +1303,23 @@ class InputViewModel(
                         set.id = state.value.editSet!!.id
                         set.insertTime = state.value.editSet!!.insertTime
                     }
-                    setDao.insert(set)
-                    if (!_state.value.contact) {
+                    var setId: Long = setDao.insert(set)
+                    if (_state.value.contact) {
                         savePinPointWithLocation(
                             PinPointTypeEnum.CONTACT,
-                            set.id!!,
+                            setId,
                             EventTypeEnum.SET
                         )
-                    } else if (!_state.value.conversation) {
+                    } else if (_state.value.conversation) {
                         savePinPointWithLocation(
                             PinPointTypeEnum.CONVERSATION,
-                            set.id!!,
+                            setId,
                             EventTypeEnum.SET
                         )
                     } else {
                         savePinPointWithLocation(
                             PinPointTypeEnum.SET,
-                            set.id!!,
+                            setId,
                             EventTypeEnum.SET
                         )
                     }
