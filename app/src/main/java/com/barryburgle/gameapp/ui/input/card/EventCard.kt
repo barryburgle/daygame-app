@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Stop
@@ -31,9 +32,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,6 +59,7 @@ import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.EntityService.Companion.getParsedHour
 import com.barryburgle.gameapp.service.EntityService.Companion.getTime
@@ -74,6 +76,7 @@ import com.barryburgle.gameapp.ui.input.dialog.shareEvent
 import com.barryburgle.gameapp.ui.input.liveSessionPulsingColor
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
+import com.barryburgle.gameapp.ui.tool.dialog.MapDialog
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
@@ -86,6 +89,7 @@ import java.time.temporal.ChronoUnit
 fun EventCard(
     sortableGameEvent: SortableGameEvent,
     leads: List<Lead>,
+    pinPoints: List<PinPoint>,
     onEvent: (GameEvent) -> Unit,
     modifier: Modifier = Modifier,
     simplePlusOneReport: Boolean,
@@ -102,6 +106,7 @@ fun EventCard(
     var liveSessionTime: Long = 0
     var liveSessionLeads: Int = 0
     var showDeleteConfirmDialog by remember { mutableStateOf(false) }
+    var showMapDialog by remember { mutableStateOf(false) }
 
     if (showDeleteConfirmDialog) {
         AlertDialog(
@@ -131,6 +136,15 @@ fun EventCard(
                 }
             }
         )
+    }
+
+    if (showMapDialog) {
+        MapDialog(
+            pinPoints = pinPoints,
+            leads = leads
+        ) {
+            showMapDialog = false
+        }
     }
 
     Card(
@@ -558,18 +572,43 @@ fun EventCard(
                             Spacer(modifier = Modifier.height(7.dp))
                             val semiOpaqueBackground = MaterialTheme.colorScheme.surface
                             CardSection {
-                                if (leads == null || leads.isEmpty()) {
-                                    LittleBodyText("No leads")
-                                } else {
-                                    LittleBodyText("Leads:")
-                                    Spacer(modifier = Modifier.height(7.dp))
-                                    LeadsRow(
-                                        semiOpaqueBackground,
-                                        leads,
-                                        localContext,
-                                        uriHandler,
-                                        onEvent
-                                    )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth(0.85f)
+                                    ) {
+                                        if (leads == null || leads.isEmpty()) {
+                                            LittleBodyText("No leads")
+                                        } else {
+                                            LittleBodyText("Leads:")
+                                            Spacer(modifier = Modifier.height(7.dp))
+                                            LeadsRow(
+                                                semiOpaqueBackground,
+                                                leads,
+                                                localContext,
+                                                uriHandler,
+                                                onEvent
+                                            )
+                                        }
+                                    }
+                                    if (AbstractSession::class.java.simpleName.equals(
+                                            sortableGameEvent.classType
+                                        ) || SingleSet::class.java.simpleName.equals(
+                                            sortableGameEvent.classType
+                                        ) || isLiveSession
+                                    ) {
+                                        IconShadowButton(
+                                            onClick = {
+                                                showMapDialog = true
+                                            },
+                                            imageVector = Icons.Default.Map,
+                                            contentDescription = "Map"
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -590,7 +629,10 @@ fun EventCard(
                                 width = 0.8f
                             }
                             var sectionDescription = "Sticking points"
-                            if (AchievedChallenge::class.java.simpleName.equals(sortableGameEvent.classType)) {
+                            if (AchievedChallenge::class.java.simpleName.equals(
+                                    sortableGameEvent.classType
+                                )
+                            ) {
                                 sectionDescription = "Description"
                             }
                             CardSection(width = width) {
@@ -723,7 +765,11 @@ private fun LeadsRow(
                             } else if (lead.contact == ContactTypeEnum.SOCIAL.getField() && lead.instagramUrl != null && lead.instagramUrl!!.isNotBlank()) {
                                 uriHandler.openUri(lead.instagramUrl!!)
                             } else {
-                                Toast.makeText(localContext, "No contact found", Toast.LENGTH_SHORT)
+                                Toast.makeText(
+                                    localContext,
+                                    "No contact found",
+                                    Toast.LENGTH_SHORT
+                                )
                                     .show()
                             }
                         }),

@@ -84,6 +84,7 @@ import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
@@ -404,6 +405,7 @@ fun InputScreen(
                                     EventCard(
                                         sessionList.first(),
                                         getLeads(state, sessionList.first()),
+                                        getPinPoints(state, sessionList.first()),
                                         onEvent,
                                         Modifier
                                             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
@@ -444,6 +446,7 @@ fun InputScreen(
                             EventCard(
                                 sortableGameEvent,
                                 getLeads(state, sortableGameEvent),
+                                getPinPoints(state, sortableGameEvent),
                                 onEvent,
                                 Modifier
                                     .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
@@ -588,6 +591,24 @@ fun getLeads(state: InputState, sortableGameEvent: SortableGameEvent): List<Lead
     if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
         val date = sortableGameEvent.event as Date
         return state.allLeads.filter { lead -> lead.id == date.leadId }
+    }
+    return emptyList()
+}
+
+fun getPinPoints(state: InputState, sortableGameEvent: SortableGameEvent): List<PinPoint> {
+    if (AbstractSession::class.java.simpleName.equals(sortableGameEvent.classType)) {
+        val abstractSession = sortableGameEvent.event as AbstractSession
+        return state.allPinPoints.filter { pinPoint ->
+            pinPoint.sourceEventType == EventTypeEnum.SESSION.getField()
+                .lowercase() && pinPoint.sourceEventId == abstractSession.id
+        }
+    }
+    if (SingleSet::class.java.simpleName.equals(sortableGameEvent.classType)) {
+        val set = sortableGameEvent.event as SingleSet
+        return state.allPinPoints.filter { pinPoint ->
+            pinPoint.sourceEventType == EventTypeEnum.SET.getField()
+                .lowercase() && pinPoint.sourceEventId == set.id
+        }
     }
     return emptyList()
 }
