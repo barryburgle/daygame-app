@@ -20,6 +20,7 @@ materialIconsExtended = "1.7.8"
 mpandroidchart = "v3.1.0"
 navigation = "2.9.7"
 opencsv = "5.12.0"
+osmdroid = "6.1.20"
 retrofit2 = "3.0.0"
 room = "2.8.4"
 ui = "1.10.6"
@@ -53,6 +54,7 @@ navigation-compose = { group = "androidx.navigation", name = "navigation-compose
 navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
 navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
 opencsv = { group = "com.opencsv", name = "opencsv", version.ref = "opencsv" }
+osmdroid = { group = "org.osmdroid", name = "osmdroid-android", version.ref = "osmdroid" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit2" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }

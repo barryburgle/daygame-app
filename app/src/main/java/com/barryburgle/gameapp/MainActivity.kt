@@ -51,6 +51,7 @@ import com.barryburgle.gameapp.ui.tool.ToolViewModel
 import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.osmdroid.config.Configuration
 import java.io.IOException
 
 
@@ -173,6 +174,7 @@ class MainActivity : ComponentActivity() {
         }
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         handlePermissionsFlow()
+        Configuration.getInstance().userAgentValue = packageName
         setContent {
             val inputState by inputViewModel.state.collectAsState()
             val outputState by outputViewModel.state.collectAsState()

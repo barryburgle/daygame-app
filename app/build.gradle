@@ -80,4 +80,5 @@ dependencies {
     implementation libs.compose.markdown
     implementation libs.media
     implementation libs.location
+    implementation libs.osmdroid
 }
