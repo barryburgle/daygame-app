@@ -904,6 +904,8 @@ class InputViewModel(
 
             is GameEvent.SaveLead -> {
                 viewModelScope.launch {
+                    val pinpointId = pinPointDao.getLastContactPinPointId()
+                    event.lead.pinPointId = pinpointId
                     leadDao.insert(event.lead)
                     _state.update {
                         it.copy(

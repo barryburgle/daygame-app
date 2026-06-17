@@ -36,6 +36,9 @@ interface PinPointDao {
         sourceEventId: Long, sourceEventType: String, pinpointType: String
     )
 
+    @Query("SELECT id FROM pinpoint WHERE pinpoint_type = 'contact' ORDER BY id DESC LIMIT 1")
+    suspend fun getLastContactPinPointId() : Long?
+
     @Query("DELETE FROM pinpoint")
     suspend fun deleteAll()
 
