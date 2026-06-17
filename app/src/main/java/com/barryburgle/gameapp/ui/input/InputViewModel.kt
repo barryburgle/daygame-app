@@ -691,7 +691,7 @@ class InputViewModel(
                     } else if (event.sets < abstractSession.sets) {
                         pinPointDao.deleteLastPinPointBySourceEventIdAndSourceEventTypeAndType(
                             abstractSession.id!!,
-                            EventTypeEnum.SESSION.getField(),
+                            EventTypeEnum.SESSION.getField().lowercase(),
                             PinPointTypeEnum.SET.getField()
                         )
                     }
@@ -731,7 +731,7 @@ class InputViewModel(
                     } else if (event.convos < abstractSession.convos) {
                         pinPointDao.deleteLastPinPointBySourceEventIdAndSourceEventTypeAndType(
                             abstractSession.id!!,
-                            EventTypeEnum.SESSION.getField(),
+                            EventTypeEnum.SESSION.getField().lowercase(),
                             PinPointTypeEnum.CONVERSATION.getField()
                         )
                     }
@@ -780,7 +780,7 @@ class InputViewModel(
                     } else if (event.contacts < abstractSession.contacts) {
                         pinPointDao.deleteLastPinPointBySourceEventIdAndSourceEventTypeAndType(
                             abstractSession.id!!,
-                            EventTypeEnum.SESSION.getField(),
+                            EventTypeEnum.SESSION.getField().lowercase(),
                             PinPointTypeEnum.CONTACT.getField()
                         )
                     }
@@ -793,7 +793,7 @@ class InputViewModel(
                 viewModelScope.launch {
                     pinPointDao.deleteLastPinPointBySourceEventIdAndSourceEventTypeAndType(
                         event.sessionId,
-                        EventTypeEnum.SESSION.getField(),
+                        EventTypeEnum.SESSION.getField().lowercase(),
                         PinPointTypeEnum.CONTACT.getField()
                     )
                 }
