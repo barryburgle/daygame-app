@@ -14,7 +14,8 @@ open class Lead(
     @ColumnInfo(name = "nationality") var nationality: String,
     @ColumnInfo(name = "age") var age: Long,
     @ColumnInfo(name = "contact_lookup_key") var contactLookupKey: String? = null,
-    @ColumnInfo(name = "instagram_url") var instagramUrl: String? = null
+    @ColumnInfo(name = "instagram_url") var instagramUrl: String? = null,
+    @ColumnInfo(name = "pinpoint_id") var pinPointId: Long? = null,
 ) {
     constructor() : this(0, "", null, "", "", "", 20, null)
 }
