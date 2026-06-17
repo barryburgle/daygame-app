@@ -1,66 +1,168 @@
 package com.barryburgle.gameapp.ui.tool.dialog
 
+import android.graphics.drawable.GradientDrawable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 import com.barryburgle.gameapp.model.session.PinPoint
+import com.barryburgle.gameapp.service.FormatService
+import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapDialog(
     pinPoints: List<PinPoint>,
     leads: List<Lead>,
     onDismiss: () -> Unit
 ) {
-    // TODO: center the map around not the first pinpoint but around the center of gravity of all pinpoints, and adjust the zoom level accordingly to show them all
-    val defaultCenter = pinPoints.firstOrNull()?.let {
-        GeoPoint(it.latitude, it.longitude)
-    } ?: GeoPoint(0.0, 0.0)
-
-    // TODO: use confirm and dismiss buttons from other dialogs
-    AlertDialog(
+    val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
+    val textColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+    val boundingBox = if (pinPoints.isNotEmpty()) {
+        BoundingBox.fromGeoPoints(pinPoints.map { GeoPoint(it.latitude, it.longitude) })
+    } else {
+        null
+    }
+    val mapCenter = boundingBox?.centerWithDateLine ?: GeoPoint(0.0, 0.0)
+    BasicAlertDialog(
         onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Close") }
-        },
-        title = { Text("Pinpoint Locations") },
-        text = {
-            // TODO [ignore] :instead of using AndroidView use osdCompose lib for this component
-            AndroidView(
+        content = {
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(400.dp),
-                factory = { context ->
-                    MapView(context).apply {
-                        setMultiTouchControls(true)
-                        controller.setZoom(14.0)
-                        controller.setCenter(defaultCenter)
-                        pinPoints.forEach { coordinate ->
-                            val markerGeoPoint = GeoPoint(coordinate.latitude, coordinate.longitude)
-                            // TODO: when touchin the pinpoint in a specific location a search in the leads should happen to find the lead with column pinpoint_id = to pinpoint.id
-                            val marker = Marker(this).apply {
-                                position = markerGeoPoint
-                                title = "Pinpoint"
-                                subDescription = "Time: è+è+è+èé*"
-                                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                    .height(450.dp)
+                    .clip(RoundedCornerShape(24.dp)) // This cuts the sharp edges of everything inside it
+            ) {
+                // TODO [ignore] :instead of using AndroidView use osdCompose lib for this component
+                AndroidView(
+                    modifier = Modifier.fillMaxSize(),
+                    factory = { ctx ->
+                        MapView(ctx).apply {
+                            setMultiTouchControls(true)
+                            zoomController.setVisibility(org.osmdroid.views.CustomZoomButtonsController.Visibility.NEVER)
+
+                            if (boundingBox != null && pinPoints.size > 1) {
+                                post {
+                                    zoomToBoundingBox(boundingBox, false, 80)
+                                }
+                            } else {
+                                controller.setZoom(15.0)
+                                controller.setCenter(mapCenter)
                             }
-                            overlays.add(marker)
+
+                            pinPoints.forEach { pinPoint ->
+                                val markerGeoPoint = GeoPoint(pinPoint.latitude, pinPoint.longitude)
+                                val associatedLead = leads.find { it.pinPointId == pinPoint.id }
+                                val markerTitle = if (associatedLead != null)
+                                    "${associatedLead?.name} ${
+                                        CountryEnum.getFlagByAlpha3(
+                                            associatedLead?.nationality!!
+                                        )
+                                    } ${associatedLead?.age} "
+                                else pinPoint.pinPointType.replaceFirstChar { it.uppercase() }
+                                val markerSnippet =
+                                    FormatService.getDate(
+                                        pinPoint.utcTimestamp.substring(
+                                            0,
+                                            16
+                                        ) + 'Z'
+                                    ) + " " +
+                                            FormatService.getTime(
+                                                pinPoint.utcTimestamp.substring(
+                                                    0,
+                                                    16
+                                                ) + 'Z'
+                                            )
+                                val drawableResId = when (pinPoint.pinPointType) {
+                                    PinPointTypeEnum.SET.getField() -> com.barryburgle.gameapp.R.drawable.set_action
+                                    PinPointTypeEnum.CONVERSATION.getField() -> com.barryburgle.gameapp.R.drawable.conversation_action
+                                    PinPointTypeEnum.CONTACT.getField() -> com.barryburgle.gameapp.R.drawable.contact_action
+                                    else -> android.R.drawable.ic_menu_myplaces
+                                }
+                                val currentMapView = this
+                                val marker = Marker(currentMapView).apply {
+                                    position = markerGeoPoint
+                                    icon = ContextCompat.getDrawable(ctx, drawableResId)
+                                    title = markerTitle
+                                    snippet = markerSnippet
+                                    subDescription =
+                                        if (associatedLead != null) associatedLead.contact.replaceFirstChar { it.uppercase() } else null
+                                    setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                                    setInfoWindowAnchor(0.5f, -0.8f)
+
+                                    infoWindow = object : MarkerInfoWindow(
+                                        org.osmdroid.library.R.layout.bonuspack_bubble,
+                                        currentMapView
+                                    ) {
+                                        override fun onOpen(item: Any?) {
+                                            super.onOpen(item)
+                                            mView?.let { bubbleView ->
+                                                val bg = GradientDrawable().apply {
+                                                    setColor(backgroundColor)
+                                                    cornerRadius = 32f
+                                                }
+                                                bubbleView.background = bg
+                                                bubbleView.clipToOutline = true
+                                                bubbleView.setPadding(24, 24, 24, 24)
+                                                val titleView =
+                                                    bubbleView.findViewById<android.widget.TextView>(
+                                                        org.osmdroid.library.R.id.bubble_title
+                                                    )
+                                                titleView?.setTextColor(textColor)
+
+                                                val descriptionView =
+                                                    bubbleView.findViewById<android.widget.TextView>(
+                                                        org.osmdroid.library.R.id.bubble_description
+                                                    )
+                                                descriptionView?.setTextColor(textColor)
+
+                                                val subDescriptionView =
+                                                    bubbleView.findViewById<android.widget.TextView>(
+                                                        org.osmdroid.library.R.id.bubble_subdescription
+                                                    )
+                                                subDescriptionView?.setTextColor(textColor)
+                                            }
+                                        }
+                                    }
+
+                                    setOnMarkerClickListener { m, _ ->
+                                        m.showInfoWindow()
+                                        true
+                                    }
+                                }
+                                overlays.add(marker)
+                            }
                         }
                     }
-                },
-                update = { mapView ->
-                    mapView.controller.setCenter(defaultCenter)
+                )
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 16.dp)
+                ) {
+                    ConfirmButton(onClick = onDismiss)
                 }
-            )
+            }
         }
     )
 }
