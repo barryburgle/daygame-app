@@ -141,7 +141,8 @@ fun EventCard(
     if (showMapDialog) {
         MapDialog(
             pinPoints = pinPoints,
-            leads = leads
+            leads = leads,
+            zoomOnOpen = if (isLiveSession) 18.5 else 17.0
         ) {
             showMapDialog = false
         }

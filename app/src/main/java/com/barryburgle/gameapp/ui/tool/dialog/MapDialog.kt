@@ -34,6 +34,7 @@ import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 fun MapDialog(
     pinPoints: List<PinPoint>,
     leads: List<Lead>,
+    zoomOnOpen: Double,
     onDismiss: () -> Unit
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
@@ -66,7 +67,7 @@ fun MapDialog(
                                     zoomToBoundingBox(boundingBox, false, 80)
                                 }
                             } else {
-                                controller.setZoom(15.0)
+                                controller.setZoom(zoomOnOpen)
                                 controller.setCenter(mapCenter)
                             }
 
