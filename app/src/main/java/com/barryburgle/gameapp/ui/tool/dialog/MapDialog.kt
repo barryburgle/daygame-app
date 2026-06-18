@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
@@ -40,6 +41,7 @@ fun MapDialog(
     pinPoints: List<PinPoint>,
     leads: List<Lead>,
     zoomOnOpen: Double,
+    onEvent: (GameEvent) -> Unit,
     onDismiss: () -> Unit
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
@@ -60,7 +62,7 @@ fun MapDialog(
                     .height(450.dp)
                     .clip(RoundedCornerShape(24.dp))
             ) {
-                // TODO [ignore] :instead of using AndroidView use osdCompose lib for this component
+                // TODO:instead of using AndroidView use osdCompose lib for this component
                 AndroidView(
                     modifier = Modifier.fillMaxSize(),
                     factory = { ctx ->
@@ -125,7 +127,7 @@ fun MapDialog(
                                         if (associatedLead != null) associatedLead.contact.replaceFirstChar { it.uppercase() } else null
                                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                                     setInfoWindowAnchor(0.5f, -0.8f)
-
+                                    val currentMarker = this
                                     infoWindow = object : MarkerInfoWindow(
                                         org.osmdroid.library.R.layout.bonuspack_bubble,
                                         currentMapView
@@ -157,6 +159,40 @@ fun MapDialog(
                                                         org.osmdroid.library.R.id.bubble_subdescription
                                                     )
                                                 subDescriptionView?.setTextColor(textColor)
+                                                val layoutContainer = bubbleView as? LinearLayout
+                                                if (layoutContainer != null && bubbleView.findViewById<ImageView>(
+                                                        android.R.id.button1
+                                                    ) == null
+                                                ) {
+                                                    layoutContainer.orientation =
+                                                        LinearLayout.HORIZONTAL
+
+                                                    val deleteIcon = ImageView(ctx).apply {
+                                                        id = android.R.id.button1
+                                                        setImageResource(android.R.drawable.ic_menu_delete) // TODO: use delete icon used elsewhere
+                                                        setColorFilter(errorColor)
+                                                        setPadding(16, 0, 0, 0)
+                                                        layoutParams = LinearLayout.LayoutParams(
+                                                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                            ViewGroup.LayoutParams.MATCH_PARENT
+                                                        ).apply {
+                                                            gravity = Gravity.CENTER_VERTICAL
+                                                        }
+                                                        setOnClickListener {
+                                                            onEvent(
+                                                                GameEvent.DeletePinPoint(
+                                                                    pinPoint
+                                                                )
+                                                            )
+                                                            close()
+                                                            currentMapView.overlays.remove(
+                                                                currentMarker
+                                                            )
+                                                            currentMapView.invalidate()
+                                                        }
+                                                    }
+                                                    layoutContainer.addView(deleteIcon)
+                                                }
                                             }
                                         }
                                     }
