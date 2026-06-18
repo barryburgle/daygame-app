@@ -175,6 +175,7 @@ class MainActivity : ComponentActivity() {
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         handlePermissionsFlow()
         Configuration.getInstance().userAgentValue = packageName
+        Configuration.getInstance().tileFileSystemCacheMaxBytes = 20L * 1024L * 1024L
         setContent {
             val inputState by inputViewModel.state.collectAsState()
             val outputState by outputViewModel.state.collectAsState()
