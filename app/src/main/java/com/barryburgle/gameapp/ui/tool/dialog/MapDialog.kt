@@ -1,6 +1,11 @@
 package com.barryburgle.gameapp.ui.tool.dialog
 
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
+import android.view.Gravity
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +44,7 @@ fun MapDialog(
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
     val textColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+    val errorColor = MaterialTheme.colorScheme.error.toArgb()
     val boundingBox = if (pinPoints.isNotEmpty()) {
         BoundingBox.fromGeoPoints(pinPoints.map { GeoPoint(it.latitude, it.longitude) })
     } else {
@@ -100,10 +106,20 @@ fun MapDialog(
                                     PinPointTypeEnum.CONTACT.getField() -> com.barryburgle.gameapp.R.drawable.contact_action
                                     else -> android.R.drawable.ic_menu_myplaces
                                 }
+                                val backgroundCircle = GradientDrawable().apply {
+                                    shape = GradientDrawable.OVAL
+                                    setColor(backgroundColor)
+                                    setSize(96, 96)
+                                }
+                                val actionIcon = ContextCompat.getDrawable(ctx, drawableResId)
+                                val layeredIcon =
+                                    LayerDrawable(arrayOf(backgroundCircle, actionIcon)).apply {
+                                        setLayerInset(1, 16, 16, 16, 16)
+                                    }
                                 val currentMapView = this
                                 val marker = Marker(currentMapView).apply {
                                     position = markerGeoPoint
-                                    icon = ContextCompat.getDrawable(ctx, drawableResId)
+                                    icon = layeredIcon
                                     title = markerTitle
                                     snippet = markerSnippet
                                     subDescription =
