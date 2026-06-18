@@ -58,7 +58,7 @@ fun MapDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(450.dp)
-                    .clip(RoundedCornerShape(24.dp)) // This cuts the sharp edges of everything inside it
+                    .clip(RoundedCornerShape(24.dp))
             ) {
                 // TODO [ignore] :instead of using AndroidView use osdCompose lib for this component
                 AndroidView(
@@ -87,19 +87,18 @@ fun MapDialog(
                                         )
                                     } ${associatedLead?.age} "
                                 else pinPoint.pinPointType.replaceFirstChar { it.uppercase() }
-                                val markerSnippet =
-                                    FormatService.getDate(
-                                        pinPoint.utcTimestamp.substring(
-                                            0,
-                                            16
-                                        ) + 'Z'
-                                    ) + " " +
-                                            FormatService.getTime(
-                                                pinPoint.utcTimestamp.substring(
-                                                    0,
-                                                    16
-                                                ) + 'Z'
-                                            )
+                                val markerSnippet = FormatService.getDate(
+                                    pinPoint.utcTimestamp.substring(
+                                        0,
+                                        16
+                                    ) + 'Z'
+                                ) + " " +
+                                        FormatService.getTime(
+                                            pinPoint.utcTimestamp.substring(
+                                                0,
+                                                16
+                                            ) + 'Z'
+                                        )
                                 val drawableResId = when (pinPoint.pinPointType) {
                                     PinPointTypeEnum.SET.getField() -> com.barryburgle.gameapp.R.drawable.set_action
                                     PinPointTypeEnum.CONVERSATION.getField() -> com.barryburgle.gameapp.R.drawable.conversation_action
