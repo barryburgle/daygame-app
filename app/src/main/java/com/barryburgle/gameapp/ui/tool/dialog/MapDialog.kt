@@ -12,13 +12,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -29,6 +35,8 @@ import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -53,6 +61,50 @@ fun MapDialog(
         null
     }
     val mapCenter = boundingBox?.centerWithDateLine ?: GeoPoint(0.0, 0.0)
+    var showDeletePinPointConfirmDialog by remember { mutableStateOf(false) }
+    var pinPointToDelete by remember { mutableStateOf<PinPoint?>(null) }
+    var markerOverlayToDelete by remember { mutableStateOf<Marker?>(null) }
+    var currentMapViewInstance: MapView? by remember { mutableStateOf(null) }
+    if (showDeletePinPointConfirmDialog) {
+        AlertDialog(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            modifier = Modifier.shadow(elevation = 10.dp),
+            onDismissRequest = {
+                showDeletePinPointConfirmDialog = false
+                markerOverlayToDelete = null
+            },
+            title = {
+                LargeTitleText(text = "Delete pinpoint")
+            },
+            text = {
+                LittleBodyText("Do you really want to delete this pinpoint? Once deleted you won't be able to insert it again")
+            },
+            confirmButton = {
+                ConfirmButton {
+                    if (pinPointToDelete != null) {
+                        onEvent(
+                            GameEvent.DeletePinPoint(
+                                pinPointToDelete!!
+                            )
+                        )
+                        if (markerOverlayToDelete != null && currentMapViewInstance != null) {
+                            currentMapViewInstance!!.overlays.remove(markerOverlayToDelete)
+                            currentMapViewInstance!!.invalidate()
+                        }
+                        markerOverlayToDelete = null
+                        showDeletePinPointConfirmDialog = false
+                        pinPointToDelete = null
+                    }
+                }
+            },
+            dismissButton = {
+                DismissButton {
+                    showDeletePinPointConfirmDialog = false
+                    markerOverlayToDelete = null
+                }
+            }
+        )
+    }
     BasicAlertDialog(
         onDismissRequest = onDismiss,
         content = {
@@ -67,6 +119,7 @@ fun MapDialog(
                     modifier = Modifier.fillMaxSize(),
                     factory = { ctx ->
                         MapView(ctx).apply {
+                            currentMapViewInstance = this
                             setMultiTouchControls(true)
                             zoomController.setVisibility(org.osmdroid.views.CustomZoomButtonsController.Visibility.NEVER)
 
@@ -179,16 +232,10 @@ fun MapDialog(
                                                             gravity = Gravity.CENTER_VERTICAL
                                                         }
                                                         setOnClickListener {
-                                                            onEvent(
-                                                                GameEvent.DeletePinPoint(
-                                                                    pinPoint
-                                                                )
-                                                            )
+                                                            pinPointToDelete = pinPoint
+                                                            showDeletePinPointConfirmDialog = true
                                                             close()
-                                                            currentMapView.overlays.remove(
-                                                                currentMarker
-                                                            )
-                                                            currentMapView.invalidate()
+                                                            markerOverlayToDelete = currentMarker
                                                         }
                                                     }
                                                     layoutContainer.addView(deleteIcon)
