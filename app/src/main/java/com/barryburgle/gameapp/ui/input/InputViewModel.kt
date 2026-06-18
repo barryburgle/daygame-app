@@ -808,6 +808,14 @@ class InputViewModel(
                 }
             }
 
+            is GameEvent.DeletePinPoint -> {
+                viewModelScope.launch {
+                    pinPointDao.delete(
+                        event.pinPoint
+                    )
+                }
+            }
+
             is GameEvent.StopLiveSession -> {
                 notificationScheduler.cancel(AndroidNotificationScheduler.SITTING_REMINDER_REQUEST_CODE)
                 viewModelScope.launch {

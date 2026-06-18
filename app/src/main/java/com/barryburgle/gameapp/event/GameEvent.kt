@@ -10,6 +10,7 @@ import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 
 sealed interface GameEvent : GenericEvent {
@@ -55,6 +56,10 @@ sealed interface GameEvent : GenericEvent {
 
     data class RollbackAllPinPoints(
         val abstractSession: AbstractSession
+    ) : GameEvent
+
+    data class DeletePinPoint(
+        val pinPoint: PinPoint
     ) : GameEvent
 
     data class StopLiveSession(
