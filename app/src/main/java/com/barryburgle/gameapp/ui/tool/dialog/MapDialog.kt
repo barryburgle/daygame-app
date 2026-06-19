@@ -42,6 +42,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
+import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,6 +122,10 @@ fun MapDialog(
                         MapView(ctx).apply {
                             currentMapViewInstance = this
                             setMultiTouchControls(true)
+                            val rotationGestureOverlay = RotationGestureOverlay(this).apply {
+                                isEnabled = true
+                            }
+                            overlays.add(rotationGestureOverlay)
                             zoomController.setVisibility(org.osmdroid.views.CustomZoomButtonsController.Visibility.NEVER)
 
                             if (boundingBox != null && pinPoints.size > 1) {
