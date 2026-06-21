@@ -1,5 +1,6 @@
 # Version 1.13.0 (2026-06-dd)
 **Features**
+- Keep track of interactions' time and space when in Live Session or inserting a single Set
 - Delete Live Session without saving results 🛑
 
 **Bugfixes**
