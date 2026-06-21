@@ -30,6 +30,7 @@ open class ExportState(
     open var backupActive: Boolean = true,
     open var lastBackup: Int = 3,
     open var justSaved: Boolean = false,
+    open var pinPointInteractions: Boolean = true,
     open var generateiDate: Boolean = true,
     open var liveSessionNotificationEnabled: Boolean = true,
     open var liveSessionSittingReminderEnabled: Boolean = true,

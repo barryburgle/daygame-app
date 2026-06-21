@@ -50,6 +50,7 @@ data class ToolsState(
     val latestDownloadUrl: String = "",
     val showChangelog: Boolean = false,
     var backupBeforeUpdate: Boolean = true,
+    override var pinPointInteractions: Boolean = true,
     override var generateiDate: Boolean = true,
     var followCount: Boolean = false,
     var suggestLeadsNationality: Boolean = true,

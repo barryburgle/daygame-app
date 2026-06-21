@@ -60,6 +60,13 @@ fun DataEntryCard(
         }
     }
     GenericSettingsCard("Data Entry", modifier) {
+        SwitchSetting(
+            "Pinpoint interactions",
+            state.pinPointInteractions,
+            description = "When enabled space and time for each new interaction are acquired. Requires full location access"
+        ) {
+            onEvent(ToolEvent.SwitchPinPointInteractions)
+        }
         IconButtonSetting(text = "Set sticking points reminder",
             imageVector = Icons.Default.Timer,
             contentDescription = "Reminder",

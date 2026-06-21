@@ -45,6 +45,7 @@ sealed interface ToolEvent : GenericEvent {
     object SwitchShowChangelog : ToolEvent
     object SwitchBackupBeforeUpdate : ToolEvent
     object SwitchGenerateiDate : ToolEvent
+    object SwitchPinPointInteractions : ToolEvent
     object SwitchFollowCount : ToolEvent
     object SwitchSuggestLeadsNationality : ToolEvent
     data class SetShownNationalities(val shownNationalities: String) : ToolEvent

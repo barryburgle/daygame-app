@@ -48,6 +48,7 @@ interface SettingDao {
         const val EXPORT_SETTINGS_FILE_NAME_ID: String = "export_settings_file_name"
         const val IMPORT_SETTINGS_FILE_NAME_ID: String = "import_settings_file_name"
         const val GENERATE_IDATE_ID: String = "generate_idate"
+        const val PINPOINT_INTERACTIONS_ID: String = "pinpoint_interactions"
         const val FOLLOW_COUNT_ID: String = "follow_count"
         const val SUGGEST_LEADS_NATIONALITY_ID: String = "suggest_leads_nationality"
         const val SHOWN_NATIONALITIES_ID: String = "shown_nationalities"
@@ -95,6 +96,7 @@ interface SettingDao {
         const val DEFAULT_IMPORT_HEADER_FLAG: String = "false"
         const val DEFAULT_BACKUP_ACTIVE_FLAG: String = "true"
         const val DEFAULT_GENERATE_IDATE_FLAG: String = "true"
+        const val DEFAULT_PINPOINT_INTERACTIONS_FLAG: String = "true"
         const val DEFAULT_FOLLOW_COUNT_FLAG: String = "true"
         const val DEFAULT_SUGGEST_LEADS_NATIONALITY_FLAG: String = "true"
         const val DEFAULT_SHOWN_NATIONALITIES: String = "6"
@@ -215,6 +217,9 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_GENERATE_IDATE_FLAG}' ELSE value END FROM setting WHERE id = '${GENERATE_IDATE_ID}'")
     fun getGenerateiDate(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_PINPOINT_INTERACTIONS_FLAG}' ELSE value END FROM setting WHERE id = '${PINPOINT_INTERACTIONS_ID}'")
+    fun getPinPointInteractions(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_FOLLOW_COUNT_FLAG}' ELSE value END FROM setting WHERE id = '${FOLLOW_COUNT_ID}'")
     fun getFollowCount(): Flow<String>

@@ -12,7 +12,6 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.ui.CombineEighteen
-import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.CombineTwenty
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.Flow
@@ -85,7 +84,8 @@ class ToolViewModel(
             importSettingsFilename = importSettings,
         )
     }
-    val _generalSettingState: Flow<GeneralSettingState> = CombineNineteen(
+    val _generalSettingState: Flow<GeneralSettingState> = CombineTwenty(
+        settingDao.getPinPointInteractions(),
         settingDao.getGenerateiDate(),
         settingDao.getNotificationTime(),
         settingDao.getFollowCount(),
@@ -105,8 +105,9 @@ class ToolViewModel(
         settingDao.getLiveSessionShareEnabled(),
         settingDao.getArchiveBackupFolder(),
         settingDao.getIsCleaning()
-    ) { generateiDate, notificationTime, followCount, suggestLeadsNationality, shownNationalities, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled, archiveBackupFolder, isCleaning ->
+    ) { pinPointInteractions, generateiDate, notificationTime, followCount, suggestLeadsNationality, shownNationalities, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled, archiveBackupFolder, isCleaning ->
         GeneralSettingState(
+            pinPointInteractions = pinPointInteractions,
             generateiDate = generateiDate,
             notificationTime = notificationTime,
             followCount = followCount,
@@ -191,6 +192,7 @@ class ToolViewModel(
                 exportHeader = importExportSettingState.exportHeader.toBoolean(),
                 importHeader = importExportSettingState.importHeader.toBoolean(),
                 backupActive = importExportSettingState.backupActive.toBoolean(),
+                pinPointInteractions = generalSettingState.pinPointInteractions.toBoolean(),
                 generateiDate = generalSettingState.generateiDate.toBoolean(),
                 latestAvailable = latestAvailable,
                 latestPublishDate = latestPublishDate,
@@ -632,6 +634,18 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SwitchPinPointInteractions -> {
+                _state.update {
+                    it.copy(
+                        pinPointInteractions = _state.value.pinPointInteractions.not()
+                    )
+                }
+                val pinPointInteractions = _state.value.pinPointInteractions
+                val setting =
+                    Setting(SettingDao.PINPOINT_INTERACTIONS_ID, pinPointInteractions.toString())
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SwitchFollowCount -> {
                 _state.update {
                     it.copy(
@@ -1029,6 +1043,7 @@ data class ImportExportSettingState(
 )
 
 data class GeneralSettingState(
+    val pinPointInteractions: String,
     val generateiDate: String,
     val notificationTime: String,
     val followCount: String,
