@@ -15,6 +15,7 @@ import com.barryburgle.gameapp.MainActivity
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.dao.pinpoint.PinPointDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
+import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.database.GameAppDatabase
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
@@ -60,7 +61,8 @@ class PersistentNotificationService : Service() {
 
     private fun handleNewSetAction(
         abstractSessionDao: AbstractSessionDao,
-        pinPointDao: PinPointDao
+        pinPointDao: PinPointDao,
+        settingDao: SettingDao
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -93,18 +95,23 @@ class PersistentNotificationService : Service() {
                 val sessionId = abstractSessionDao.insert(updatedSession)
                 val location = getLocation()
                 if (location != null) {
-                    pinPointDao.insert(
-                        PinPoint(
-                            id = null,
-                            sourceEventId = sessionId,
-                            sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
-                            pinPointType = PinPointTypeEnum.SET.getField(),
-                            utcTimestamp = LocalDateTime.now().toString()
-                                .substring(0, 19) + "Z",
-                            longitude = location?.longitude ?: 0.0,
-                            latitude = location?.latitude ?: 0.0
+                    if (settingDao.getPinPointInteractions()
+                            .firstOrNull()
+                            ?.toBoolean() ?: true
+                    ) {
+                        pinPointDao.insert(
+                            PinPoint(
+                                id = null,
+                                sourceEventId = sessionId,
+                                sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
+                                pinPointType = PinPointTypeEnum.SET.getField(),
+                                utcTimestamp = LocalDateTime.now().toString()
+                                    .substring(0, 19) + "Z",
+                                longitude = location?.longitude ?: 0.0,
+                                latitude = location?.latitude ?: 0.0
+                            )
                         )
-                    )
+                    }
                 }
                 withContext(Dispatchers.Main) {
                     updateNotification(
@@ -120,7 +127,8 @@ class PersistentNotificationService : Service() {
     }
 
     private fun handleNewConversationAction(
-        abstractSessionDao: AbstractSessionDao, pinPointDao: PinPointDao
+        abstractSessionDao: AbstractSessionDao, pinPointDao: PinPointDao,
+        settingDao: SettingDao
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -153,18 +161,23 @@ class PersistentNotificationService : Service() {
                 val sessionId = abstractSessionDao.insert(updatedSession)
                 val location = getLocation()
                 if (location != null) {
-                    pinPointDao.insert(
-                        PinPoint(
-                            id = null,
-                            sourceEventId = sessionId,
-                            sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
-                            pinPointType = PinPointTypeEnum.CONVERSATION.getField(),
-                            utcTimestamp = LocalDateTime.now().toString()
-                                .substring(0, 19) + "Z",
-                            longitude = location?.longitude ?: 0.0,
-                            latitude = location?.latitude ?: 0.0
+                    if (settingDao.getPinPointInteractions()
+                            .firstOrNull()
+                            ?.toBoolean() ?: true
+                    ) {
+                        pinPointDao.insert(
+                            PinPoint(
+                                id = null,
+                                sourceEventId = sessionId,
+                                sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
+                                pinPointType = PinPointTypeEnum.CONVERSATION.getField(),
+                                utcTimestamp = LocalDateTime.now().toString()
+                                    .substring(0, 19) + "Z",
+                                longitude = location?.longitude ?: 0.0,
+                                latitude = location?.latitude ?: 0.0
+                            )
                         )
-                    )
+                    }
                 }
                 withContext(Dispatchers.Main) {
                     updateNotification(
@@ -180,7 +193,8 @@ class PersistentNotificationService : Service() {
     }
 
     private fun handleNewContactAction(
-        abstractSessionDao: AbstractSessionDao, pinPointDao: PinPointDao
+        abstractSessionDao: AbstractSessionDao, pinPointDao: PinPointDao,
+        settingDao: SettingDao
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -213,25 +227,30 @@ class PersistentNotificationService : Service() {
                 val sessionId = abstractSessionDao.insert(updatedSession)
                 val location = getLocation()
                 if (location != null) {
-                    pinPointDao.insert(
-                        PinPoint(
-                            id = null,
-                            sourceEventId = sessionId,
-                            sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
-                            pinPointType = PinPointTypeEnum.CONTACT.getField(),
-                            utcTimestamp = LocalDateTime.now().toString()
-                                .substring(0, 19) + "Z",
-                            longitude = location?.longitude ?: 0.0,
-                            latitude = location?.latitude ?: 0.0
+                    if (settingDao.getPinPointInteractions()
+                            .firstOrNull()
+                            ?.toBoolean() ?: true
+                    ) {
+                        pinPointDao.insert(
+                            PinPoint(
+                                id = null,
+                                sourceEventId = sessionId,
+                                sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
+                                pinPointType = PinPointTypeEnum.CONTACT.getField(),
+                                utcTimestamp = LocalDateTime.now().toString()
+                                    .substring(0, 19) + "Z",
+                                longitude = location?.longitude ?: 0.0,
+                                latitude = location?.latitude ?: 0.0
+                            )
                         )
-                    )
-                }
-                withContext(Dispatchers.Main) {
-                    updateNotification(
-                        updatedSession.sets,
-                        updatedSession.convos,
-                        updatedSession.contacts
-                    )
+                    }
+                    withContext(Dispatchers.Main) {
+                        updateNotification(
+                            updatedSession.sets,
+                            updatedSession.convos,
+                            updatedSession.contacts
+                        )
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -289,19 +308,20 @@ class PersistentNotificationService : Service() {
         val database = GameAppDatabase.getInstance(applicationContext)
         val abstractSessionDao = database!!.abstractSessionDao
         val pinPointDao = database!!.pinPointDao
+        val settingDao = database!!.settingDao
         when (intent?.action) {
             ACTION_NEW_SET -> {
-                handleNewSetAction(abstractSessionDao, pinPointDao)
+                handleNewSetAction(abstractSessionDao, pinPointDao, settingDao)
                 return START_STICKY
             }
 
             ACTION_NEW_CONVERSATION -> {
-                handleNewConversationAction(abstractSessionDao, pinPointDao)
+                handleNewConversationAction(abstractSessionDao, pinPointDao, settingDao)
                 return START_STICKY
             }
 
             ACTION_NEW_CONTACT -> {
-                handleNewContactAction(abstractSessionDao, pinPointDao)
+                handleNewContactAction(abstractSessionDao, pinPointDao, settingDao)
                 return START_STICKY
             }
         }

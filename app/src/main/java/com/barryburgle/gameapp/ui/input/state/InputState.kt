@@ -100,6 +100,7 @@ data class InputState(
     var sessionId: Long? = 0L,
     var dateId: Long? = 0L,
     override var generateiDate: Boolean = true,
+    override var pinPointInteractions: Boolean = true,
     var followCount: Boolean = true,
     var suggestLeadsNationality: Boolean = true,
     val incrementChallengeGoal: Int = 5,

@@ -36,11 +36,11 @@ import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.set.SetService
+import com.barryburgle.gameapp.ui.CombineEleven
 import com.barryburgle.gameapp.ui.CombineFive
 import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.CombineSeven
 import com.barryburgle.gameapp.ui.CombineSixteen
-import com.barryburgle.gameapp.ui.CombineTen
 import com.barryburgle.gameapp.ui.input.dialog.InputDialogConstant
 import com.barryburgle.gameapp.ui.input.state.DialogSettingsState
 import com.barryburgle.gameapp.ui.input.state.ExportSettingsState
@@ -167,6 +167,7 @@ class InputViewModel(
     private val _backupActive = settingDao.getBackupActiveFlag()
     private val _lastBackup = settingDao.getBackupNumber()
     private val _generateiDate = settingDao.getGenerateiDate()
+    private val _pinPointInteractions = settingDao.getPinPointInteractions()
     private val _followCount = settingDao.getFollowCount()
     private val _suggestLeadsNationality = settingDao.getSuggestLeadsNationality()
     private val _shownNationalities = settingDao.getShownNationalities()
@@ -335,9 +336,10 @@ class InputViewModel(
             lastBackup = lastBackup.toInt()
         )
     }
-    val _dialogSettings = CombineTen(
+    val _dialogSettings = CombineEleven(
         _notificationTime,
         _generateiDate,
+        _pinPointInteractions,
         _followCount,
         _suggestLeadsNationality,
         _incrementChallengeGoal,
@@ -346,10 +348,11 @@ class InputViewModel(
         _liveSessionSittingReminderEnabled,
         _liveSessionSittingReminderInterval,
         _liveSessionShareEnabled
-    ) { notificationTime, generateiDate, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
+    ) { notificationTime, generateiDate, pinPointInteractions, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
         DialogSettingsState(
             notificationTime = notificationTime,
             generateiDate = generateiDate.toBoolean(),
+            pinPointInteractions = pinPointInteractions.toBoolean(),
             followCount = followCount.toBoolean(),
             suggestLeadsNationality = suggestLeadsNationality.toBoolean(),
             incrementChallengeGoal = incrementChallengeGoal,
@@ -441,6 +444,7 @@ class InputViewModel(
             showChallenges = showChallenges,
             gameEventSortType = sortTypes.gameEventSortType,
             generateiDate = dialogSettings.generateiDate,
+            pinPointInteractions = dialogSettings.pinPointInteractions,
             followCount = dialogSettings.followCount,
             suggestLeadsNationality = dialogSettings.suggestLeadsNationality,
             incrementChallengeGoal = dialogSettings.incrementChallengeGoal,
@@ -682,7 +686,7 @@ class InputViewModel(
             is GameEvent.SetSetsLive -> {
                 viewModelScope.launch {
                     var abstractSession = event.abstractSession
-                    if (event.sets > abstractSession.sets) {
+                    if (event.sets > abstractSession.sets && state.value.pinPointInteractions) {
                         savePinPointWithLocation(
                             PinPointTypeEnum.SET,
                             abstractSession.id!!,
@@ -723,11 +727,13 @@ class InputViewModel(
                             sets++
                             abstractSession.sets = sets
                         }
-                        savePinPointWithLocation(
-                            PinPointTypeEnum.CONVERSATION,
-                            abstractSession.id!!,
-                            EventTypeEnum.SESSION
-                        )
+                        if (state.value.pinPointInteractions) {
+                            savePinPointWithLocation(
+                                PinPointTypeEnum.CONVERSATION,
+                                abstractSession.id!!,
+                                EventTypeEnum.SESSION
+                            )
+                        }
                     } else if (event.convos < abstractSession.convos) {
                         pinPointDao.deleteLastPinPointBySourceEventIdAndSourceEventTypeAndType(
                             abstractSession.id!!,
@@ -772,11 +778,13 @@ class InputViewModel(
                             convos++
                             abstractSession.convos = convos
                         }
-                        savePinPointWithLocation(
-                            PinPointTypeEnum.CONTACT,
-                            abstractSession.id!!,
-                            EventTypeEnum.SESSION
-                        )
+                        if (state.value.pinPointInteractions) {
+                            savePinPointWithLocation(
+                                PinPointTypeEnum.CONTACT,
+                                abstractSession.id!!,
+                                EventTypeEnum.SESSION
+                            )
+                        }
                     } else if (event.contacts < abstractSession.contacts) {
                         pinPointDao.deleteLastPinPointBySourceEventIdAndSourceEventTypeAndType(
                             abstractSession.id!!,
@@ -1320,11 +1328,14 @@ class InputViewModel(
                         else -> PinPointTypeEnum.SET
                     }
                     when {
-                        isAddingSet -> savePinPointWithLocation(
-                            pinPointType,
-                            setId,
-                            EventTypeEnum.SET
-                        )
+                        isAddingSet ->
+                            if (state.value.pinPointInteractions) {
+                                savePinPointWithLocation(
+                                    pinPointType,
+                                    setId,
+                                    EventTypeEnum.SET
+                                )
+                            }
 
                         isUpdatingSet -> pinPointDao.updatePinpointTypeForSetPinPoint(
                             setId,
@@ -1654,7 +1665,8 @@ class InputViewModel(
                                 utcTimestamp = LocalDateTime.now().toString()
                                     .substring(0, 19) + "Z",
                                 longitude = longitude,
-                                latitude = latitude
+                                latitude = latitude,
+                                //dayOfWeek = 1
                             )
                         )
                     }
