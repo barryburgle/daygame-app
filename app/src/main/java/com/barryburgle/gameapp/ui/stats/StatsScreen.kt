@@ -375,7 +375,7 @@ fun StatsScreen(
                             modifier = Modifier.width(spaceFromLeft)
                         )
                         sectionTitleAndDescription(
-                            "Sessions Distributions",
+                            "Sessions distributions",
                             "Number of sessions with:"
                         )
                     }
@@ -403,7 +403,7 @@ fun StatsScreen(
                             modifier = Modifier.width(spaceFromLeft)
                         )
                         sectionTitleAndDescription(
-                            "Leads Distributions", "Number of leads with:"
+                            "Leads distributions", "Number of leads with:"
                         )
                     }
                     LazyRow(
@@ -430,7 +430,37 @@ fun StatsScreen(
                             modifier = Modifier.width(spaceFromLeft)
                         )
                         sectionTitleAndDescription(
-                            "Dates Distributions", "Number of dates with:"
+                            "Dates distributions", "Number of dates with:"
+                        )
+                    }
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(7.dp)
+                    ) {
+                        item {
+                            Spacer(
+                                modifier = Modifier.width(spaceFromLeft - 7.dp)
+                            )
+                        }
+                        DatesHistogramsSection(
+                            state, heigh, width, onEvent
+                        )
+                        item {
+                            Spacer(
+                                modifier = Modifier.width(spaceFromLeft - 7.dp)
+                            )
+                        }
+                    }
+                }
+            }
+            // TODO: do the following
+            if (state.datesNationalityHistogram.isNotEmpty() && state.datesAgeHistogram.isNotEmpty() && state.datesNumberHistogram.isNotEmpty()) {
+                item {
+                    Row {
+                        Spacer(
+                            modifier = Modifier.width(spaceFromLeft)
+                        )
+                        sectionTitleAndDescription(
+                            "Space&time analysis", "Number of dates with:"
                         )
                     }
                     LazyRow(
