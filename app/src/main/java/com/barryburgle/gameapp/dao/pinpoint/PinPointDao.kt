@@ -42,7 +42,7 @@ interface PinPointDao {
     @Query("DELETE FROM pinpoint")
     suspend fun deleteAll()
 
-    @Query("SELECT * from pinpoint ORDER BY id DESC, utc_timestamp DESC")
+    @Query("SELECT * from pinpoint ORDER BY id DESC, local_timestamp DESC")
     fun getAll(): Flow<List<PinPoint>>
 
     @Query("SELECT * FROM pinpoint WHERE source_event_id=:sourceEventId AND source_event_type=:sourceEventType ORDER BY id DESC LIMIT 1")
@@ -50,12 +50,12 @@ interface PinPointDao {
         sourceEventId: Long, sourceEventType: String
     ): Flow<PinPoint>
 
-    @Query("SELECT * from pinpoint WHERE pinpoint_type IN ('set', 'conversation', 'contact') ORDER BY id DESC, utc_timestamp DESC")
+    @Query("SELECT * from pinpoint WHERE pinpoint_type IN ('set', 'conversation', 'contact') ORDER BY id DESC, local_timestamp DESC")
     fun getSets(): Flow<List<PinPoint>>
 
-    @Query("SELECT * from pinpoint WHERE pinpoint_type IN ('conversation', 'contact') ORDER BY id DESC, utc_timestamp DESC")
+    @Query("SELECT * from pinpoint WHERE pinpoint_type IN ('conversation', 'contact') ORDER BY id DESC, local_timestamp DESC")
     fun getConversations(): Flow<List<PinPoint>>
 
-    @Query("SELECT * from pinpoint WHERE pinpoint_type='contact'  ORDER BY id DESC, utc_timestamp DESC")
+    @Query("SELECT * from pinpoint WHERE pinpoint_type='contact'  ORDER BY id DESC, local_timestamp DESC")
     fun getContacts(): Flow<List<PinPoint>>
 }

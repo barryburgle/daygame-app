@@ -148,13 +148,13 @@ fun MapDialog(
                                     } ${associatedLead?.age} "
                                 else pinPoint.pinPointType.replaceFirstChar { it.uppercase() }
                                 val markerSnippet = FormatService.getDate(
-                                    pinPoint.utcTimestamp.substring(
+                                    pinPoint.localTimestamp.substring(
                                         0,
                                         16
                                     ) + 'Z'
                                 ) + " " +
                                         FormatService.getTime(
-                                            pinPoint.utcTimestamp.substring(
+                                            pinPoint.localTimestamp.substring(
                                                 0,
                                                 16
                                             ) + 'Z'

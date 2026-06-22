@@ -18,7 +18,7 @@ class PinPointCsvService : AbstractCsvService<PinPoint>() {
         pinPointList.add(pinPoint.sourceEventId.toString())
         pinPointList.add(pinPoint.sourceEventType)
         pinPointList.add(pinPoint.pinPointType)
-        pinPointList.add(pinPoint.utcTimestamp)
+        pinPointList.add(pinPoint.localTimestamp)
         pinPointList.add(pinPoint.latitude.toString())
         pinPointList.add(pinPoint.longitude.toString())
         return pinPointList.toTypedArray()
@@ -30,7 +30,7 @@ class PinPointCsvService : AbstractCsvService<PinPoint>() {
         pinPointListFieldList.add("source_event_id")
         pinPointListFieldList.add("source_event_type")
         pinPointListFieldList.add("pinpoint_type")
-        pinPointListFieldList.add("utc_timestamp")
+        pinPointListFieldList.add("local_timestamp")
         pinPointListFieldList.add("latitude")
         pinPointListFieldList.add("longitude")
         return pinPointListFieldList.toTypedArray()
@@ -50,7 +50,7 @@ class PinPointCsvService : AbstractCsvService<PinPoint>() {
 
     override fun isEntityValid(pinPoint: PinPoint): Boolean {
         // TODO: do better check on data validity on most of the fields
-        if (pinPoint.id == 0L || pinPoint.id == null || pinPoint.utcTimestamp.isEmpty()) {
+        if (pinPoint.id == 0L || pinPoint.id == null || pinPoint.localTimestamp.isEmpty()) {
             return false
         }
         return true

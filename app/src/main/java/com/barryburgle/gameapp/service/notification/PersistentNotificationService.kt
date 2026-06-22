@@ -105,7 +105,7 @@ class PersistentNotificationService : Service() {
                                 sourceEventId = sessionId,
                                 sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
                                 pinPointType = PinPointTypeEnum.SET.getField(),
-                                utcTimestamp = LocalDateTime.now().toString()
+                                localTimestamp = LocalDateTime.now().toString()
                                     .substring(0, 19) + "Z",
                                 longitude = location?.longitude ?: 0.0,
                                 latitude = location?.latitude ?: 0.0
@@ -171,7 +171,7 @@ class PersistentNotificationService : Service() {
                                 sourceEventId = sessionId,
                                 sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
                                 pinPointType = PinPointTypeEnum.CONVERSATION.getField(),
-                                utcTimestamp = LocalDateTime.now().toString()
+                                localTimestamp = LocalDateTime.now().toString()
                                     .substring(0, 19) + "Z",
                                 longitude = location?.longitude ?: 0.0,
                                 latitude = location?.latitude ?: 0.0
@@ -237,7 +237,7 @@ class PersistentNotificationService : Service() {
                                 sourceEventId = sessionId,
                                 sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
                                 pinPointType = PinPointTypeEnum.CONTACT.getField(),
-                                utcTimestamp = LocalDateTime.now().toString()
+                                localTimestamp = LocalDateTime.now().toString()
                                     .substring(0, 19) + "Z",
                                 longitude = location?.longitude ?: 0.0,
                                 latitude = location?.latitude ?: 0.0

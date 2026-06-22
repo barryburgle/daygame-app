@@ -1662,7 +1662,7 @@ class InputViewModel(
                                 sourceEventId = sourceEventId,
                                 sourceEventType = sourceEventType.getField().lowercase(),
                                 pinPointType = pinPointType.getField(),
-                                utcTimestamp = LocalDateTime.now().toString()
+                                localTimestamp = LocalDateTime.now().toString()
                                     .substring(0, 19) + "Z",
                                 longitude = longitude,
                                 latitude = latitude,
