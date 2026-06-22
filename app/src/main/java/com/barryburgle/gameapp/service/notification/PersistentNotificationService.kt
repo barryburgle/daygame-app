@@ -20,6 +20,7 @@ import com.barryburgle.gameapp.database.GameAppDatabase
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 import com.barryburgle.gameapp.model.session.PinPoint
+import com.barryburgle.gameapp.service.EntityService
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
 import com.google.android.gms.location.LocationServices
@@ -99,16 +100,18 @@ class PersistentNotificationService : Service() {
                             .firstOrNull()
                             ?.toBoolean() ?: true
                     ) {
+                        val pinPointLocalDateTime = LocalDateTime.now()
                         pinPointDao.insert(
                             PinPoint(
                                 id = null,
                                 sourceEventId = sessionId,
                                 sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
                                 pinPointType = PinPointTypeEnum.SET.getField(),
-                                localTimestamp = LocalDateTime.now().toString()
+                                localTimestamp = pinPointLocalDateTime.toString()
                                     .substring(0, 19) + "Z",
                                 longitude = location?.longitude ?: 0.0,
-                                latitude = location?.latitude ?: 0.0
+                                latitude = location?.latitude ?: 0.0,
+                                dayOfWeek = EntityService.getDayOfWeek(pinPointLocalDateTime).value
                             )
                         )
                     }
@@ -165,16 +168,18 @@ class PersistentNotificationService : Service() {
                             .firstOrNull()
                             ?.toBoolean() ?: true
                     ) {
+                        val pinPointLocalDateTime = LocalDateTime.now()
                         pinPointDao.insert(
                             PinPoint(
                                 id = null,
                                 sourceEventId = sessionId,
                                 sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
                                 pinPointType = PinPointTypeEnum.CONVERSATION.getField(),
-                                localTimestamp = LocalDateTime.now().toString()
+                                localTimestamp = pinPointLocalDateTime.toString()
                                     .substring(0, 19) + "Z",
                                 longitude = location?.longitude ?: 0.0,
-                                latitude = location?.latitude ?: 0.0
+                                latitude = location?.latitude ?: 0.0,
+                                dayOfWeek = EntityService.getDayOfWeek(pinPointLocalDateTime).value
                             )
                         )
                     }
@@ -231,16 +236,18 @@ class PersistentNotificationService : Service() {
                             .firstOrNull()
                             ?.toBoolean() ?: true
                     ) {
+                        val pinPointLocalDateTime = LocalDateTime.now()
                         pinPointDao.insert(
                             PinPoint(
                                 id = null,
                                 sourceEventId = sessionId,
                                 sourceEventType = EventTypeEnum.SESSION.getField().lowercase(),
                                 pinPointType = PinPointTypeEnum.CONTACT.getField(),
-                                localTimestamp = LocalDateTime.now().toString()
+                                localTimestamp = pinPointLocalDateTime.toString()
                                     .substring(0, 19) + "Z",
                                 longitude = location?.longitude ?: 0.0,
-                                latitude = location?.latitude ?: 0.0
+                                latitude = location?.latitude ?: 0.0,
+                                dayOfWeek = EntityService.getDayOfWeek(pinPointLocalDateTime).value
                             )
                         )
                     }

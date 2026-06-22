@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 8,
-    "identityHash": "0ba9405c345c3b0b79e725189c6701d0",
+    "identityHash": "dc1ba4c44eae5462cdcd4d7aac03873a",
     "entities": [
       {
         "tableName": "abstract_session",
@@ -518,7 +518,7 @@
       },
       {
         "tableName": "pinpoint",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `source_event_id` INTEGER NOT NULL, `source_event_type` TEXT NOT NULL, `pinpoint_type` TEXT NOT NULL, `local_timestamp` TEXT NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `source_event_id` INTEGER NOT NULL, `source_event_type` TEXT NOT NULL, `pinpoint_type` TEXT NOT NULL, `local_timestamp` TEXT NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `day_of_week` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -560,6 +560,12 @@
             "columnName": "longitude",
             "affinity": "REAL",
             "notNull": true
+          },
+          {
+            "fieldPath": "dayOfWeek",
+            "columnName": "day_of_week",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -572,7 +578,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0ba9405c345c3b0b79e725189c6701d0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dc1ba4c44eae5462cdcd4d7aac03873a')"
     ]
   }
 }

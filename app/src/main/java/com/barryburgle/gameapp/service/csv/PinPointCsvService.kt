@@ -21,6 +21,7 @@ class PinPointCsvService : AbstractCsvService<PinPoint>() {
         pinPointList.add(pinPoint.localTimestamp)
         pinPointList.add(pinPoint.latitude.toString())
         pinPointList.add(pinPoint.longitude.toString())
+        pinPointList.add(pinPoint.dayOfWeek.toString())
         return pinPointList.toTypedArray()
     }
 
@@ -33,6 +34,7 @@ class PinPointCsvService : AbstractCsvService<PinPoint>() {
         pinPointListFieldList.add("local_timestamp")
         pinPointListFieldList.add("latitude")
         pinPointListFieldList.add("longitude")
+        pinPointListFieldList.add("day_of_week")
         return pinPointListFieldList.toTypedArray()
     }
 
@@ -45,6 +47,7 @@ class PinPointCsvService : AbstractCsvService<PinPoint>() {
             fields[4],
             fields[5].toDouble(),
             fields[6].toDouble(),
+            fields[7].toInt(),
         )
     }
 

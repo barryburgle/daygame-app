@@ -32,6 +32,7 @@ import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.notification.AndroidNotificationScheduler
+import com.barryburgle.gameapp.service.EntityService
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
@@ -1656,17 +1657,18 @@ class InputViewModel(
                     val longitude = location?.longitude ?: 0.0
                     val latitude = location?.latitude ?: 0.0
                     viewModelScope.launch {
+                        val pinPointLocalDateTime = LocalDateTime.now()
                         pinPointDao.insert(
                             PinPoint(
                                 id = null,
                                 sourceEventId = sourceEventId,
                                 sourceEventType = sourceEventType.getField().lowercase(),
                                 pinPointType = pinPointType.getField(),
-                                localTimestamp = LocalDateTime.now().toString()
+                                localTimestamp = pinPointLocalDateTime.toString()
                                     .substring(0, 19) + "Z",
                                 longitude = longitude,
                                 latitude = latitude,
-                                //dayOfWeek = 1
+                                dayOfWeek = EntityService.getDayOfWeek(pinPointLocalDateTime).value
                             )
                         )
                     }

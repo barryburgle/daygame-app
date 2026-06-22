@@ -12,5 +12,6 @@ open class PinPoint(
     @ColumnInfo(name = "pinpoint_type") var pinPointType: String,
     @ColumnInfo(name = "local_timestamp") var localTimestamp: String,
     @ColumnInfo(name = "latitude") var latitude: Double,
-    @ColumnInfo(name = "longitude") var longitude: Double
+    @ColumnInfo(name = "longitude") var longitude: Double,
+    @ColumnInfo(name = "day_of_week") var dayOfWeek: Int
 )
