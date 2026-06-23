@@ -12,13 +12,16 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.timeline.Timeline
 
 @Composable
 fun SessionBody(
     abstractSession: AbstractSession,
+    pinPoints: List<PinPoint>,
     countFontSize: TextUnit,
     descriptionFontSize: TextUnit,
     perfFontSize: TextUnit
@@ -84,4 +87,6 @@ fun SessionBody(
             descriptionFontSize = descriptionFontSize
         )
     }
+    Spacer(modifier = Modifier.height(12.dp))
+    Timeline(abstractSession, pinPoints, modifier = Modifier.fillMaxWidth())
 }
