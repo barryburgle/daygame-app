@@ -550,6 +550,7 @@ fun EventCard(
                             ) {
                                 SessionBody(
                                     sortableGameEvent.event as AbstractSession,
+                                    pinPoints,
                                     50.sp,
                                     10.sp,
                                     15.sp

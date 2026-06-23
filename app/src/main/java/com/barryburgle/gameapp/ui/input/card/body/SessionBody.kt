@@ -87,6 +87,8 @@ fun SessionBody(
             descriptionFontSize = descriptionFontSize
         )
     }
-    Spacer(modifier = Modifier.height(12.dp))
-    Timeline(abstractSession, pinPoints, modifier = Modifier.fillMaxWidth())
+    if (pinPoints.isNotEmpty()) {
+        Spacer(modifier = Modifier.height(12.dp))
+        Timeline(abstractSession, pinPoints, modifier = Modifier.fillMaxWidth())
+    }
 }
