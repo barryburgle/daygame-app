@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -115,7 +116,7 @@ fun Timeline(
                             }
                             if (match != null) {
                                 selectedPinPoint = match.second
-                                popupPositionX = match.first.x
+                                popupPositionX = match.first.x + with(density) { 16.dp.toPx() }
                             } else {
                                 selectedPinPoint = null
                             }
@@ -174,11 +175,9 @@ fun Timeline(
             }
         }
 
-        // Custom Cloud Bubble Info Window Popup
         selectedPinPoint?.let { pin ->
             val associatedLead = leads.find { it.pinPointId == pin.id }
 
-            // Build text dynamically matching MapDialog parameters
             val titleText = if (associatedLead != null) {
                 "${associatedLead.name} ${CountryEnum.getFlagByAlpha3(associatedLead.nationality)} ${associatedLead.age}"
             } else {
@@ -193,14 +192,14 @@ fun Timeline(
                 associatedLead.contact.replaceFirstChar { it.uppercase() }
             } else null
 
-            // UI Layout Math adjustments for alignment anchors
-            val xOffsetDp = with(density) { popupPositionX.toDp() } - 100.dp
-            val yOffsetDp = (-70).dp
+            var bubbleWidthPx by remember { mutableStateOf(0) }
+            var bubbleHeightPx by remember { mutableStateOf(0) }
 
             Popup(
                 offset = IntOffset(
-                    with(density) { xOffsetDp.roundToPx() },
-                    with(density) { yOffsetDp.roundToPx() }),
+                    x = (popupPositionX - (bubbleWidthPx / 2f)).toInt(),
+                    y = (-with(density) { 8.dp.toPx() } - bubbleHeightPx).toInt()
+                ),
                 onDismissRequest = { selectedPinPoint = null },
                 properties = PopupProperties(focusable = true)
             ) {
@@ -208,14 +207,16 @@ fun Timeline(
                     title = titleText,
                     snippet = snippetText,
                     subDescription = subDescriptionText,
-                    onDeleteClicked = { showDeleteConfirmDialog = true }
+                    onDeleteClicked = { showDeleteConfirmDialog = true },
+                    modifier = Modifier.onGloballyPositioned { coordinates ->
+                        bubbleWidthPx = coordinates.size.width
+                        bubbleHeightPx = coordinates.size.height
+                    }
                 )
             }
         }
 
-        // Deletion Confirmation Target Dialog
         if (showDeleteConfirmDialog && selectedPinPoint != null) {
-
             AlertDialog(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier.shadow(elevation = 10.dp),
@@ -253,16 +254,15 @@ fun BubbleLayout(
     title: String,
     snippet: String,
     subDescription: String?,
-    onDeleteClicked: () -> Unit
+    onDeleteClicked: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    // Custom shape mimicking an InfoWindow speech-bubble / cloud
     val bubbleShape = remember {
         GenericShape { size, _ ->
             val arrowHeight = 24f
             val arrowWidth = 32f
             val cornerRadius = 32f
 
-            // Draw main round-rect body layout bounded away from the lower cloud stem anchor area
             addRoundRect(
                 androidx.compose.ui.geometry.RoundRect(
                     left = 0f,
@@ -273,7 +273,6 @@ fun BubbleLayout(
                     radiusY = cornerRadius
                 )
             )
-            // Center pointed cloud indicator stem
             moveTo(size.width / 2 - arrowWidth / 2, size.height - arrowHeight)
             lineTo(size.width / 2, size.height)
             lineTo(size.width / 2 + arrowWidth / 2, size.height - arrowHeight)
@@ -282,12 +281,12 @@ fun BubbleLayout(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .wrapContentSize()
             .width(200.dp)
             .shadow(elevation = 6.dp, shape = bubbleShape)
             .background(color = MaterialTheme.colorScheme.background, shape = bubbleShape)
-            .padding(bottom = 12.dp) // Offset room space calculations for arrow baseline
+            .padding(bottom = 12.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
