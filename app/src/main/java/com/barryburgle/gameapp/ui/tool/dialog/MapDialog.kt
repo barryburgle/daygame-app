@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -35,14 +38,15 @@ import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
+import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -199,7 +203,7 @@ fun MapDialog(
                                                 }
                                                 bubbleView.background = bg
                                                 bubbleView.clipToOutline = true
-                                                bubbleView.setPadding(24, 24, 24, 24)
+                                                bubbleView.setPadding(24, 60, 24, 60)
                                                 val titleView =
                                                     bubbleView.findViewById<android.widget.TextView>(
                                                         org.osmdroid.library.R.id.bubble_title
@@ -224,26 +228,36 @@ fun MapDialog(
                                                 ) {
                                                     layoutContainer.orientation =
                                                         LinearLayout.HORIZONTAL
+                                                    layoutContainer.gravity =
+                                                        Gravity.CENTER_VERTICAL
 
-                                                    val deleteIcon = ImageView(ctx).apply {
+                                                    val composeDeleteView = ComposeView(ctx).apply {
                                                         id = android.R.id.button1
-                                                        setImageResource(android.R.drawable.ic_menu_delete) // TODO: use delete icon used elsewhere
-                                                        setColorFilter(errorColor)
-                                                        setPadding(16, 0, 0, 0)
+                                                        setPadding(16, 0, 16, 0)
                                                         layoutParams = LinearLayout.LayoutParams(
                                                             ViewGroup.LayoutParams.WRAP_CONTENT,
-                                                            ViewGroup.LayoutParams.MATCH_PARENT
+                                                            ViewGroup.LayoutParams.WRAP_CONTENT
                                                         ).apply {
-                                                            gravity = Gravity.CENTER_VERTICAL
+                                                            gravity =
+                                                                Gravity.CENTER_VERTICAL
                                                         }
-                                                        setOnClickListener {
-                                                            pinPointToDelete = pinPoint
-                                                            showDeletePinPointConfirmDialog = true
-                                                            close()
-                                                            markerOverlayToDelete = currentMarker
+                                                        setContent {
+                                                            IconShadowButton(
+                                                                onClick = {
+                                                                    pinPointToDelete = pinPoint
+                                                                    showDeletePinPointConfirmDialog =
+                                                                        true
+                                                                    close()
+                                                                    markerOverlayToDelete =
+                                                                        currentMarker
+                                                                },
+                                                                imageVector = Icons.Default.Delete,
+                                                                contentDescription = "Delete pinpoint",
+                                                                iconColor = MaterialTheme.colorScheme.onErrorContainer
+                                                            )
                                                         }
                                                     }
-                                                    layoutContainer.addView(deleteIcon)
+                                                    layoutContainer.addView(composeDeleteView)
                                                 }
                                             }
                                         }
