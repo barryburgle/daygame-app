@@ -1,15 +1,26 @@
 package com.barryburgle.gameapp.ui.utilities.timeline
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.GenericShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,13 +39,22 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
+import com.barryburgle.gameapp.model.enums.CountryEnum
+import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
+import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import java.time.Duration
@@ -45,6 +65,7 @@ import kotlin.math.sqrt
 fun Timeline(
     abstractSession: AbstractSession,
     pinPoints: List<PinPoint>,
+    leads: List<Lead>,
     onEvent: (GameEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -58,24 +79,24 @@ fun Timeline(
     val startTime = FormatService.parseTime(abstractSession.startHour)
     val sessionDuration = abstractSession.sessionTime
 
-    // Dialog state management
     var selectedPinPoint by remember { mutableStateOf<PinPoint?>(null) }
+    var popupPositionX by remember { mutableStateOf(0f) }
     var showDeleteConfirmDialog by remember { mutableStateOf(false) }
 
-    // Dynamic list mapping coordinate layouts to pinpoints for touch matching
     val density = LocalDensity.current
     val circleRadiusPx = with(density) { 16.dp.toPx() }
+
     val clickableRegions =
         remember(pinPoints, sessionDuration) { mutableListOf<Pair<Offset, PinPoint>>() }
 
     Spacer(modifier = Modifier.height(10.dp))
 
-    Box(modifier = modifier) {
+    Box(modifier = modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(40.dp) // Height increased slightly to provide a safer tap/touch target
+                .height(40.dp)
                 .padding(horizontal = 16.dp)
         ) {
             Canvas(
@@ -84,18 +105,19 @@ fun Timeline(
                     .height(32.dp)
                     .pointerInput(pinPoints, sessionDuration) {
                         detectTapGestures { tapOffset ->
-                            // Look for the closest pinpoint center intersecting the user click bounds
-                            val clickedItem = clickableRegions.find { (centerOffset, _) ->
+                            val match = clickableRegions.find { (centerOffset, _) ->
                                 val distance = sqrt(
                                     (tapOffset.x - centerOffset.x).pow(2) + (tapOffset.y - centerOffset.y).pow(
                                         2
                                     )
                                 )
                                 distance <= circleRadiusPx
-                            }?.second
-
-                            if (clickedItem != null) {
-                                selectedPinPoint = clickedItem
+                            }
+                            if (match != null) {
+                                selectedPinPoint = match.second
+                                popupPositionX = match.first.x
+                            } else {
+                                selectedPinPoint = null
                             }
                         }
                     }
@@ -103,7 +125,6 @@ fun Timeline(
                 val width = size.width
                 val midY = size.height / 2
 
-                // Clear regions to prevent stale mapping coordinates during re-draws
                 clickableRegions.clear()
 
                 drawLine(
@@ -131,7 +152,6 @@ fun Timeline(
                         }
 
                         painter?.let {
-                            // Map coordinates to register tap zones later
                             clickableRegions.add(centerPoint to pin)
 
                             val iconSize = 24.dp.toPx()
@@ -154,41 +174,55 @@ fun Timeline(
             }
         }
 
-        // Details Info Window Popup Dialog
+        // Custom Cloud Bubble Info Window Popup
         selectedPinPoint?.let { pin ->
-            val formattedTime = FormatService.getTime(pin.localTimestamp.substring(0, 16) + "Z")
-            val formattedDate = FormatService.getDate(pin.localTimestamp.substring(0, 16) + "Z")
+            val associatedLead = leads.find { it.pinPointId == pin.id }
 
-            AlertDialog(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                modifier = Modifier.shadow(elevation = 10.dp),
+            // Build text dynamically matching MapDialog parameters
+            val titleText = if (associatedLead != null) {
+                "${associatedLead.name} ${CountryEnum.getFlagByAlpha3(associatedLead.nationality)} ${associatedLead.age}"
+            } else {
+                pin.pinPointType.replaceFirstChar { it.uppercase() }
+            }
+
+            val snippetText =
+                FormatService.getDate(pin.localTimestamp.substring(0, 16) + 'Z') + " " +
+                        FormatService.getTime(pin.localTimestamp.substring(0, 16) + 'Z')
+
+            val subDescriptionText = if (associatedLead != null) {
+                associatedLead.contact.replaceFirstChar { it.uppercase() }
+            } else null
+
+            // UI Layout Math adjustments for alignment anchors
+            val xOffsetDp = with(density) { popupPositionX.toDp() } - 100.dp
+            val yOffsetDp = (-70).dp
+
+            Popup(
+                offset = IntOffset(
+                    with(density) { xOffsetDp.roundToPx() },
+                    with(density) { yOffsetDp.roundToPx() }),
                 onDismissRequest = { selectedPinPoint = null },
-                title = {
-                    LargeTitleText(text = pin.pinPointType.replaceFirstChar { it.uppercase() })
-                },
-                text = {
-                    LittleBodyText(text = "Registered at: $formattedDate $formattedTime")
-                },
-                confirmButton = {
-                    ConfirmButton(onClick = { selectedPinPoint = null })
-                },
-                dismissButton = {
-                    // Leverages gameapp's global styling standard for operational context switching
-                    DismissButton(
-                        text = "Delete",
-                        textColor = MaterialTheme.colorScheme.error,
-                        onClick = { showDeleteConfirmDialog = true }
-                    )
-                }
-            )
+                properties = PopupProperties(focusable = true)
+            ) {
+                BubbleLayout(
+                    title = titleText,
+                    snippet = snippetText,
+                    subDescription = subDescriptionText,
+                    onDeleteClicked = { showDeleteConfirmDialog = true }
+                )
+            }
         }
 
         // Deletion Confirmation Target Dialog
         if (showDeleteConfirmDialog && selectedPinPoint != null) {
+
             AlertDialog(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier.shadow(elevation = 10.dp),
-                onDismissRequest = { showDeleteConfirmDialog = false },
+                onDismissRequest = {
+                    showDeleteConfirmDialog = false
+                    selectedPinPoint = null
+                },
                 title = {
                     LargeTitleText(text = "Delete pinpoint")
                 },
@@ -197,11 +231,11 @@ fun Timeline(
                 },
                 confirmButton = {
                     ConfirmButton {
-                        selectedPinPoint?.let { pin ->
-                            onEvent(GameEvent.DeletePinPoint(pin))
+                        if (selectedPinPoint != null) {
+                            onEvent(GameEvent.DeletePinPoint(selectedPinPoint!!))
+                            showDeleteConfirmDialog = false
+                            selectedPinPoint = null
                         }
-                        showDeleteConfirmDialog = false
-                        selectedPinPoint = null // Close both windows upon execution
                     }
                 },
                 dismissButton = {
@@ -214,21 +248,92 @@ fun Timeline(
     }
 }
 
-// Inline fallback wrappers assumed matching GameApp's standard custom wrapper patterns
 @Composable
-private fun ConfirmButton(onClick: () -> Unit) {
-    androidx.compose.material3.TextButton(onClick = onClick) {
-        androidx.compose.material3.Text("OK", color = MaterialTheme.colorScheme.primary)
-    }
-}
-
-@Composable
-private fun DismissButton(
-    text: String = "Cancel",
-    textColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    onClick: () -> Unit
+fun BubbleLayout(
+    title: String,
+    snippet: String,
+    subDescription: String?,
+    onDeleteClicked: () -> Unit
 ) {
-    androidx.compose.material3.TextButton(onClick = onClick) {
-        androidx.compose.material3.Text(text, color = textColor)
+    // Custom shape mimicking an InfoWindow speech-bubble / cloud
+    val bubbleShape = remember {
+        GenericShape { size, _ ->
+            val arrowHeight = 24f
+            val arrowWidth = 32f
+            val cornerRadius = 32f
+
+            // Draw main round-rect body layout bounded away from the lower cloud stem anchor area
+            addRoundRect(
+                androidx.compose.ui.geometry.RoundRect(
+                    left = 0f,
+                    top = 0f,
+                    right = size.width,
+                    bottom = size.height - arrowHeight,
+                    radiusX = cornerRadius,
+                    radiusY = cornerRadius
+                )
+            )
+            // Center pointed cloud indicator stem
+            moveTo(size.width / 2 - arrowWidth / 2, size.height - arrowHeight)
+            lineTo(size.width / 2, size.height)
+            lineTo(size.width / 2 + arrowWidth / 2, size.height - arrowHeight)
+            close()
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .wrapContentSize()
+            .width(200.dp)
+            .shadow(elevation = 6.dp, shape = bubbleShape)
+            .background(color = MaterialTheme.colorScheme.background, shape = bubbleShape)
+            .padding(bottom = 12.dp) // Offset room space calculations for arrow baseline
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(12.dp)
+                .fillMaxWidth()
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    maxLines = 1
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = snippet,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 11.sp
+                    )
+                )
+                if (subDescription != null) {
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = subDescription,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 11.sp
+                        )
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            IconButton(
+                onClick = onDeleteClicked,
+                modifier = Modifier.size(32.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete pinpoint",
+                    tint = MaterialTheme.colorScheme.error
+                )
+            }
+        }
     }
 }
