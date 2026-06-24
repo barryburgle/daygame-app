@@ -553,7 +553,8 @@ fun EventCard(
                                     pinPoints,
                                     50.sp,
                                     10.sp,
-                                    15.sp
+                                    15.sp,
+                                    onEvent
                                 )
                             }
                             if (SingleSet::class.java.simpleName.equals(sortableGameEvent.classType)) {

@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
+import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.FormatService
@@ -24,7 +25,8 @@ fun SessionBody(
     pinPoints: List<PinPoint>,
     countFontSize: TextUnit,
     descriptionFontSize: TextUnit,
-    perfFontSize: TextUnit
+    perfFontSize: TextUnit,
+    onEvent: (GameEvent) -> Unit
 ) {
     LittleBodyText("Session stats:")
     Row(
@@ -89,6 +91,6 @@ fun SessionBody(
     }
     if (pinPoints.isNotEmpty()) {
         Spacer(modifier = Modifier.height(12.dp))
-        Timeline(abstractSession, pinPoints, modifier = Modifier.fillMaxWidth())
+        Timeline(abstractSession, pinPoints, onEvent, modifier = Modifier.fillMaxWidth())
     }
 }
