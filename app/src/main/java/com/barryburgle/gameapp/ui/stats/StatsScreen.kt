@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.filled.PersonAddAlt1
+import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -128,6 +129,22 @@ fun StatsScreen(
                                 )
                             }",
                             fourthPerformanceDescription = "Average\nIndex"
+                        )
+                    }
+                }
+            }
+            if (state.allPinPoints.isNotEmpty()) {
+                item {
+                    Row {
+                        Spacer(
+                            modifier = Modifier.width(spaceFromLeft)
+                        )
+                        HeatmapCard(
+                            modifier = cardModifier.height(300.dp),
+                            title = "Pinpoints",
+                            statCardIcon = Icons.Default.PinDrop,
+                            description = "Some places are more interesting than others",
+                            allPinPoints = state.allPinPoints
                         )
                     }
                 }
@@ -431,36 +448,6 @@ fun StatsScreen(
                         )
                         sectionTitleAndDescription(
                             "Dates distributions", "Number of dates with:"
-                        )
-                    }
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(7.dp)
-                    ) {
-                        item {
-                            Spacer(
-                                modifier = Modifier.width(spaceFromLeft - 7.dp)
-                            )
-                        }
-                        DatesHistogramsSection(
-                            state, heigh, width, onEvent
-                        )
-                        item {
-                            Spacer(
-                                modifier = Modifier.width(spaceFromLeft - 7.dp)
-                            )
-                        }
-                    }
-                }
-            }
-            // TODO: do the following
-            if (state.datesNationalityHistogram.isNotEmpty() && state.datesAgeHistogram.isNotEmpty() && state.datesNumberHistogram.isNotEmpty()) {
-                item {
-                    Row {
-                        Spacer(
-                            modifier = Modifier.width(spaceFromLeft)
-                        )
-                        sectionTitleAndDescription(
-                            "Space&time analysis", "Number of dates with:"
                         )
                     }
                     LazyRow(
