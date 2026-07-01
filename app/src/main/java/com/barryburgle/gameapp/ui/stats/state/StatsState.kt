@@ -4,6 +4,7 @@ import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.stat.CategoryHistogram
 import com.barryburgle.gameapp.model.stat.Histogram
@@ -15,6 +16,7 @@ data class StatsState(
     override var allDates: List<Date> = emptyList(),
     override var allChallenges: List<AchievedChallenge> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
+    override var allPinPoints: List<PinPoint> = emptyList(), // Needed to show heatmap of the city
     val setsHistogram: List<Histogram> = emptyList(),
     val convosHistogram: List<Histogram> = emptyList(),
     val contactsHistogram: List<Histogram> = emptyList(),
