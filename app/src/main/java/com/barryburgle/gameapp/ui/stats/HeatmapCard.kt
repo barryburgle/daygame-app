@@ -80,9 +80,9 @@ fun HeatmapCard(
             val computedGlowOverlays = allPinPoints.map { pinpoint ->
                 val center = GeoPoint(pinpoint.latitude, pinpoint.longitude)
                 listOf(
-                    Pair(Polygon.pointsAsCircle(center, 40.0), 100),
-                    Pair(Polygon.pointsAsCircle(center, 80.0), 55),
-                    Pair(Polygon.pointsAsCircle(center, 130.0), 20)
+                    Pair(Polygon.pointsAsCircle(center, 5.0), 100),
+                    Pair(Polygon.pointsAsCircle(center, 10.0), 70),
+                    Pair(Polygon.pointsAsCircle(center, 30.0), 40)
                 )
             }
 
