@@ -25,10 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
@@ -50,6 +52,12 @@ fun HeatmapCard(
 ) {
     val context = LocalContext.current
 
+    // Resolve theme primary color channel values safely across dynamic themes
+    val primaryColorArgb = MaterialTheme.colorScheme.surface.toArgb()
+    val primaryRed = android.graphics.Color.red(primaryColorArgb)
+    val primaryGreen = android.graphics.Color.green(primaryColorArgb)
+    val primaryBlue = android.graphics.Color.blue(primaryColorArgb)
+
     val mapInstance = remember {
         MapView(context).apply {
             setMultiTouchControls(true)
@@ -61,7 +69,6 @@ fun HeatmapCard(
                     MotionEvent.ACTION_DOWN -> {
                         view.parent?.requestDisallowInterceptTouchEvent(true)
                     }
-
                     MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                         view.parent?.requestDisallowInterceptTouchEvent(false)
                     }
@@ -71,18 +78,28 @@ fun HeatmapCard(
         }
     }
 
-    LaunchedEffect(allPinPoints) {
+    LaunchedEffect(allPinPoints, primaryColorArgb) {
         withContext(Dispatchers.Default) {
             val geoPoints = allPinPoints.map { GeoPoint(it.latitude, it.longitude) }
-            val boundingBox =
-                if (geoPoints.isNotEmpty()) BoundingBox.fromGeoPoints(geoPoints) else null
+            val boundingBox = if (geoPoints.isNotEmpty()) BoundingBox.fromGeoPoints(geoPoints) else null
 
+            // Generate concentric glowing layers per location using the primary theme colors
             val computedGlowOverlays = allPinPoints.map { pinpoint ->
                 val center = GeoPoint(pinpoint.latitude, pinpoint.longitude)
+
+                // Set baseline visibility step weight dependent on pinpoint enum properties
+                // 50% transparency -> alpha ~128, 70% -> alpha ~179, 95% -> alpha ~242
+                val baseAlphaModifier = when (pinpoint.pinPointType.lowercase()) {
+                    PinPointTypeEnum.SET.getField() -> 0.0f
+                    PinPointTypeEnum.CONVERSATION.getField() -> 0.60f
+                    PinPointTypeEnum.CONTACT.getField() -> 1f
+                    else -> 0.30f
+                }
+
                 listOf(
-                    Pair(Polygon.pointsAsCircle(center, 5.0), 100),
-                    Pair(Polygon.pointsAsCircle(center, 10.0), 70),
-                    Pair(Polygon.pointsAsCircle(center, 30.0), 40)
+                    Pair(Polygon.pointsAsCircle(center, 10.0), (100 * baseAlphaModifier).toInt()),
+                    Pair(Polygon.pointsAsCircle(center, 40.0), (70 * baseAlphaModifier).toInt()),
+                    Pair(Polygon.pointsAsCircle(center, 80.0), (35 * baseAlphaModifier).toInt())
                 )
             }
 
@@ -90,10 +107,17 @@ fun HeatmapCard(
                 mapInstance.overlays.clear()
 
                 computedGlowOverlays.forEach { glowLayers ->
-                    glowLayers.forEach { (pointsList, alphaValue) ->
+                    glowLayers.forEach { (pointsList, calculatedAlpha) ->
                         mapInstance.overlays.add(Polygon(mapInstance).apply {
                             points = pointsList
-                            fillColor = android.graphics.Color.argb(alphaValue, 46, 204, 113)
+
+                            // Render layer shapes incorporating dynamically matched type alphas and the primary color channels
+                            fillColor = android.graphics.Color.argb(
+                                calculatedAlpha.coerceIn(0, 255),
+                                primaryRed,
+                                primaryGreen,
+                                primaryBlue
+                            )
                             strokeColor = android.graphics.Color.TRANSPARENT
                         })
                     }

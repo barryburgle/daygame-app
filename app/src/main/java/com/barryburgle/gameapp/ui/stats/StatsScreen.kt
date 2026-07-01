@@ -140,10 +140,10 @@ fun StatsScreen(
                             modifier = Modifier.width(spaceFromLeft)
                         )
                         HeatmapCard(
-                            modifier = cardModifier.height(300.dp),
+                            modifier = cardModifier.height(400.dp),
                             title = "Pinpoints",
                             statCardIcon = Icons.Default.PinDrop,
-                            description = "Some places are more interesting than others",
+                            description = "See where the real game is played",
                             allPinPoints = state.allPinPoints
                         )
                     }
