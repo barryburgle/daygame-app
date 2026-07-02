@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.ui.stats
 
 import android.view.MotionEvent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,8 +52,10 @@ fun HeatmapCard(
     allPinPoints: List<PinPoint>
 ) {
     val context = LocalContext.current
-
-    val themeColorArgb = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+    var themeColorArgb = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+    if (isSystemInDarkTheme()) {
+        themeColorArgb = MaterialTheme.colorScheme.surface.toArgb()
+    }
     val themeRed = android.graphics.Color.red(themeColorArgb)
     val themeGreen = android.graphics.Color.green(themeColorArgb)
     val themeBlue = android.graphics.Color.blue(themeColorArgb)
@@ -68,6 +71,7 @@ fun HeatmapCard(
                     MotionEvent.ACTION_DOWN -> {
                         view.parent?.requestDisallowInterceptTouchEvent(true)
                     }
+
                     MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                         view.parent?.requestDisallowInterceptTouchEvent(false)
                     }
@@ -80,7 +84,8 @@ fun HeatmapCard(
     LaunchedEffect(allPinPoints, themeColorArgb) {
         withContext(Dispatchers.Default) {
             val geoPoints = allPinPoints.map { GeoPoint(it.latitude, it.longitude) }
-            val boundingBox = if (geoPoints.isNotEmpty()) BoundingBox.fromGeoPoints(geoPoints) else null
+            val boundingBox =
+                if (geoPoints.isNotEmpty()) BoundingBox.fromGeoPoints(geoPoints) else null
 
             val computedGlowOverlays = allPinPoints.map { pinpoint ->
                 val center = GeoPoint(pinpoint.latitude, pinpoint.longitude)
