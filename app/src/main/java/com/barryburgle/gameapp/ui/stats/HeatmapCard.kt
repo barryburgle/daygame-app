@@ -52,11 +52,10 @@ fun HeatmapCard(
 ) {
     val context = LocalContext.current
 
-    // Resolve theme primary color channel values safely across dynamic themes
-    val primaryColorArgb = MaterialTheme.colorScheme.surface.toArgb()
-    val primaryRed = android.graphics.Color.red(primaryColorArgb)
-    val primaryGreen = android.graphics.Color.green(primaryColorArgb)
-    val primaryBlue = android.graphics.Color.blue(primaryColorArgb)
+    val themeColorArgb = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+    val themeRed = android.graphics.Color.red(themeColorArgb)
+    val themeGreen = android.graphics.Color.green(themeColorArgb)
+    val themeBlue = android.graphics.Color.blue(themeColorArgb)
 
     val mapInstance = remember {
         MapView(context).apply {
@@ -78,28 +77,25 @@ fun HeatmapCard(
         }
     }
 
-    LaunchedEffect(allPinPoints, primaryColorArgb) {
+    LaunchedEffect(allPinPoints, themeColorArgb) {
         withContext(Dispatchers.Default) {
             val geoPoints = allPinPoints.map { GeoPoint(it.latitude, it.longitude) }
             val boundingBox = if (geoPoints.isNotEmpty()) BoundingBox.fromGeoPoints(geoPoints) else null
 
-            // Generate concentric glowing layers per location using the primary theme colors
             val computedGlowOverlays = allPinPoints.map { pinpoint ->
                 val center = GeoPoint(pinpoint.latitude, pinpoint.longitude)
 
-                // Set baseline visibility step weight dependent on pinpoint enum properties
-                // 50% transparency -> alpha ~128, 70% -> alpha ~179, 95% -> alpha ~242
-                val baseAlphaModifier = when (pinpoint.pinPointType.lowercase()) {
-                    PinPointTypeEnum.SET.getField() -> 0.0f
-                    PinPointTypeEnum.CONVERSATION.getField() -> 0.60f
-                    PinPointTypeEnum.CONTACT.getField() -> 1f
-                    else -> 0.30f
+                val targetAlpha = when (pinpoint.pinPointType.lowercase()) {
+                    PinPointTypeEnum.SET.getField().lowercase() -> 80
+                    PinPointTypeEnum.CONVERSATION.getField().lowercase() -> 120
+                    PinPointTypeEnum.CONTACT.getField().lowercase() -> 200
+                    else -> 80
                 }
 
                 listOf(
-                    Pair(Polygon.pointsAsCircle(center, 10.0), (100 * baseAlphaModifier).toInt()),
-                    Pair(Polygon.pointsAsCircle(center, 40.0), (70 * baseAlphaModifier).toInt()),
-                    Pair(Polygon.pointsAsCircle(center, 80.0), (35 * baseAlphaModifier).toInt())
+                    Pair(Polygon.pointsAsCircle(center, 15.0), targetAlpha),
+                    Pair(Polygon.pointsAsCircle(center, 30.0), (targetAlpha * 0.5f).toInt()),
+                    Pair(Polygon.pointsAsCircle(center, 60.0), (targetAlpha * 0.15f).toInt())
                 )
             }
 
@@ -111,12 +107,11 @@ fun HeatmapCard(
                         mapInstance.overlays.add(Polygon(mapInstance).apply {
                             points = pointsList
 
-                            // Render layer shapes incorporating dynamically matched type alphas and the primary color channels
                             fillColor = android.graphics.Color.argb(
                                 calculatedAlpha.coerceIn(0, 255),
-                                primaryRed,
-                                primaryGreen,
-                                primaryBlue
+                                themeRed,
+                                themeGreen,
+                                themeBlue
                             )
                             strokeColor = android.graphics.Color.TRANSPARENT
                         })
