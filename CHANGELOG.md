@@ -2,7 +2,7 @@
 **Features**
 - During live session automatically share and copy to clipboard achieved sets 🏃, conversations 💬, and contacts 📲
 - Keep track of interactions' time and space when in Live Session or inserting a single Set
-- Delete Live Session without saving results 🛑
+- Press & hold the delete button on Live Session card to delete  without saving results 🛑
 - Asks now confirmation before any event deletion 🗑️
 
 **Bugfixes**
