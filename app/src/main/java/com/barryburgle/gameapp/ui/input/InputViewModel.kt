@@ -49,7 +49,9 @@ import com.barryburgle.gameapp.ui.input.state.ExportSettingsState
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.input.state.ShareSettingsState
 import com.barryburgle.gameapp.ui.input.state.SortTypeState
+import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -1661,7 +1663,11 @@ class InputViewModel(
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            fusedLocationClient.lastLocation
+            val locationRequest = CurrentLocationRequest.Builder()
+                .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+                .setDurationMillis(5000)
+                .build()
+            fusedLocationClient.getCurrentLocation(locationRequest, null)
                 .addOnSuccessListener { location ->
                     val longitude = location?.longitude ?: 0.0
                     val latitude = location?.latitude ?: 0.0

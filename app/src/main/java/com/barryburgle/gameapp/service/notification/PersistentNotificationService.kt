@@ -23,6 +23,7 @@ import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.EntityService
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
+import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -279,7 +280,11 @@ class PersistentNotificationService : Service() {
             return null
         }
         val cachedLocation = suspendCancellableCoroutine<Location?> { continuation ->
-            fusedLocationClient.lastLocation
+            val locationRequest = CurrentLocationRequest.Builder()
+                .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+                .setDurationMillis(5000)
+                .build()
+            fusedLocationClient.getCurrentLocation(locationRequest, null)
                 .addOnSuccessListener { location ->
                     if (continuation.isActive) continuation.resume(location)
                 }
