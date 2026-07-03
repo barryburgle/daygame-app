@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.model.enums
 
 import com.barryburgle.gameapp.model.stat.CategoryHistogram
+import com.barryburgle.gameapp.service.PhoneBookService
 
 enum class CountryEnum(val flag: String, val alpha3: String, val countryName: String) {
     ABW("🇦🇼", "ABW", "Aruba"),
@@ -300,7 +301,30 @@ enum class CountryEnum(val flag: String, val alpha3: String, val countryName: St
             contained: String
         ): List<CountryEnum> {
             if (!contained.isEmpty()) {
-                return values().filter { it.countryName.contains(contained, ignoreCase = true) }
+                val query = contained.trim().lowercase()
+                return values().filter { country ->
+                    val countryName = country.countryName.lowercase()
+                    if (countryName.contains(query)) return@filter true
+                    if (query.length >= 3) {
+                        val threshold = if (query.length <= 4) 1 else 2
+                        val words = countryName.split(" ", "-", ",")
+                        words.any { word ->
+                            val prefix = if (word.length >= query.length) word.substring(
+                                0,
+                                query.length
+                            ) else word
+                            PhoneBookService.levenshteinDistance(
+                                query,
+                                prefix
+                            ) <= threshold || PhoneBookService.levenshteinDistance(
+                                query,
+                                word
+                            ) <= threshold
+                        }
+                    } else {
+                        false
+                    }
+                }
             }
             return getCountriesOrderedByName(mostPopularLeadsNationalities, showMostPopular)
         }
