@@ -4,12 +4,14 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -31,11 +33,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupProperties
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.GenericEvent
@@ -62,8 +67,10 @@ fun LeadDialog(
     val lead = Lead()
     val localContext = LocalContext.current
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
+    val focusManager = LocalFocusManager.current
     val context = LocalContext.current.applicationContext
     var expanded by remember { mutableStateOf(false) }
+    var isFocused by remember { mutableStateOf(false) }
     val textModifier = if (state.isUpdatingLead) {
         Modifier
             .height(60.dp)
@@ -142,22 +149,84 @@ fun LeadDialog(
                             expanded = true
                         }
                     }
-                    OutlinedTextField(
-                        readOnly = state.isModifyingLead,
-                        value = if (state.countrySearch.isEmpty()) CountryEnum.getFlagByAlpha3(
-                            state.leadNationality
-                        ) + " " + CountryEnum.getCountryNameByAlpha3(
-                            state.leadNationality
-                        ) else state.countrySearch,
-                        onValueChange = {
-                            onEvent(GameEvent.SetLeadCountrySearch(it))
-                        },
-                        placeholder = { LittleBodyText("Search lead country") },
-                        shape = MaterialTheme.shapes.large,
-                        modifier = Modifier
-                            .height(60.dp)
-                            .width(200.dp)
-                    )
+                    Box {
+                        OutlinedTextField(
+                            readOnly = state.isModifyingLead,
+                            value = if (isFocused) state.countrySearch else {
+                                if (state.countrySearch.isEmpty()) CountryEnum.getFlagByAlpha3(
+                                    state.leadNationality
+                                ) + " " + CountryEnum.getCountryNameByAlpha3(
+                                    state.leadNationality
+                                ) else state.countrySearch
+                            },
+                            onValueChange = {
+                                onEvent(GameEvent.SetLeadCountrySearch(it))
+                            },
+                            placeholder = { LittleBodyText("Search country") },
+                            shape = MaterialTheme.shapes.large,
+                            modifier = Modifier
+                                .height(60.dp)
+                                .width(200.dp)
+                                .onFocusChanged { focusState ->
+                                    isFocused = focusState.isFocused
+                                    if (!isFocused) {
+                                        onEvent(GameEvent.SetLeadCountrySearch(""))
+                                        expanded = false
+                                    }
+                                }
+                        )
+                        DropdownMenu(
+                            modifier = Modifier
+                                .width(200.dp)
+                                .heightIn(max = 450.dp),
+                            properties = PopupProperties(focusable = false),
+                            expanded = expanded,
+                            onDismissRequest = {
+                                expanded = false
+                            }) {
+                            var count = 0
+                            CountryEnum.getInsertCountries(
+                                state.mostPopularLeadsNationalities,
+                                state.suggestLeadsNationality,
+                                state.countrySearch
+                            ).forEach { country ->
+                                count++
+                                DropdownMenuItem(text = {
+                                    Row(
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        LittleBodyText(
+                                            country.flag + "  " + country.countryName
+                                        )
+                                        if (count <= state.shownNationalities && state.suggestLeadsNationality) {
+                                            Icon(
+                                                imageVector = Icons.Default.Star,
+                                                contentDescription = "Suggested country",
+                                                tint = MaterialTheme.colorScheme.inversePrimary,
+                                                modifier = Modifier.height(50.dp)
+                                            )
+                                        }
+                                    }
+                                }, onClick = {
+                                    onEvent(GameEvent.SetLeadCountrySearch(""))
+                                    onEvent(GameEvent.SetLeadNationality(country.alpha3))
+                                    expanded = false
+                                    isFocused = false
+                                    focusManager.clearFocus()
+                                })
+                                if (count == state.shownNationalities && state.suggestLeadsNationality) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(0.5.dp)
+                                            .background(color = MaterialTheme.colorScheme.inversePrimary)
+                                    ) {}
+                                }
+                            }
+                        }
+                    }
                     Spacer(modifier = Modifier.width(10.dp))
                     IconShadowButton(
                         onClick = {
@@ -167,54 +236,6 @@ fun LeadDialog(
                         imageVector = Icons.Default.FilterList,
                         contentDescription = "Select country"
                     )
-                }
-                DropdownMenu(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(450.dp),
-                    expanded = expanded,
-                    onDismissRequest = {
-                        expanded = false
-                    }) {
-                    var count = 0
-                    CountryEnum.getInsertCountries(
-                        state.mostPopularLeadsNationalities,
-                        state.suggestLeadsNationality,
-                        state.countrySearch
-                    ).forEach { country ->
-                        count++
-                        DropdownMenuItem(text = {
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                LittleBodyText(
-                                    country.flag + "  " + country.countryName
-                                )
-                                if (count <= state.shownNationalities && state.suggestLeadsNationality) {
-                                    Icon(
-                                        imageVector = Icons.Default.Star,
-                                        contentDescription = "Suggested country",
-                                        tint = MaterialTheme.colorScheme.inversePrimary,
-                                        modifier = Modifier.height(50.dp)
-                                    )
-                                }
-                            }
-                        }, onClick = {
-                            onEvent(GameEvent.SetLeadCountrySearch(""))
-                            onEvent(GameEvent.SetLeadNationality(country.alpha3))
-                            expanded = false
-                        })
-                        if (count == state.shownNationalities && state.suggestLeadsNationality) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(0.5.dp)
-                                    .background(color = MaterialTheme.colorScheme.inversePrimary)
-                            ) {}
-                        }
-                    }
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
