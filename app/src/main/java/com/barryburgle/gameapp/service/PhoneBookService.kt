@@ -43,7 +43,7 @@ class PhoneBookService {
             return distance <= 2
         }
 
-        private fun levenshteinDistance(s1: String, s2: String): Int {
+        fun levenshteinDistance(s1: String, s2: String): Int {
             val dp = Array(s1.length + 1) { IntArray(s2.length + 1) }
             for (i in 0..s1.length) dp[i][0] = i
             for (j in 0..s2.length) dp[0][j] = j
