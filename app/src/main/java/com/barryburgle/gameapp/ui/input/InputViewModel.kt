@@ -929,6 +929,9 @@ class InputViewModel(
                 viewModelScope.launch {
                     val pinpointId = pinPointDao.getLastContactPinPointId()
                     event.lead.pinPointId = pinpointId
+                    if (event.lead.insertTime.isBlank()) {
+                        event.lead.insertTime = OffsetDateTime.now().toString()
+                    }
                     leadDao.insert(event.lead)
                     _state.update {
                         it.copy(
