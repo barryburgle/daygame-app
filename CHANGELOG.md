@@ -7,6 +7,7 @@
 **Bugfixes**
 - Bugfix dates edit
 - Bugfix lead country search
+- Bugfix Dashboard screen lead sorting
 
 # Version 1.12.0 (2026-05-08)
 **Features**
