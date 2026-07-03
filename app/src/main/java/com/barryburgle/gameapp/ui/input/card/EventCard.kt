@@ -109,32 +109,12 @@ fun EventCard(
     var showMapDialog by remember { mutableStateOf(false) }
 
     if (showDeleteConfirmDialog) {
-        AlertDialog(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            modifier = Modifier.shadow(elevation = 10.dp),
+        deleteEventConfirmationDialog(
+            sortableGameEvent,
+            context, onEvent,
             onDismissRequest = {
                 showDeleteConfirmDialog = false
             },
-            title = {
-                LargeTitleText(text = "Delete Live Session")
-            },
-            text = {
-                LittleBodyText("Stop Live Session without saving result?")
-            },
-            confirmButton = {
-                ConfirmButton {
-                    onEvent(GameEvent.RollbackAllPinPoints(sortableGameEvent.event as AbstractSession))
-                    onEvent(GameEvent.DeleteSession(sortableGameEvent.event as AbstractSession))
-                    val intent = Intent(context, PersistentNotificationService::class.java)
-                    context.stopService(intent)
-                    showDeleteConfirmDialog = false
-                }
-            },
-            dismissButton = {
-                DismissButton {
-                    showDeleteConfirmDialog = false
-                }
-            }
         )
     }
 
@@ -798,6 +778,40 @@ private fun LeadsRow(
             Spacer(modifier = Modifier.width(35.dp))
         }
     }
+}
+
+@Composable
+fun deleteEventConfirmationDialog(
+    sortableGameEvent: SortableGameEvent,
+    context: Context,
+    onEvent: (GameEvent) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = Modifier.shadow(elevation = 10.dp),
+        onDismissRequest = onDismissRequest,
+        title = {
+            LargeTitleText(text = "Delete Live Session")
+        },
+        text = {
+            LittleBodyText("Stop Live Session without saving result?")
+        },
+        confirmButton = {
+            ConfirmButton {
+                onEvent(GameEvent.RollbackAllPinPoints(sortableGameEvent.event as AbstractSession))
+                onEvent(GameEvent.DeleteSession(sortableGameEvent.event as AbstractSession))
+                val intent = Intent(context, PersistentNotificationService::class.java)
+                context.stopService(intent)
+                onDismissRequest()
+            }
+        },
+        dismissButton = {
+            DismissButton {
+                onDismissRequest()
+            }
+        }
+    )
 }
 
 fun getEventCardLeadsBrush(semiOpaqueBackground: Color): Brush {
