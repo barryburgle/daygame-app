@@ -200,10 +200,13 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    private var isWaitingForStoragePermission = false
+
     override fun onResume() {
         super.onResume()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (Environment.isExternalStorageManager()) {
+            if (isWaitingForStoragePermission && Environment.isExternalStorageManager()) {
+                isWaitingForStoragePermission = false
                 checkAndRequestContactsPermission()
             }
         }
@@ -227,6 +230,7 @@ class MainActivity : ComponentActivity() {
                     data = Uri.parse("package:$packageName")
                     flags = FLAG_ACTIVITY_NEW_TASK
                 }
+                isWaitingForStoragePermission = true
                 startActivity(intent)
                 return
             }
@@ -299,11 +303,16 @@ class MainActivity : ComponentActivity() {
     private val requestLocationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
+        val fineGranted = permissions.getOrDefault(ACCESS_FINE_LOCATION, false) ||
+                ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        val coarseGranted = permissions.getOrDefault(ACCESS_COARSE_LOCATION, false) ||
+                ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+
         when {
-            permissions.getOrDefault(ACCESS_FINE_LOCATION, false) -> {
+            fineGranted -> {
                 Toast.makeText(this, "Precise location enabled", Toast.LENGTH_SHORT).show()
             }
-            permissions.getOrDefault(ACCESS_COARSE_LOCATION, false) -> {
+            coarseGranted -> {
                 Toast.makeText(this, "Approximate location enabled", Toast.LENGTH_SHORT).show()
             }
             else -> {
