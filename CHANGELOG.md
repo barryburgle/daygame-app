@@ -6,6 +6,7 @@
 
 **Bugfixes**
 - Bugfix dates edit
+- Bugfix lead country search
 
 # Version 1.12.0 (2026-05-08)
 **Features**
