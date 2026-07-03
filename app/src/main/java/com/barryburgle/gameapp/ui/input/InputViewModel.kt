@@ -530,6 +530,7 @@ class InputViewModel(
             }
 
             is GameEvent.DeleteSession -> {
+                notificationScheduler.cancel(AndroidNotificationScheduler.SITTING_REMINDER_REQUEST_CODE)
                 viewModelScope.launch {
                     pinPointDao.deleteAllBySourceEventIdAndSourceEventType(
                         event.abstractSession.id!!,
