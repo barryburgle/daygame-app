@@ -33,6 +33,7 @@ import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.notification.AndroidNotificationScheduler
 import com.barryburgle.gameapp.service.EntityService
+import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
@@ -613,8 +614,12 @@ class InputViewModel(
                         notificationScheduler.schedule(
                             AndroidNotificationScheduler.STICKING_POINTS_REQUEST_CODE,
                             LocalDateTime.of(tomorrowDate, time),
-                            "Review last session sticking points",
-                            "Here you are the sticking points from last session on ${abstractSession.date}:\n\n${abstractSession.stickingPoints}",
+                            "Review your sticking points",
+                            "Sticking points from session on ${
+                                FormatService.getDate(
+                                    abstractSession.date
+                                )
+                            } at ${FormatService.getTime(abstractSession.startHour)}:\n\n${abstractSession.stickingPoints}",
                             null
                         )
                     } else if (state.value.isUpdatingSession) {
