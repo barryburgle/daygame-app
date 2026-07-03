@@ -782,9 +782,9 @@ private fun LeadsRow(
 
 @Composable
 fun deleteEventConfirmationDialog(
-    sortableGameEvent: SortableGameEvent,
-    context: Context,
-    onEvent: (GameEvent) -> Unit,
+    title: String,
+    description: String,
+    onConfirmRequest: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
     AlertDialog(
@@ -792,18 +792,14 @@ fun deleteEventConfirmationDialog(
         modifier = Modifier.shadow(elevation = 10.dp),
         onDismissRequest = onDismissRequest,
         title = {
-            LargeTitleText(text = "Delete Live Session")
+            LargeTitleText(text = "Delete " + title)
         },
         text = {
-            LittleBodyText("Stop Live Session without saving result?")
+            LittleBodyText(description)
         },
         confirmButton = {
             ConfirmButton {
-                onEvent(GameEvent.RollbackAllPinPoints(sortableGameEvent.event as AbstractSession))
-                onEvent(GameEvent.DeleteSession(sortableGameEvent.event as AbstractSession))
-                val intent = Intent(context, PersistentNotificationService::class.java)
-                context.stopService(intent)
-                onDismissRequest()
+                onConfirmRequest()
             }
         },
         dismissButton = {
