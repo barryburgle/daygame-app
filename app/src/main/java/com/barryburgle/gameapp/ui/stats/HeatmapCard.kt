@@ -119,6 +119,7 @@ fun HeatmapCard(
                                 themeBlue
                             )
                             strokeColor = android.graphics.Color.TRANSPARENT
+                            setOnClickListener { _, _, _ -> true }
                         })
                     }
                 }
