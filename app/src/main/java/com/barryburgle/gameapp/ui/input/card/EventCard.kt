@@ -105,15 +105,94 @@ fun EventCard(
     val uriHandler = LocalUriHandler.current
     var liveSessionTime: Long = 0
     var liveSessionLeads: Int = 0
-    var showDeleteConfirmDialog by remember { mutableStateOf(false) }
+    var showCancelLiveSessionConfirmDialog by remember { mutableStateOf(false) }
+    var showDeleteSessionConfirmDialog by remember { mutableStateOf(false) }
+    var showDeleteSetConfirmDialog by remember { mutableStateOf(false) }
+    var showDeleteDateConfirmDialog by remember { mutableStateOf(false) }
+    var showDeleteChallengeConfirmDialog by remember { mutableStateOf(false) }
     var showMapDialog by remember { mutableStateOf(false) }
 
-    if (showDeleteConfirmDialog) {
+    if (showCancelLiveSessionConfirmDialog) {
         deleteEventConfirmationDialog(
-            sortableGameEvent,
-            context, onEvent,
+            "Live Session",
+            "Do you want to stop the current Live Session without saving result?",
+            onConfirmRequest = {
+                onEvent(GameEvent.RollbackAllPinPoints(sortableGameEvent.event as AbstractSession))
+                onEvent(GameEvent.DeleteSession(sortableGameEvent.event as AbstractSession))
+                val intent = Intent(context, PersistentNotificationService::class.java)
+                context.stopService(intent)
+                showCancelLiveSessionConfirmDialog = false
+            },
             onDismissRequest = {
-                showDeleteConfirmDialog = false
+                showCancelLiveSessionConfirmDialog = false
+            },
+        )
+    }
+    if (showDeleteSessionConfirmDialog) {
+        deleteEventConfirmationDialog(
+            "Session",
+            "Do you want to delete this session?",
+            onConfirmRequest = {
+                onEvent(
+                    GameEvent.DeleteSession(
+                        sortableGameEvent.event as AbstractSession
+                    )
+                )
+                showDeleteSessionConfirmDialog = false
+            },
+            onDismissRequest = {
+                showDeleteSessionConfirmDialog = false
+            },
+        )
+    }
+    if (showDeleteSetConfirmDialog) {
+        deleteEventConfirmationDialog(
+            "Set",
+            "Do you want to delete this set?",
+            onConfirmRequest = {
+                onEvent(
+                    GameEvent.DeleteSet(
+                        sortableGameEvent.event as SingleSet
+                    )
+                )
+                showDeleteSetConfirmDialog = false
+            },
+            onDismissRequest = {
+                showDeleteSetConfirmDialog = false
+            },
+        )
+    }
+    if (showDeleteDateConfirmDialog) {
+        deleteEventConfirmationDialog(
+            "Date",
+            "Do you want to delete this date?",
+            onConfirmRequest = {
+                onEvent(
+                    GameEvent.DeleteDate(
+                        sortableGameEvent.event as Date
+                    )
+                )
+                showDeleteDateConfirmDialog = false
+            },
+            onDismissRequest = {
+                showDeleteDateConfirmDialog = false
+            },
+        )
+    }
+    if (showDeleteChallengeConfirmDialog) {
+        deleteEventConfirmationDialog(
+            "Challenge",
+            "Do you want to delete this challenge?",
+            onConfirmRequest = {
+                onEvent(
+                    GameEvent.DeleteChallenge(
+                        (sortableGameEvent.event as AchievedChallenge).challenge
+                    )
+                )
+                showDeleteChallengeConfirmDialog = false
+            },
+            onDismissRequest = {
+                showDeleteChallengeConfirmDialog = false
             },
         )
     }
@@ -429,7 +508,7 @@ fun EventCard(
                                         context.stopService(intent)
                                     },
                                     onLongClick = {
-                                        showDeleteConfirmDialog = true
+                                        showCancelLiveSessionConfirmDialog = true
                                     },
                                     imageVector = Icons.Default.Stop,
                                     contentDescription = "Stop Live Session",
@@ -442,38 +521,22 @@ fun EventCard(
                                                 sortableGameEvent.classType
                                             )
                                         ) {
-                                            onEvent(
-                                                GameEvent.DeleteSession(
-                                                    sortableGameEvent.event as AbstractSession
-                                                )
-                                            )
+                                            showDeleteSessionConfirmDialog = true
                                         }
                                         if (SingleSet::class.java.simpleName.equals(
                                                 sortableGameEvent.classType
                                             )
                                         ) {
-                                            onEvent(
-                                                GameEvent.DeleteSet(
-                                                    sortableGameEvent.event as SingleSet
-                                                )
-                                            )
+                                            showDeleteSetConfirmDialog = true
                                         }
                                         if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
-                                            onEvent(
-                                                GameEvent.DeleteDate(
-                                                    sortableGameEvent.event as Date
-                                                )
-                                            )
+                                            showDeleteDateConfirmDialog = true
                                         }
                                         if (AchievedChallenge::class.java.simpleName.equals(
                                                 sortableGameEvent.classType
                                             )
                                         ) {
-                                            onEvent(
-                                                GameEvent.DeleteChallenge(
-                                                    (sortableGameEvent.event as AchievedChallenge).challenge
-                                                )
-                                            )
+                                            showDeleteChallengeConfirmDialog = true
                                         }
                                     },
                                     imageVector = Icons.Default.Delete,
