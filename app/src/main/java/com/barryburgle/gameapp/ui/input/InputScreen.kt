@@ -386,7 +386,7 @@ fun InputScreen(
                     .blur(blurBackground),
                 verticalArrangement = Arrangement.spacedBy(spaceFromLeft),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                    top = spaceFromLeft,
+                    top = spaceFromLeft - 12.dp,
                     bottom = padding.calculateBottomPadding() + 5.dp
                 )
             ) {
