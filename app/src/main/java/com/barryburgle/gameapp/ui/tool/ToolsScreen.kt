@@ -94,15 +94,19 @@ fun ToolsScreen(
                 if (state.allLeads.isEmpty()) "" else "${state.allLeads.size} leads, "
             val setsCountDesc = if (state.allSets.isEmpty()) "" else "${state.allSets.size} sets, "
             val datesCountDesc =
-                if (state.allDates.isEmpty()) "" else "${state.allDates.size} dates"
+                if (state.allDates.isEmpty()) "" else "${state.allDates.size} dates, "
             val challengesCountDesc =
-                if (state.allChallenges.isEmpty()) "." else ", ${state.allChallenges.size} challenges."
+                if (state.allChallenges.isEmpty()) "" else "${state.allChallenges.size} challenges, "
+            val pinpointCountDesc =
+                if (state.allPinPoints.isEmpty()) "" else "${state.allPinPoints.size} pin points, "
+            val settingsCountDesc =
+                if (state.allSettings.isEmpty()) "." else "${state.allSettings.size} settings."
             item {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     DataExchangeCard(
                         cardTitle = "Export",
-                        cardSubtitle = "Holding ${sessionsCountDesc}${leadsCountDesc}${setsCountDesc}${datesCountDesc}${challengesCountDesc}",
+                        cardSubtitle = "Holding ${sessionsCountDesc}${leadsCountDesc}${setsCountDesc}${datesCountDesc}${challengesCountDesc}${pinpointCountDesc}${settingsCountDesc}",
                         state = state,
                         onEvent = onEvent,
                         modifier = dataExchangeCardModifier,
