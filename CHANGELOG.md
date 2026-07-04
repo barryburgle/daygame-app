@@ -10,6 +10,7 @@
 - Bugfix lead country search
 - Bugfix Dashboard screen lead sorting
 - Bugfix export all tables with right header setting
+- Minor UI improvements
 
 # Version 1.12.0 (2026-05-08)
 **Features**

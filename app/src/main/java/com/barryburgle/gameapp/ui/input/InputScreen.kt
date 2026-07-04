@@ -383,10 +383,12 @@ fun InputScreen(
             LazyColumn(
                 state = listState, modifier = Modifier
                     .fillMaxSize()
-                    .blur(blurBackground)
-                    .offset(
-                        y = spaceFromLeft - 20.dp
-                    ), verticalArrangement = Arrangement.spacedBy(spaceFromLeft)
+                    .blur(blurBackground),
+                verticalArrangement = Arrangement.spacedBy(spaceFromLeft),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                    top = spaceFromLeft,
+                    bottom = padding.calculateBottomPadding() + 5.dp
+                )
             ) {
                 item {
                     Spacer(modifier = Modifier.height(120.dp))
