@@ -89,7 +89,6 @@ fun Navigation(
         mutableStateOf(0)
     }
     Scaffold(
-        modifier = Modifier.navigationBarsPadding(),
         bottomBar = {
             androidx.compose.material3.Surface(
                 modifier = Modifier
