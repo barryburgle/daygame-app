@@ -98,6 +98,7 @@ fun DataExchangeCard(
                                 if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                     DataExchangeService.exportAll(
                                         state,
+                                        state.exportHeader,
                                         localContext
                                     )
                                 } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {

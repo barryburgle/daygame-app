@@ -112,49 +112,50 @@ class DataExchangeService {
             allPinPoints: List<PinPoint>,
             exportPinPointsFileName: String,
             allSettings: List<Setting>,
-            exportFolder: String
+            exportFolder: String,
+            exportHeader: Boolean
         ) {
             sessionCsvService.setExportObjects(allSessions)
             sessionCsvService.exportRows(
                 exportFolder,
                 exportSessionsFileName,
-                true
+                exportHeader
             )
             leadCsvService.setExportObjects(allLeads)
             leadCsvService.exportRows(
                 exportFolder,
                 exportLeadsFileName,
-                true
+                exportHeader
             )
             dateCsvService.setExportObjects(allDates)
             dateCsvService.exportRows(
                 exportFolder,
                 exportDatesFileName,
-                true
+                exportHeader
             )
             setCsvService.setExportObjects(allSets)
             setCsvService.exportRows(
                 exportFolder,
                 exportSetsFileName,
-                true
+                exportHeader
             )
             challengeCsvService.setExportObjects(allChallenges)
             challengeCsvService.exportRows(
                 exportFolder,
                 exportChallengesFileName,
-                true
+                exportHeader
             )
             pinPointCsvService.setExportObjects(allPinPoints)
             pinPointCsvService.exportRows(
                 exportFolder,
                 exportPinPointsFileName,
-                true
+                exportHeader
             )
             settingCsvService.setExportObjects(allSettings)
             settingCsvService.exportRows(
                 exportFolder,
                 settingCsvService.getBackupFileName(),
-                true
+                exportHeader
             )
         }
 
@@ -252,12 +253,14 @@ class DataExchangeService {
                 state.allPinPoints,
                 pinPointCsvService.getBackupFileName(),
                 state.allSettings,
-                state.exportFolder + "/" + state.backupFolder
+                state.exportFolder + "/" + state.backupFolder,
+                true
             )
         }
 
         fun exportAll(
             state: ExportState,
+            exportHeader: Boolean,
             localContext: Context
         ) {
             export(
@@ -274,7 +277,8 @@ class DataExchangeService {
                 state.allPinPoints,
                 state.exportPinPointsFileName,
                 state.allSettings,
-                state.exportFolder
+                state.exportFolder,
+                exportHeader
             )
             Toast.makeText(
                 localContext,
