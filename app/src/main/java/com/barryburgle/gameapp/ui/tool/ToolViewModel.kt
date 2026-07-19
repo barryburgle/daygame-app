@@ -11,7 +11,9 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
-import com.barryburgle.gameapp.ui.CombineEighteen
+import com.barryburgle.gameapp.ui.CombineNine
+import com.barryburgle.gameapp.ui.CombineNineteen
+import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.CombineTwenty
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.flow.Flow
@@ -84,11 +86,8 @@ class ToolViewModel(
             importSettingsFilename = importSettings,
         )
     }
-    val _generalSettingState: Flow<GeneralSettingState> = CombineTwenty(
-        settingDao.getPinPointInteractions(),
-        settingDao.getGenerateiDate(),
+    val _generalSettingState: Flow<GeneralSettingState> = CombineThirteen(
         settingDao.getNotificationTime(),
-        settingDao.getFollowCount(),
         settingDao.getSuggestLeadsNationality(),
         settingDao.getShownNationalities(),
         settingDao.getThemeSysFollow(),
@@ -99,18 +98,11 @@ class ToolViewModel(
         settingDao.getShowCurrentWeekSummary(),
         settingDao.getShowCurrentMonthSummary(),
         settingDao.getShowCurrentChallengeSummary(),
-        settingDao.getLiveSessionNotificationEnabled(),
-        settingDao.getLiveSessionSittingReminderEnabled(),
-        settingDao.getLiveSessionSittingReminderInterval(),
-        settingDao.getLiveSessionShareEnabled(),
         settingDao.getArchiveBackupFolder(),
         settingDao.getIsCleaning()
-    ) { pinPointInteractions, generateiDate, notificationTime, followCount, suggestLeadsNationality, shownNationalities, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled, archiveBackupFolder, isCleaning ->
+    ) { notificationTime, suggestLeadsNationality, shownNationalities, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary, archiveBackupFolder, isCleaning ->
         GeneralSettingState(
-            pinPointInteractions = pinPointInteractions,
-            generateiDate = generateiDate,
             notificationTime = notificationTime,
-            followCount = followCount,
             suggestLeadsNationality = suggestLeadsNationality,
             shownNationalities = shownNationalities,
             themeSysFollow = themeSysFollow,
@@ -121,12 +113,32 @@ class ToolViewModel(
             showCurrentWeekSummary = showCurrentWeekSummary,
             showCurrentMonthSummary = showCurrentMonthSummary,
             showCurrentChallengeSummary = showCurrentChallengeSummary,
+            archiveBackupFolder = archiveBackupFolder,
+            isCleaning = isCleaning
+        )
+    }
+
+    val _liveSessionSettingState: Flow<LiveSessionSettingState> = CombineNine(
+        settingDao.getPinPointInteractions(),
+        settingDao.getGenerateiDate(),
+        settingDao.getFollowCount(),
+        settingDao.getWriteHerAfterReminderEnabled(),
+        settingDao.getWriteHerReminderInterval(),
+        settingDao.getLiveSessionNotificationEnabled(),
+        settingDao.getLiveSessionSittingReminderEnabled(),
+        settingDao.getLiveSessionSittingReminderInterval(),
+        settingDao.getLiveSessionShareEnabled()
+    ) { pinPointInteractions, generateiDate, followCount, writeHerAfterReminderEnabled, writeHerReminderInterval, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
+        LiveSessionSettingState(
+            pinPointInteractions = pinPointInteractions,
+            generateiDate = generateiDate,
+            followCount = followCount,
+            writeHerAfterReminderEnabled = writeHerAfterReminderEnabled,
+            writeHerReminderInterval = writeHerReminderInterval,
             liveSessionNotificationEnabled = liveSessionNotificationEnabled,
             liveSessionSittingReminderEnabled = liveSessionSittingReminderEnabled,
             liveSessionSittingReminderInterval = liveSessionSittingReminderInterval,
-            liveSessionShareEnabled = liveSessionShareEnabled,
-            archiveBackupFolder = archiveBackupFolder,
-            isCleaning = isCleaning
+            liveSessionShareEnabled = liveSessionShareEnabled
         )
     }
     private val _averageLast = settingDao.getAverageLast()
@@ -138,7 +150,7 @@ class ToolViewModel(
     private val _lastWeeksShown = settingDao.getLastWeeksShown()
     private val _lastMonthsShown = settingDao.getLastMonthsShown()
     val state =
-        CombineEighteen(
+        CombineNineteen(
             _state,
             _allSessions,
             _allLeads,
@@ -149,6 +161,7 @@ class ToolViewModel(
             _allSettings,
             _importExportSettingState,
             _generalSettingState,
+            _liveSessionSettingState,
             _averageLast,
             _latestAvailable,
             _latestPublishDate,
@@ -157,7 +170,7 @@ class ToolViewModel(
             _lastSessionsShown,
             _lastWeeksShown,
             _lastMonthsShown
-        ) { state, allSessions, allLeads, allDates, allSets, allChallenges, allPinPoints, allSettings, importExportSettingState, generalSettingState, averageLast, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown ->
+        ) { state, allSessions, allLeads, allDates, allSets, allChallenges, allPinPoints, allSettings, importExportSettingState, generalSettingState, liveSessionSettingState, averageLast, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown ->
             state.copy(
                 exportSessionsFileName = importExportSettingState.exportSessionsFilename,
                 importSessionsFileName = importExportSettingState.importSessionsFilename,
@@ -192,8 +205,8 @@ class ToolViewModel(
                 exportHeader = importExportSettingState.exportHeader.toBoolean(),
                 importHeader = importExportSettingState.importHeader.toBoolean(),
                 backupActive = importExportSettingState.backupActive.toBoolean(),
-                pinPointInteractions = generalSettingState.pinPointInteractions.toBoolean(),
-                generateiDate = generalSettingState.generateiDate.toBoolean(),
+                pinPointInteractions = liveSessionSettingState.pinPointInteractions.toBoolean(),
+                generateiDate = liveSessionSettingState.generateiDate.toBoolean(),
                 latestAvailable = latestAvailable,
                 latestPublishDate = latestPublishDate,
                 latestChangelog = latestChangelog,
@@ -201,8 +214,10 @@ class ToolViewModel(
                 lastSessionsShown = lastSessionsShown,
                 lastWeeksShown = lastWeeksShown,
                 lastMonthsShown = lastMonthsShown,
-                followCount = generalSettingState.followCount.toBoolean(),
+                followCount = liveSessionSettingState.followCount.toBoolean(),
                 suggestLeadsNationality = generalSettingState.suggestLeadsNationality.toBoolean(),
+                writeHerAfterReminderEnabled = liveSessionSettingState.writeHerAfterReminderEnabled.toBoolean(),
+                writeHerReminderInterval = liveSessionSettingState.writeHerReminderInterval.toInt(),
                 shownNationalities = generalSettingState.shownNationalities.toInt(),
                 simplePlusOneReport = generalSettingState.simplePlusOneReport.toBoolean(),
                 neverShareLeadInfo = generalSettingState.neverShareLeadInfo.toBoolean(),
@@ -210,10 +225,10 @@ class ToolViewModel(
                 showCurrentWeekSummary = generalSettingState.showCurrentWeekSummary.toBoolean(),
                 showCurrentMonthSummary = generalSettingState.showCurrentMonthSummary.toBoolean(),
                 showCurrentChallengeSummary = generalSettingState.showCurrentChallengeSummary.toBoolean(),
-                liveSessionNotificationEnabled = generalSettingState.liveSessionNotificationEnabled.toBoolean(),
-                liveSessionSittingReminderEnabled = generalSettingState.liveSessionSittingReminderEnabled.toBoolean(),
-                liveSessionSittingReminderInterval = generalSettingState.liveSessionSittingReminderInterval.toInt(),
-                liveSessionShareEnabled = generalSettingState.liveSessionShareEnabled.toBoolean(),
+                liveSessionNotificationEnabled = liveSessionSettingState.liveSessionNotificationEnabled.toBoolean(),
+                liveSessionSittingReminderEnabled = liveSessionSettingState.liveSessionSittingReminderEnabled.toBoolean(),
+                liveSessionSittingReminderInterval = liveSessionSettingState.liveSessionSittingReminderInterval.toInt(),
+                liveSessionShareEnabled = liveSessionSettingState.liveSessionShareEnabled.toBoolean(),
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ToolsState())
 
@@ -1075,10 +1090,7 @@ data class ImportExportSettingState(
 )
 
 data class GeneralSettingState(
-    val pinPointInteractions: String,
-    val generateiDate: String,
     val notificationTime: String,
-    val followCount: String,
     val suggestLeadsNationality: String,
     val shownNationalities: String,
     val themeSysFollow: String,
@@ -1089,10 +1101,18 @@ data class GeneralSettingState(
     val showCurrentWeekSummary: String,
     val showCurrentMonthSummary: String,
     val showCurrentChallengeSummary: String,
+    val archiveBackupFolder: String,
+    val isCleaning: String
+)
+
+data class LiveSessionSettingState(
+    val pinPointInteractions: String,
+    val generateiDate: String,
+    val followCount: String,
+    val writeHerAfterReminderEnabled: String,
+    val writeHerReminderInterval: String,
     val liveSessionNotificationEnabled: String,
     val liveSessionSittingReminderEnabled: String,
     val liveSessionSittingReminderInterval: String,
-    val liveSessionShareEnabled: String,
-    val archiveBackupFolder: String,
-    val isCleaning: String
+    val liveSessionShareEnabled: String
 )
