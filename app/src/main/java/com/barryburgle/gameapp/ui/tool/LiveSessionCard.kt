@@ -1,7 +1,7 @@
 package com.barryburgle.gameapp.ui.tool
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,14 +32,14 @@ fun LiveSessionCard(
         ) {
             onEvent(ToolEvent.SwitchLiveSessionSittingReminder)
         }
-        Spacer(modifier = Modifier.width(5.dp))
+        Spacer(modifier = Modifier.height(5.dp))
         CountSetting(
             text = "Sitting reminder every ${state.liveSessionSittingReminderInterval} minutes",
             count = state.liveSessionSittingReminderInterval,
             onEvent = onEvent as (GenericEvent) -> Unit,
             saveEvent = ToolEvent::SetLiveSessionSittingReminderInterval
         )
-        Spacer(modifier = Modifier.width(5.dp))
+        Spacer(modifier = Modifier.height(5.dp))
         SwitchSetting(
             "Share Live Session", state.liveSessionShareEnabled,
             description = "After starting Live Sessions or inserting any event allows sharing a tweet about it"
