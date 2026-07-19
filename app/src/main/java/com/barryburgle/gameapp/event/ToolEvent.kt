@@ -80,5 +80,7 @@ sealed interface ToolEvent : GenericEvent {
     object SwitchLiveSessionNotification : ToolEvent
     object SwitchLiveSessionSittingReminder : ToolEvent
     class SetLiveSessionSittingReminderInterval(val interval: String) : ToolEvent
+    object SwitchWriteHerReminder : ToolEvent
+    class SetWriteHerReminderInterval(val interval: String) : ToolEvent
     object SwitchLiveSessionShare : ToolEvent
 }

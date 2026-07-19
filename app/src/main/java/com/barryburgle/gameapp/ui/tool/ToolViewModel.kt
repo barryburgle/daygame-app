@@ -991,6 +991,38 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SwitchWriteHerReminder -> {
+                _state.update {
+                    it.copy(
+                        writeHerAfterReminderEnabled = _state.value.writeHerAfterReminderEnabled.not()
+                    )
+                }
+                val writeHerAfterReminderEnabled =
+                    _state.value.writeHerAfterReminderEnabled
+                val setting =
+                    Setting(
+                        SettingDao.WRITE_HER_REMINDER_ENABLED_ID,
+                        writeHerAfterReminderEnabled.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetWriteHerReminderInterval -> {
+                _state.update {
+                    it.copy(
+                        writeHerReminderInterval = event.interval.toInt()
+                    )
+                }
+                val writeHerReminderInterval =
+                    _state.value.writeHerReminderInterval
+                val setting =
+                    Setting(
+                        SettingDao.WRITE_HER_REMINDER_INTERVAL_ID,
+                        writeHerReminderInterval.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SwitchLiveSessionShare -> {
                 _state.update {
                     it.copy(
