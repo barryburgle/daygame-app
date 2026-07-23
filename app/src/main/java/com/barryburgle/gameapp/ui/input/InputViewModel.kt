@@ -601,6 +601,18 @@ class InputViewModel(
                 )
             }
 
+            is GameEvent.ScheduleWriteHerAfterReminder -> {
+                val time = LocalDateTime.now().plusMinutes(event.interval.toLong())
+                notificationScheduler.schedule(
+                    AndroidNotificationScheduler.WRITE_HER_AFTER_REQUEST_CODE,
+                    time,
+                    "Time to write her!",
+                    "You met ${event.leadDesc} ${event.interval} minutes ago, don't let it go cold",
+                    null, // Notification is not recurring, so we do not foward with recurring interval
+                    event.leadLink
+                )
+            }
+
             GameEvent.SaveAbstractSession ->
                 viewModelScope.launch {
                     val abstractSession = _batchSessionService.init(
