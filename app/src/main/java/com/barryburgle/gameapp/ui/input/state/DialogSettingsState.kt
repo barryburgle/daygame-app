@@ -12,5 +12,7 @@ data class DialogSettingsState(
     var liveSessionNotificationEnabled: Boolean = true,
     var liveSessionSittingReminderEnabled: Boolean = true,
     var liveSessionSittingReminderInterval: Int = 30,
-    var liveSessionShareEnabled: Boolean = true
+    var liveSessionShareEnabled: Boolean = true,
+    var writeHerAfterReminderEnabled: Boolean = true,
+    var writeHerReminderInterval: Int = 60
 )
