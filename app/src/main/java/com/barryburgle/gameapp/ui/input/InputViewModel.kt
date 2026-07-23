@@ -38,11 +38,11 @@ import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.set.SetService
-import com.barryburgle.gameapp.ui.CombineEleven
 import com.barryburgle.gameapp.ui.CombineFive
 import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.CombineSeven
 import com.barryburgle.gameapp.ui.CombineSixteen
+import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.input.dialog.InputDialogConstant
 import com.barryburgle.gameapp.ui.input.state.DialogSettingsState
 import com.barryburgle.gameapp.ui.input.state.ExportSettingsState
@@ -190,6 +190,8 @@ class InputViewModel(
     private val _liveSessionSittingReminderInterval =
         settingDao.getLiveSessionSittingReminderInterval()
     private val _liveSessionShareEnabled = settingDao.getLiveSessionShareEnabled()
+    private val _writeHerAfterReminderEnabled = settingDao.getWriteHerAfterReminderEnabled()
+    private val _writeHerReminderInterval = settingDao.getWriteHerReminderInterval()
     private val _sessionsByWeek = aggregatedSessionsDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _sessionsByMonth = aggregatedSessionsDao.groupStatsByMonth()
@@ -340,7 +342,7 @@ class InputViewModel(
             lastBackup = lastBackup.toInt()
         )
     }
-    val _dialogSettings = CombineEleven(
+    val _dialogSettings = CombineThirteen(
         _notificationTime,
         _generateiDate,
         _pinPointInteractions,
@@ -351,8 +353,10 @@ class InputViewModel(
         _liveSessionNotificationEnabled,
         _liveSessionSittingReminderEnabled,
         _liveSessionSittingReminderInterval,
-        _liveSessionShareEnabled
-    ) { notificationTime, generateiDate, pinPointInteractions, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
+        _liveSessionShareEnabled,
+        _writeHerAfterReminderEnabled,
+        _writeHerReminderInterval
+    ) { notificationTime, generateiDate, pinPointInteractions, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled, writeHerAfterReminderEnabled, writeHerReminderInterval ->
         DialogSettingsState(
             notificationTime = notificationTime,
             generateiDate = generateiDate.toBoolean(),
@@ -364,7 +368,9 @@ class InputViewModel(
             liveSessionNotificationEnabled = liveSessionNotificationEnabled.toBoolean(),
             liveSessionSittingReminderEnabled = liveSessionSittingReminderEnabled.toBoolean(),
             liveSessionSittingReminderInterval = liveSessionSittingReminderInterval.toInt(),
-            liveSessionShareEnabled = liveSessionShareEnabled.toBoolean()
+            liveSessionShareEnabled = liveSessionShareEnabled.toBoolean(),
+            writeHerAfterReminderEnabled = writeHerAfterReminderEnabled.toBoolean(),
+            writeHerReminderInterval = writeHerReminderInterval.toInt()
         )
     }
     val _shareSettings = CombineSeven(
@@ -465,6 +471,8 @@ class InputViewModel(
             liveSessionSittingReminderEnabled = dialogSettings.liveSessionSittingReminderEnabled,
             liveSessionSittingReminderInterval = dialogSettings.liveSessionSittingReminderInterval,
             liveSessionShareEnabled = dialogSettings.liveSessionShareEnabled,
+            writeHerAfterReminderEnabled = dialogSettings.writeHerAfterReminderEnabled,
+            writeHerReminderInterval = dialogSettings.writeHerReminderInterval,
             mostPopularLeadsNationalities = mostPopularLeadsNationalities,
             sessionsByWeek = sessionsByWeek,
             sessionsByMonth = sessionsByMonth,
