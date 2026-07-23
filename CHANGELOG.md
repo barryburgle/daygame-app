@@ -1,3 +1,10 @@
+# Version 1.14.0 (2026-08-dd)
+**Features**
+- "Write her after" notification reminds you to write her after settable amount of minutes 🔔
+
+**Bugfixes**
+- 
+
 # Version 1.13.0 (2026-07-05)
 **Features**
 - During live session automatically share and copy to clipboard achieved sets 🏃, conversations 💬, and contacts 📲
