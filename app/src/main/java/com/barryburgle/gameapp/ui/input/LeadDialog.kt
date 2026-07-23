@@ -1,5 +1,7 @@
 package com.barryburgle.gameapp.ui.input
 
+import android.net.Uri
+import android.provider.ContactsContract
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -349,6 +351,20 @@ fun LeadDialog(
                 onEvent(GameEvent.SetIsInOverlayToFalse)
                 onEvent(GameEvent.HideLeadDialog)
                 onEvent(GameEvent.SwitchJustSaved)
+                val notificationLink =
+                    if (ContactTypeEnum.SOCIAL.equals(lead.contact) && lead.instagramUrl != null) lead.instagramUrl!! else Uri.withAppendedPath(
+                        ContactsContract.Contacts.CONTENT_LOOKUP_URI,
+                        lead.contactLookupKey
+                    ).toString()
+                if (state.writeHerAfterReminderEnabled) {
+                    onEvent(
+                        GameEvent.ScheduleWriteHerAfterReminder(
+                            state.writeHerReminderInterval,
+                            lead.name + " " + CountryEnum.getFlagByAlpha3(lead.nationality),
+                            notificationLink
+                        )
+                    )
+                }
                 if (state.isUpdatingLead || state.saveLeadToLiveSession) {
                     Toast.makeText(context, "Lead saved", Toast.LENGTH_SHORT).show()
                 } else {
