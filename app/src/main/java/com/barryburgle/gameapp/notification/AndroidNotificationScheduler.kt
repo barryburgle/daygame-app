@@ -14,10 +14,12 @@ class AndroidNotificationScheduler(
     companion object {
         const val STICKING_POINTS_REQUEST_CODE = 0
         const val SITTING_REMINDER_REQUEST_CODE = 1
+        const val WRITE_HER_AFTER_REQUEST_CODE = 2
         const val REQUEST_CODE: String = "request-code"
         const val RECURRING_NOTIFICATION_INTERVAL: String = "interval"
         const val NOTIFICATION_TITLE: String = "title"
         const val NOTIFICATION_CONTENT: String = "content"
+        const val NOTIFICATION_LINK: String = "link"
     }
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
@@ -27,7 +29,8 @@ class AndroidNotificationScheduler(
         time: LocalDateTime,
         title: String,
         content: String,
-        interval: Int?
+        interval: Int?,
+        link: String?
     ) {
         val alarmPendingIntent = Intent(context, NotificationReceiver::class.java).apply {
             putExtra(REQUEST_CODE, requestCode)
@@ -36,6 +39,9 @@ class AndroidNotificationScheduler(
         }
         if (interval != null) {
             alarmPendingIntent.putExtra(RECURRING_NOTIFICATION_INTERVAL, interval)
+        }
+        if (link != null) {
+            alarmPendingIntent.putExtra(NOTIFICATION_LINK, link)
         }
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
