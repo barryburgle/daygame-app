@@ -12,6 +12,7 @@ import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
+import java.time.LocalTime
 
 sealed interface GameEvent : GenericEvent {
     object SaveAbstractSession : GameEvent
@@ -26,7 +27,7 @@ sealed interface GameEvent : GenericEvent {
     class ShowLeadDialog(val addLead: Boolean, val modifyLead: Boolean) : GameEvent
     object HideDialog : GameEvent
     object HideLeadDialog : GameEvent
-    data class ScheduleLiveSessionSittingReminder(val interval: Int) : GameEvent
+    data class ScheduleLiveSessionSittingReminder(val interval: Int, val sessionStartHour: LocalTime) : GameEvent
     data class ScheduleWriteHerAfterReminder(val interval: Int, val leadDesc: String, val leadLink: String) : GameEvent
     data class SetDate(val date: String) : GameEvent
     data class SetStartHour(val startHour: String) : GameEvent

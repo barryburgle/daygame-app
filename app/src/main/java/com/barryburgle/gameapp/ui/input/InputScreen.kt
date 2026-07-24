@@ -278,7 +278,12 @@ fun InputScreen(
                                 }
                             }
                             if (state.liveSessionSittingReminderEnabled) {
-                                onEvent(GameEvent.ScheduleLiveSessionSittingReminder(state.liveSessionSittingReminderInterval))
+                                onEvent(
+                                    GameEvent.ScheduleLiveSessionSittingReminder(
+                                        state.liveSessionSittingReminderInterval,
+                                        FormatService.parseTime(dateTime)
+                                    )
+                                )
                             }
                             if (state.liveSessionShareEnabled) {
                                 val liveSessionReport =
