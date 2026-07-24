@@ -280,8 +280,7 @@ fun InputScreen(
                             if (state.liveSessionSittingReminderEnabled) {
                                 onEvent(
                                     GameEvent.ScheduleLiveSessionSittingReminder(
-                                        state.liveSessionSittingReminderInterval,
-                                        FormatService.parseTime(dateTime)
+                                        state.liveSessionSittingReminderInterval
                                     )
                                 )
                             }
