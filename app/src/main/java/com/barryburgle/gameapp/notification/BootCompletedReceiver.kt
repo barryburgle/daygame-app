@@ -34,8 +34,7 @@ class BootCompletedReceiver : BroadcastReceiver() {
                                 .toString() + 'T' + notificationTime
                         ),
                         lastSession.date,
-                        lastSession.stickingPoints,
-                        null
+                        lastSession.stickingPoints
                     )
                 } catch (e: Exception) {
                     Log.e("BootReceiver", "Error scheduling: ${e.message}")

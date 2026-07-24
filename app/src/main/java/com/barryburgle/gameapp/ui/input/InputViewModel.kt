@@ -641,8 +641,7 @@ class InputViewModel(
                                 FormatService.getDate(
                                     abstractSession.date
                                 )
-                            } at ${FormatService.getTime(abstractSession.startHour)}:\n\n${abstractSession.stickingPoints}",
-                            null
+                            } at ${FormatService.getTime(abstractSession.startHour)}:\n\n${abstractSession.stickingPoints}"
                         )
                     } else if (state.value.isUpdatingSession) {
                         abstractSession.id = state.value.editAbstractSession!!.id
