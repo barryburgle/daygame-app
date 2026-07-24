@@ -36,6 +36,7 @@ fun LiveSessionCard(
         CountSetting(
             text = "Sitting reminder every ${state.liveSessionSittingReminderInterval} minutes",
             count = state.liveSessionSittingReminderInterval,
+            countBy = 5,
             onEvent = onEvent as (GenericEvent) -> Unit,
             saveEvent = ToolEvent::SetLiveSessionSittingReminderInterval
         )
