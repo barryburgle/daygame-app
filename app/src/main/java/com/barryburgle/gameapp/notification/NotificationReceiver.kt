@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.provider.AlarmClock
 import com.barryburgle.gameapp.service.notification.NotificationService
 import java.time.LocalDateTime
 
@@ -37,15 +38,20 @@ class NotificationReceiver : BroadcastReceiver() {
             )
         }
 
-        val actionIntent = if (!receivedLink.isNullOrBlank()) {
-            Intent(Intent.ACTION_VIEW, Uri.parse(receivedLink)).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val actionIntent =
+            if (receivedLink == AndroidNotificationScheduler.TIMER_NOTIFICATION_LINK_VALUE) {
+                Intent(AlarmClock.ACTION_SET_TIMER).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
+            } else if (!receivedLink.isNullOrBlank()) {
+                Intent(Intent.ACTION_VIEW, Uri.parse(receivedLink)).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            } else {
+                context!!.packageManager.getLaunchIntentForPackage(context.packageName)?.apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                }
             }
-        } else {
-            context!!.packageManager.getLaunchIntentForPackage(context.packageName)?.apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            }
-        }
 
         val pendingIntent = if (actionIntent != null) {
             android.app.PendingIntent.getActivity(

@@ -597,7 +597,8 @@ class InputViewModel(
                     time,
                     "Time to sit down!",
                     "You've been walking way too much, make your session more sustainable and rest a bit",
-                    event.interval
+                    event.interval,
+                    AndroidNotificationScheduler.TIMER_NOTIFICATION_LINK_VALUE
                 )
             }
 

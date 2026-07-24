@@ -1,6 +1,7 @@
 # Version 1.14.0 (2026-08-dd)
 **Features**
 - "Write her after" notification reminds you to write her after settable amount of minutes 🔔
+- Tap on the sitting reminder notification to open the timer for some rest 🕐
 
 **Bugfixes**
 - 

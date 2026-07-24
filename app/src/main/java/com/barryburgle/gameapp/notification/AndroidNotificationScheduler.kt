@@ -20,6 +20,7 @@ class AndroidNotificationScheduler(
         const val NOTIFICATION_TITLE: String = "title"
         const val NOTIFICATION_CONTENT: String = "content"
         const val NOTIFICATION_LINK: String = "link"
+        const val TIMER_NOTIFICATION_LINK_VALUE: String = "timer_link_value"
     }
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
