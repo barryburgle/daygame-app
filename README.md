@@ -43,6 +43,11 @@ You can download the app .apk installer on the release page clicking on the foll
   <img src="https://i.ibb.co/q0mdc4Z/get-it-on-github.png" alt="Get it on Github" height="80">
 </a>
 </div>
+<div align="center">
+<a href="https://github.com/barryburgle/daygame-app/releases/latest">
+  <img src="https://img.shields.io/badge/Get_it_on-Obtainium-100000" alt="Get it on Obtainium" height="45">
+</a>
+</div>
 
 ### Warning
 
