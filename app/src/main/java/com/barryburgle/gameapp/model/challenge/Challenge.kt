@@ -69,6 +69,36 @@ open class Challenge(
         }"
     }
 
+    /*InsertTime-agnostic equals*/
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Challenge) return false
+
+        return id == other.id &&
+                name == other.name &&
+                description == other.description &&
+                startDate == other.startDate &&
+                endDate == other.endDate &&
+                type == other.type &&
+                goal == other.goal &&
+                tweetUrl == other.tweetUrl &&
+                dayOfWeek == other.dayOfWeek
+    }
+
+    /*InsertTime-agnostic hashCode*/
+    override fun hashCode(): Int {
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (description?.hashCode() ?: 0)
+        result = 31 * result + startDate.hashCode()
+        result = 31 * result + endDate.hashCode()
+        result = 31 * result + type.hashCode()
+        result = 31 * result + goal
+        result = 31 * result + (tweetUrl?.hashCode() ?: 0)
+        result = 31 * result + dayOfWeek
+        return result
+    }
+
     constructor() : this(
         0,
         "",

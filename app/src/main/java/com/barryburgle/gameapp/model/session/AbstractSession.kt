@@ -83,4 +83,48 @@ open class AbstractSession(
             )
         }${stickingPointsReport(stickingPoints)}"
     }
+
+    /*InsertTime-agnostic equals*/
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is AbstractSession) return false
+
+        return id == other.id &&
+                date == other.date &&
+                startHour == other.startHour &&
+                endHour == other.endHour &&
+                sets == other.sets &&
+                convos == other.convos &&
+                contacts == other.contacts &&
+                stickingPoints == other.stickingPoints &&
+                sessionTime == other.sessionTime &&
+                approachTime == other.approachTime &&
+                convoRatio == other.convoRatio &&
+                rejectionRatio == other.rejectionRatio &&
+                contactRatio == other.contactRatio &&
+                index == other.index &&
+                dayOfWeek == other.dayOfWeek &&
+                weekNumber == other.weekNumber
+    }
+
+    /*InsertTime-agnostic hashCode*/
+    override fun hashCode(): Int {
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + date.hashCode()
+        result = 31 * result + startHour.hashCode()
+        result = 31 * result + endHour.hashCode()
+        result = 31 * result + sets
+        result = 31 * result + convos
+        result = 31 * result + contacts
+        result = 31 * result + stickingPoints.hashCode()
+        result = 31 * result + sessionTime.hashCode()
+        result = 31 * result + approachTime.hashCode()
+        result = 31 * result + convoRatio.hashCode()
+        result = 31 * result + rejectionRatio.hashCode()
+        result = 31 * result + contactRatio.hashCode()
+        result = 31 * result + index.hashCode()
+        result = 31 * result + dayOfWeek
+        result = 31 * result + weekNumber
+        return result
+    }
 }

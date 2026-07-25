@@ -115,6 +115,56 @@ open class Date(
         return dateReport
     }
 
+    /*InsertTime-agnostic equals*/
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Date) return false
+
+        return id == other.id &&
+                leadId == other.leadId &&
+                location == other.location &&
+                date == other.date &&
+                startHour == other.startHour &&
+                endHour == other.endHour &&
+                cost == other.cost &&
+                dateNumber == other.dateNumber &&
+                dateType == other.dateType &&
+                pull == other.pull &&
+                bounce == other.bounce &&
+                kiss == other.kiss &&
+                lay == other.lay &&
+                recorded == other.recorded &&
+                stickingPoints == other.stickingPoints &&
+                tweetUrl == other.tweetUrl &&
+                dateTime == other.dateTime &&
+                dayOfWeek == other.dayOfWeek &&
+                weekNumber == other.weekNumber
+    }
+
+    /*InsertTime-agnostic hashCode*/
+    override fun hashCode(): Int {
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + (leadId?.hashCode() ?: 0)
+        result = 31 * result + (location?.hashCode() ?: 0)
+        result = 31 * result + (date?.hashCode() ?: 0)
+        result = 31 * result + startHour.hashCode()
+        result = 31 * result + endHour.hashCode()
+        result = 31 * result + (cost?.hashCode() ?: 0)
+        result = 31 * result + dateNumber
+        result = 31 * result + dateType.hashCode()
+        result = 31 * result + pull.hashCode()
+        result = 31 * result + bounce.hashCode()
+        result = 31 * result + kiss.hashCode()
+        result = 31 * result + lay.hashCode()
+        result = 31 * result + recorded.hashCode()
+        result = 31 * result + (stickingPoints?.hashCode() ?: 0)
+        result = 31 * result + (tweetUrl?.hashCode() ?: 0)
+        result = 31 * result + dateTime.hashCode()
+        result = 31 * result + dayOfWeek
+        result = 31 * result + weekNumber
+        return result
+    }
+
     constructor() : this(
         0,
         "",
