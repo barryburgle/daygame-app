@@ -87,12 +87,4 @@ class DateCsvService : AbstractCsvService<Date>() {
             fields[19].toInt(),
         )
     }
-
-    override fun isEntityValid(date: Date): Boolean {
-        // TODO: do better check on data validity on most of the fields
-        if (date.id == 0L || date.id == null || date.insertTime.isEmpty()) {
-            return false
-        }
-        return true
-    }
 }

@@ -62,12 +62,4 @@ class ChallengeCsvService : AbstractCsvService<AchievedChallenge>() {
             )
         )
     }
-
-    override fun isEntityValid(achievedChallenge: AchievedChallenge): Boolean {
-        // TODO: do better check on data validity on most of the fields
-        if (achievedChallenge.challenge.id == 0L || achievedChallenge.challenge.id == null || achievedChallenge.challenge.insertTime.isEmpty()) {
-            return false
-        }
-        return true
-    }
 }

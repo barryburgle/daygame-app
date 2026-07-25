@@ -20,7 +20,6 @@ abstract class AbstractCsvService<T : Any> {
     protected abstract fun generateHeader(): Array<String>
 
     protected abstract fun mapImportRow(fields: Array<String>): T
-    protected abstract fun isEntityValid(entity: T): Boolean
     protected abstract fun getBackupFileName(): String
 
     val localPath = Environment.getExternalStorageDirectory()
