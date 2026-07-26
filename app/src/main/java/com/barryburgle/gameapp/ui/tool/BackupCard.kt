@@ -16,6 +16,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -33,6 +34,7 @@ import com.barryburgle.gameapp.ui.utilities.setting.IconButtonSetting
 import com.barryburgle.gameapp.ui.utilities.setting.SwitchSetting
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import kotlinx.coroutines.launch
 
 @Composable
 fun BackupCard(
@@ -43,6 +45,7 @@ fun BackupCard(
     csvFindService: CSVFindService,
     onEvent: (ToolEvent) -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
     var icon: ImageVector? = Icons.Default.Backup
     Card(
         modifier = modifier, colors = CardDefaults.cardColors(
@@ -71,12 +74,14 @@ fun BackupCard(
                         LargeTitleText(cardTitle)
                         IconShadowButton(
                             onClick = {
-                                DataExchangeService.backup(state)
-                                Toast.makeText(
-                                    localContext,
-                                    "Successfully backed up all tables",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                coroutineScope.launch {
+                                    DataExchangeService.backup(state)
+                                    Toast.makeText(
+                                        localContext,
+                                        "Successfully backed up all tables",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             },
                             imageVector = icon!!,
                             contentDescription = cardTitle,
@@ -125,7 +130,8 @@ fun BackupCard(
                             saveEvent = ToolEvent::SetLastBackup
                         )
                         // TODO: make backup importing fault resistant: if some file is not found the others should be imported anyway
-                        IconButtonSetting(text = "Import all backups",
+                        IconButtonSetting(
+                            text = "Import all backups",
                             imageVector = Icons.Default.CloudDownload,
                             contentDescription = "Import all",
                             onClick = {

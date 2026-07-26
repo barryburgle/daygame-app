@@ -35,28 +35,30 @@ class DataExchangeService {
         val pinPointCsvService: PinPointCsvService = PinPointCsvService()
         val settingCsvService: SettingCsvService = SettingCsvService()
 
-        fun backup(
+        suspend fun backup(
             state: ExportState
         ) {
-            backupAllAndClean(
-                state.allSessions,
-                sessionCsvService.getBackupFileName(),
-                state.allLeads,
-                leadCsvService.getBackupFileName(),
-                state.allDates,
-                dateCsvService.getBackupFileName(),
-                state.allSets,
-                setCsvService.getBackupFileName(),
-                state.allChallenges,
-                challengeCsvService.getBackupFileName(),
-                state.allPinPoints,
-                pinPointCsvService.getBackupFileName(),
-                state.allSettings,
-                settingCsvService.getBackupFileName(),
-                state.exportFolder + "/" + state.backupFolder,
-                true,
-                state.lastBackup
-            )
+            withContext(Dispatchers.IO) {
+                backupAllAndClean(
+                    state.allSessions,
+                    sessionCsvService.getBackupFileName(),
+                    state.allLeads,
+                    leadCsvService.getBackupFileName(),
+                    state.allDates,
+                    dateCsvService.getBackupFileName(),
+                    state.allSets,
+                    setCsvService.getBackupFileName(),
+                    state.allChallenges,
+                    challengeCsvService.getBackupFileName(),
+                    state.allPinPoints,
+                    pinPointCsvService.getBackupFileName(),
+                    state.allSettings,
+                    settingCsvService.getBackupFileName(),
+                    state.exportFolder + "/" + state.backupFolder,
+                    true,
+                    state.lastBackup
+                )
+            }
         }
 
         fun <T : Any> backupAndClean(
