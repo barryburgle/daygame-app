@@ -10,6 +10,7 @@ import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.setting.Setting
+import com.barryburgle.gameapp.service.csv.AbstractCsvService
 import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.csv.ChallengeCsvService
 import com.barryburgle.gameapp.service.csv.DateCsvService
@@ -37,64 +38,127 @@ class DataExchangeService {
         fun backup(
             state: ExportState
         ) {
-            backupAll(state)
-            validateAll(state)
-            cleanAllBackups(state)
+            backupAllAndClean(
+                state.allSessions,
+                sessionCsvService.getBackupFileName(),
+                state.allLeads,
+                leadCsvService.getBackupFileName(),
+                state.allDates,
+                dateCsvService.getBackupFileName(),
+                state.allSets,
+                setCsvService.getBackupFileName(),
+                state.allChallenges,
+                challengeCsvService.getBackupFileName(),
+                state.allPinPoints,
+                pinPointCsvService.getBackupFileName(),
+                state.allSettings,
+                settingCsvService.getBackupFileName(),
+                state.exportFolder + "/" + state.backupFolder,
+                true,
+                state.lastBackup
+            )
         }
 
-        fun cleanAllBackups(
-            state: ExportState
+        fun <T : Any> backupAndClean(
+            service: AbstractCsvService<T>,
+            objects: List<T>,
+            exportFolder: String,
+            fileName: String,
+            exportHeader: Boolean,
+            lastBackup: Int,
+            clean: Boolean,
         ) {
-            sessionCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder,
-                state.lastBackup
-            )
-            leadCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder,
-                state.lastBackup
-            )
-            dateCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder,
-                state.lastBackup
-            )
-            setCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder,
-                state.lastBackup
-            )
-            challengeCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder,
-                state.lastBackup
-            )
-            pinPointCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder,
-                state.lastBackup
-            )
-            settingCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder,
-                state.lastBackup
-            )
+            service.setExportObjects(objects)
+            service.exportRows(exportFolder, fileName, exportHeader)
+            val isValid = service.validateExport(exportFolder, true)
+            if (isValid && clean) {
+                service.cleanBackupFolder(exportFolder, lastBackup)
+            }
         }
 
         fun validateAll(
             state: ExportState
+        fun backupAllAndClean(
+            allSessions: List<AbstractSession>,
+            exportSessionsFileName: String,
+            allLeads: List<Lead>,
+            exportLeadsFileName: String,
+            allDates: List<Date>,
+            exportDatesFileName: String,
+            allSets: List<SingleSet>,
+            exportSetsFileName: String,
+            allChallenges: List<AchievedChallenge>,
+            exportChallengesFileName: String,
+            allPinPoints: List<PinPoint>,
+            exportPinPointsFileName: String,
+            allSettings: List<Setting>,
+            exportSettingsFileName: String,
+            exportFolder: String,
+            exportHeader: Boolean,
+            lastBackup: Int
         ) {
-            sessionCsvService.validateExport(
-                state.exportFolder + "/" + state.backupFolder
+            backupAndClean(
+                sessionCsvService,
+                allSessions,
+                exportFolder,
+                exportSessionsFileName,
+                exportHeader,
+                lastBackup,
+                true
             )
-            leadCsvService.validateExport(
-                state.exportFolder + "/" + state.backupFolder
+            backupAndClean(
+                leadCsvService,
+                allLeads,
+                exportFolder,
+                exportLeadsFileName,
+                exportHeader,
+                lastBackup,
+                true
             )
-            dateCsvService.validateExport(
-                state.exportFolder + "/" + state.backupFolder
+            backupAndClean(
+                dateCsvService,
+                allDates,
+                exportFolder,
+                exportDatesFileName,
+                exportHeader,
+                lastBackup,
+                true
             )
-            setCsvService.validateExport(
-                state.exportFolder + "/" + state.backupFolder
+            backupAndClean(
+                setCsvService,
+                allSets,
+                exportFolder,
+                exportSetsFileName,
+                exportHeader,
+                lastBackup,
+                true
             )
-            challengeCsvService.validateExport(
-                state.exportFolder + "/" + state.backupFolder
+            backupAndClean(
+                challengeCsvService,
+                allChallenges,
+                exportFolder,
+                exportChallengesFileName,
+                exportHeader,
+                lastBackup,
+                true
             )
-            pinPointCsvService.validateExport(
-                state.exportFolder + "/" + state.backupFolder
+            backupAndClean(
+                pinPointCsvService,
+                allPinPoints,
+                exportFolder,
+                exportPinPointsFileName,
+                exportHeader,
+                lastBackup,
+                true
+            )
+            backupAndClean(
+                settingCsvService,
+                allSettings,
+                exportFolder,
+                exportSettingsFileName,
+                exportHeader,
+                lastBackup,
+                true
             )
         }
 
@@ -233,28 +297,6 @@ class DataExchangeService {
                         importHeader
                     )
                 )
-            )
-        }
-
-        fun backupAll(
-            state: ExportState
-        ) {
-            export(
-                state.allSessions,
-                sessionCsvService.getBackupFileName(),
-                state.allLeads,
-                leadCsvService.getBackupFileName(),
-                state.allDates,
-                dateCsvService.getBackupFileName(),
-                state.allSets,
-                setCsvService.getBackupFileName(),
-                state.allChallenges,
-                challengeCsvService.getBackupFileName(),
-                state.allPinPoints,
-                pinPointCsvService.getBackupFileName(),
-                state.allSettings,
-                state.exportFolder + "/" + state.backupFolder,
-                true
             )
         }
 
