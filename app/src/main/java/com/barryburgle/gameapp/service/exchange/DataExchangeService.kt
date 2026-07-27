@@ -178,6 +178,7 @@ class DataExchangeService {
             allPinPoints: List<PinPoint>,
             exportPinPointsFileName: String,
             allSettings: List<Setting>,
+            exportSettingsFileName: String,
             exportFolder: String,
             exportHeader: Boolean
         ) {
@@ -220,7 +221,7 @@ class DataExchangeService {
             settingCsvService.setExportObjects(allSettings)
             settingCsvService.exportRows(
                 exportFolder,
-                settingCsvService.getBackupFileName(),
+                exportSettingsFileName,
                 exportHeader
             )
         }
@@ -321,6 +322,7 @@ class DataExchangeService {
                 state.allPinPoints,
                 state.exportPinPointsFileName,
                 state.allSettings,
+                state.exportSettingsFileName,
                 state.exportFolder,
                 exportHeader
             )
