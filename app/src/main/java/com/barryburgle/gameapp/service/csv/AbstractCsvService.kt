@@ -86,7 +86,7 @@ abstract class AbstractCsvService<T : Any> {
         }
     }
 
-    fun validateExport(folder: String, importHeader: Boolean): Boolean {
+    fun validateExportedFileAgainstExportState(folder: String, importHeader: Boolean): Boolean {
         val filenames = listFileNamesLike(folder, getBackupFileName(), false)
         if (filenames.isEmpty()) {
             return exportObjects.isNullOrEmpty()

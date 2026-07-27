@@ -70,18 +70,28 @@ class DataExchangeService {
             fileName: String,
             exportHeader: Boolean,
             lastBackup: Int,
+            incrementalBackup: Boolean,
             clean: Boolean,
         ) {
+            fun exportAndValidate() {
+                service.exportRows(exportFolder, fileName, exportHeader)
+                val justExportedIsValid =
+                    service.validateExportedFileAgainstExportState(exportFolder, true)
+                if (justExportedIsValid && clean) {
+                    service.cleanBackupFolder(exportFolder, lastBackup)
+                }
+            }
+
             service.setExportObjects(objects)
-            service.exportRows(exportFolder, fileName, exportHeader)
-            val isValid = service.validateExport(exportFolder, true)
-            if (isValid && clean) {
-                service.cleanBackupFolder(exportFolder, lastBackup)
+            if (!incrementalBackup || !service.validateExportedFileAgainstExportState(
+                    exportFolder,
+                    true
+                )
+            ) {
+                exportAndValidate()
             }
         }
 
-        fun validateAll(
-            state: ExportState
         fun backupAllAndClean(
             allSessions: List<AbstractSession>,
             exportSessionsFileName: String,
@@ -108,6 +118,7 @@ class DataExchangeService {
                 exportSessionsFileName,
                 exportHeader,
                 lastBackup,
+                true,
                 true
             )
             backupAndClean(
@@ -117,6 +128,7 @@ class DataExchangeService {
                 exportLeadsFileName,
                 exportHeader,
                 lastBackup,
+                true,
                 true
             )
             backupAndClean(
@@ -126,6 +138,7 @@ class DataExchangeService {
                 exportDatesFileName,
                 exportHeader,
                 lastBackup,
+                true,
                 true
             )
             backupAndClean(
@@ -135,6 +148,7 @@ class DataExchangeService {
                 exportSetsFileName,
                 exportHeader,
                 lastBackup,
+                true,
                 true
             )
             backupAndClean(
@@ -144,6 +158,7 @@ class DataExchangeService {
                 exportChallengesFileName,
                 exportHeader,
                 lastBackup,
+                true,
                 true
             )
             backupAndClean(
@@ -153,6 +168,7 @@ class DataExchangeService {
                 exportPinPointsFileName,
                 exportHeader,
                 lastBackup,
+                true,
                 true
             )
             backupAndClean(
@@ -162,6 +178,7 @@ class DataExchangeService {
                 exportSettingsFileName,
                 exportHeader,
                 lastBackup,
+                true,
                 true
             )
         }
