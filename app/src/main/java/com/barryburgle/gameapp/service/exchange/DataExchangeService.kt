@@ -75,7 +75,7 @@ class DataExchangeService {
         ) {
             fun exportValidAndClean() {
                 val justExportedIsValid =
-                    service.validateExportedFileAgainstExportState(exportFolder, true)
+                    exportAndValidate(service, exportFolder, fileName, exportHeader)
                 if (justExportedIsValid && clean) {
                     service.cleanBackupFolder(exportFolder, lastBackup)
                 }
@@ -89,6 +89,22 @@ class DataExchangeService {
             ) {
                 exportValidAndClean()
             }
+        }
+
+        fun <T : Any> exportAndValidate(
+            service: AbstractCsvService<T>,
+            exportFolder: String,
+            fileName: String,
+            exportHeader: Boolean,
+            objects: List<T>? = null
+        ): Boolean {
+            if (objects != null) {
+                service.setExportObjects(objects)
+            }
+            service.exportRows(exportFolder, fileName, exportHeader)
+            val justExportedIsValid =
+                service.validateExportedFileAgainstExportState(exportFolder, true)
+            return justExportedIsValid
         }
 
         fun backupAllAndClean(
