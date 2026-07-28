@@ -73,8 +73,7 @@ class DataExchangeService {
             incrementalBackup: Boolean,
             clean: Boolean,
         ) {
-            fun exportAndValidate() {
-                service.exportRows(exportFolder, fileName, exportHeader)
+            fun exportValidAndClean() {
                 val justExportedIsValid =
                     service.validateExportedFileAgainstExportState(exportFolder, true)
                 if (justExportedIsValid && clean) {
@@ -88,7 +87,7 @@ class DataExchangeService {
                     true
                 )
             ) {
-                exportAndValidate()
+                exportValidAndClean()
             }
         }
 
