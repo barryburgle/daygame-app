@@ -215,49 +215,43 @@ class DataExchangeService {
             exportSettingsFileName: String,
             exportFolder: String,
             exportHeader: Boolean
-        ) {
-            sessionCsvService.setExportObjects(allSessions)
-            sessionCsvService.exportRows(
-                exportFolder,
-                exportSessionsFileName,
-                exportHeader
+        ): Boolean {
+            val validSessionExport = exportAndValidate(
+                sessionCsvService,
+                exportFolder, exportSessionsFileName, exportHeader,
+                allSessions
             )
-            leadCsvService.setExportObjects(allLeads)
-            leadCsvService.exportRows(
-                exportFolder,
-                exportLeadsFileName,
-                exportHeader
+            val validLeadExport = exportAndValidate(
+                leadCsvService,
+                exportFolder, exportLeadsFileName, exportHeader,
+                allLeads
             )
-            dateCsvService.setExportObjects(allDates)
-            dateCsvService.exportRows(
-                exportFolder,
-                exportDatesFileName,
-                exportHeader
+            val validDateExport = exportAndValidate(
+                dateCsvService,
+                exportFolder, exportDatesFileName, exportHeader,
+                allDates
             )
-            setCsvService.setExportObjects(allSets)
-            setCsvService.exportRows(
-                exportFolder,
-                exportSetsFileName,
-                exportHeader
+            val validSetExport = exportAndValidate(
+                setCsvService,
+                exportFolder, exportSetsFileName, exportHeader,
+                allSets
             )
-            challengeCsvService.setExportObjects(allChallenges)
-            challengeCsvService.exportRows(
-                exportFolder,
-                exportChallengesFileName,
-                exportHeader
+            val validChallengeExport = exportAndValidate(
+                challengeCsvService,
+                exportFolder, exportChallengesFileName, exportHeader,
+                allChallenges
             )
-            pinPointCsvService.setExportObjects(allPinPoints)
-            pinPointCsvService.exportRows(
-                exportFolder,
-                exportPinPointsFileName,
-                exportHeader
+            val validPinPointExport = exportAndValidate(
+                pinPointCsvService,
+                exportFolder, exportPinPointsFileName, exportHeader,
+                allPinPoints
             )
-            settingCsvService.setExportObjects(allSettings)
-            settingCsvService.exportRows(
-                exportFolder,
-                exportSettingsFileName,
-                exportHeader
+            val validSettingExport = exportAndValidate(
+                settingCsvService,
+                exportFolder, exportSettingsFileName, exportHeader,
+                allSettings
             )
+            return validSessionExport && validLeadExport && validDateExport && validSetExport && validChallengeExport && validPinPointExport && validSettingExport
         }
 
         fun import(
@@ -342,7 +336,7 @@ class DataExchangeService {
             exportHeader: Boolean,
             localContext: Context
         ) {
-            export(
+            val validExport = export(
                 state.allSessions,
                 state.exportSessionsFileName,
                 state.allLeads,
@@ -360,11 +354,19 @@ class DataExchangeService {
                 state.exportFolder,
                 exportHeader
             )
-            Toast.makeText(
-                localContext,
-                "Successfully exported all tables",
-                Toast.LENGTH_SHORT
-            ).show()
+            if (validExport) {
+                Toast.makeText(
+                    localContext,
+                    "Successfully exported all tables",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    localContext,
+                    "Error: partially exported data",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         fun importAll(
