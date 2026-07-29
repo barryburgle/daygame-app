@@ -103,7 +103,7 @@ class DataExchangeService {
             }
             service.exportRows(exportFolder, fileName, exportHeader)
             val justExportedIsValid =
-                service.validateExportedFileAgainstExportState(exportFolder, true)
+                service.validateExportedFileAgainstExportState(exportFolder, exportHeader)
             return justExportedIsValid
         }
 
