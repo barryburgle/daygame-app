@@ -3,6 +3,7 @@
 - "Write her after" notification reminds you to write her after settable amount of minutes 🔔
 - Tap on the sitting reminder notification to open the timer for some rest 🕐
 - Now past backups are deleted only if deep validation of last backup went well ⛑️
+- Now only backups are of the tables with new data are saved to disk 💾
 
 **Bugfixes**
 - 
