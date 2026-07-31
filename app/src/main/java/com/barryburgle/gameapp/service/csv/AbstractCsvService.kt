@@ -20,7 +20,7 @@ abstract class AbstractCsvService<T : Any> {
     protected abstract fun generateHeader(): Array<String>
 
     protected abstract fun mapImportRow(fields: Array<String>): T
-    protected abstract fun getBackupFileName(): String
+    abstract fun getBackupFileName(): String
 
     val localPath = Environment.getExternalStorageDirectory()
 
@@ -86,8 +86,8 @@ abstract class AbstractCsvService<T : Any> {
         }
     }
 
-    fun validateExportedFileAgainstExportState(folder: String, importHeader: Boolean): Boolean {
-        val filenames = listFileNamesLike(folder, getBackupFileName(), false)
+    fun validateExportedFileAgainstExportState(folder: String, importHeader: Boolean, filenamePrefix: String): Boolean {
+        val filenames = listFileNamesLike(folder, filenamePrefix, false)
         if (filenames.isEmpty()) {
             return exportObjects.isNullOrEmpty()
         }
