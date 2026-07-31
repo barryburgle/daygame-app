@@ -32,7 +32,7 @@ fun FilenameComposable(
     textFieldHeight: Dp,
     localContext: Context,
     filenamePlaceholder: String,
-    buttonFunction: () -> Unit,
+    buttonFunction: () -> Boolean,
     reloadFunction: () -> Unit,
     filenameOnEvent: (String) -> Unit
 ) {
@@ -89,12 +89,20 @@ fun FilenameComposable(
                     }
                     IconShadowButton(
                         onClick = {
-                            buttonFunction()
-                            Toast.makeText(
-                                localContext,
-                                "Successfully ${cardTitle.lowercase()}ed",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            val isValid = buttonFunction()
+                            if (isValid) {
+                                Toast.makeText(
+                                    localContext,
+                                    "Successfully ${cardTitle.lowercase()}ed ${tableTitle}s",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    localContext,
+                                    "Failed to ${cardTitle.lowercase()} ${tableTitle}s",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         },
                         imageVector = icon!!,
                         contentDescription = "Filename Button"
