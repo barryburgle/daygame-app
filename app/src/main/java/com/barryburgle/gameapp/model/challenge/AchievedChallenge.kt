@@ -89,6 +89,20 @@ open class AchievedChallenge(
         return report
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is AchievedChallenge) return false
+
+        // TODO: ignoring "achieved" on equality, defer this to when the achieved column will be re-computed on import
+        // Delegates equality to the Challenge class ignoring the 'achieved' property
+        return challenge == other.challenge
+    }
+
+    override fun hashCode(): Int {
+        // Ensure hashCode also ignores the 'achieved' property
+        return challenge.hashCode()
+    }
+
     constructor() : this(
         Challenge(
             0,
