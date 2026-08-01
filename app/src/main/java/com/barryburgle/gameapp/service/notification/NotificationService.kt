@@ -18,6 +18,8 @@ class NotificationService(
         const val STICKING_POINT_NOTIFICATION_CHANNEL_NAME = "Sticking points reminder"
         const val LIVE_SESSION_NOTIFICATION_CHANNEL_ID = "live_session_persistent"
         const val LIVE_SESSION_NOTIFICATION_CHANNEL_NAME = "Live Session"
+        const val RECORDING_NOTIFICATION_CHANNEL_ID = "recording_status"
+        const val RECORDING_NOTIFICATION_CHANNEL_NAME = "Recording"
     }
 
     private val notificationManager =

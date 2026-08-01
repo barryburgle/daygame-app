@@ -66,6 +66,14 @@ sealed interface GameEvent : GenericEvent {
         val abstractSession: AbstractSession
     ) : GameEvent
 
+    data class TapRecordingStart(val sessionId: Long) : GameEvent
+    object TapRecordingStop : GameEvent
+    object TapRecordingPause : GameEvent
+    data class TapPlaybackPlay(val fileName: String) : GameEvent
+    object TapPlaybackPause : GameEvent
+    data class SetPlaybackPosition(val positionMs: Int) : GameEvent
+    data class TapRecordingDelete(val fileName: String) : GameEvent
+
     data class SetStickingPoints(val stickingPoints: String) : GameEvent
     data class SetLiveStickingPoints(
         val abstractSession: AbstractSession,

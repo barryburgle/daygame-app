@@ -419,7 +419,11 @@ fun InputScreen(
                                         state.copyReportOnClipboard,
                                         true,
                                         state.followCount,
-                                        state.liveSessionShareEnabled
+                                        state.liveSessionShareEnabled,
+                                        state.recordingState,
+                                        state.recordings,
+                                        state.recordingsFolder,
+                                        state.recordingsEnabled
                                     )
                                 }
                             }
@@ -457,7 +461,11 @@ fun InputScreen(
                                     ),
                                 state.simplePlusOneReport,
                                 state.neverShareLeadInfo,
-                                state.copyReportOnClipboard
+                                state.copyReportOnClipboard,
+                                recordingState = state.recordingState,
+                                recordings = state.recordings,
+                                recordingsFolder = state.recordingsFolder,
+                                recordingsEnabled = state.recordingsEnabled
                             )
                         }
                     }

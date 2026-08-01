@@ -56,6 +56,7 @@ import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
+import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
@@ -97,7 +98,11 @@ fun EventCard(
     copyReportOnClipboard: Boolean,
     isLiveSession: Boolean = false,
     followCount: Boolean = true,
-    liveSessionShareEnabled: Boolean = false
+    liveSessionShareEnabled: Boolean = false,
+    recordingState: RecordingState = RecordingState(),
+    recordings: List<String> = emptyList(),
+    recordingsFolder: String = "",
+    recordingsEnabled: Boolean = false
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
@@ -585,7 +590,11 @@ fun EventCard(
                                     sortableGameEvent.event as AbstractSession,
                                     liveSessionLeads,
                                     liveSessionShareEnabled,
-                                    copyReportOnClipboard
+                                    copyReportOnClipboard,
+                                    recordingState,
+                                    recordings,
+                                    recordingsFolder,
+                                    recordingsEnabled
                                 )
                             } else if (AbstractSession::class.java.simpleName.equals(
                                     sortableGameEvent.classType
@@ -598,7 +607,11 @@ fun EventCard(
                                     50.sp,
                                     10.sp,
                                     15.sp,
-                                    onEvent
+                                    onEvent,
+                                    recordingState,
+                                    recordings,
+                                    recordingsFolder,
+                                    recordingsEnabled
                                 )
                             }
                             if (SingleSet::class.java.simpleName.equals(sortableGameEvent.classType)) {

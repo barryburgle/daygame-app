@@ -3,7 +3,9 @@ package com.barryburgle.gameapp.ui.input
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,6 +30,7 @@ import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
+import com.barryburgle.gameapp.model.recording.RecordingStateEnum
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -37,30 +40,38 @@ import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.service.batch.BatchSessionService
 import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
+import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.service.set.SetService
 import com.barryburgle.gameapp.ui.CombineEleven
 import com.barryburgle.gameapp.ui.CombineFive
 import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.CombineSeven
+import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.CombineSixteen
 import com.barryburgle.gameapp.ui.input.dialog.InputDialogConstant
 import com.barryburgle.gameapp.ui.input.state.DialogSettingsState
 import com.barryburgle.gameapp.ui.input.state.ExportSettingsState
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.input.state.RecordingsSettingsState
 import com.barryburgle.gameapp.ui.input.state.ShareSettingsState
 import com.barryburgle.gameapp.ui.input.state.SortTypeState
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -386,6 +397,29 @@ class InputViewModel(
             showCurrentChallengeSummary = showCurrentChallengeSummary.toBoolean()
         )
     }
+
+    private val _recordingsFolder = settingDao.getRecordingsFolder()
+    private val _recordingsSettings = combine(
+        _recordingsFolder,
+        settingDao.getRecordingsEnabled()
+    ) { recordingsFolder, recordingsEnabled ->
+        RecordingsSettingsState(
+            recordingsFolder = recordingsFolder,
+            recordingsEnabled = recordingsEnabled.toBoolean()
+        )
+    }
+
+    // the folder contents change when the recorder state changes (new file created), when the user
+    // deletes a row, and when the folder setting itself changes. each triggers a re-scan.
+    // the lambda here is triggered for any of that changes
+    private val _recordings = combine(
+        RecordingService.state,
+        RecordingService.recordingsVersion,
+        _recordingsFolder
+    ) { _, _, folder -> RecordingService.listRecordings(folder) }
+        .distinctUntilChanged() // trigger only if contents actually changed
+        .flowOn(Dispatchers.IO) // avoids blocking the UI during file I/O
+
     val _sortTypes = CombineFive(
         _sessionSortType,
         _dateSortType,
@@ -401,11 +435,12 @@ class InputViewModel(
             gameEventSortType = gameEventSortType
         )
     }
-    val state = CombineSixteen(
+    val state = CombineNineteen(
         _state,
         _exportSettings,
         _dialogSettings,
         _shareSettings,
+        _recordingsSettings,
         _sortTypes,
         _allEvents,
         _showSessions,
@@ -417,9 +452,13 @@ class InputViewModel(
         _sessionsByMonth,
         _datesByWeek,
         _datesByMonth,
-        _theme
-    ) { state, exportSettings, dialogSettings, shareSettings, sortTypes, allEvents, showSessions, showSets, showDates, showChallenges, mostPopularLeadsNationalities, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, theme ->
-        state.copy(
+        _theme,
+        RecordingService.state,
+        _recordings
+    ) { state, exportSettings, dialogSettings, shareSettings, recordingsSettings, sortTypes,
+        allEvents, showSessions, showSets, showDates, showChallenges, mostPopularLeadsNationalities,
+        sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, theme, recordingState,
+        recordings -> state.copy(
             allSessions = exportSettings.allSessions,
             allLeads = exportSettings.allLeads,
             allDates = exportSettings.allDates,
@@ -469,7 +508,11 @@ class InputViewModel(
             sessionsByWeek = sessionsByWeek,
             sessionsByMonth = sessionsByMonth,
             datesByWeek = datesByWeek,
-            datesByMonth = datesByMonth
+            datesByMonth = datesByMonth,
+            recordingsEnabled = recordingsSettings.recordingsEnabled,
+            recordingsFolder = recordingsSettings.recordingsFolder,
+            recordingState = recordingState,
+            recordings = recordings
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())
 
@@ -534,12 +577,30 @@ class InputViewModel(
 
             is GameEvent.DeleteSession -> {
                 notificationScheduler.cancel(AndroidNotificationScheduler.SITTING_REMINDER_REQUEST_CODE)
+                // if the recorder or the player is on one of this session's files, stop it first
+                val recorder = RecordingService.state.value
+                val activeIsThisSessions = RecordingService.recordingsOf(
+                    event.abstractSession.id,
+                    listOfNotNull(recorder.activeFileName)
+                ).isNotEmpty()
+                if (activeIsThisSessions) {
+                    if (recorder.state.isRecording()) {
+                        stopRecording()
+                    } else if (recorder.state.isPlaying()) {
+                        stopPlayback()
+                    }
+                }
+                val folder = state.value.recordingsFolder
                 viewModelScope.launch {
                     pinPointDao.deleteAllBySourceEventIdAndSourceEventType(
                         event.abstractSession.id!!,
                         EventTypeEnum.SESSION.getField().lowercase()
                     )
                     abstractSessionDao.delete(event.abstractSession)
+                    // delete recording files safely in IO thread
+                    withContext(Dispatchers.IO) {
+                        RecordingService.deleteRecordingsOf(folder, event.abstractSession.id!!)
+                    }
                 }
             }
 
@@ -833,8 +894,79 @@ class InputViewModel(
                 }
             }
 
+            is GameEvent.TapRecordingStart -> {
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.RECORD_AUDIO
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    Toast.makeText(
+                        context,
+                        "Microphone permission needed, enable it in app settings",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else if (RecordingService.state.value.state == RecordingStateEnum.RECORDING_PAUSED) {
+                    resumeRecording()
+                } else if (!RecordingService.state.value.state.isRecording()) {
+                    startRecording(event.sessionId, state.value.recordingsFolder)
+                }
+            }
+
+            is GameEvent.TapRecordingPause -> {
+                if (RecordingService.state.value.state == RecordingStateEnum.RECORDING) {
+                    pauseRecording()
+                }
+            }
+
+            is GameEvent.TapRecordingStop -> {
+                if (RecordingService.state.value.state.isRecording()) {
+                    stopRecording()
+                    Toast.makeText(context, "Recording saved", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            is GameEvent.TapPlaybackPlay -> {
+                if (RecordingService.state.value.state.isRecording()) {
+                    Toast.makeText(context, "Stop the recording first", Toast.LENGTH_SHORT).show()
+                } else {
+                    startPlayback(event.fileName, state.value.recordingsFolder)
+                }
+            }
+
+            is GameEvent.TapPlaybackPause -> {
+                if (RecordingService.state.value.state == RecordingStateEnum.PLAYING) {
+                    pausePlayback()
+                }
+            }
+
+            is GameEvent.SetPlaybackPosition -> {
+                if (RecordingService.state.value.state.isPlaying()) {
+                    seekPlayback(event.positionMs)
+                }
+            }
+
+            is GameEvent.TapRecordingDelete -> {
+                if (RecordingService.state.value.state.isRecording()) {
+                    Toast.makeText(context, "Stop the recording first", Toast.LENGTH_SHORT).show()
+                } else {
+                    // stop the player before deleting the file
+                    if (RecordingService.state.value.activeFileName == event.fileName) {
+                        stopPlayback()
+                    }
+                    val folder = state.value.recordingsFolder
+                    viewModelScope.launch(Dispatchers.IO) {
+                        RecordingService.deleteRecording(folder, event.fileName)
+                    }
+                }
+            }
+
             is GameEvent.StopLiveSession -> {
                 notificationScheduler.cancel(AndroidNotificationScheduler.SITTING_REMINDER_REQUEST_CODE)
+                if (RecordingService.state.value.state.isRecording()) {
+                    stopRecording()
+                } else if (RecordingService.state.value.state.isPlaying()) {
+                    stopPlayback()
+                }
                 viewModelScope.launch {
                     val abstractSession = _batchSessionService.init(
                         id = event.abstractSession.id.toString(),
@@ -1647,6 +1779,49 @@ class InputViewModel(
                 }
             }
         }
+    }
+
+    // generic wrapper for RecordingService commands
+    private fun recorderCommand(action: String) {
+        context.startService(
+            Intent(context, RecordingService::class.java).apply {
+                this.action = action
+            })
+    }
+
+    // the one command that needs foreground-service mode, which Android requires before the
+    // mic can run with the app in the background
+    private fun startRecording(sessionId: Long, folder: String) {
+        context.startForegroundService(
+            Intent(context, RecordingService::class.java).apply {
+                action = RecordingService.ACTION_START_RECORDING
+                putExtra(RecordingService.EXTRA_SESSION_ID, sessionId)
+                putExtra(RecordingService.EXTRA_FOLDER, folder)
+            })
+    }
+
+    private fun stopRecording() = recorderCommand(RecordingService.ACTION_STOP_RECORDING)
+    private fun pauseRecording() = recorderCommand(RecordingService.ACTION_PAUSE_RECORDING)
+    private fun resumeRecording() = recorderCommand(RecordingService.ACTION_RESUME_RECORDING)
+
+    private fun startPlayback(fileName: String, folder: String) {
+        context.startService(
+            Intent(context, RecordingService::class.java).apply {
+                action = RecordingService.ACTION_START_PLAYBACK
+                putExtra(RecordingService.EXTRA_FILE_NAME, fileName)
+                putExtra(RecordingService.EXTRA_FOLDER, folder)
+            })
+    }
+
+    private fun stopPlayback() = recorderCommand(RecordingService.ACTION_STOP_PLAYBACK)
+    private fun pausePlayback() = recorderCommand(RecordingService.ACTION_PAUSE_PLAYBACK)
+
+    private fun seekPlayback(positionMs: Int) {
+        context.startService(
+            Intent(context, RecordingService::class.java).apply {
+                action = RecordingService.ACTION_SEEK_PLAYBACK
+                putExtra(RecordingService.EXTRA_POSITION_MS, positionMs)
+            })
     }
 
     @SuppressLint("MissingPermission")

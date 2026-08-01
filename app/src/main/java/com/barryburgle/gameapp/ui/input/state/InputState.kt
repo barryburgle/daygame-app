@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.input.state
 
+import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
@@ -10,6 +11,7 @@ import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -132,6 +134,10 @@ data class InputState(
     var challengeTweetUrl: String = "",
     val editChallenge: Challenge? = null,
     var saveLeadToLiveSession: Boolean = false,
+    var recordingsEnabled: Boolean = false,
+    var recordingsFolder: String = SettingDao.DEFAULT_RECORDINGS_FOLDER,
+    val recordingState: RecordingState = RecordingState(),
+    val recordings: List<String> = emptyList(),
 ) : ExportState(
     sessionSortType,
     exportSessionsFileName,

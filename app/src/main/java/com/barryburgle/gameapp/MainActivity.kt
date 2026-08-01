@@ -411,10 +411,17 @@ class MainActivity : ComponentActivity() {
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             liveSessionNotificationChannel.description = "Live session persistent notification"
+            val recordingNotificationChannel = NotificationChannel(
+                NotificationService.RECORDING_NOTIFICATION_CHANNEL_ID,
+                NotificationService.RECORDING_NOTIFICATION_CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_LOW
+            )
+            recordingNotificationChannel.description = "Recording status notification"
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(stickingPointsNotificationChannel)
             notificationManager.createNotificationChannel(liveSessionNotificationChannel)
+            notificationManager.createNotificationChannel(recordingNotificationChannel)
         }
     }
 }

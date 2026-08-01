@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.tool.state
 
+import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.ThemeEnum
@@ -28,6 +29,8 @@ data class ToolsState(
     override var exportFolder: String = "",
     var importFolder: String = "",
     override var backupFolder: String = "",
+    var recordingsFolder: String = SettingDao.DEFAULT_RECORDINGS_FOLDER,
+    var recordingsEnabled: Boolean = false,
     override var allSessions: List<AbstractSession> = emptyList(),
     override var allLeads: List<Lead> = emptyList(),
     override var allDates: List<Date> = emptyList(),
