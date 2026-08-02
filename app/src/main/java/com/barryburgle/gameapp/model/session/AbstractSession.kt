@@ -14,7 +14,7 @@ import java.time.DayOfWeek
 import java.util.Locale
 
 @Entity(tableName = "abstract_session")
-open class AbstractSession(
+data class AbstractSession(
     @PrimaryKey(autoGenerate = true) var id: Long?,
     @ColumnInfo(name = "insert_time") var insertTime: String,
     @ColumnInfo(name = "session_date") var date: String,

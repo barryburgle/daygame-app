@@ -7,7 +7,7 @@
 - Now all the exports are validated against app database after every single export 🚧
 
 **Bugfixes**
-- 
+- Live session card counter performance issues
 
 # Version 1.13.0 (2026-07-05)
 **Features**

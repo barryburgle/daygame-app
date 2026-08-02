@@ -728,7 +728,7 @@ class InputViewModel(
                             PinPointTypeEnum.SET.getField()
                         )
                     }
-                    abstractSession.sets = event.sets
+                    abstractSession = abstractSession.copy(sets = event.sets)
                     abstractSessionDao.insert(abstractSession)
                 }
             }
@@ -751,11 +751,6 @@ class InputViewModel(
                 viewModelScope.launch {
                     var abstractSession = event.abstractSession
                     if (event.isIncreasing) {
-                        if (state.value.followCount) {
-                            var sets = abstractSession.sets
-                            sets++
-                            abstractSession.sets = sets
-                        }
                         if (state.value.pinPointInteractions) {
                             savePinPointWithLocation(
                                 PinPointTypeEnum.CONVERSATION,
@@ -770,7 +765,10 @@ class InputViewModel(
                             PinPointTypeEnum.CONVERSATION.getField()
                         )
                     }
-                    abstractSession.convos = event.convos
+                    abstractSession = abstractSession.copy(
+                        sets = if (state.value.followCount && event.isIncreasing) abstractSession.sets + 1 else abstractSession.sets,
+                        convos = event.convos
+                    )
                     abstractSessionDao.insert(abstractSession)
                 }
             }
@@ -799,14 +797,6 @@ class InputViewModel(
                 viewModelScope.launch {
                     var abstractSession = event.abstractSession
                     if (event.isIncreasing) {
-                        if (state.value.followCount) {
-                            var sets = abstractSession.sets
-                            sets++
-                            abstractSession.sets = sets
-                            var convos = abstractSession.convos
-                            convos++
-                            abstractSession.convos = convos
-                        }
                         if (state.value.pinPointInteractions) {
                             savePinPointWithLocation(
                                 PinPointTypeEnum.CONTACT,
@@ -821,7 +811,11 @@ class InputViewModel(
                             PinPointTypeEnum.CONTACT.getField()
                         )
                     }
-                    abstractSession.contacts = event.contacts
+                    abstractSession = abstractSession.copy(
+                        sets = if (state.value.followCount && event.isIncreasing) abstractSession.sets + 1 else abstractSession.sets,
+                        convos = if (state.value.followCount && event.isIncreasing) abstractSession.convos + 1 else abstractSession.convos,
+                        contacts = event.contacts
+                    )
                     abstractSessionDao.insert(abstractSession)
                 }
             }
