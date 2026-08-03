@@ -21,10 +21,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
@@ -76,6 +79,7 @@ fun OutputScreen(
     val localContext = LocalContext.current.applicationContext
     val uriHandler = LocalUriHandler.current
     var heatmapEntitySelected by remember { mutableStateOf(HeatmapEntityEnum.SETS) }
+    var isCustomSummaryMode by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             BlurStatusBar()
@@ -111,6 +115,21 @@ fun OutputScreen(
                             sectionTitleAndDescription(
                                 "History", "Have a look at your past:"
                             )
+                            Column(horizontalAlignment = Alignment.End) {
+                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Button(
+                                        onClick = {
+                                            isCustomSummaryMode = !isCustomSummaryMode
+                                        }
+                                    ) {
+                                        Text(
+                                            text = if (!isCustomSummaryMode) "Custom summary" else "Exit summary",
+                                            fontSize = 12.sp
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                                }
+                            }
                         }
                     }
                     Row {
@@ -126,7 +145,8 @@ fun OutputScreen(
                         spaceFromLeft = spaceFromLeft + 3.dp,
                         textColor = MaterialTheme.colorScheme.onPrimary,
                         cellColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        emptyColor = MaterialTheme.colorScheme.surface
+                        emptyColor = MaterialTheme.colorScheme.surface,
+                        isCustomSummaryMode = isCustomSummaryMode
                     )
                 }
             }
