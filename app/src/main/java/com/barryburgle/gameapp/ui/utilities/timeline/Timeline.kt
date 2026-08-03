@@ -64,6 +64,7 @@ import kotlin.math.sqrt
 fun Timeline(
     abstractSession: AbstractSession,
     pinPoints: List<PinPoint>,
+    sessionDuration: Long,
     leads: List<Lead>,
     onEvent: (GameEvent) -> Unit,
     modifier: Modifier = Modifier
@@ -76,7 +77,6 @@ fun Timeline(
     val primaryContainerColor = MaterialTheme.colorScheme.primaryContainer
 
     val startTime = FormatService.parseTime(abstractSession.startHour)
-    val sessionDuration = abstractSession.sessionTime
 
     var selectedPinPoint by remember { mutableStateOf<PinPoint?>(null) }
     var popupPositionX by remember { mutableStateOf(0f) }
