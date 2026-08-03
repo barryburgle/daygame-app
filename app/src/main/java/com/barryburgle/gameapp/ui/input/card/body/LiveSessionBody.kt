@@ -11,12 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
+import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.AbstractSessionService
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.dialog.SessionCounters
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.timeline.Timeline
 
 @Composable
 fun LiveSessionBody(
@@ -27,7 +30,9 @@ fun LiveSessionBody(
     abstractSession: AbstractSession,
     liveSessionLeads: Int,
     liveSessionShareEnabled: Boolean,
-    copyReportOnClipboard: Boolean
+    copyReportOnClipboard: Boolean,
+    pinPoints: List<PinPoint>,
+    leads: List<Lead>
 ) {
     var setsCount = abstractSession.sets + liveSessionLeads
     var convosCount = abstractSession.convos + liveSessionLeads
@@ -102,6 +107,17 @@ fun LiveSessionBody(
             quantityFontSize = perfFontSize,
             description = "Minutes\nper set",
             descriptionFontSize = descriptionFontSize
+        )
+    }
+    if (pinPoints.isNotEmpty()) {
+        Spacer(modifier = Modifier.height(12.dp))
+        Timeline(
+            abstractSession,
+            pinPoints,
+            sessionTime,
+            leads,
+            onEvent,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

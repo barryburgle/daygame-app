@@ -5,6 +5,7 @@
 - Now past backups are deleted only if deep validation of last backup went well ⛑️
 - Now only backups are of the tables with new data are saved to disk 💾
 - Now all the exports are validated against app database after every single export 🚧
+- Pinpoints timeline on Live Session card
 
 **Bugfixes**
 - Live session card counter performance issues
