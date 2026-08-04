@@ -28,9 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
@@ -75,6 +76,8 @@ fun Timeline(
     val contactPainter =
         rememberVectorPainter(ImageVector.vectorResource(id = R.drawable.contact_action))
     val primaryContainerColor = MaterialTheme.colorScheme.primaryContainer
+    val onPrimaryColor = MaterialTheme.colorScheme.onPrimary
+    val inversePrimaryColor = MaterialTheme.colorScheme.inversePrimary
 
     val startTime = FormatService.parseTime(abstractSession.startHour)
 
@@ -150,21 +153,43 @@ fun Timeline(
                             else -> null
                         }
 
+                        val shadowColor = android.graphics.Color.argb(40, 0, 0, 0)
                         painter?.let {
                             clickableRegions.add(centerPoint to pin)
 
                             val iconSize = 24.dp.toPx()
-                            drawCircle(
-                                color = Color.White,
-                                radius = circleRadiusPx,
-                                center = centerPoint
-                            )
+                            drawIntoCanvas { canvas ->
+                                val paint = android.graphics.Paint().apply {
+                                    isAntiAlias = true
+                                    color = android.graphics.Color.WHITE
+                                    setShadowLayer(
+                                        with(density) { 4.dp.toPx() },
+                                        0f,
+                                        with(density) { 2.dp.toPx() },
+                                        shadowColor
+                                    )
+                                }
+                                canvas.nativeCanvas.drawCircle(
+                                    centerPoint.x,
+                                    centerPoint.y,
+                                    circleRadiusPx,
+                                    paint
+                                )
+                            }
                             translate(
                                 left = xPos - (iconSize / 2),
                                 top = midY - (iconSize / 2)
                             ) {
                                 with(it) {
-                                    draw(size = Size(iconSize, iconSize))
+                                    draw(
+                                        size = Size(
+                                            iconSize,
+                                            iconSize
+                                        ),
+                                        colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
+                                            onPrimaryColor
+                                        )
+                                    )
                                 }
                             }
                         }

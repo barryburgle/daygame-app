@@ -9,6 +9,7 @@
 
 **Bugfixes**
 - Live session card counter performance issues
+- Map and timeline pinpoints colors
 
 # Version 1.13.0 (2026-07-05)
 **Features**

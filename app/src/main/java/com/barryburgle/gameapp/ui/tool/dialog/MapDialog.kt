@@ -59,7 +59,7 @@ fun MapDialog(
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
     val textColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
-    val errorColor = MaterialTheme.colorScheme.error.toArgb()
+    val onPrimaryColor = MaterialTheme.colorScheme.onPrimary.toArgb()
     val boundingBox = if (pinPoints.isNotEmpty()) {
         BoundingBox.fromGeoPoints(pinPoints.map { GeoPoint(it.latitude, it.longitude) })
     } else {
@@ -174,7 +174,9 @@ fun MapDialog(
                                     setColor(backgroundColor)
                                     setSize(96, 96)
                                 }
-                                val actionIcon = ContextCompat.getDrawable(ctx, drawableResId)
+                                val actionIcon = ContextCompat.getDrawable(ctx, drawableResId)?.apply {
+                                    setTint(onPrimaryColor)
+                                }
                                 val layeredIcon =
                                     LayerDrawable(arrayOf(backgroundCircle, actionIcon)).apply {
                                         setLayerInset(1, 16, 16, 16, 16)
