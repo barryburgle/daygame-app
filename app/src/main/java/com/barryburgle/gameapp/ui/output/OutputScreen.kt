@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,6 +60,7 @@ import com.barryburgle.gameapp.ui.tool.ScrollableSelector
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.BlurStatusBar
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 import java.time.LocalDate
@@ -117,16 +119,14 @@ fun OutputScreen(
                             )
                             Column(horizontalAlignment = Alignment.End) {
                                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    Button(
+                                    IconShadowButton(
                                         onClick = {
                                             isCustomSummaryMode = !isCustomSummaryMode
-                                        }
-                                    ) {
-                                        Text(
-                                            text = if (!isCustomSummaryMode) "Custom summary" else "Exit summary",
-                                            fontSize = 12.sp
-                                        )
-                                    }
+                                        },
+                                        imageVector = Icons.Default.DateRange,
+                                        contentDescription = "Range",
+                                        iconColor = if (isCustomSummaryMode) MaterialTheme.colorScheme.onSurfaceVariant else null,
+                                    )
                                     Spacer(modifier = Modifier.width(spaceFromLeft))
                                 }
                             }
