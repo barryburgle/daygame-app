@@ -122,6 +122,13 @@ fun OutputScreen(
                                     IconShadowButton(
                                         onClick = {
                                             isCustomSummaryMode = !isCustomSummaryMode
+                                            if (isCustomSummaryMode) {
+                                                Toast.makeText(
+                                                    localContext,
+                                                    "Select start date",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
                                         },
                                         imageVector = Icons.Default.DateRange,
                                         contentDescription = "Range",

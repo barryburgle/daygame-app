@@ -176,6 +176,11 @@ fun HeatmapCalendar(
                                         if (customSummaryStartDate == null || customSummaryEndDate != null) {
                                             customSummaryStartDate = date
                                             customSummaryEndDate = null
+                                            Toast.makeText(
+                                                localContext,
+                                                "Select end date",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         } else if (date.isBefore(customSummaryStartDate)) {
                                             customSummaryStartDate = date
                                         } else {
