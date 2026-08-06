@@ -160,7 +160,7 @@ fun InfoDialog(
                             .height(300.dp)
                             .background(MaterialTheme.colorScheme.surfaceVariant)
                             .fillMaxWidth()
-                    ) { padding ->
+                    ) { _ ->
                         LazyColumn(
                             modifier = Modifier
                                 .height(300.dp)
@@ -170,43 +170,32 @@ fun InfoDialog(
                             item {
                                 Spacer(modifier = Modifier.height(10.dp))
                             }
-                            for (pair in descriptionFrequencyPairs) {
-                                item {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 4.dp)
-                                            .background(
-                                                color = MaterialTheme.colorScheme.primary,
-                                                shape = RoundedCornerShape(10.dp)
-                                            ),
-                                        horizontalArrangement = Arrangement.SpaceAround
-                                    ) {
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth(0.7f),
-                                            horizontalAlignment = Alignment.CenterHorizontally
-                                        ) {
-                                            DescribedQuantifier(
-                                                quantity = pair.first,
-                                                quantityFontSize = perfFontSize,
-                                                description = state.infoDialogTitle,
-                                                descriptionFontSize = descriptionFontSize
-                                            )
-                                        }
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth(),
-                                            horizontalAlignment = Alignment.CenterHorizontally
-                                        ) {
-                                            DescribedQuantifier(
-                                                quantity = pair.second,
-                                                quantityFontSize = perfFontSize,
-                                                description = state.trackedEntity,
-                                                descriptionFontSize = descriptionFontSize
-                                            )
-                                        }
-                                    }
+                            items(descriptionFrequencyPairs.size) { index ->
+                                val pair = descriptionFrequencyPairs[index]
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 4.dp)
+                                        .background(
+                                            color = MaterialTheme.colorScheme.primary,
+                                            shape = RoundedCornerShape(10.dp)
+                                        )
+                                        .padding(8.dp),
+                                    horizontalArrangement = Arrangement.SpaceAround,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    DescribedQuantifier(
+                                        quantity = pair.first,
+                                        quantityFontSize = perfFontSize,
+                                        description = state.infoDialogTitle,
+                                        descriptionFontSize = descriptionFontSize
+                                    )
+                                    DescribedQuantifier(
+                                        quantity = pair.second,
+                                        quantityFontSize = perfFontSize,
+                                        description = state.trackedEntity,
+                                        descriptionFontSize = descriptionFontSize
+                                    )
                                 }
                             }
                             item {
