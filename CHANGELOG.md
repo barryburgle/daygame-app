@@ -1,15 +1,17 @@
 # Version 1.14.0 (2026-08-dd)
 **Features**
 - "Write her after" notification reminds you to write her after settable amount of minutes 🔔
+- "Custom Summary" allows you to get a comprehensive start-to-end-custom-dates summary of the stats of your Game from History grid 🏆
 - Tap on the sitting reminder notification to open the timer for some rest 🕐
 - Now past backups are deleted only if deep validation of last backup went well ⛑️
-- Now only backups are of the tables with new data are saved to disk 💾
+- Now backups only tables with new data 💾
 - Now all the exports are validated against app database after every single export 🚧
-- Pinpoints timeline on Live Session card
+- Pinpoints timeline on Live Session card ──●─
 
 **Bugfixes**
 - Live session card counter performance issues
 - Map and timeline pinpoints colors
+- Info dialog entry spacing
 
 # Version 1.13.0 (2026-07-05)
 **Features**
