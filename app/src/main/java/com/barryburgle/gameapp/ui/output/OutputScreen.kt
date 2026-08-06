@@ -146,7 +146,9 @@ fun OutputScreen(
                         textColor = MaterialTheme.colorScheme.onPrimary,
                         cellColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         emptyColor = MaterialTheme.colorScheme.surface,
-                        isCustomSummaryMode = isCustomSummaryMode
+                        outputState = state,
+                        isCustomSummaryMode = isCustomSummaryMode,
+                        onOutputEvent = { onEvent(OutputEvent.SwitchShowCustomSummaryDialog) }
                     )
                 }
             }

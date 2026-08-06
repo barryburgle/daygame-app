@@ -91,6 +91,15 @@ class OutputViewModel(
                     )
                 }
             }
+
+
+            is OutputEvent.SwitchShowCustomSummaryDialog -> {
+                _state.update {
+                    it.copy(
+                        showCustomSummaryDialog = _state.value.showCustomSummaryDialog.not()
+                    )
+                }
+            }
         }
     }
 }

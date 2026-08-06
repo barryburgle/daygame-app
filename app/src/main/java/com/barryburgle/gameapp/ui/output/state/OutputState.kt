@@ -20,7 +20,8 @@ data class OutputState(
     val datesByMonth: List<AggregatedDates> = emptyList(),
     val movingAverageWindow: Int = 4,
     val showLeadsLegend: Boolean = false,
-    val showIndexFormula: Boolean = false
+    val showIndexFormula: Boolean = false,
+    val showCustomSummaryDialog: Boolean = false
 ) : AllEntityState(
     allSessionsLimited,
     allLeads,
