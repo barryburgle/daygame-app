@@ -74,12 +74,14 @@ fun HeatmapCalendar(
     val endDate = remember { LocalDate.now() }
 
     if (outputState.showCustomSummaryDialog) {
-        CustomSummaryDialog(
-            customSummaryStartDate = customSummaryStartDate!!,
-            customSummaryEndDate = customSummaryEndDate!!,
-            state = outputState,
-            onEvent = onOutputEvent
-        )
+        if (customSummaryStartDate != null && customSummaryEndDate != null) {
+            CustomSummaryDialog(
+                customSummaryStartDate = customSummaryStartDate!!,
+                customSummaryEndDate = customSummaryEndDate!!,
+                state = outputState,
+                onEvent = onOutputEvent
+            )
+        }
     } else {
         customSummaryStartDate = null
         customSummaryEndDate = null
