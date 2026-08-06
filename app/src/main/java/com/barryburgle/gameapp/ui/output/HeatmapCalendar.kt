@@ -40,7 +40,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.ui.output.dialog.CustomSummaryDialog
+import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.TextStyle
@@ -61,11 +64,27 @@ fun HeatmapCalendar(
     textColor: Color,
     cellColor: Color,
     emptyColor: Color,
+    isCustomSummaryMode: Boolean,
+    outputState: OutputState,
+    onOutputEvent: (OutputEvent) -> Unit
 ) {
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
+    var customSummaryStartDate by remember { mutableStateOf<LocalDate?>(null) }
+    var customSummaryEndDate by remember { mutableStateOf<LocalDate?>(null) }
     val endDate = remember { LocalDate.now() }
+
+    if (outputState.showCustomSummaryDialog) {
+        CustomSummaryDialog(
+            customSummaryStartDate = customSummaryStartDate!!,
+            customSummaryEndDate = customSummaryEndDate!!,
+            state = outputState,
+            onEvent = onOutputEvent
+        )
+    }
+
     val startDate = remember {
-        entries.minBy { it.date }.date.with(java.time.DayOfWeek.MONDAY)
+        entries.minByOrNull { it.date }?.date?.with(java.time.DayOfWeek.MONDAY)
+            ?: endDate.minusMonths(1)
     }
     val entryMap = remember(entries) { entries.associateBy { it.date } }
     val avgCount = remember(entries) {
@@ -133,6 +152,13 @@ fun HeatmapCalendar(
                             val entry = entryMap[date]
                             val count = entry?.count ?: 0.0f
                             val desc = entry?.desc ?: ""
+
+                            val isInRange =
+                                customSummaryStartDate != null && customSummaryEndDate != null &&
+                                        !date.isBefore(customSummaryStartDate) && !date.isAfter(
+                                    customSummaryEndDate
+                                )
+
                             ContributionCellWithTooltip(
                                 date = date,
                                 count = count,
@@ -141,8 +167,22 @@ fun HeatmapCalendar(
                                 textColor = textColor,
                                 cellColor = cellColor,
                                 emptyColor = emptyColor.copy(alpha = 0.1f),
-                                isSelected = selectedDate == date,
-                                onClick = { selectedDate = date }
+                                isSelected = selectedDate == date || isInRange,
+                                onClick = {
+                                    if (isCustomSummaryMode) {
+                                        if (customSummaryStartDate == null || customSummaryEndDate != null) {
+                                            customSummaryStartDate = date
+                                            customSummaryEndDate = null
+                                        } else if (date.isBefore(customSummaryStartDate)) {
+                                            customSummaryStartDate = date
+                                        } else {
+                                            customSummaryEndDate = date
+                                            onOutputEvent(OutputEvent.SwitchShowCustomSummaryDialog)
+                                        }
+                                    } else {
+                                        selectedDate = date
+                                    }
+                                }
                             )
                         }
                     }
