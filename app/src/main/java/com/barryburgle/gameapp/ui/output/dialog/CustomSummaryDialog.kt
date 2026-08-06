@@ -45,7 +45,7 @@ import java.time.LocalDate
 data class SummaryEntryModel(
     val label: String,
     val total: Float,
-    val average: Float,
+    val average: String,
     val isIndex: Boolean
 )
 
@@ -62,7 +62,6 @@ fun CustomSummaryDialog(
     val perfFontSize = 15.sp
     val descriptionFontSize = 10.sp
 
-    // Optimized: Memoize filtering and aggregation so it doesn't recalculate unnecessarily on recomposition
     val summaryEntries = remember(customSummaryStartDate, customSummaryEndDate, state) {
         listOf(
             HeatmapEntityEnum.SETS to getSeries(state, HeatmapEntityEnum.SETS),
@@ -82,14 +81,17 @@ fun CustomSummaryDialog(
 
             val isIndex = entity == HeatmapEntityEnum.INDEX
             val total = if (isIndex) 0f else filteredSeries.sumOf { it.count.toDouble() }.toFloat()
-            val average = if (filteredSeries.isNotEmpty()) {
+            val rawAvg = if (filteredSeries.isNotEmpty()) {
                 filteredSeries.map { it.count }.average().toFloat()
             } else {
                 0f
             }
 
+            val average = String.format(java.util.Locale.getDefault(), "%.2f", rawAvg)
+            val label = if (isIndex) "Index (avg)" else entity.getField()
+
             SummaryEntryModel(
-                label = entity.getField(),
+                label = label,
                 total = total,
                 average = average,
                 isIndex = isIndex
@@ -101,7 +103,7 @@ fun CustomSummaryDialog(
         append("Custom Summary Report (${FormatService.getDate(customSummaryStartDate.toString() + "T00:00Z")} to ${FormatService.getDate(customSummaryEndDate.toString() + "T00:00Z")})\n")
         summaryEntries.forEach { entry ->
             if (entry.isIndex) {
-                append("${entry.label} - Avg: ${entry.average}\n")
+                append("${entry.label}: ${entry.average}\n")
             } else {
                 append("${entry.label} - Total: ${entry.total.toInt()}, Avg: ${entry.average}\n")
             }
@@ -233,11 +235,12 @@ fun CustomSummaryDialog(
                                 if (entry.isIndex) {
                                     Column(
                                         modifier = Modifier
-                                            .fillMaxWidth(),
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         DescribedQuantifier(
-                                            quantity = entry.average.toString(),
+                                            quantity = entry.average,
                                             quantityFontSize = perfFontSize,
                                             description = entry.label,
                                             descriptionFontSize = descriptionFontSize
@@ -257,7 +260,7 @@ fun CustomSummaryDialog(
                                             descriptionFontSize = descriptionFontSize
                                         )
                                         DescribedQuantifier(
-                                            quantity = entry.average.toString(),
+                                            quantity = entry.average,
                                             quantityFontSize = perfFontSize,
                                             description = "${entry.label} (Avg)",
                                             descriptionFontSize = descriptionFontSize
