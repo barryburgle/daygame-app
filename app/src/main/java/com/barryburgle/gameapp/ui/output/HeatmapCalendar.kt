@@ -80,6 +80,9 @@ fun HeatmapCalendar(
             state = outputState,
             onEvent = onOutputEvent
         )
+    } else {
+        customSummaryStartDate = null
+        customSummaryEndDate = null
     }
 
     val startDate = remember {
