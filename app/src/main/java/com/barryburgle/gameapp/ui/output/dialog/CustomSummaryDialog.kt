@@ -46,7 +46,8 @@ data class SummaryEntryModel(
     val label: String,
     val total: Float,
     val average: String,
-    val isIndex: Boolean
+    val isIndex: Boolean,
+    val isRatio: Boolean = false
 )
 
 @Composable
@@ -63,7 +64,7 @@ fun CustomSummaryDialog(
     val descriptionFontSize = 10.sp
 
     val summaryEntries = remember(customSummaryStartDate, customSummaryEndDate, state) {
-        listOf(
+        val rawData = listOf(
             HeatmapEntityEnum.SETS to getSeries(state, HeatmapEntityEnum.SETS),
             HeatmapEntityEnum.CONVERSATIONS to getSeries(state, HeatmapEntityEnum.CONVERSATIONS),
             HeatmapEntityEnum.CONTACTS to getSeries(state, HeatmapEntityEnum.CONTACTS),
@@ -74,35 +75,105 @@ fun CustomSummaryDialog(
             HeatmapEntityEnum.BOUNCED to getSeries(state, HeatmapEntityEnum.BOUNCED),
             HeatmapEntityEnum.KISSED to getSeries(state, HeatmapEntityEnum.KISSED),
             HeatmapEntityEnum.LAID to getSeries(state, HeatmapEntityEnum.LAID)
-        ).map { (entity, series) ->
+        ).associate { (entity, series) ->
             val filteredSeries = series.filter { entry ->
                 !entry.date.isBefore(customSummaryStartDate) && !entry.date.isAfter(customSummaryEndDate)
             }
-
-            val isIndex = entity == HeatmapEntityEnum.INDEX
-            val total = if (isIndex) 0f else filteredSeries.sumOf { it.count.toDouble() }.toFloat()
+            val total = if (entity == HeatmapEntityEnum.INDEX) 0f else filteredSeries.sumOf { it.count.toDouble() }.toFloat()
             val rawAvg = if (filteredSeries.isNotEmpty()) {
                 filteredSeries.map { it.count }.average().toFloat()
             } else {
                 0f
             }
+            entity to Pair(total, rawAvg)
+        }
 
-            val average = String.format(java.util.Locale.getDefault(), "%.2f", rawAvg)
+        val allSets = rawData[HeatmapEntityEnum.SETS]?.first ?: 0f
+        val allConvos = rawData[HeatmapEntityEnum.CONVERSATIONS]?.first ?: 0f
+        val allContacts = rawData[HeatmapEntityEnum.CONTACTS]?.first ?: 0f
+        val allDates = rawData[HeatmapEntityEnum.DATES]?.first ?: 0f
+        val allPulled = rawData[HeatmapEntityEnum.PULLED]?.first ?: 0f
+        val allBounced = rawData[HeatmapEntityEnum.BOUNCED]?.first ?: 0f
+        val allKissed = rawData[HeatmapEntityEnum.KISSED]?.first ?: 0f
+        val allLaid = rawData[HeatmapEntityEnum.LAID]?.first ?: 0f
+
+        fun safeRatio(numerator: Float, denominator: Float): String {
+            val ratio = if (denominator > 0f) numerator / denominator * 100 else 0f
+            return String.format(java.util.Locale.getDefault(), "%.2f", ratio)
+        }
+
+        val conversationRatioVal = safeRatio(allConvos, allSets)
+        val contactRatioVal = safeRatio(allContacts, allConvos)
+        val dateRatioVal = safeRatio(allDates, allContacts)
+        val pullToDateRatioVal = safeRatio(allPulled, allDates)
+        val bounceToPullRatioVal = safeRatio(allBounced, allPulled)
+        val kissToBounceRatioVal = safeRatio(allKissed, allBounced)
+        val layToKissRatioVal = safeRatio(allLaid, allKissed)
+
+        val baseEntities = listOf(
+            HeatmapEntityEnum.SETS,
+            HeatmapEntityEnum.CONVERSATIONS,
+            HeatmapEntityEnum.CONTACTS,
+            HeatmapEntityEnum.INDEX,
+            HeatmapEntityEnum.DATES,
+            HeatmapEntityEnum.RECORDINGS,
+            HeatmapEntityEnum.PULLED,
+            HeatmapEntityEnum.BOUNCED,
+            HeatmapEntityEnum.KISSED,
+            HeatmapEntityEnum.LAID
+        )
+
+        val resultList = mutableListOf<SummaryEntryModel>()
+
+        baseEntities.forEach { entity ->
+            val pair = rawData[entity] ?: Pair(0f, 0f)
+            val isIndex = entity == HeatmapEntityEnum.INDEX
+            val averageStr = String.format(java.util.Locale.getDefault(), "%.2f", pair.second)
             val label = if (isIndex) "Index (avg)" else entity.getField()
 
-            SummaryEntryModel(
-                label = label,
-                total = total,
-                average = average,
-                isIndex = isIndex
+            resultList.add(
+                SummaryEntryModel(
+                    label = label,
+                    total = pair.first,
+                    average = averageStr,
+                    isIndex = isIndex,
+                    isRatio = false
+                )
             )
+
+            // Insert ratio entries after specific denominators
+            when (entity) {
+                HeatmapEntityEnum.CONVERSATIONS -> {
+                    resultList.add(SummaryEntryModel(label = "Conversation Ratio", total = 0f, average = conversationRatioVal + " %", isIndex = false, isRatio = true))
+                    resultList.add(SummaryEntryModel(label = "Contact Ratio", total = 0f, average = contactRatioVal + " %", isIndex = false, isRatio = true))
+                }
+                HeatmapEntityEnum.CONTACTS -> {
+                    resultList.add(SummaryEntryModel(label = "Date Ratio", total = 0f, average = dateRatioVal + " %", isIndex = false, isRatio = true))
+                }
+                HeatmapEntityEnum.DATES -> {
+                    resultList.add(SummaryEntryModel(label = "Pull to Date Ratio", total = 0f, average = pullToDateRatioVal + " %", isIndex = false, isRatio = true))
+                }
+                HeatmapEntityEnum.PULLED -> {
+                    resultList.add(SummaryEntryModel(label = "Bounce to Pull Ratio", total = 0f, average = bounceToPullRatioVal + " %", isIndex = false, isRatio = true))
+                }
+                HeatmapEntityEnum.BOUNCED -> {
+                    resultList.add(SummaryEntryModel(label = "Kiss to Bounce Ratio", total = 0f, average = kissToBounceRatioVal + " %", isIndex = false, isRatio = true))
+                }
+                HeatmapEntityEnum.KISSED -> {
+                    resultList.add(SummaryEntryModel(label = "Lay to Kiss Ratio", total = 0f, average = layToKissRatioVal + " %", isIndex = false, isRatio = true))
+                }
+                else -> {}
+            }
         }
+        resultList
     }
 
     val reportText = buildString {
         append("Custom Summary Report (${FormatService.getDate(customSummaryStartDate.toString() + "T00:00Z")} to ${FormatService.getDate(customSummaryEndDate.toString() + "T00:00Z")})\n")
         summaryEntries.forEach { entry ->
-            if (entry.isIndex) {
+            if (entry.isRatio) {
+                append("${entry.label}: ${entry.average}\n")
+            } else if (entry.isIndex) {
                 append("${entry.label}: ${entry.average}\n")
             } else {
                 append("${entry.label} - Total: ${entry.total.toInt()}, Avg: ${entry.average}\n")
@@ -221,18 +292,24 @@ fun CustomSummaryDialog(
                         }
                         items(summaryEntries.size) { index ->
                             val entry = summaryEntries[index]
+                            val rowBackgroundColor = if (entry.isRatio) {
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                            } else {
+                                MaterialTheme.colorScheme.primary
+                            }
+
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 4.dp)
                                     .background(
-                                        color = MaterialTheme.colorScheme.primary,
+                                        color = rowBackgroundColor,
                                         shape = RoundedCornerShape(10.dp)
                                     ),
                                 horizontalArrangement = Arrangement.SpaceAround,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                if (entry.isIndex) {
+                                if (entry.isIndex || entry.isRatio) {
                                     Column(
                                         modifier = Modifier
                                             .fillMaxWidth()
