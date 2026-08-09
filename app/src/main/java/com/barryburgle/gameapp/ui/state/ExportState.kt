@@ -37,7 +37,8 @@ open class ExportState(
     open var liveSessionSittingReminderInterval: Int = 30,
     open var liveSessionShareEnabled: Boolean = true,
     open var writeHerAfterReminderEnabled: Boolean = true,
-    open var writeHerReminderInterval: Int = 60
+    open var writeHerReminderInterval: Int = 60,
+    open var pullOClockReminderInterval: Int = 7
 
 ) : AllEntityState(
     allSessions,
