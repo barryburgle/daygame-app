@@ -195,7 +195,7 @@ fun StatsScreen(
                                 GlobalStatsService.computeGenericRatio(
                                     state.allSets.size,
                                     conversations
-                                ) //TODO: consider using always compute generic ratio and not other methods
+                                )
                             } %",
                             firstPerformanceDescription = "Conversation\nRatio",
                             secondPerformanceQuantity = "${
