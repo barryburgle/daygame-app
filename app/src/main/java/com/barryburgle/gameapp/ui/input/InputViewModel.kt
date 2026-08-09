@@ -602,6 +602,16 @@ class InputViewModel(
                 )
             }
 
+            is GameEvent.SchedulePullOClockReminder -> {
+                val time = LocalDateTime.now().plusMinutes(event.interval.toLong())
+                notificationScheduler.schedule(
+                    AndroidNotificationScheduler.PULL_REMINDER_REQUEST_CODE,
+                    time,
+                    "It's time!",
+                    "This is the gentle reminder you asked for" // TODO: tapping the notification should open phone dial or IG (settable by user)
+                )
+            }
+
             is GameEvent.ScheduleWriteHerAfterReminder -> {
                 val time = LocalDateTime.now().plusMinutes(event.interval.toLong())
                 notificationScheduler.schedule(
