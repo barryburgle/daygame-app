@@ -39,6 +39,7 @@ import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.set.SetService
 import com.barryburgle.gameapp.ui.CombineFive
+import com.barryburgle.gameapp.ui.CombineFourteen
 import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.CombineSeven
 import com.barryburgle.gameapp.ui.CombineSixteen
@@ -192,6 +193,7 @@ class InputViewModel(
     private val _liveSessionShareEnabled = settingDao.getLiveSessionShareEnabled()
     private val _writeHerAfterReminderEnabled = settingDao.getWriteHerAfterReminderEnabled()
     private val _writeHerReminderInterval = settingDao.getWriteHerReminderInterval()
+    private val _pullOClockReminderInterval = settingDao.getPullOClockReminderInterval()
     private val _sessionsByWeek = aggregatedSessionsDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _sessionsByMonth = aggregatedSessionsDao.groupStatsByMonth()
@@ -342,7 +344,7 @@ class InputViewModel(
             lastBackup = lastBackup.toInt()
         )
     }
-    val _dialogSettings = CombineThirteen(
+    val _dialogSettings = CombineFourteen(
         _notificationTime,
         _generateiDate,
         _pinPointInteractions,
@@ -355,8 +357,9 @@ class InputViewModel(
         _liveSessionSittingReminderInterval,
         _liveSessionShareEnabled,
         _writeHerAfterReminderEnabled,
-        _writeHerReminderInterval
-    ) { notificationTime, generateiDate, pinPointInteractions, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled, writeHerAfterReminderEnabled, writeHerReminderInterval ->
+        _writeHerReminderInterval,
+        _pullOClockReminderInterval,
+    ) { notificationTime, generateiDate, pinPointInteractions, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled, writeHerAfterReminderEnabled, writeHerReminderInterval, pullOClockReminderInterval ->
         DialogSettingsState(
             notificationTime = notificationTime,
             generateiDate = generateiDate.toBoolean(),
@@ -370,7 +373,8 @@ class InputViewModel(
             liveSessionSittingReminderInterval = liveSessionSittingReminderInterval.toInt(),
             liveSessionShareEnabled = liveSessionShareEnabled.toBoolean(),
             writeHerAfterReminderEnabled = writeHerAfterReminderEnabled.toBoolean(),
-            writeHerReminderInterval = writeHerReminderInterval.toInt()
+            writeHerReminderInterval = writeHerReminderInterval.toInt(),
+            pullOClockReminderInterval = pullOClockReminderInterval.toInt()
         )
     }
     val _shareSettings = CombineSeven(
@@ -473,6 +477,7 @@ class InputViewModel(
             liveSessionShareEnabled = dialogSettings.liveSessionShareEnabled,
             writeHerAfterReminderEnabled = dialogSettings.writeHerAfterReminderEnabled,
             writeHerReminderInterval = dialogSettings.writeHerReminderInterval,
+            pullOClockReminderInterval = dialogSettings.pullOClockReminderInterval,
             mostPopularLeadsNationalities = mostPopularLeadsNationalities,
             sessionsByWeek = sessionsByWeek,
             sessionsByMonth = sessionsByMonth,
