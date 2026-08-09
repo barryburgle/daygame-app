@@ -32,7 +32,8 @@ fun LiveSessionBody(
     liveSessionShareEnabled: Boolean,
     copyReportOnClipboard: Boolean,
     pinPoints: List<PinPoint>,
-    leads: List<Lead>
+    leads: List<Lead>,
+    pullOClockReminderInterval: Int
 ) {
     var setsCount = abstractSession.sets + liveSessionLeads
     var convosCount = abstractSession.convos + liveSessionLeads
@@ -53,7 +54,9 @@ fun LiveSessionBody(
             onEvent(GameEvent.SetContactsLive(abstractSession, newVal, isIncreasing))
         },
         liveSessionShareEnabled = liveSessionShareEnabled,
-        copyReportOnClipboard = copyReportOnClipboard
+        copyReportOnClipboard = copyReportOnClipboard,
+        onEvent = onEvent,
+        pullOClockReminderInterval = pullOClockReminderInterval
     )
     Spacer(modifier = Modifier.height(12.dp))
     Row(

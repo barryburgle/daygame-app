@@ -97,7 +97,8 @@ fun EventCard(
     copyReportOnClipboard: Boolean,
     isLiveSession: Boolean = false,
     followCount: Boolean = true,
-    liveSessionShareEnabled: Boolean = false
+    liveSessionShareEnabled: Boolean = false,
+    pullOClockReminderInterval: Int = 7
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
@@ -570,7 +571,8 @@ fun EventCard(
                                     liveSessionShareEnabled,
                                     copyReportOnClipboard,
                                     pinPoints,
-                                    leads
+                                    leads,
+                                    pullOClockReminderInterval
                                 )
                             } else if (AbstractSession::class.java.simpleName.equals(
                                     sortableGameEvent.classType

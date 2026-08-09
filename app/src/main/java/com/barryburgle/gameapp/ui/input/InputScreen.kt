@@ -422,7 +422,8 @@ fun InputScreen(
                                         state.copyReportOnClipboard,
                                         true,
                                         state.followCount,
-                                        state.liveSessionShareEnabled
+                                        state.liveSessionShareEnabled,
+                                        state.pullOClockReminderInterval
                                     )
                                 }
                             }
@@ -460,7 +461,7 @@ fun InputScreen(
                                     ),
                                 state.simplePlusOneReport,
                                 state.neverShareLeadInfo,
-                                state.copyReportOnClipboard
+                                state.copyReportOnClipboard,
                             )
                         }
                     }
