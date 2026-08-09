@@ -1052,6 +1052,22 @@ class ToolViewModel(
                     )
                 viewModelScope.launch { settingDao.insert(setting) }
             }
+
+            is ToolEvent.SetPullOClockReminderInterval -> {
+                _state.update {
+                    it.copy(
+                        pullOClockReminderInterval = event.interval.toInt()
+                    )
+                }
+                val pullOClockReminderInterval =
+                    _state.value.pullOClockReminderInterval
+                val setting =
+                    Setting(
+                        SettingDao.PULL_O_CLOCK_REMINDER_INTERVAL_ID,
+                        pullOClockReminderInterval.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
         }
     }
 
