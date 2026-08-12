@@ -12,7 +12,7 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.StatsEvent
 import com.barryburgle.gameapp.model.enums.StatsLoadInfoEnum
 import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
-import com.barryburgle.gameapp.ui.CombineEighteen
+import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.stats.state.StatsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,8 +38,8 @@ class StatsViewModel(
     private val _allSets = setDao.getAll()
     private val _allPinPoints = pinPointDao.getAll()
 
-    private val _typeFilteredPinPoints = combine(_allPinPoints, _state) { allPoints, state ->
-        val selectedTypes = state.pinPointsTypeSelectionList.filterIsInstance<PinPointTypeEnum>()
+    private val _typeFilteredMapPinPoints = combine(_allPinPoints, _state) { allPoints, state ->
+        val selectedTypes = state.mapPinPointsTypeSelectionList.filterIsInstance<PinPointTypeEnum>()
         allPoints.filter { pinPoint ->
             selectedTypes.any { it.getField() == pinPoint.pinPointType }
         }
@@ -79,7 +79,7 @@ class StatsViewModel(
     private val _copyReportOnClipboard = settingDao.getCopyReportOnClipboard()
 
     val state =
-        CombineEighteen(
+        CombineNineteen(
             _state,
             _allSessions,
             _allLeads,
@@ -99,7 +99,7 @@ class StatsViewModel(
             _datesNationalityHistogram,
             _completeHistogram,
             _copyReportOnClipboard
-        ) { state, allSessions, allLeads, allDates, allChallenges, allSets, allPinPoints, typeFilteredPinPoints, setsHistogram, convosHistogram, contactsHistogram, leadsAgeHistogram, leadsNationalityHistogram, datesAgeHistogram, datesNumberHistogram, datesNationalityHistogram, completeHistogram, copyReportOnClipboard ->
+        ) { state, allSessions, allLeads, allDates, allChallenges, allSets, allPinPoints, typeFilteredMapPinPoints, typeFilteredTimePinPoints, setsHistogram, convosHistogram, contactsHistogram, leadsAgeHistogram, leadsNationalityHistogram, datesAgeHistogram, datesNumberHistogram, datesNationalityHistogram, completeHistogram, copyReportOnClipboard ->
             state.copy(
                 allSessions = allSessions,
                 allLeads = allLeads,
@@ -144,10 +144,10 @@ class StatsViewModel(
                 }
             }
 
-            is StatsEvent.SelectPinPointType -> {
+            is StatsEvent.SelectMapPinPointType -> {
                 _state.update {
                     it.copy(
-                        pinPointsTypeSelectionList = event.selectedTypes
+                        mapPinPointsTypeSelectionList = event.selectedTypes
                     )
                 }
             }

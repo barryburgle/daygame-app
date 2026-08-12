@@ -9,7 +9,7 @@ sealed interface StatsEvent : GenericEvent {
     ) : StatsEvent
 
     object HideInfo : StatsEvent
-    data class SelectPinPointType(
+    data class SelectMapPinPointType(
         val selectedTypes: List<PinPointTypeEnum>
     ) : StatsEvent
     data class SelectTimePinPointType(
