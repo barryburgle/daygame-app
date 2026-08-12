@@ -95,90 +95,90 @@ fun PinPointScatterChart(
                 }
 
                 legend.isEnabled = false
-
-                val layer1Entries = mutableListOf<Entry>()
-                val layer1Colors = mutableListOf<Int>()
-                val layer2Entries = mutableListOf<Entry>()
-                val layer2Colors = mutableListOf<Int>()
-                val layer3Entries = mutableListOf<Entry>()
-                val layer3Colors = mutableListOf<Int>()
-
-                pinPoints.forEach { pinPoint ->
-                    val dayBase = pinPoint.dayOfWeek.toFloat()
-                    val randomOffset = (Random.nextFloat() - 0.5f) * 0.6f
-                    val dayWithOffset = dayBase + randomOffset
-
-                    val timeVal = try {
-                        val ldt = LocalDateTime.parse(pinPoint.localTimestamp.substring(0, 19))
-                        ldt.hour + ldt.minute / 60f
-                    } catch (e: Exception) {
-                        12f
-                    }
-
-                    if (timeVal >= 8f) {
-                        val entry = Entry(dayWithOffset, timeVal)
-
-                        val baseAlpha = when (pinPoint.pinPointType.lowercase()) {
-                            PinPointTypeEnum.SET.getField().lowercase() -> 80
-                            PinPointTypeEnum.CONVERSATION.getField().lowercase() -> 120
-                            PinPointTypeEnum.CONTACT.getField().lowercase() -> 200
-                            else -> 80
-                        }
-
-                        layer1Entries.add(entry)
-                        layer1Colors.add(
-                            Color.argb(
-                                baseAlpha,
-                                themeRed,
-                                themeGreen,
-                                themeBlue
-                            )
-                        )
-
-                        layer2Entries.add(entry)
-                        layer2Colors.add(
-                            Color.argb(
-                                (baseAlpha * 0.5f).toInt(),
-                                themeRed,
-                                themeGreen,
-                                themeBlue
-                            )
-                        )
-
-                        layer3Entries.add(entry)
-                        layer3Colors.add(
-                            Color.argb(
-                                (baseAlpha * 0.15f).toInt(),
-                                themeRed,
-                                themeGreen,
-                                themeBlue
-                            )
-                        )
-                    }
-                }
-
-                val set1 = ScatterDataSet(layer1Entries, "Core").apply {
-                    colors = layer1Colors
-                    setScatterShape(ScatterChart.ScatterShape.CIRCLE)
-                    scatterShapeSize = 18f
-                    valueTextSize = 0f
-                }
-                val set2 = ScatterDataSet(layer2Entries, "Mid").apply {
-                    colors = layer2Colors
-                    setScatterShape(ScatterChart.ScatterShape.CIRCLE)
-                    scatterShapeSize = 40f
-                    valueTextSize = 0f
-                }
-                val set3 = ScatterDataSet(layer3Entries, "Outer").apply {
-                    colors = layer3Colors
-                    setScatterShape(ScatterChart.ScatterShape.CIRCLE)
-                    scatterShapeSize = 75f
-                    valueTextSize = 0f
-                }
-
-                data = ScatterData(set3, set2, set1)
-                invalidate()
             }
+        },
+        update = { chart ->
+            val layer1Entries = mutableListOf<Entry>()
+            val layer1Colors = mutableListOf<Int>()
+            val layer2Entries = mutableListOf<Entry>()
+            val layer2Colors = mutableListOf<Int>()
+            val layer3Entries = mutableListOf<Entry>()
+            val layer3Colors = mutableListOf<Int>()
+            pinPoints.forEach { pinPoint ->
+                val dayBase = pinPoint.dayOfWeek.toFloat()
+                val randomOffset = (Random.nextFloat() - 0.5f) * 0.6f
+                val dayWithOffset = dayBase + randomOffset
+
+                val timeVal = try {
+                    val ldt = LocalDateTime.parse(pinPoint.localTimestamp.substring(0, 19))
+                    ldt.hour + ldt.minute / 60f
+                } catch (e: Exception) {
+                    12f
+                }
+
+                if (timeVal >= 8f) {
+                    val entry = Entry(dayWithOffset, timeVal)
+
+                    val baseAlpha = when (pinPoint.pinPointType.lowercase()) {
+                        PinPointTypeEnum.SET.getField().lowercase() -> 80
+                        PinPointTypeEnum.CONVERSATION.getField().lowercase() -> 120
+                        PinPointTypeEnum.CONTACT.getField().lowercase() -> 200
+                        else -> 80
+                    }
+
+                    layer1Entries.add(entry)
+                    layer1Colors.add(
+                        Color.argb(
+                            baseAlpha,
+                            themeRed,
+                            themeGreen,
+                            themeBlue
+                        )
+                    )
+
+                    layer2Entries.add(entry)
+                    layer2Colors.add(
+                        Color.argb(
+                            (baseAlpha * 0.5f).toInt(),
+                            themeRed,
+                            themeGreen,
+                            themeBlue
+                        )
+                    )
+
+                    layer3Entries.add(entry)
+                    layer3Colors.add(
+                        Color.argb(
+                            (baseAlpha * 0.15f).toInt(),
+                            themeRed,
+                            themeGreen,
+                            themeBlue
+                        )
+                    )
+                }
+            }
+
+            val set1 = ScatterDataSet(layer1Entries, "Core").apply {
+                colors = layer1Colors
+                setScatterShape(ScatterChart.ScatterShape.CIRCLE)
+                scatterShapeSize = 18f
+                valueTextSize = 0f
+            }
+            val set2 = ScatterDataSet(layer2Entries, "Mid").apply {
+                colors = layer2Colors
+                setScatterShape(ScatterChart.ScatterShape.CIRCLE)
+                scatterShapeSize = 40f
+                valueTextSize = 0f
+            }
+            val set3 = ScatterDataSet(layer3Entries, "Outer").apply {
+                colors = layer3Colors
+                setScatterShape(ScatterChart.ScatterShape.CIRCLE)
+                scatterShapeSize = 75f
+                valueTextSize = 0f
+            }
+
+            chart.data = ScatterData(set3, set2, set1)
+            chart.invalidate()
         }
     )
 }
