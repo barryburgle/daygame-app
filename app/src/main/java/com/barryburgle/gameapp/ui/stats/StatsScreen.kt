@@ -154,7 +154,7 @@ fun StatsScreen(
                             modifier = Modifier.width(spaceFromLeft)
                         )
                         PinPointScatterCard(
-                            modifier = cardModifier.height(300.dp),
+                            modifier = cardModifier.height(400.dp),
                             title = "Pinpoints in time",
                             statCardIcon = Icons.Default.PinDrop,
                             description = "Know your best schedule",
