@@ -148,6 +148,20 @@ fun StatsScreen(
                         )
                     }
                 }
+                item {
+                    Row {
+                        Spacer(
+                            modifier = Modifier.width(spaceFromLeft)
+                        )
+                        PinPointScatterCard(
+                            modifier = cardModifier.height(300.dp),
+                            title = "Pinpoints in time",
+                            statCardIcon = Icons.Default.PinDrop,
+                            description = "Know your best schedule",
+                            allPinPoints = state.allPinPoints
+                        )
+                    }
+                }
             }
             if (state.allSets.isNotEmpty()) {
                 item {
