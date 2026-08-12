@@ -87,7 +87,7 @@ class StatsViewModel(
             _allChallenges,
             _allSets,
             _allPinPoints,
-            _typeFilteredPinPoints,
+            _typeFilteredMapPinPoints,
             _typeFilteredTimePinPoints,
             _setsHistogram,
             _convosHistogram,
@@ -117,7 +117,7 @@ class StatsViewModel(
                 datesNationalityHistogram = datesNationalityHistogram,
                 completeHistogram = completeHistogram,
                 copyReportOnClipboard = copyReportOnClipboard.toBoolean(),
-                typeFilteredPinPoints = typeFilteredPinPoints
+                typeFilteredMapPinPoints = typeFilteredMapPinPoints,
                 typeFilteredTimePinPoints = typeFilteredTimePinPoints
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), StatsState())

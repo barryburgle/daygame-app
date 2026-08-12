@@ -31,9 +31,9 @@ data class StatsState(
     val completeHistogram: List<Any> = emptyList(),
     val isShowingInfo: Boolean = false,
     val copyReportOnClipboard: Boolean = false,
-    val pinPointsTypeSelectionList:  List<Any> = PinPointTypeEnum.entries,
-    var typeFilteredPinPoints: List<PinPoint> = emptyList()
+    val mapPinPointsTypeSelectionList:  List<Any> = PinPointTypeEnum.entries,
     val timePinPointsTypeSelectionList:  List<Any> = PinPointTypeEnum.entries,
+    var typeFilteredMapPinPoints: List<PinPoint> = emptyList(),
     var typeFilteredTimePinPoints: List<PinPoint> = emptyList()
 ) : AllEntityState(
     allSessions,
