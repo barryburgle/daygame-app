@@ -144,7 +144,8 @@ fun StatsScreen(
                             title = "Pinpoints",
                             statCardIcon = Icons.Default.PinDrop,
                             description = "See where the real game is played",
-                            allPinPoints = state.allPinPoints
+                            state = state,
+                            onEvent = onEvent
                         )
                     }
                 }
