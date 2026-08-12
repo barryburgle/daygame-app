@@ -120,6 +120,14 @@ class StatsViewModel(
                     )
                 }
             }
+
+            is StatsEvent.SelectPinPointType -> {
+                _state.update {
+                    it.copy(
+                        pinPointsTypeSelectionList = event.selectedTypes
+                    )
+                }
+            }
         }
     }
 }

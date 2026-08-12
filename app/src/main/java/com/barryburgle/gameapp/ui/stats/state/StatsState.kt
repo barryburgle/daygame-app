@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.ui.stats.state
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -29,7 +30,8 @@ data class StatsState(
     val trackedEntity: String = "",
     val completeHistogram: List<Any> = emptyList(),
     val isShowingInfo: Boolean = false,
-    val copyReportOnClipboard: Boolean = false
+    val copyReportOnClipboard: Boolean = false,
+    val pinPointsTypeSelectionList:  List<Any> = PinPointTypeEnum.entries
 ) : AllEntityState(
     allSessions,
     allLeads,
