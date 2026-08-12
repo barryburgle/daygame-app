@@ -426,7 +426,8 @@ fun InputScreen(
                                         state.recordingState,
                                         state.recordings,
                                         state.recordingsFolder,
-                                        state.recordingsEnabled
+                                        state.recordingsEnabled,
+                                        state.pullOClockReminderInterval
                                     )
                                 }
                             }

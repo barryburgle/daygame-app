@@ -78,6 +78,9 @@ interface SettingDao {
         const val WRITE_HER_REMINDER_INTERVAL_ID: String =
             "write_her_reminder_interval"
         const val LIVE_SESSION_SHARE_ENABLED_ID: String = "live_session_share_enabled"
+
+        const val PULL_O_CLOCK_REMINDER_INTERVAL_ID: String =
+            "pull_o_clock_reminder_interval"
         const val DEFAULT_LEADS_EXPORT_FILE_NAME: String = "leads_export"
         const val DEFAULT_LEADS_IMPORT_FILE_NAME: String = "leads_export_yyyy_mm_dd_hh_mm.csv"
         const val DEFAULT_DATES_EXPORT_FILE_NAME: String = "dates_export"
@@ -112,6 +115,7 @@ interface SettingDao {
         const val DEFAULT_SUGGEST_LEADS_NATIONALITY_FLAG: String = "true"
         const val DEFAULT_WRITE_HER_REMINDER_ENABLED_FLAG: String = "true"
         const val DEFAULT_WRITE_HER_REMINDER_INTERVAL: String = "60"
+        const val DEFAULT_PULL_O_CLOCK_INTERVAL: String = "7"
         const val DEFAULT_SHOWN_NATIONALITIES: String = "6"
         const val DEFAULT_ARCHIVE_BACKUP_FOLDER_FLAG: String = "true"
         const val DEFAULT_IS_CLEANING_FLAG: String = "false"
@@ -251,6 +255,9 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_WRITE_HER_REMINDER_INTERVAL}' ELSE value END FROM setting WHERE id = '${WRITE_HER_REMINDER_INTERVAL_ID}'")
     fun getWriteHerReminderInterval(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_PULL_O_CLOCK_INTERVAL}' ELSE value END FROM setting WHERE id = '${PULL_O_CLOCK_REMINDER_INTERVAL_ID}'")
+    fun getPullOClockReminderInterval(): Flow<String>
 
     @Query(QUERY_SHOWN_NATIONALITIES)
     fun getShownNationalities(): Flow<String>

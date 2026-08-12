@@ -15,6 +15,7 @@ class AndroidNotificationScheduler(
         const val STICKING_POINTS_REQUEST_CODE = 0
         const val SITTING_REMINDER_REQUEST_CODE = 1
         const val WRITE_HER_AFTER_REQUEST_CODE = 2
+        const val PULL_REMINDER_REQUEST_CODE = 3
         const val REQUEST_CODE: String = "request-code"
         const val RECURRING_NOTIFICATION_INTERVAL: String = "interval"
         const val NOTIFICATION_TITLE: String = "title"

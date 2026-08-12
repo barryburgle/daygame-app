@@ -100,7 +100,14 @@ fun SessionBody(
     }
     if (pinPoints.isNotEmpty()) {
         Spacer(modifier = Modifier.height(12.dp))
-        Timeline(abstractSession, pinPoints, leads, onEvent, modifier = Modifier.fillMaxWidth())
+        Timeline(
+            abstractSession,
+            pinPoints,
+            abstractSession.sessionTime,
+            leads,
+            onEvent,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
     // if audio recordings exist, show them
     val sessionRecordings = RecordingService.recordingsOf(abstractSession.id, recordings)

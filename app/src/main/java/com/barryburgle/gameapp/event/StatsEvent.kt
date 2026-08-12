@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.event;
 
 import com.barryburgle.gameapp.model.enums.StatsLoadInfoEnum
+import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 
 sealed interface StatsEvent : GenericEvent {
     data class ShowInfo(
@@ -8,4 +9,10 @@ sealed interface StatsEvent : GenericEvent {
     ) : StatsEvent
 
     object HideInfo : StatsEvent
+    data class SelectMapPinPointType(
+        val selectedTypes: List<PinPointTypeEnum>
+    ) : StatsEvent
+    data class SelectTimePinPointType(
+        val selectedTypes: List<PinPointTypeEnum>
+    ) : StatsEvent
 }

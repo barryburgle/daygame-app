@@ -14,12 +14,15 @@ import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.service.recording.RecordingService
+import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.AbstractSessionService
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.dialog.SessionCounters
 import com.barryburgle.gameapp.ui.utilities.RecordingsView
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.timeline.Timeline
 
 @Composable
 fun LiveSessionBody(
@@ -34,7 +37,10 @@ fun LiveSessionBody(
     recordingState: RecordingState = RecordingState(),
     recordings: List<String> = emptyList(),
     recordingsFolder: String = "",
-    recordingsEnabled: Boolean = false
+    recordingsEnabled: Boolean = false,
+    pinPoints: List<PinPoint>,
+    leads: List<Lead>,
+    pullOClockReminderInterval: Int
 ) {
     var setsCount = abstractSession.sets + liveSessionLeads
     var convosCount = abstractSession.convos + liveSessionLeads
@@ -55,7 +61,9 @@ fun LiveSessionBody(
             onEvent(GameEvent.SetContactsLive(abstractSession, newVal, isIncreasing))
         },
         liveSessionShareEnabled = liveSessionShareEnabled,
-        copyReportOnClipboard = copyReportOnClipboard
+        copyReportOnClipboard = copyReportOnClipboard,
+        onEvent = onEvent,
+        pullOClockReminderInterval = pullOClockReminderInterval
     )
     Spacer(modifier = Modifier.height(12.dp))
     Row(
@@ -111,6 +119,7 @@ fun LiveSessionBody(
             descriptionFontSize = descriptionFontSize
         )
     }
+
     Spacer(modifier = Modifier.height(12.dp))
     RecordingsView(
         recordingState = recordingState,
@@ -126,4 +135,16 @@ fun LiveSessionBody(
         onTapRecordingDelete = { onEvent(GameEvent.TapRecordingDelete(it)) },
         onSetPlaybackPosition = { onEvent(GameEvent.SetPlaybackPosition(it)) }
     )
+
+    if (pinPoints.isNotEmpty()) {
+        Spacer(modifier = Modifier.height(12.dp))
+        Timeline(
+            abstractSession,
+            pinPoints,
+            sessionTime,
+            leads,
+            onEvent,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
 }

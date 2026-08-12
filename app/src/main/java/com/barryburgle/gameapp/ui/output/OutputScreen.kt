@@ -21,10 +21,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
@@ -56,6 +60,7 @@ import com.barryburgle.gameapp.ui.tool.ScrollableSelector
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.BlurStatusBar
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 import java.time.LocalDate
@@ -76,6 +81,7 @@ fun OutputScreen(
     val localContext = LocalContext.current.applicationContext
     val uriHandler = LocalUriHandler.current
     var heatmapEntitySelected by remember { mutableStateOf(HeatmapEntityEnum.SETS) }
+    var isCustomSummaryMode by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             BlurStatusBar()
@@ -111,6 +117,26 @@ fun OutputScreen(
                             sectionTitleAndDescription(
                                 "History", "Have a look at your past:"
                             )
+                            Column(horizontalAlignment = Alignment.End) {
+                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    IconShadowButton(
+                                        onClick = {
+                                            isCustomSummaryMode = !isCustomSummaryMode
+                                            if (isCustomSummaryMode) {
+                                                Toast.makeText(
+                                                    localContext,
+                                                    "Select start date",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        },
+                                        imageVector = Icons.Default.DateRange,
+                                        contentDescription = "Range",
+                                        iconColor = if (isCustomSummaryMode) MaterialTheme.colorScheme.onSurfaceVariant else null,
+                                    )
+                                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                                }
+                            }
                         }
                     }
                     Row {
@@ -126,7 +152,10 @@ fun OutputScreen(
                         spaceFromLeft = spaceFromLeft + 3.dp,
                         textColor = MaterialTheme.colorScheme.onPrimary,
                         cellColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        emptyColor = MaterialTheme.colorScheme.surface
+                        emptyColor = MaterialTheme.colorScheme.surface,
+                        outputState = state,
+                        isCustomSummaryMode = isCustomSummaryMode,
+                        onOutputEvent = { onEvent(OutputEvent.SwitchShowCustomSummaryDialog) }
                     )
                 }
             }

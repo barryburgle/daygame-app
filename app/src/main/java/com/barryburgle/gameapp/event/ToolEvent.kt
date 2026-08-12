@@ -85,4 +85,6 @@ sealed interface ToolEvent : GenericEvent {
     object SwitchWriteHerReminder : ToolEvent
     class SetWriteHerReminderInterval(val interval: String) : ToolEvent
     object SwitchLiveSessionShare : ToolEvent
+
+    class SetPullOClockReminderInterval(val interval: String) : ToolEvent
 }

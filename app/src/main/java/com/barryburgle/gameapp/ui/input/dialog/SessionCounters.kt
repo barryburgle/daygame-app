@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Timelapse
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
+import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.ui.input.InputCounter
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -40,7 +42,9 @@ fun SessionCounters(
     convosCount: Int,
     contactsCount: Int,
     liveSessionShareEnabled: Boolean,
-    copyReportOnClipboard: Boolean
+    copyReportOnClipboard: Boolean,
+    onEvent: (GameEvent) -> Unit,
+    pullOClockReminderInterval: Int
 ) {
     // TODO: integrate this in session dialog: it works but only on the backend, leaving stale unchanged values on the dialog
     val localContext = LocalContext.current
@@ -100,6 +104,23 @@ fun SessionCounters(
             },
             onDecrement = { onContactsChange(contactsCount - 1, false) }
         )
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            IconShadowButton(
+                onClick =
+                    {
+                        onEvent(
+                            GameEvent.SchedulePullOClockReminder(
+                                pullOClockReminderInterval
+                            )
+                        )
+                        Toast.makeText(localContext, "Pull reminder set!", Toast.LENGTH_SHORT)
+                            .show()
+                    },
+                imageVector = Icons.Default.Timelapse,
+                contentDescription = "Pull O'Clock"
+            )
+            // TODO: add here recoding buttons for live Session Recording
+        }
     }
 }
 

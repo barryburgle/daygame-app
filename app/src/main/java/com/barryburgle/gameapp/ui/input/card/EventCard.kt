@@ -102,7 +102,8 @@ fun EventCard(
     recordingState: RecordingState = RecordingState(),
     recordings: List<String> = emptyList(),
     recordingsFolder: String = "",
-    recordingsEnabled: Boolean = false
+    recordingsEnabled: Boolean = false,
+    pullOClockReminderInterval: Int = 7
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
@@ -263,8 +264,7 @@ fun EventCard(
                             LargeTitleText(eventTitle)
                         }
                         Row(
-                            modifier = Modifier
-                                .width(160.dp),
+                            modifier = Modifier.width(160.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -278,8 +278,7 @@ fun EventCard(
                                     if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
                                         var eventDate: Date = sortableGameEvent.event as Date
                                         report = eventDate.shareDateReport(
-                                            leadsToShare,
-                                            simplePlusOneReport
+                                            leadsToShare, simplePlusOneReport
                                         )
                                     } else if (AchievedChallenge::class.java.simpleName.equals(
                                             sortableGameEvent.classType
@@ -304,22 +303,19 @@ fun EventCard(
                                     val sendIntent: Intent = Intent().apply {
                                         action = Intent.ACTION_SEND
                                         putExtra(
-                                            Intent.EXTRA_TEXT,
-                                            report
+                                            Intent.EXTRA_TEXT, report
                                         )
                                         type = "text/plain"
                                     }
-                                    var eventDescription =
-                                        when (sortableGameEvent.classType) {
-                                            AbstractSession::class.java.simpleName -> " session "
-                                            Date::class.java.simpleName -> " date "
-                                            SingleSet::class.java.simpleName -> " set "
-                                            Challenge::class.java.simpleName -> " challenge "
-                                            else -> " "
-                                        }
+                                    var eventDescription = when (sortableGameEvent.classType) {
+                                        AbstractSession::class.java.simpleName -> " session "
+                                        Date::class.java.simpleName -> " date "
+                                        SingleSet::class.java.simpleName -> " set "
+                                        Challenge::class.java.simpleName -> " challenge "
+                                        else -> " "
+                                    }
                                     val shareIntent = Intent.createChooser(
-                                        sendIntent,
-                                        "Share${eventDescription}report"
+                                        sendIntent, "Share${eventDescription}report"
                                     )
                                     shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                     localContext.startActivity(shareIntent)
@@ -334,9 +330,7 @@ fun EventCard(
                                         if (followCount) {
                                             onEvent(
                                                 GameEvent.SetContactsLive(
-                                                    liveSession,
-                                                    liveSession.contacts + 1,
-                                                    true
+                                                    liveSession, liveSession.contacts + 1, true
                                                 )
                                             )
                                         }
@@ -382,9 +376,7 @@ fun EventCard(
                                             )
                                             onEvent(
                                                 GameEvent.ShowDialog(
-                                                    false,
-                                                    true,
-                                                    EventTypeEnum.SESSION
+                                                    false, true, EventTypeEnum.SESSION
                                                 )
                                             )
                                         }
@@ -413,9 +405,7 @@ fun EventCard(
                                             )
                                             onEvent(
                                                 GameEvent.ShowDialog(
-                                                    false,
-                                                    true,
-                                                    EventTypeEnum.SET
+                                                    false, true, EventTypeEnum.SET
                                                 )
                                             )
                                         }
@@ -444,9 +434,7 @@ fun EventCard(
                                             )
                                             onEvent(
                                                 GameEvent.ShowDialog(
-                                                    false,
-                                                    true,
-                                                    EventTypeEnum.DATE
+                                                    false, true, EventTypeEnum.DATE
                                                 )
                                             )
                                         }
@@ -489,9 +477,7 @@ fun EventCard(
                                             )
                                             onEvent(
                                                 GameEvent.ShowDialog(
-                                                    false,
-                                                    true,
-                                                    EventTypeEnum.CHALLENGE
+                                                    false, true, EventTypeEnum.CHALLENGE
                                                 )
                                             )
                                         }
@@ -503,15 +489,14 @@ fun EventCard(
                             if (isLiveSession) {
                                 IconShadowButton(
                                     onClick = {
-                                        onEvent(
-                                            GameEvent.StopLiveSession(sortableGameEvent.event as AbstractSession)
-                                        )
-                                        val intent = Intent(
-                                            context,
-                                            PersistentNotificationService::class.java
-                                        )
-                                        context.stopService(intent)
-                                    },
+                                    onEvent(
+                                        GameEvent.StopLiveSession(sortableGameEvent.event as AbstractSession)
+                                    )
+                                    val intent = Intent(
+                                        context, PersistentNotificationService::class.java
+                                    )
+                                    context.stopService(intent)
+                                },
                                     onLongClick = {
                                         showCancelLiveSessionConfirmDialog = true
                                     },
@@ -560,8 +545,7 @@ fun EventCard(
                             nowLocalDateTime.toLocalTime().toString().substring(0, 5)
                         )
                         val startTime = getParsedHour(
-                            session.startHour.substring(0, 10),
-                            session.startHour.substring(11, 16)
+                            session.startHour.substring(0, 10), session.startHour.substring(11, 16)
                         )
                         liveSessionTime = getTime(startTime, nowTime)
                         eventDuration =
@@ -594,7 +578,10 @@ fun EventCard(
                                     recordingState,
                                     recordings,
                                     recordingsFolder,
-                                    recordingsEnabled
+                                    recordingsEnabled,
+                                    pinPoints,
+                                    leads,
+                                    pullOClockReminderInterval
                                 )
                             } else if (AbstractSession::class.java.simpleName.equals(
                                     sortableGameEvent.classType
@@ -639,8 +626,7 @@ fun EventCard(
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth(0.85f)
+                                        modifier = Modifier.fillMaxWidth(0.85f)
                                     ) {
                                         if (leads == null || leads.isEmpty()) {
                                             LittleBodyText("No leads")
@@ -681,8 +667,7 @@ fun EventCard(
                                 .fillMaxHeight()
                                 .fillMaxWidth()
                         ) {
-                            var stickingPoints =
-                                sortableGameEvent.event.getEventStickingPoints()
+                            var stickingPoints = sortableGameEvent.event.getEventStickingPoints()
                             val validStickingPoints =
                                 stickingPoints != null && !stickingPoints.isBlank()
                             var width = 1f
@@ -706,8 +691,7 @@ fun EventCard(
                                     ) {
                                         onEvent(
                                             GameEvent.SetLiveStickingPoints(
-                                                sortableGameEvent.event as AbstractSession,
-                                                it
+                                                sortableGameEvent.event as AbstractSession, it
                                             )
                                         )
                                     }
@@ -785,8 +769,7 @@ private fun LeadsRow(
                         semiOpaqueBackground
                     )
                 )
-            },
-        verticalAlignment = Alignment.CenterVertically
+            }, verticalAlignment = Alignment.CenterVertically
     ) {
         item {
             Spacer(modifier = Modifier.width(15.dp))
@@ -794,47 +777,39 @@ private fun LeadsRow(
         for (lead in leads) {
             item {
                 Row(
-                    modifier = Modifier.combinedClickable(
-                        onClick = {
-                            onEvent(GameEvent.SetIsInOverlayToTrue)
-                            onEvent(
-                                GameEvent.EditLead(
-                                    lead, true
-                                )
+                    modifier = Modifier.combinedClickable(onClick = {
+                        onEvent(GameEvent.SetIsInOverlayToTrue)
+                        onEvent(
+                            GameEvent.EditLead(
+                                lead, true
                             )
-                            onEvent(
-                                GameEvent.ShowLeadDialog(
-                                    false, false
-                                )
+                        )
+                        onEvent(
+                            GameEvent.ShowLeadDialog(
+                                false, false
                             )
-                        },
-                        onLongClick = {
-                            if (lead.contact == ContactTypeEnum.NUMBER.getField() && lead.contactLookupKey != null) {
-                                try {
-                                    val uri = Uri.withAppendedPath(
-                                        ContactsContract.Contacts.CONTENT_LOOKUP_URI,
-                                        lead.contactLookupKey
-                                    )
-                                    uriHandler.openUri(uri.toString())
-                                } catch (e: Exception) {
-                                    Toast.makeText(
-                                        localContext,
-                                        "Could not open contact",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            } else if (lead.contact == ContactTypeEnum.SOCIAL.getField() && lead.instagramUrl != null && lead.instagramUrl!!.isNotBlank()) {
-                                uriHandler.openUri(lead.instagramUrl!!)
-                            } else {
+                        )
+                    }, onLongClick = {
+                        if (lead.contact == ContactTypeEnum.NUMBER.getField() && lead.contactLookupKey != null) {
+                            try {
+                                val uri = Uri.withAppendedPath(
+                                    ContactsContract.Contacts.CONTENT_LOOKUP_URI,
+                                    lead.contactLookupKey
+                                )
+                                uriHandler.openUri(uri.toString())
+                            } catch (e: Exception) {
                                 Toast.makeText(
-                                    localContext,
-                                    "No contact found",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                                    localContext, "Could not open contact", Toast.LENGTH_SHORT
+                                ).show()
                             }
-                        }),
-                    horizontalArrangement = Arrangement.spacedBy(
+                        } else if (lead.contact == ContactTypeEnum.SOCIAL.getField() && lead.instagramUrl != null && lead.instagramUrl!!.isNotBlank()) {
+                            uriHandler.openUri(lead.instagramUrl!!)
+                        } else {
+                            Toast.makeText(
+                                localContext, "No contact found", Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }), horizontalArrangement = Arrangement.spacedBy(
                         7.dp
                     )
                 ) {
@@ -858,10 +833,7 @@ private fun LeadsRow(
 
 @Composable
 fun deleteEventConfirmationDialog(
-    title: String,
-    description: String,
-    onConfirmRequest: () -> Unit,
-    onDismissRequest: () -> Unit
+    title: String, description: String, onConfirmRequest: () -> Unit, onDismissRequest: () -> Unit
 ) {
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -882,8 +854,7 @@ fun deleteEventConfirmationDialog(
             DismissButton {
                 onDismissRequest()
             }
-        }
-    )
+        })
 }
 
 fun getEventCardLeadsBrush(semiOpaqueBackground: Color): Brush {

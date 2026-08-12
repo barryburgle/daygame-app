@@ -144,7 +144,23 @@ fun StatsScreen(
                             title = "Pinpoints",
                             statCardIcon = Icons.Default.PinDrop,
                             description = "See where the real game is played",
-                            allPinPoints = state.allPinPoints
+                            state = state,
+                            onEvent = onEvent
+                        )
+                    }
+                }
+                item {
+                    Row {
+                        Spacer(
+                            modifier = Modifier.width(spaceFromLeft)
+                        )
+                        PinPointScatterCard(
+                            modifier = cardModifier.height(400.dp),
+                            title = "Pinpoints in time",
+                            statCardIcon = Icons.Default.PinDrop,
+                            description = "Know your best schedule",
+                            state = state,
+                            onEvent = onEvent
                         )
                     }
                 }
@@ -195,7 +211,7 @@ fun StatsScreen(
                                 GlobalStatsService.computeGenericRatio(
                                     state.allSets.size,
                                     conversations
-                                ) //TODO: consider using always compute generic ratio and not other methods
+                                )
                             } %",
                             firstPerformanceDescription = "Conversation\nRatio",
                             secondPerformanceQuantity = "${

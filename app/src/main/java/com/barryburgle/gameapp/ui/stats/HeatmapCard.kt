@@ -13,15 +13,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -31,9 +39,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.barryburgle.gameapp.event.StatsEvent
 import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
-import com.barryburgle.gameapp.model.session.PinPoint
+import com.barryburgle.gameapp.ui.stats.state.StatsState
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -49,9 +60,13 @@ fun HeatmapCard(
     title: String,
     statCardIcon: ImageVector,
     description: String,
-    allPinPoints: List<PinPoint>
+    state: StatsState,
+    onEvent: (StatsEvent) -> Unit
 ) {
     val context = LocalContext.current
+    var expanded by remember { mutableStateOf(false) }
+    val selectedTypes = state.mapPinPointsTypeSelectionList.filterIsInstance<PinPointTypeEnum>()
+
     var themeColorArgb = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
     if (isSystemInDarkTheme()) {
         themeColorArgb = MaterialTheme.colorScheme.surface.toArgb()
@@ -81,13 +96,14 @@ fun HeatmapCard(
         }
     }
 
-    LaunchedEffect(allPinPoints, themeColorArgb) {
+    LaunchedEffect(state.typeFilteredMapPinPoints, themeColorArgb) {
         withContext(Dispatchers.Default) {
-            val geoPoints = allPinPoints.map { GeoPoint(it.latitude, it.longitude) }
+            val geoPoints =
+                state.typeFilteredMapPinPoints.map { GeoPoint(it.latitude, it.longitude) }
             val boundingBox =
                 if (geoPoints.isNotEmpty()) BoundingBox.fromGeoPoints(geoPoints) else null
 
-            val computedGlowOverlays = allPinPoints.map { pinpoint ->
+            val computedGlowOverlays = state.typeFilteredMapPinPoints.map { pinpoint ->
                 val center = GeoPoint(pinpoint.latitude, pinpoint.longitude)
 
                 val targetAlpha = when (pinpoint.pinPointType.lowercase()) {
@@ -111,7 +127,6 @@ fun HeatmapCard(
                     glowLayers.forEach { (pointsList, calculatedAlpha) ->
                         mapInstance.overlays.add(Polygon(mapInstance).apply {
                             points = pointsList
-
                             fillColor = android.graphics.Color.argb(
                                 calculatedAlpha.coerceIn(0, 255),
                                 themeRed,
@@ -124,7 +139,7 @@ fun HeatmapCard(
                     }
                 }
 
-                if (boundingBox != null && allPinPoints.size > 1) {
+                if (boundingBox != null && state.typeFilteredMapPinPoints.size > 1) {
                     mapInstance.zoomToBoundingBox(boundingBox, false, 90)
                 } else if (geoPoints.isNotEmpty()) {
                     mapInstance.controller.setZoom(16.5)
@@ -147,7 +162,6 @@ fun HeatmapCard(
         shape = MaterialTheme.shapes.large
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-
             AndroidView(
                 modifier = Modifier.fillMaxSize(),
                 factory = { mapInstance },
@@ -197,6 +211,44 @@ fun HeatmapCard(
                             )
                             Spacer(modifier = Modifier.width(7.dp))
                             LargeTitleText(title)
+                        }
+                        Box {
+                            IconShadowButton(
+                                onClick = { expanded = true },
+                                imageVector = Icons.Default.FilterList,
+                                contentDescription = "Filter Types"
+                            )
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false },
+                                modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
+                            ) {
+                                PinPointTypeEnum.entries.forEach { type ->
+                                    val isChecked = selectedTypes.contains(type)
+                                    DropdownMenuItem(
+                                        text = {
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Checkbox(
+                                                    checked = isChecked,
+                                                    onCheckedChange = null
+                                                )
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                MediumBodyText(
+                                                    type.getField()
+                                                        .replaceFirstChar { it.uppercase() })
+                                            }
+                                        },
+                                        onClick = {
+                                            val newList = if (isChecked) {
+                                                if (selectedTypes.size > 1) selectedTypes - type else selectedTypes
+                                            } else {
+                                                selectedTypes + type
+                                            }
+                                            onEvent(StatsEvent.SelectMapPinPointType(newList))
+                                        }
+                                    )
+                                }
+                            }
                         }
                     }
                     LittleBodyText(description)

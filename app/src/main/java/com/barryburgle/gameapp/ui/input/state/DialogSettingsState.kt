@@ -14,5 +14,6 @@ data class DialogSettingsState(
     var liveSessionSittingReminderInterval: Int = 30,
     var liveSessionShareEnabled: Boolean = true,
     var writeHerAfterReminderEnabled: Boolean = true,
-    var writeHerReminderInterval: Int = 60
+    var writeHerReminderInterval: Int = 60,
+    var pullOClockReminderInterval: Int = 7
 )

@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.output
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,12 +37,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.ui.output.dialog.CustomSummaryDialog
+import com.barryburgle.gameapp.ui.output.state.OutputState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
@@ -61,11 +68,32 @@ fun HeatmapCalendar(
     textColor: Color,
     cellColor: Color,
     emptyColor: Color,
+    isCustomSummaryMode: Boolean,
+    outputState: OutputState,
+    onOutputEvent: (OutputEvent) -> Unit
 ) {
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
+    var customSummaryStartDate by remember { mutableStateOf<LocalDate?>(null) }
+    var customSummaryEndDate by remember { mutableStateOf<LocalDate?>(null) }
+    val localContext = LocalContext.current.applicationContext
     val endDate = remember { LocalDate.now() }
+    if (outputState.showCustomSummaryDialog) {
+        if (customSummaryStartDate != null && customSummaryEndDate != null) {
+            CustomSummaryDialog(
+                customSummaryStartDate = customSummaryStartDate!!,
+                customSummaryEndDate = customSummaryEndDate!!,
+                state = outputState,
+                onEvent = onOutputEvent
+            )
+        }
+    } else {
+        customSummaryStartDate = null
+        customSummaryEndDate = null
+    }
+
     val startDate = remember {
-        entries.minBy { it.date }.date.with(java.time.DayOfWeek.MONDAY)
+        entries.minByOrNull { it.date }?.date?.with(java.time.DayOfWeek.MONDAY)
+            ?: endDate.minusMonths(1)
     }
     val entryMap = remember(entries) { entries.associateBy { it.date } }
     val avgCount = remember(entries) {
@@ -133,6 +161,13 @@ fun HeatmapCalendar(
                             val entry = entryMap[date]
                             val count = entry?.count ?: 0.0f
                             val desc = entry?.desc ?: ""
+
+                            val isInRange =
+                                customSummaryStartDate != null && customSummaryEndDate != null &&
+                                        !date.isBefore(customSummaryStartDate) && !date.isAfter(
+                                    customSummaryEndDate
+                                )
+
                             ContributionCellWithTooltip(
                                 date = date,
                                 count = count,
@@ -141,8 +176,27 @@ fun HeatmapCalendar(
                                 textColor = textColor,
                                 cellColor = cellColor,
                                 emptyColor = emptyColor.copy(alpha = 0.1f),
-                                isSelected = selectedDate == date,
-                                onClick = { selectedDate = date }
+                                isSelected = selectedDate == date || isInRange,
+                                onClick = {
+                                    if (isCustomSummaryMode) {
+                                        if (customSummaryStartDate == null || customSummaryEndDate != null) {
+                                            customSummaryStartDate = date
+                                            customSummaryEndDate = null
+                                            Toast.makeText(
+                                                localContext,
+                                                "Select end date",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        } else if (date.isBefore(customSummaryStartDate)) {
+                                            customSummaryStartDate = date
+                                        } else {
+                                            customSummaryEndDate = date
+                                            onOutputEvent(OutputEvent.SwitchShowCustomSummaryDialog)
+                                        }
+                                    } else {
+                                        selectedDate = date
+                                    }
+                                }
                             )
                         }
                     }

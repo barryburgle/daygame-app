@@ -14,6 +14,8 @@ import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.CombineTwentyone
+import com.barryburgle.gameapp.ui.CombineNineteen
+import com.barryburgle.gameapp.ui.CombineTen
 import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.CombineTwenty
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
@@ -121,23 +123,25 @@ class ToolViewModel(
         )
     }
 
-    val _liveSessionSettingState: Flow<LiveSessionSettingState> = CombineNine(
+    val _liveSessionSettingState: Flow<LiveSessionSettingState> = CombineTen(
         settingDao.getPinPointInteractions(),
         settingDao.getGenerateiDate(),
         settingDao.getFollowCount(),
         settingDao.getWriteHerAfterReminderEnabled(),
         settingDao.getWriteHerReminderInterval(),
+        settingDao.getPullOClockReminderInterval(),
         settingDao.getLiveSessionNotificationEnabled(),
         settingDao.getLiveSessionSittingReminderEnabled(),
         settingDao.getLiveSessionSittingReminderInterval(),
         settingDao.getLiveSessionShareEnabled()
-    ) { pinPointInteractions, generateiDate, followCount, writeHerAfterReminderEnabled, writeHerReminderInterval, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
+    ) { pinPointInteractions, generateiDate, followCount, writeHerAfterReminderEnabled, writeHerReminderInterval, pullOClockReminderInterval, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
         LiveSessionSettingState(
             pinPointInteractions = pinPointInteractions,
             generateiDate = generateiDate,
             followCount = followCount,
             writeHerAfterReminderEnabled = writeHerAfterReminderEnabled,
             writeHerReminderInterval = writeHerReminderInterval,
+            pullOClockReminderInterval = pullOClockReminderInterval,
             liveSessionNotificationEnabled = liveSessionNotificationEnabled,
             liveSessionSittingReminderEnabled = liveSessionSittingReminderEnabled,
             liveSessionSittingReminderInterval = liveSessionSittingReminderInterval,
@@ -225,6 +229,7 @@ class ToolViewModel(
                 suggestLeadsNationality = generalSettingState.suggestLeadsNationality.toBoolean(),
                 writeHerAfterReminderEnabled = liveSessionSettingState.writeHerAfterReminderEnabled.toBoolean(),
                 writeHerReminderInterval = liveSessionSettingState.writeHerReminderInterval.toInt(),
+                pullOClockReminderInterval = liveSessionSettingState.pullOClockReminderInterval.toInt(),
                 shownNationalities = generalSettingState.shownNationalities.toInt(),
                 simplePlusOneReport = generalSettingState.simplePlusOneReport.toBoolean(),
                 neverShareLeadInfo = generalSettingState.neverShareLeadInfo.toBoolean(),
@@ -1092,6 +1097,22 @@ class ToolViewModel(
                     )
                 viewModelScope.launch { settingDao.insert(setting) }
             }
+
+            is ToolEvent.SetPullOClockReminderInterval -> {
+                _state.update {
+                    it.copy(
+                        pullOClockReminderInterval = event.interval.toInt()
+                    )
+                }
+                val pullOClockReminderInterval =
+                    _state.value.pullOClockReminderInterval
+                val setting =
+                    Setting(
+                        SettingDao.PULL_O_CLOCK_REMINDER_INTERVAL_ID,
+                        pullOClockReminderInterval.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
         }
     }
 
@@ -1151,6 +1172,7 @@ data class LiveSessionSettingState(
     val followCount: String,
     val writeHerAfterReminderEnabled: String,
     val writeHerReminderInterval: String,
+    val pullOClockReminderInterval: String,
     val liveSessionNotificationEnabled: String,
     val liveSessionSittingReminderEnabled: String,
     val liveSessionSittingReminderInterval: String,

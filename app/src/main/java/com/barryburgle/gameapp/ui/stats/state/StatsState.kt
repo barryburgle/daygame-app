@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.ui.stats.state
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -16,7 +17,7 @@ data class StatsState(
     override var allDates: List<Date> = emptyList(),
     override var allChallenges: List<AchievedChallenge> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
-    override var allPinPoints: List<PinPoint> = emptyList(), // Needed to show heatmap of the city
+    override var allPinPoints: List<PinPoint> = emptyList(),
     val setsHistogram: List<Histogram> = emptyList(),
     val convosHistogram: List<Histogram> = emptyList(),
     val contactsHistogram: List<Histogram> = emptyList(),
@@ -29,7 +30,11 @@ data class StatsState(
     val trackedEntity: String = "",
     val completeHistogram: List<Any> = emptyList(),
     val isShowingInfo: Boolean = false,
-    val copyReportOnClipboard: Boolean = false
+    val copyReportOnClipboard: Boolean = false,
+    val mapPinPointsTypeSelectionList:  List<Any> = PinPointTypeEnum.entries,
+    val timePinPointsTypeSelectionList:  List<Any> = PinPointTypeEnum.entries,
+    var typeFilteredMapPinPoints: List<PinPoint> = emptyList(),
+    var typeFilteredTimePinPoints: List<PinPoint> = emptyList()
 ) : AllEntityState(
     allSessions,
     allLeads,

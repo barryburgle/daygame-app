@@ -47,5 +47,14 @@ fun LiveSessionCard(
         ) {
             onEvent(ToolEvent.SwitchLiveSessionShare)
         }
+        Spacer(modifier = Modifier.height(5.dp))
+        CountSetting(
+            text = "Pull o'clock after ${state.pullOClockReminderInterval} minutes",
+            description = "Press the stopwatch button on Live Session card just before starting the set and receive ${state.pullOClockReminderInterval} minutes later a gentle stealthy reminder to close/pull for iDate",
+            count = state.pullOClockReminderInterval,
+            countBy = 1,
+            onEvent = onEvent as (GenericEvent) -> Unit,
+            saveEvent = ToolEvent::SetPullOClockReminderInterval
+        )
     }
 }
