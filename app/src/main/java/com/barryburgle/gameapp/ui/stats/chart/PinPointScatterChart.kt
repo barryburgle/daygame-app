@@ -22,7 +22,7 @@ import java.time.LocalDateTime
 import kotlin.random.Random
 
 @Composable
-fun OutputScatterChart(
+fun PinPointScatterChart(
     pinPoints: List<PinPoint>
 ) {
     val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
