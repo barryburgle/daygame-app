@@ -1,7 +1,7 @@
 package com.barryburgle.gameapp.ui.tool
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -33,7 +33,7 @@ fun DashboardCard(
             onEvent = onEvent as (GenericEvent) -> Unit,
             saveEvent = ToolEvent::SetLastSessionsShown
         )
-        Spacer(modifier = Modifier.width(5.dp))
+        Spacer(modifier = Modifier.height(5.dp))
         CountSetting(
             text = "Show last ${state.lastWeeksShown} weeks on charts",
             count = state.lastWeeksShown,
@@ -41,7 +41,7 @@ fun DashboardCard(
             onEvent = onEvent as (GenericEvent) -> Unit,
             saveEvent = ToolEvent::SetLastWeeksShown
         )
-        Spacer(modifier = Modifier.width(5.dp))
+        Spacer(modifier = Modifier.height(5.dp))
         CountSetting(
             text = "Show last ${state.lastMonthsShown} months on charts",
             count = state.lastMonthsShown,
@@ -49,7 +49,7 @@ fun DashboardCard(
             onEvent = onEvent as (GenericEvent) -> Unit,
             saveEvent = ToolEvent::SetLastMonthsShown
         )
-        Spacer(modifier = Modifier.width(5.dp))
+        Spacer(modifier = Modifier.height(5.dp))
         CountSetting(
             text = "Show ${state.shownNationalities} nationalities",
             count = state.shownNationalities,

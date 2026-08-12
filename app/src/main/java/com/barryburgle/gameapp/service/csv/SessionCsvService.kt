@@ -71,12 +71,4 @@ class SessionCsvService : AbstractCsvService<AbstractSession>() {
             fields[8]
         )
     }
-
-    override fun isEntityValid(session: AbstractSession): Boolean {
-        // TODO: do better check on data validity on most of the fields
-        if (session.id == 0L || session.id == null || session.insertTime.isEmpty()) {
-            return false
-        }
-        return true
-    }
 }

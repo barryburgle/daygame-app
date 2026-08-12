@@ -25,21 +25,19 @@ class NotificationService(
     private val notificationManager =
         context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    fun showNotification(title: String, content: String) {
-        val mainActivityIntent = Intent(context, MainActivity::class.java)
-        val mainActivityPendingIntent = PendingIntent.getActivity(
-            context,
-            1,
-            mainActivityIntent,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
-        )
-        val notification =
+    fun showNotification(title: String, content: String, pendingIntent: PendingIntent?) {
+        val notificationBuilder =
             NotificationCompat.Builder(context!!, STICKING_POINT_NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification)
                 .setContentTitle(title)
                 .setContentText(content)
-                .setContentIntent(mainActivityPendingIntent)
-                .build()
+                .setAutoCancel(true)
+
+        if (pendingIntent != null) {
+            notificationBuilder.setContentIntent(pendingIntent)
+        }
+
+        val notification = notificationBuilder.build()
         notificationManager.notify(1, notification)
     }
 }

@@ -85,6 +85,52 @@ open class SingleSet(
         }${stickingPointsReport(stickingPoints)}"
     }
 
+    /*InsertTime-agnostic equals*/
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SingleSet) return false
+
+        return id == other.id &&
+                date == other.date &&
+                startHour == other.startHour &&
+                endHour == other.endHour &&
+                sessionId == other.sessionId &&
+                location == other.location &&
+                conversation == other.conversation &&
+                contact == other.contact &&
+                instantDate == other.instantDate &&
+                recorded == other.recorded &&
+                leadId == other.leadId &&
+                dateId == other.dateId &&
+                stickingPoints == other.stickingPoints &&
+                tweetUrl == other.tweetUrl &&
+                setTime == other.setTime &&
+                dayOfWeek == other.dayOfWeek &&
+                weekNumber == other.weekNumber
+    }
+
+    /*InsertTime-agnostic hashCode*/
+    override fun hashCode(): Int {
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + date.hashCode()
+        result = 31 * result + startHour.hashCode()
+        result = 31 * result + endHour.hashCode()
+        result = 31 * result + (sessionId?.hashCode() ?: 0)
+        result = 31 * result + (location?.hashCode() ?: 0)
+        result = 31 * result + conversation.hashCode()
+        result = 31 * result + contact.hashCode()
+        result = 31 * result + instantDate.hashCode()
+        result = 31 * result + recorded.hashCode()
+        result = 31 * result + (leadId?.hashCode() ?: 0)
+        result = 31 * result + (dateId?.hashCode() ?: 0)
+        result = 31 * result + stickingPoints.hashCode()
+        result = 31 * result + (tweetUrl?.hashCode() ?: 0)
+        result = 31 * result + setTime.hashCode()
+        result = 31 * result + dayOfWeek
+        result = 31 * result + weekNumber
+        return result
+    }
+
     constructor() : this(
         0,
         "",

@@ -35,9 +35,11 @@ open class ExportState(
     open var liveSessionNotificationEnabled: Boolean = true,
     open var liveSessionSittingReminderEnabled: Boolean = true,
     open var liveSessionSittingReminderInterval: Int = 30,
-    open var liveSessionShareEnabled: Boolean = true
+    open var liveSessionShareEnabled: Boolean = true,
+    open var writeHerAfterReminderEnabled: Boolean = true,
+    open var writeHerReminderInterval: Int = 60
 
-    ) : AllEntityState(
+) : AllEntityState(
     allSessions,
     allLeads,
     allDates,

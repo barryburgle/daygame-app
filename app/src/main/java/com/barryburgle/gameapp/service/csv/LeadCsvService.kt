@@ -59,12 +59,4 @@ class LeadCsvService : AbstractCsvService<Lead>() {
             if (fields.size > 9) importLong(fields[9]) else null,
         )
     }
-
-    override fun isEntityValid(lead: Lead): Boolean {
-        // TODO: do better check on data validity on most of the fields
-        if (lead.id == 0L || lead.id == null || lead.insertTime.isEmpty()) {
-            return false
-        }
-        return true
-    }
 }

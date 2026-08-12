@@ -20,8 +20,7 @@ abstract class AbstractCsvService<T : Any> {
     protected abstract fun generateHeader(): Array<String>
 
     protected abstract fun mapImportRow(fields: Array<String>): T
-    protected abstract fun isEntityValid(entity: T): Boolean
-    protected abstract fun getBackupFileName(): String
+    abstract fun getBackupFileName(): String
 
     val localPath = Environment.getExternalStorageDirectory()
 
@@ -87,18 +86,23 @@ abstract class AbstractCsvService<T : Any> {
         }
     }
 
-    fun validateExport(folder: String): Boolean {
-        val filenames = listFileNamesLike(folder, getBackupFileName(), false)
-        if (filenames != null && filenames.isNotEmpty()) {
-            val validationList = importRows(folder, filenames.get(0), true, 1)
-            if (validationList == null || validationList.size == 0) {
-                return true
-            }
-            if (isEntityValid(validationList.get(0))) {
-                return true
-            }
+    fun validateExportedFileAgainstExportState(folder: String, importHeader: Boolean, filenamePrefix: String): Boolean {
+        val filenames = listFileNamesLike(folder, filenamePrefix, false)
+        if (filenames.isEmpty()) {
+            return exportObjects.isNullOrEmpty()
         }
-        return false
+        val importedRows = importRows(
+            folder,
+            filenames[0],
+            importHeader
+        )
+        val expected = exportObjects ?: emptyList()
+        if (expected.size != importedRows.size) {
+            return false
+        }
+        val expectedSet = expected.toHashSet()
+        val actualSet = importedRows.toHashSet()
+        return expectedSet == actualSet
     }
 
     fun importRows(

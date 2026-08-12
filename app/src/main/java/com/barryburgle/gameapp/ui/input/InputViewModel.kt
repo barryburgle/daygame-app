@@ -42,12 +42,12 @@ import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.service.set.SetService
-import com.barryburgle.gameapp.ui.CombineEleven
 import com.barryburgle.gameapp.ui.CombineFive
 import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.CombineSeven
 import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.CombineSixteen
+import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.input.dialog.InputDialogConstant
 import com.barryburgle.gameapp.ui.input.state.DialogSettingsState
 import com.barryburgle.gameapp.ui.input.state.ExportSettingsState
@@ -201,6 +201,8 @@ class InputViewModel(
     private val _liveSessionSittingReminderInterval =
         settingDao.getLiveSessionSittingReminderInterval()
     private val _liveSessionShareEnabled = settingDao.getLiveSessionShareEnabled()
+    private val _writeHerAfterReminderEnabled = settingDao.getWriteHerAfterReminderEnabled()
+    private val _writeHerReminderInterval = settingDao.getWriteHerReminderInterval()
     private val _sessionsByWeek = aggregatedSessionsDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _sessionsByMonth = aggregatedSessionsDao.groupStatsByMonth()
@@ -351,7 +353,7 @@ class InputViewModel(
             lastBackup = lastBackup.toInt()
         )
     }
-    val _dialogSettings = CombineEleven(
+    val _dialogSettings = CombineThirteen(
         _notificationTime,
         _generateiDate,
         _pinPointInteractions,
@@ -362,8 +364,10 @@ class InputViewModel(
         _liveSessionNotificationEnabled,
         _liveSessionSittingReminderEnabled,
         _liveSessionSittingReminderInterval,
-        _liveSessionShareEnabled
-    ) { notificationTime, generateiDate, pinPointInteractions, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
+        _liveSessionShareEnabled,
+        _writeHerAfterReminderEnabled,
+        _writeHerReminderInterval
+    ) { notificationTime, generateiDate, pinPointInteractions, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled, writeHerAfterReminderEnabled, writeHerReminderInterval ->
         DialogSettingsState(
             notificationTime = notificationTime,
             generateiDate = generateiDate.toBoolean(),
@@ -375,7 +379,9 @@ class InputViewModel(
             liveSessionNotificationEnabled = liveSessionNotificationEnabled.toBoolean(),
             liveSessionSittingReminderEnabled = liveSessionSittingReminderEnabled.toBoolean(),
             liveSessionSittingReminderInterval = liveSessionSittingReminderInterval.toInt(),
-            liveSessionShareEnabled = liveSessionShareEnabled.toBoolean()
+            liveSessionShareEnabled = liveSessionShareEnabled.toBoolean(),
+            writeHerAfterReminderEnabled = writeHerAfterReminderEnabled.toBoolean(),
+            writeHerReminderInterval = writeHerReminderInterval.toInt()
         )
     }
     val _shareSettings = CombineSeven(
@@ -504,6 +510,8 @@ class InputViewModel(
             liveSessionSittingReminderEnabled = dialogSettings.liveSessionSittingReminderEnabled,
             liveSessionSittingReminderInterval = dialogSettings.liveSessionSittingReminderInterval,
             liveSessionShareEnabled = dialogSettings.liveSessionShareEnabled,
+            writeHerAfterReminderEnabled = dialogSettings.writeHerAfterReminderEnabled,
+            writeHerReminderInterval = dialogSettings.writeHerReminderInterval,
             mostPopularLeadsNationalities = mostPopularLeadsNationalities,
             sessionsByWeek = sessionsByWeek,
             sessionsByMonth = sessionsByMonth,
@@ -650,7 +658,20 @@ class InputViewModel(
                     time,
                     "Time to sit down!",
                     "You've been walking way too much, make your session more sustainable and rest a bit",
-                    event.interval
+                    event.interval,
+                    AndroidNotificationScheduler.TIMER_NOTIFICATION_LINK_VALUE
+                )
+            }
+
+            is GameEvent.ScheduleWriteHerAfterReminder -> {
+                val time = LocalDateTime.now().plusMinutes(event.interval.toLong())
+                notificationScheduler.schedule(
+                    AndroidNotificationScheduler.WRITE_HER_AFTER_REQUEST_CODE,
+                    time,
+                    "Time to write her!",
+                    "You met ${event.leadDesc} ${event.interval} minutes ago, don't let it go cold",
+                    null, // Notification is not recurring, so we do not foward with recurring interval
+                    event.leadLink
                 )
             }
 
@@ -682,8 +703,7 @@ class InputViewModel(
                                 FormatService.getDate(
                                     abstractSession.date
                                 )
-                            } at ${FormatService.getTime(abstractSession.startHour)}:\n\n${abstractSession.stickingPoints}",
-                            null
+                            } at ${FormatService.getTime(abstractSession.startHour)}:\n\n${abstractSession.stickingPoints}"
                         )
                     } else if (state.value.isUpdatingSession) {
                         abstractSession.id = state.value.editAbstractSession!!.id
@@ -769,7 +789,7 @@ class InputViewModel(
                             PinPointTypeEnum.SET.getField()
                         )
                     }
-                    abstractSession.sets = event.sets
+                    abstractSession = abstractSession.copy(sets = event.sets)
                     abstractSessionDao.insert(abstractSession)
                 }
             }
@@ -792,11 +812,6 @@ class InputViewModel(
                 viewModelScope.launch {
                     var abstractSession = event.abstractSession
                     if (event.isIncreasing) {
-                        if (state.value.followCount) {
-                            var sets = abstractSession.sets
-                            sets++
-                            abstractSession.sets = sets
-                        }
                         if (state.value.pinPointInteractions) {
                             savePinPointWithLocation(
                                 PinPointTypeEnum.CONVERSATION,
@@ -811,7 +826,10 @@ class InputViewModel(
                             PinPointTypeEnum.CONVERSATION.getField()
                         )
                     }
-                    abstractSession.convos = event.convos
+                    abstractSession = abstractSession.copy(
+                        sets = if (state.value.followCount && event.isIncreasing) abstractSession.sets + 1 else abstractSession.sets,
+                        convos = event.convos
+                    )
                     abstractSessionDao.insert(abstractSession)
                 }
             }
@@ -840,14 +858,6 @@ class InputViewModel(
                 viewModelScope.launch {
                     var abstractSession = event.abstractSession
                     if (event.isIncreasing) {
-                        if (state.value.followCount) {
-                            var sets = abstractSession.sets
-                            sets++
-                            abstractSession.sets = sets
-                            var convos = abstractSession.convos
-                            convos++
-                            abstractSession.convos = convos
-                        }
                         if (state.value.pinPointInteractions) {
                             savePinPointWithLocation(
                                 PinPointTypeEnum.CONTACT,
@@ -862,7 +872,11 @@ class InputViewModel(
                             PinPointTypeEnum.CONTACT.getField()
                         )
                     }
-                    abstractSession.contacts = event.contacts
+                    abstractSession = abstractSession.copy(
+                        sets = if (state.value.followCount && event.isIncreasing) abstractSession.sets + 1 else abstractSession.sets,
+                        convos = if (state.value.followCount && event.isIncreasing) abstractSession.convos + 1 else abstractSession.convos,
+                        contacts = event.contacts
+                    )
                     abstractSessionDao.insert(abstractSession)
                 }
             }

@@ -71,6 +71,12 @@ interface SettingDao {
             "live_session_sitting_reminder_enabled"
         const val LIVE_SESSION_SITTING_REMINDER_INTERVAL_ID: String =
             "live_session_sitting_reminder_interval"
+
+        const val WRITE_HER_REMINDER_ENABLED_ID: String =
+            "write_her_reminder_enabled"
+
+        const val WRITE_HER_REMINDER_INTERVAL_ID: String =
+            "write_her_reminder_interval"
         const val LIVE_SESSION_SHARE_ENABLED_ID: String = "live_session_share_enabled"
         const val DEFAULT_LEADS_EXPORT_FILE_NAME: String = "leads_export"
         const val DEFAULT_LEADS_IMPORT_FILE_NAME: String = "leads_export_yyyy_mm_dd_hh_mm.csv"
@@ -104,6 +110,8 @@ interface SettingDao {
         const val DEFAULT_PINPOINT_INTERACTIONS_FLAG: String = "true"
         const val DEFAULT_FOLLOW_COUNT_FLAG: String = "true"
         const val DEFAULT_SUGGEST_LEADS_NATIONALITY_FLAG: String = "true"
+        const val DEFAULT_WRITE_HER_REMINDER_ENABLED_FLAG: String = "true"
+        const val DEFAULT_WRITE_HER_REMINDER_INTERVAL: String = "60"
         const val DEFAULT_SHOWN_NATIONALITIES: String = "6"
         const val DEFAULT_ARCHIVE_BACKUP_FOLDER_FLAG: String = "true"
         const val DEFAULT_IS_CLEANING_FLAG: String = "false"
@@ -237,6 +245,12 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SUGGEST_LEADS_NATIONALITY_FLAG}' ELSE value END FROM setting WHERE id = '${SUGGEST_LEADS_NATIONALITY_ID}'")
     fun getSuggestLeadsNationality(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_WRITE_HER_REMINDER_ENABLED_FLAG}' ELSE value END FROM setting WHERE id = '${WRITE_HER_REMINDER_ENABLED_ID}'")
+    fun getWriteHerAfterReminderEnabled(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_WRITE_HER_REMINDER_INTERVAL}' ELSE value END FROM setting WHERE id = '${WRITE_HER_REMINDER_INTERVAL_ID}'")
+    fun getWriteHerReminderInterval(): Flow<String>
 
     @Query(QUERY_SHOWN_NATIONALITIES)
     fun getShownNationalities(): Flow<String>

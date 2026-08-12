@@ -17,5 +17,36 @@ open class Lead(
     @ColumnInfo(name = "instagram_url") var instagramUrl: String? = null,
     @ColumnInfo(name = "pinpoint_id") var pinPointId: Long? = null,
 ) {
+
+    /*InsertTime-agnostic equals*/
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Lead) return false
+
+        return id == other.id &&
+                sessionId == other.sessionId &&
+                name == other.name &&
+                contact == other.contact &&
+                nationality == other.nationality &&
+                age == other.age &&
+                contactLookupKey == other.contactLookupKey &&
+                instagramUrl == other.instagramUrl &&
+                pinPointId == other.pinPointId
+    }
+
+    /*InsertTime-agnostic hashCode*/
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + (sessionId?.hashCode() ?: 0)
+        result = 31 * result + name.hashCode()
+        result = 31 * result + contact.hashCode()
+        result = 31 * result + nationality.hashCode()
+        result = 31 * result + age.hashCode()
+        result = 31 * result + (contactLookupKey?.hashCode() ?: 0)
+        result = 31 * result + (instagramUrl?.hashCode() ?: 0)
+        result = 31 * result + (pinPointId?.hashCode() ?: 0)
+        return result
+    }
+
     constructor() : this(0, "", null, "", "", "", 20, null)
 }

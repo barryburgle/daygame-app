@@ -53,6 +53,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -278,7 +279,11 @@ fun InputScreen(
                                 }
                             }
                             if (state.liveSessionSittingReminderEnabled) {
-                                onEvent(GameEvent.ScheduleLiveSessionSittingReminder(state.liveSessionSittingReminderInterval))
+                                onEvent(
+                                    GameEvent.ScheduleLiveSessionSittingReminder(
+                                        state.liveSessionSittingReminderInterval
+                                    )
+                                )
                             }
                             if (state.liveSessionShareEnabled) {
                                 val liveSessionReport =
@@ -370,13 +375,11 @@ fun InputScreen(
         if (state.isUpdatingChallenge) {
             ChallengeDialog(state = state, onEvent = onEvent, "Edit a challenge")
         }
-        if (state.justSaved && state.backupActive) {
-            runBlocking {
-                async {
-                    DataExchangeService.backup(state)
-                }
+        LaunchedEffect(key1 = state.justSaved, key2 = state.backupActive) {
+            if (state.justSaved && state.backupActive) {
+                DataExchangeService.backup(state)
+                onEvent(GameEvent.SwitchJustSaved)
             }
-            onEvent(GameEvent.SwitchJustSaved)
         }
         InsertInvite(state, blurBackground)
         Box(modifier = Modifier.fillMaxSize()) {

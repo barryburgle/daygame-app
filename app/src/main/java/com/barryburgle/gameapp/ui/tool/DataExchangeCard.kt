@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.tool
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -29,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
+import com.barryburgle.gameapp.service.csv.AbstractCsvService
 import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.csv.ChallengeCsvService
 import com.barryburgle.gameapp.service.csv.DateCsvService
@@ -220,32 +222,20 @@ fun DataExchangeCard(
                                 state.importSessionsFileName
                             } else "",
                             buttonFunction = {
-                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    sessionCsvService.setExportObjects(state.allSessions)
-                                    sessionCsvService.exportRows(
-                                        state.exportFolder,
-                                        state.exportSessionsFileName,
-                                        state.exportHeader
-                                    )
-                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    try {
-                                        onEvent(
-                                            ToolEvent.SetAllSessions(
-                                                sessionCsvService.importRows(
-                                                    state.importFolder,
-                                                    state.importSessionsFileName,
-                                                    state.importHeader
-                                                )
-                                            )
-                                        )
-                                    } catch (fileNotFoundException: FileNotFoundException) {
-                                        Toast.makeText(
-                                            localContext,
-                                            fileNotFoundException.message,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
+                                importExportButtonFunction(
+                                    cardTitle,
+                                    sessionCsvService,
+                                    state.importFolder,
+                                    state.exportFolder,
+                                    state.importSessionsFileName,
+                                    state.exportSessionsFileName,
+                                    state.importHeader,
+                                    state.exportHeader,
+                                    state.allSessions,
+                                    onEvent,
+                                    localContext,
+                                    ToolEvent::SetAllSessions
+                                )
                             },
                             reloadFunction = {
                                 if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
@@ -279,32 +269,20 @@ fun DataExchangeCard(
                                 state.importLeadsFileName
                             } else "",
                             buttonFunction = {
-                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    leadCsvService.setExportObjects(state.allLeads)
-                                    leadCsvService.exportRows(
-                                        state.exportFolder,
-                                        state.exportLeadsFileName,
-                                        state.exportHeader
-                                    )
-                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    try {
-                                        onEvent(
-                                            ToolEvent.SetAllLeads(
-                                                leadCsvService.importRows(
-                                                    state.importFolder,
-                                                    state.importLeadsFileName,
-                                                    state.importHeader
-                                                )
-                                            )
-                                        )
-                                    } catch (fileNotFoundException: FileNotFoundException) {
-                                        Toast.makeText(
-                                            localContext,
-                                            fileNotFoundException.message,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
+                                importExportButtonFunction(
+                                    cardTitle,
+                                    leadCsvService,
+                                    state.importFolder,
+                                    state.exportFolder,
+                                    state.importLeadsFileName,
+                                    state.exportLeadsFileName,
+                                    state.importHeader,
+                                    state.exportHeader,
+                                    state.allLeads,
+                                    onEvent,
+                                    localContext,
+                                    ToolEvent::SetAllLeads
+                                )
                             },
                             reloadFunction = {
                                 if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
@@ -338,32 +316,20 @@ fun DataExchangeCard(
                                 state.importDatesFileName
                             } else "",
                             buttonFunction = {
-                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    dateCsvService.setExportObjects(state.allDates)
-                                    dateCsvService.exportRows(
-                                        state.exportFolder,
-                                        state.exportDatesFileName,
-                                        state.exportHeader
-                                    )
-                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    try {
-                                        onEvent(
-                                            ToolEvent.SetAllDates(
-                                                dateCsvService.importRows(
-                                                    state.importFolder,
-                                                    state.importDatesFileName,
-                                                    state.importHeader
-                                                )
-                                            )
-                                        )
-                                    } catch (fileNotFoundException: FileNotFoundException) {
-                                        Toast.makeText(
-                                            localContext,
-                                            fileNotFoundException.message,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
+                                importExportButtonFunction(
+                                    cardTitle,
+                                    dateCsvService,
+                                    state.importFolder,
+                                    state.exportFolder,
+                                    state.importDatesFileName,
+                                    state.exportDatesFileName,
+                                    state.importHeader,
+                                    state.exportHeader,
+                                    state.allDates,
+                                    onEvent,
+                                    localContext,
+                                    ToolEvent::SetAllDates
+                                )
                             },
                             reloadFunction = {
                                 if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
@@ -398,32 +364,20 @@ fun DataExchangeCard(
                                 state.importSetsFileName
                             } else "",
                             buttonFunction = {
-                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    setCsvService.setExportObjects(state.allSets)
-                                    setCsvService.exportRows(
-                                        state.exportFolder,
-                                        state.exportSetsFileName,
-                                        state.exportHeader
-                                    )
-                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    try {
-                                        onEvent(
-                                            ToolEvent.SetAllSets(
-                                                setCsvService.importRows(
-                                                    state.importFolder,
-                                                    state.importSetsFileName,
-                                                    state.importHeader
-                                                )
-                                            )
-                                        )
-                                    } catch (fileNotFoundException: FileNotFoundException) {
-                                        Toast.makeText(
-                                            localContext,
-                                            fileNotFoundException.message,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
+                                importExportButtonFunction(
+                                    cardTitle,
+                                    setCsvService,
+                                    state.importFolder,
+                                    state.exportFolder,
+                                    state.importSetsFileName,
+                                    state.exportSetsFileName,
+                                    state.importHeader,
+                                    state.exportHeader,
+                                    state.allSets,
+                                    onEvent,
+                                    localContext,
+                                    ToolEvent::SetAllSets
+                                )
                             },
                             reloadFunction = {
                                 if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
@@ -458,32 +412,20 @@ fun DataExchangeCard(
                                 state.importChallengesFileName
                             } else "",
                             buttonFunction = {
-                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    challengeCsvService.setExportObjects(state.allChallenges)
-                                    challengeCsvService.exportRows(
-                                        state.exportFolder,
-                                        state.exportChallengesFileName,
-                                        state.exportHeader
-                                    )
-                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    try {
-                                        onEvent(
-                                            ToolEvent.SetAllChallenges(
-                                                challengeCsvService.importRows(
-                                                    state.importFolder,
-                                                    state.importChallengesFileName,
-                                                    state.importHeader
-                                                )
-                                            )
-                                        )
-                                    } catch (fileNotFoundException: FileNotFoundException) {
-                                        Toast.makeText(
-                                            localContext,
-                                            fileNotFoundException.message,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
+                                importExportButtonFunction(
+                                    cardTitle,
+                                    challengeCsvService,
+                                    state.importFolder,
+                                    state.exportFolder,
+                                    state.importChallengesFileName,
+                                    state.exportChallengesFileName,
+                                    state.importHeader,
+                                    state.exportHeader,
+                                    state.allChallenges,
+                                    onEvent,
+                                    localContext,
+                                    ToolEvent::SetAllChallenges
+                                )
                             },
                             reloadFunction = {
                                 if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
@@ -518,32 +460,20 @@ fun DataExchangeCard(
                                 state.importPinPointsFileName
                             } else "",
                             buttonFunction = {
-                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    pinPointCsvService.setExportObjects(state.allPinPoints)
-                                    pinPointCsvService.exportRows(
-                                        state.exportFolder,
-                                        state.exportPinPointsFileName,
-                                        state.exportHeader
-                                    )
-                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    try {
-                                        onEvent(
-                                            ToolEvent.SetAllPinPoints(
-                                                pinPointCsvService.importRows(
-                                                    state.importFolder,
-                                                    state.importPinPointsFileName,
-                                                    state.importHeader
-                                                )
-                                            )
-                                        )
-                                    } catch (fileNotFoundException: FileNotFoundException) {
-                                        Toast.makeText(
-                                            localContext,
-                                            fileNotFoundException.message,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
+                                importExportButtonFunction(
+                                    cardTitle,
+                                    pinPointCsvService,
+                                    state.importFolder,
+                                    state.exportFolder,
+                                    state.importPinPointsFileName,
+                                    state.exportPinPointsFileName,
+                                    state.importHeader,
+                                    state.exportHeader,
+                                    state.allPinPoints,
+                                    onEvent,
+                                    localContext,
+                                    ToolEvent::SetAllPinPoints
+                                )
                             },
                             reloadFunction = {
                                 if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
@@ -578,32 +508,20 @@ fun DataExchangeCard(
                                 state.importSettingsFileName
                             } else "",
                             buttonFunction = {
-                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                    settingCsvService.setExportObjects(state.allSettings)
-                                    settingCsvService.exportRows(
-                                        state.exportFolder,
-                                        state.exportSettingsFileName,
-                                        state.exportHeader
-                                    )
-                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                    try {
-                                        onEvent(
-                                            ToolEvent.SetAllSettings(
-                                                settingCsvService.importRows(
-                                                    state.importFolder,
-                                                    state.importSettingsFileName,
-                                                    state.importHeader
-                                                )
-                                            )
-                                        )
-                                    } catch (fileNotFoundException: FileNotFoundException) {
-                                        Toast.makeText(
-                                            localContext,
-                                            fileNotFoundException.message,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
+                                importExportButtonFunction(
+                                    cardTitle,
+                                    settingCsvService,
+                                    state.importFolder,
+                                    state.exportFolder,
+                                    state.importSettingsFileName,
+                                    state.exportSettingsFileName,
+                                    state.importHeader,
+                                    state.exportHeader,
+                                    state.allSettings,
+                                    onEvent,
+                                    localContext,
+                                    ToolEvent::SetAllSettings
+                                )
                             },
                             reloadFunction = {
                                 if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
@@ -631,3 +549,54 @@ fun DataExchangeCard(
         }
     }
 }
+
+private fun <T : Any> importExportButtonFunction(
+    cardTitle: String,
+    service: AbstractCsvService<T>,
+    importFolder: String,
+    exportFolder: String,
+    importFileName: String,
+    exportFileName: String,
+    importHeader: Boolean,
+    exportHeader: Boolean,
+    objects: List<T>? = null,
+    onEvent: (ToolEvent) -> Unit,
+    localContext: Context?,
+    createImportEvent: ((List<T>) -> ToolEvent)? = null
+): Boolean =
+    when (cardTitle) {
+        DataExchangeTypeEnum.EXPORT.type -> {
+            DataExchangeService.exportAndValidate(
+                service,
+                exportFolder,
+                exportFileName,
+                exportHeader,
+                objects
+            )
+        }
+
+        DataExchangeTypeEnum.IMPORT.type -> {
+            try {
+                val importedRows = service.importRows(
+                    importFolder,
+                    importFileName,
+                    importHeader
+                )
+
+                createImportEvent?.let { createEvent ->
+                    onEvent(createEvent(importedRows))
+                }
+
+                true
+            } catch (fileNotFoundException: FileNotFoundException) {
+                Toast.makeText(
+                    localContext,
+                    fileNotFoundException.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+                false
+            }
+        }
+
+        else -> false
+    }

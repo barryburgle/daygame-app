@@ -1,5 +1,7 @@
 package com.barryburgle.gameapp.ui.tool
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -8,8 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import com.barryburgle.gameapp.ui.utilities.setting.CountSetting
 import com.barryburgle.gameapp.ui.utilities.setting.IconButtonSetting
 import com.barryburgle.gameapp.ui.utilities.setting.SwitchSetting
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -67,7 +71,8 @@ fun DataEntryCard(
         ) {
             onEvent(ToolEvent.SwitchPinPointInteractions)
         }
-        IconButtonSetting(text = "Set sticking points reminder",
+        IconButtonSetting(
+            text = "Set sticking points reminder",
             imageVector = Icons.Default.Timer,
             contentDescription = "Reminder",
             onClick = { notificationHourDialogState.show() })
@@ -90,5 +95,21 @@ fun DataEntryCard(
         ) {
             onEvent(ToolEvent.SwitchSuggestLeadsNationality)
         }
+        SwitchSetting(
+            "Remind me to write her",
+            state.writeHerAfterReminderEnabled,
+            description = "Get reminded to write to every lead you got"
+        ) {
+            onEvent(ToolEvent.SwitchWriteHerReminder)
+        }
+        Spacer(modifier = Modifier.height(5.dp))
+        CountSetting(
+            text = "Write her after ${state.writeHerReminderInterval} minutes",
+            description = "After every new lead insertion in Live Session a notification will be scheduled in ${state.writeHerReminderInterval} minutes to remind you to write her",
+            count = state.writeHerReminderInterval,
+            countBy = 5,
+            onEvent = onEvent as (GenericEvent) -> Unit,
+            saveEvent = ToolEvent::SetWriteHerReminderInterval
+        )
     }
 }

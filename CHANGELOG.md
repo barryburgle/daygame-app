@@ -1,3 +1,14 @@
+# Version 1.14.0 (2026-08-dd)
+**Features**
+- "Write her after" notification reminds you to write her after settable amount of minutes 🔔
+- Tap on the sitting reminder notification to open the timer for some rest 🕐
+- Now past backups are deleted only if deep validation of last backup went well ⛑️
+- Now only backups are of the tables with new data are saved to disk 💾
+- Now all the exports are validated against app database after every single export 🚧
+
+**Bugfixes**
+- Live session card counter performance issues
+
 # Version 1.13.0 (2026-07-05)
 **Features**
 - During live session automatically share and copy to clipboard achieved sets 🏃, conversations 💬, and contacts 📲

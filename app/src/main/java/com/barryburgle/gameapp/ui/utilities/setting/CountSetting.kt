@@ -22,6 +22,7 @@ import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 fun CountSetting(
     text: String,
     count: Int,
+    countBy: Int = 1,
     description: String? = null,
     onEvent: (GenericEvent) -> Unit,
     saveEvent: (input: String) -> GenericEvent
@@ -52,7 +53,7 @@ fun CountSetting(
             ) {
                 IconShadowButton(
                     onClick = {
-                        settingCount--
+                        settingCount = settingCount.minus(countBy)
                         onEvent(saveEvent(settingCount.toString()))
                     },
                     imageVector = Icons.Default.Remove,
@@ -61,7 +62,7 @@ fun CountSetting(
                 Spacer(modifier = Modifier.width(5.dp))
                 IconShadowButton(
                     onClick = {
-                        settingCount++
+                        settingCount = settingCount.plus(countBy)
                         onEvent(saveEvent(settingCount.toString()))
                     },
                     imageVector = Icons.Default.Add,

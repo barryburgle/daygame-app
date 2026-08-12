@@ -29,11 +29,4 @@ class SettingCsvService : AbstractCsvService<Setting>() {
     override fun mapImportRow(fields: Array<String>): Setting {
         return Setting(fields[0], fields[1])
     }
-
-    override fun isEntityValid(setting: Setting): Boolean {
-        if (setting.id.isNotBlank() && setting.value.isNotBlank()) {
-            return false
-        }
-        return true
-    }
 }

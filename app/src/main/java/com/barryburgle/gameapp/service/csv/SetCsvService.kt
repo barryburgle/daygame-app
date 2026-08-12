@@ -85,12 +85,4 @@ class SetCsvService : AbstractCsvService<SingleSet>() {
             importLong(fields[17])!!.toInt()
         )
     }
-
-    override fun isEntityValid(set: SingleSet): Boolean {
-        // TODO: do better check on data validity on most of the fields
-        if (set.id == 0L || set.id == null || set.insertTime.isEmpty()) {
-            return false
-        }
-        return true
-    }
 }

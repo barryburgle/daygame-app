@@ -50,12 +50,4 @@ class PinPointCsvService : AbstractCsvService<PinPoint>() {
             fields[7].toInt(),
         )
     }
-
-    override fun isEntityValid(pinPoint: PinPoint): Boolean {
-        // TODO: do better check on data validity on most of the fields
-        if (pinPoint.id == 0L || pinPoint.id == null || pinPoint.localTimestamp.isEmpty()) {
-            return false
-        }
-        return true
-    }
 }

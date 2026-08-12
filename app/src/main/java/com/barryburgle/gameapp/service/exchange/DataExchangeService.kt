@@ -10,6 +10,7 @@ import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.setting.Setting
+import com.barryburgle.gameapp.service.csv.AbstractCsvService
 import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.csv.ChallengeCsvService
 import com.barryburgle.gameapp.service.csv.DateCsvService
@@ -20,6 +21,8 @@ import com.barryburgle.gameapp.service.csv.SetCsvService
 import com.barryburgle.gameapp.service.csv.SettingCsvService
 import com.barryburgle.gameapp.ui.state.ExportState
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 
 class DataExchangeService {
@@ -34,67 +37,165 @@ class DataExchangeService {
         val pinPointCsvService: PinPointCsvService = PinPointCsvService()
         val settingCsvService: SettingCsvService = SettingCsvService()
 
-        fun backup(
+        suspend fun backup(
             state: ExportState
         ) {
-            backupAll(state)
-            validateAll(state)
-            cleanAllBackups(state)
+            withContext(Dispatchers.IO) {
+                backupAllAndClean(
+                    state.allSessions,
+                    sessionCsvService.getBackupFileName(),
+                    state.allLeads,
+                    leadCsvService.getBackupFileName(),
+                    state.allDates,
+                    dateCsvService.getBackupFileName(),
+                    state.allSets,
+                    setCsvService.getBackupFileName(),
+                    state.allChallenges,
+                    challengeCsvService.getBackupFileName(),
+                    state.allPinPoints,
+                    pinPointCsvService.getBackupFileName(),
+                    state.allSettings,
+                    settingCsvService.getBackupFileName(),
+                    state.exportFolder + "/" + state.backupFolder,
+                    true,
+                    state.lastBackup
+                )
+            }
         }
 
-        fun cleanAllBackups(
-            state: ExportState
+        fun <T : Any> backupAndClean(
+            service: AbstractCsvService<T>,
+            objects: List<T>,
+            exportFolder: String,
+            fileName: String,
+            exportHeader: Boolean,
+            lastBackup: Int,
+            incrementalBackup: Boolean,
+            clean: Boolean,
         ) {
-            sessionCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder,
-                state.lastBackup
-            )
-            leadCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder,
-                state.lastBackup
-            )
-            dateCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder,
-                state.lastBackup
-            )
-            setCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder,
-                state.lastBackup
-            )
-            challengeCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder,
-                state.lastBackup
-            )
-            pinPointCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder,
-                state.lastBackup
-            )
-            settingCsvService.cleanBackupFolder(
-                state.exportFolder + "/" + state.backupFolder,
-                state.lastBackup
-            )
+            fun exportValidAndClean() {
+                val justExportedIsValid =
+                    exportAndValidate(service, exportFolder, fileName, exportHeader)
+                if (justExportedIsValid && clean) {
+                    service.cleanBackupFolder(exportFolder, lastBackup)
+                }
+            }
+
+            service.setExportObjects(objects)
+            if (!incrementalBackup || !service.validateExportedFileAgainstExportState(
+                    exportFolder,
+                    true,
+                    service.getBackupFileName()
+                )
+            ) {
+                exportValidAndClean()
+            }
         }
 
-        fun validateAll(
-            state: ExportState
+        fun <T : Any> exportAndValidate(
+            service: AbstractCsvService<T>,
+            exportFolder: String,
+            fileName: String,
+            exportHeader: Boolean,
+            objects: List<T>? = null
+        ): Boolean {
+            if (objects != null) {
+                service.setExportObjects(objects)
+            }
+            service.exportRows(exportFolder, fileName, exportHeader)
+            val justExportedIsValid =
+                service.validateExportedFileAgainstExportState(exportFolder, exportHeader, fileName)
+            return justExportedIsValid
+        }
+
+        fun backupAllAndClean(
+            allSessions: List<AbstractSession>,
+            exportSessionsFileName: String,
+            allLeads: List<Lead>,
+            exportLeadsFileName: String,
+            allDates: List<Date>,
+            exportDatesFileName: String,
+            allSets: List<SingleSet>,
+            exportSetsFileName: String,
+            allChallenges: List<AchievedChallenge>,
+            exportChallengesFileName: String,
+            allPinPoints: List<PinPoint>,
+            exportPinPointsFileName: String,
+            allSettings: List<Setting>,
+            exportSettingsFileName: String,
+            exportFolder: String,
+            exportHeader: Boolean,
+            lastBackup: Int
         ) {
-            sessionCsvService.validateExport(
-                state.exportFolder + "/" + state.backupFolder
+            backupAndClean(
+                sessionCsvService,
+                allSessions,
+                exportFolder,
+                exportSessionsFileName,
+                exportHeader,
+                lastBackup,
+                true,
+                true
             )
-            leadCsvService.validateExport(
-                state.exportFolder + "/" + state.backupFolder
+            backupAndClean(
+                leadCsvService,
+                allLeads,
+                exportFolder,
+                exportLeadsFileName,
+                exportHeader,
+                lastBackup,
+                true,
+                true
             )
-            dateCsvService.validateExport(
-                state.exportFolder + "/" + state.backupFolder
+            backupAndClean(
+                dateCsvService,
+                allDates,
+                exportFolder,
+                exportDatesFileName,
+                exportHeader,
+                lastBackup,
+                true,
+                true
             )
-            setCsvService.validateExport(
-                state.exportFolder + "/" + state.backupFolder
+            backupAndClean(
+                setCsvService,
+                allSets,
+                exportFolder,
+                exportSetsFileName,
+                exportHeader,
+                lastBackup,
+                true,
+                true
             )
-            challengeCsvService.validateExport(
-                state.exportFolder + "/" + state.backupFolder
+            backupAndClean(
+                challengeCsvService,
+                allChallenges,
+                exportFolder,
+                exportChallengesFileName,
+                exportHeader,
+                lastBackup,
+                true,
+                true
             )
-            pinPointCsvService.validateExport(
-                state.exportFolder + "/" + state.backupFolder
+            backupAndClean(
+                pinPointCsvService,
+                allPinPoints,
+                exportFolder,
+                exportPinPointsFileName,
+                exportHeader,
+                lastBackup,
+                true,
+                true
+            )
+            backupAndClean(
+                settingCsvService,
+                allSettings,
+                exportFolder,
+                exportSettingsFileName,
+                exportHeader,
+                lastBackup,
+                true,
+                true
             )
         }
 
@@ -112,51 +213,46 @@ class DataExchangeService {
             allPinPoints: List<PinPoint>,
             exportPinPointsFileName: String,
             allSettings: List<Setting>,
+            exportSettingsFileName: String,
             exportFolder: String,
             exportHeader: Boolean
-        ) {
-            sessionCsvService.setExportObjects(allSessions)
-            sessionCsvService.exportRows(
-                exportFolder,
-                exportSessionsFileName,
-                exportHeader
+        ): Boolean {
+            val validSessionExport = exportAndValidate(
+                sessionCsvService,
+                exportFolder, exportSessionsFileName, exportHeader,
+                allSessions
             )
-            leadCsvService.setExportObjects(allLeads)
-            leadCsvService.exportRows(
-                exportFolder,
-                exportLeadsFileName,
-                exportHeader
+            val validLeadExport = exportAndValidate(
+                leadCsvService,
+                exportFolder, exportLeadsFileName, exportHeader,
+                allLeads
             )
-            dateCsvService.setExportObjects(allDates)
-            dateCsvService.exportRows(
-                exportFolder,
-                exportDatesFileName,
-                exportHeader
+            val validDateExport = exportAndValidate(
+                dateCsvService,
+                exportFolder, exportDatesFileName, exportHeader,
+                allDates
             )
-            setCsvService.setExportObjects(allSets)
-            setCsvService.exportRows(
-                exportFolder,
-                exportSetsFileName,
-                exportHeader
+            val validSetExport = exportAndValidate(
+                setCsvService,
+                exportFolder, exportSetsFileName, exportHeader,
+                allSets
             )
-            challengeCsvService.setExportObjects(allChallenges)
-            challengeCsvService.exportRows(
-                exportFolder,
-                exportChallengesFileName,
-                exportHeader
+            val validChallengeExport = exportAndValidate(
+                challengeCsvService,
+                exportFolder, exportChallengesFileName, exportHeader,
+                allChallenges
             )
-            pinPointCsvService.setExportObjects(allPinPoints)
-            pinPointCsvService.exportRows(
-                exportFolder,
-                exportPinPointsFileName,
-                exportHeader
+            val validPinPointExport = exportAndValidate(
+                pinPointCsvService,
+                exportFolder, exportPinPointsFileName, exportHeader,
+                allPinPoints
             )
-            settingCsvService.setExportObjects(allSettings)
-            settingCsvService.exportRows(
-                exportFolder,
-                settingCsvService.getBackupFileName(),
-                exportHeader
+            val validSettingExport = exportAndValidate(
+                settingCsvService,
+                exportFolder, exportSettingsFileName, exportHeader,
+                allSettings
             )
+            return validSessionExport && validLeadExport && validDateExport && validSetExport && validChallengeExport && validPinPointExport && validSettingExport
         }
 
         fun import(
@@ -236,34 +332,12 @@ class DataExchangeService {
             )
         }
 
-        fun backupAll(
-            state: ExportState
-        ) {
-            export(
-                state.allSessions,
-                sessionCsvService.getBackupFileName(),
-                state.allLeads,
-                leadCsvService.getBackupFileName(),
-                state.allDates,
-                dateCsvService.getBackupFileName(),
-                state.allSets,
-                setCsvService.getBackupFileName(),
-                state.allChallenges,
-                challengeCsvService.getBackupFileName(),
-                state.allPinPoints,
-                pinPointCsvService.getBackupFileName(),
-                state.allSettings,
-                state.exportFolder + "/" + state.backupFolder,
-                true
-            )
-        }
-
         fun exportAll(
             state: ExportState,
             exportHeader: Boolean,
             localContext: Context
         ) {
-            export(
+            val validExport = export(
                 state.allSessions,
                 state.exportSessionsFileName,
                 state.allLeads,
@@ -277,14 +351,23 @@ class DataExchangeService {
                 state.allPinPoints,
                 state.exportPinPointsFileName,
                 state.allSettings,
+                state.exportSettingsFileName,
                 state.exportFolder,
                 exportHeader
             )
-            Toast.makeText(
-                localContext,
-                "Successfully exported all tables",
-                Toast.LENGTH_SHORT
-            ).show()
+            if (validExport) {
+                Toast.makeText(
+                    localContext,
+                    "Successfully exported all tables",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    localContext,
+                    "Error: partially exported data",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         fun importAll(

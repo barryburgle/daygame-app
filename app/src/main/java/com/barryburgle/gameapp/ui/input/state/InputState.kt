@@ -119,6 +119,8 @@ data class InputState(
     override var liveSessionSittingReminderEnabled: Boolean = true,
     override var liveSessionSittingReminderInterval: Int = 30,
     override var liveSessionShareEnabled: Boolean = true,
+    override var writeHerAfterReminderEnabled: Boolean = true,
+    override var writeHerReminderInterval: Int = 60,
     val mostPopularLeadsNationalities: List<CategoryHistogram> = emptyList(),
     val sessionsByWeek: List<AggregatedSessions> = emptyList(),
     val sessionsByMonth: List<AggregatedSessions> = emptyList(),

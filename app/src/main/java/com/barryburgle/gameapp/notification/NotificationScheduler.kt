@@ -8,7 +8,8 @@ interface NotificationScheduler {
         time: LocalDateTime,
         title: String,
         content: String,
-        interval: Int?,
+        interval: Int? = null,
+        link: String? = null
     )
 
     fun cancel(requestCode: Int)

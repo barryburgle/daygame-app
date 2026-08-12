@@ -81,7 +81,9 @@ data class ToolsState(
     override var liveSessionNotificationEnabled: Boolean = true,
     override var liveSessionSittingReminderEnabled: Boolean = true,
     override var liveSessionSittingReminderInterval: Int = 30,
-    override var liveSessionShareEnabled: Boolean = true
+    override var liveSessionShareEnabled: Boolean = true,
+    override var writeHerAfterReminderEnabled: Boolean = true,
+    override var writeHerReminderInterval: Int = 60
 ) : ExportState(
     null,
     exportSessionsFileName,
