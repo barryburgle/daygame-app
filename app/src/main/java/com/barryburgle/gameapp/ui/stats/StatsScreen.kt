@@ -158,7 +158,8 @@ fun StatsScreen(
                             title = "Pinpoints in time",
                             statCardIcon = Icons.Default.PinDrop,
                             description = "Know your best schedule",
-                            allPinPoints = state.allPinPoints
+                            state = state,
+                            onEvent = onEvent
                         )
                     }
                 }
