@@ -11,10 +11,12 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.StatsEvent
 import com.barryburgle.gameapp.model.enums.StatsLoadInfoEnum
-import com.barryburgle.gameapp.ui.CombineSeventeen
+import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
+import com.barryburgle.gameapp.ui.CombineEighteen
 import com.barryburgle.gameapp.ui.stats.state.StatsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -28,14 +30,21 @@ class StatsViewModel(
     private val pinPointDao: PinPointDao,
     private val settingDao: SettingDao,
 ) : ViewModel() {
-    private val _state =
-        MutableStateFlow(StatsState())
+    private val _state = MutableStateFlow(StatsState())
     private val _allSessions = abstractSessionDao.getAll()
     private val _allLeads = leadDao.getAll()
     private val _allDates = dateDao.getAll()
     private val _allChallenges = challengeDao.getAll()
     private val _allSets = setDao.getAll()
     private val _allPinPoints = pinPointDao.getAll()
+
+    private val _typeFilteredPinPoints = combine(_allPinPoints, _state) { allPoints, state ->
+        val selectedTypes = state.pinPointsTypeSelectionList.filterIsInstance<PinPointTypeEnum>()
+        allPoints.filter { pinPoint ->
+            selectedTypes.any { it.getField() == pinPoint.pinPointType }
+        }
+    }
+
     private val _setsHistogram = abstractSessionDao.getSetsHistogram()
     private val _convosHistogram = abstractSessionDao.getConvosHistogram()
     private val _contactsHistogram = abstractSessionDao.getContactsHistogram()
@@ -45,6 +54,7 @@ class StatsViewModel(
     private val _datesNumberHistogram = dateDao.getNumberHistogram()
     private val _datesNationalityHistogram = dateDao.getNationalityHistogram()
     private val _loadInfoType = MutableStateFlow(StatsLoadInfoEnum.SESSION_SETS)
+
     private val _completeHistogram = _loadInfoType.flatMapLatest { loadInfo ->
         when (loadInfo) {
             StatsLoadInfoEnum.SESSION_SETS -> abstractSessionDao.getSetsHistogram()
@@ -57,10 +67,11 @@ class StatsViewModel(
             StatsLoadInfoEnum.DATE_COUNTRIES -> dateDao.getAllNationalityHistogram()
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     private val _copyReportOnClipboard = settingDao.getCopyReportOnClipboard()
 
     val state =
-        CombineSeventeen(
+        CombineEighteen(
             _state,
             _allSessions,
             _allLeads,
@@ -68,6 +79,7 @@ class StatsViewModel(
             _allChallenges,
             _allSets,
             _allPinPoints,
+            _typeFilteredPinPoints,
             _setsHistogram,
             _convosHistogram,
             _contactsHistogram,
@@ -78,7 +90,7 @@ class StatsViewModel(
             _datesNationalityHistogram,
             _completeHistogram,
             _copyReportOnClipboard
-        ) { state, allSessions, allLeads, allDates, allChallenges, allSets, allPinPoints, setsHistogram, convosHistogram, contactsHistogram, leadsAgeHistogram, leadsNationalityHistogram, datesAgeHistogram, datesNumberHistogram, datesNationalityHistogram, completeHistogram, copyReportOnClipboard ->
+        ) { state, allSessions, allLeads, allDates, allChallenges, allSets, allPinPoints, typeFilteredPinPoints, setsHistogram, convosHistogram, contactsHistogram, leadsAgeHistogram, leadsNationalityHistogram, datesAgeHistogram, datesNumberHistogram, datesNationalityHistogram, completeHistogram, copyReportOnClipboard ->
             state.copy(
                 allSessions = allSessions,
                 allLeads = allLeads,
@@ -95,7 +107,8 @@ class StatsViewModel(
                 datesNumberHistogram = datesNumberHistogram,
                 datesNationalityHistogram = datesNationalityHistogram,
                 completeHistogram = completeHistogram,
-                copyReportOnClipboard = copyReportOnClipboard.toBoolean()
+                copyReportOnClipboard = copyReportOnClipboard.toBoolean(),
+                typeFilteredPinPoints = typeFilteredPinPoints
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), StatsState())
 
