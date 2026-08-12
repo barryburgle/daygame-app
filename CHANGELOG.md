@@ -3,6 +3,7 @@
 - "Write her after" notification reminds you to write her after settable amount of minutes 🔔
 - "Custom Summary" allows you to get a comprehensive start-to-end-custom-dates summary of the stats of your Game from History grid 🏆
 - "Pull O'Clock": press the timer button on Live Session card before starting the set and get a notification to remind to close/pull after customizable amount of in-set minutes ⏱️
+- Pinpoints week vs. day-time chart: know when most of the interaction happen at a glance 👀
 - Tap on the sitting reminder notification to open the timer for some rest 🕐
 - Now past backups are deleted only if deep validation of last backup went well ⛑️
 - Now backups only tables with new data 💾
