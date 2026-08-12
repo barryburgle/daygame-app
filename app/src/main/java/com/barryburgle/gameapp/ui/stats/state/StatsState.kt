@@ -17,7 +17,7 @@ data class StatsState(
     override var allDates: List<Date> = emptyList(),
     override var allChallenges: List<AchievedChallenge> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
-    override var allPinPoints: List<PinPoint> = emptyList(), // Needed to show heatmap of the city
+    override var allPinPoints: List<PinPoint> = emptyList(),
     val setsHistogram: List<Histogram> = emptyList(),
     val convosHistogram: List<Histogram> = emptyList(),
     val contactsHistogram: List<Histogram> = emptyList(),
