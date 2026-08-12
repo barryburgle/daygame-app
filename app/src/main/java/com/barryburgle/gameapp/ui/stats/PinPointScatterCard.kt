@@ -33,7 +33,7 @@ import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @ExperimentalMaterial3Api
 @Composable
-fun OutputScatterCard(
+fun PinPointScatterCard(
     modifier: Modifier,
     title: String,
     statCardIcon: ImageVector,
