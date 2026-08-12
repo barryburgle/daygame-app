@@ -12,4 +12,7 @@ sealed interface StatsEvent : GenericEvent {
     data class SelectPinPointType(
         val selectedTypes: List<PinPointTypeEnum>
     ) : StatsEvent
+    data class SelectTimePinPointType(
+        val selectedTypes: List<PinPointTypeEnum>
+    ) : StatsEvent
 }

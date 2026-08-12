@@ -53,7 +53,7 @@ fun PinPointScatterCard(
     onEvent: (StatsEvent) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val selectedTypes = state.pinPointsTypeSelectionList.filterIsInstance<PinPointTypeEnum>()
+    val selectedTypes = state.timePinPointsTypeSelectionList.filterIsInstance<PinPointTypeEnum>()
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
@@ -129,7 +129,7 @@ fun PinPointScatterCard(
                                             } else {
                                                 selectedTypes + type
                                             }
-                                            onEvent(StatsEvent.SelectPinPointType(newList))
+                                            onEvent(StatsEvent.SelectTimePinPointType(newList))
                                         }
                                     )
                                 }
@@ -149,7 +149,7 @@ fun PinPointScatterCard(
                             .fillMaxHeight()
                     ) {
                         PinPointScatterChart(
-                            pinPoints = state.typeFilteredPinPoints
+                            pinPoints = state.typeFilteredTimePinPoints
                         )
                     }
                 }

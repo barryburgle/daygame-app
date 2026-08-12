@@ -33,6 +33,8 @@ data class StatsState(
     val copyReportOnClipboard: Boolean = false,
     val pinPointsTypeSelectionList:  List<Any> = PinPointTypeEnum.entries,
     var typeFilteredPinPoints: List<PinPoint> = emptyList()
+    val timePinPointsTypeSelectionList:  List<Any> = PinPointTypeEnum.entries,
+    var typeFilteredTimePinPoints: List<PinPoint> = emptyList()
 ) : AllEntityState(
     allSessions,
     allLeads,

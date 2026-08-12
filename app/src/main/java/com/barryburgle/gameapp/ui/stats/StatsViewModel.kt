@@ -45,6 +45,14 @@ class StatsViewModel(
         }
     }
 
+    private val _typeFilteredTimePinPoints = combine(_allPinPoints, _state) { allPoints, state ->
+        val selectedTypes =
+            state.timePinPointsTypeSelectionList.filterIsInstance<PinPointTypeEnum>()
+        allPoints.filter { pinPoint ->
+            selectedTypes.any { it.getField() == pinPoint.pinPointType }
+        }
+    }
+
     private val _setsHistogram = abstractSessionDao.getSetsHistogram()
     private val _convosHistogram = abstractSessionDao.getConvosHistogram()
     private val _contactsHistogram = abstractSessionDao.getContactsHistogram()
@@ -80,6 +88,7 @@ class StatsViewModel(
             _allSets,
             _allPinPoints,
             _typeFilteredPinPoints,
+            _typeFilteredTimePinPoints,
             _setsHistogram,
             _convosHistogram,
             _contactsHistogram,
@@ -109,6 +118,7 @@ class StatsViewModel(
                 completeHistogram = completeHistogram,
                 copyReportOnClipboard = copyReportOnClipboard.toBoolean(),
                 typeFilteredPinPoints = typeFilteredPinPoints
+                typeFilteredTimePinPoints = typeFilteredTimePinPoints
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), StatsState())
 
@@ -138,6 +148,14 @@ class StatsViewModel(
                 _state.update {
                     it.copy(
                         pinPointsTypeSelectionList = event.selectedTypes
+                    )
+                }
+            }
+
+            is StatsEvent.SelectTimePinPointType -> {
+                _state.update {
+                    it.copy(
+                        timePinPointsTypeSelectionList = event.selectedTypes
                     )
                 }
             }
