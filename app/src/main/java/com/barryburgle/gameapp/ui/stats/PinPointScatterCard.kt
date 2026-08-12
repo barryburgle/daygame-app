@@ -140,8 +140,8 @@ fun PinPointScatterCard(
                 }
                 Row(
                     modifier = Modifier
-                        .padding(5.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(
