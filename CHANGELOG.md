@@ -15,6 +15,7 @@
 - Live session card counter performance issues
 - Map and timeline pinpoints colors
 - Info dialog entry spacing
+- Removed screen reload on already-selected navigation tab pressed again
 
 # Version 1.13.0 (2026-07-05)
 **Features**

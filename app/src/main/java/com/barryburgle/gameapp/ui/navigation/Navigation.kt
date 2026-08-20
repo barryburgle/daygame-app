@@ -109,8 +109,16 @@ fun Navigation(
                         NavigationBarItem(
                             selected = item.selected,
                             onClick = {
-                                selectedItemIndex = index
-                                navController.navigate(item.destinationScreen)
+                                if (selectedItemIndex != index) {
+                                    selectedItemIndex = index
+                                    navController.navigate(item.destinationScreen) {
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
                             },
                             label = { Text(text = item.title, color = selectedColor) },
                             icon = {
