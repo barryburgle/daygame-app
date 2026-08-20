@@ -132,8 +132,6 @@ fun Navigation(
                                         }
                                     }
                                 ) {
-                                    if (isSystemInDarkTheme()) {
-                                    }
                                     Icon(
                                         painter = item.icon,
                                         contentDescription = item.title,
