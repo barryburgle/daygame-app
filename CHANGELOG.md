@@ -16,6 +16,7 @@
 - Map and timeline pinpoints colors
 - Info dialog entry spacing
 - Removed screen reload on already-selected navigation tab pressed again
+- Gesture-based backward navigation works between tabs 
 
 # Version 1.13.0 (2026-07-05)
 **Features**
