@@ -112,9 +112,6 @@ fun Navigation(
                                 if (selectedItemIndex != index) {
                                     selectedItemIndex = index
                                     navController.navigate(item.destinationScreen) {
-                                        popUpTo(navController.graph.startDestinationId) {
-                                            saveState = true
-                                        }
                                         launchSingleTop = true
                                         restoreState = true
                                     }
