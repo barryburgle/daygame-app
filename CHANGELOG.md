@@ -17,6 +17,7 @@
 - Info dialog entry spacing
 - Removed screen reload on already-selected navigation tab pressed again
 - Gesture-based backward navigation works between tabs
+- Importing backups is fault resistant: if some files are not found in the backup folder the others will anyway be imported
 - Minor UI improvements & optimizations
 
 # Version 1.13.0 (2026-07-05)

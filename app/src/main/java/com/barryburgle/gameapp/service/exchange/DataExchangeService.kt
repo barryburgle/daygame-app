@@ -266,70 +266,71 @@ class DataExchangeService {
             importFolder: String,
             importHeader: Boolean,
             onEvent: (ToolEvent) -> Unit
-        ) {
-            onEvent(
-                ToolEvent.SetAllSessions(
+        ): Boolean {
+            fun <T> safeImport(importAction: () -> T, eventBuilder: (T) -> ToolEvent): Boolean {
+                try {
+                    onEvent(eventBuilder(importAction()))
+                    return true
+                } catch (e: java.io.FileNotFoundException) {
+                    // File not found, skip importing this specific entity
+                    return false
+                }
+            }
+
+            var sessionsImported = safeImport(
+                {
                     sessionCsvService.importRows(
                         importFolder,
                         importSessionsFileName,
                         importHeader
                     )
-                )
+                },
+                { ToolEvent.SetAllSessions(it) }
             )
-            onEvent(
-                ToolEvent.SetAllLeads(
-                    leadCsvService.importRows(
-                        importFolder,
-                        importLeadsFileName,
-                        importHeader
-                    )
-                )
+
+            var leadsImported = safeImport(
+                { leadCsvService.importRows(importFolder, importLeadsFileName, importHeader) },
+                { ToolEvent.SetAllLeads(it) }
             )
-            onEvent(
-                ToolEvent.SetAllDates(
-                    dateCsvService.importRows(
-                        importFolder,
-                        importDatesFileName,
-                        importHeader
-                    )
-                )
+            var datesImported = safeImport(
+                { dateCsvService.importRows(importFolder, importDatesFileName, importHeader) },
+                { ToolEvent.SetAllDates(it) }
             )
-            onEvent(
-                ToolEvent.SetAllSets(
-                    setCsvService.importRows(
-                        importFolder,
-                        importSetsFileName,
-                        importHeader
-                    )
-                )
+            var setsImported = safeImport(
+                { setCsvService.importRows(importFolder, importSetsFileName, importHeader) },
+                { ToolEvent.SetAllSets(it) }
             )
-            onEvent(
-                ToolEvent.SetAllChallenges(
+            var challengesImported = safeImport(
+                {
                     challengeCsvService.importRows(
                         importFolder,
                         importChallengesFileName,
                         importHeader
                     )
-                )
+                },
+                { ToolEvent.SetAllChallenges(it) }
             )
-            onEvent(
-                ToolEvent.SetAllPinPoints(
+            var pinPointsImported = safeImport(
+                {
                     pinPointCsvService.importRows(
                         importFolder,
                         importPinPointsFileName,
                         importHeader
                     )
-                )
+                },
+                { ToolEvent.SetAllPinPoints(it) }
             )
-            onEvent(
-                ToolEvent.SetAllSettings(
+            var settingsImported = safeImport(
+                {
                     settingCsvService.importRows(
                         importFolder,
                         importSettingsFileName,
                         importHeader
                     )
-                )
+                },
+                { ToolEvent.SetAllSettings(it) }
             )
+            return sessionsImported && leadsImported && datesImported && setsImported && challengesImported && pinPointsImported && settingsImported
         }
 
         fun exportAll(
@@ -415,7 +416,7 @@ class DataExchangeService {
                     )
                 val importFolder =
                     if (!fromBackupFolder) state.importFolder else state.importFolder + "/" + state.backupFolder
-                import(
+                val allImported = import(
                     importSessionsFileName,
                     importLeadsFileName,
                     importDatesFileName,
@@ -427,9 +428,13 @@ class DataExchangeService {
                     true,
                     onEvent
                 )
+                var importDescription = "all"
+                if (!allImported) {
+                    importDescription = "your"
+                }
                 Toast.makeText(
                     localContext,
-                    "Successfully imported all tables",
+                    "Successfully imported ${importDescription} tables",
                     Toast.LENGTH_SHORT
                 ).show()
             } catch (fileNotFoundException: FileNotFoundException) {
