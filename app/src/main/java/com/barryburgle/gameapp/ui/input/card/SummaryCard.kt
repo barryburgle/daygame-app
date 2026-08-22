@@ -255,7 +255,7 @@ fun SummaryCard(
                                                 weekSets,
                                                 weekContacts,
                                                 weekDates,
-                                                40.sp,
+                                                50.sp,
                                                 10.sp
                                             )
                                         }
@@ -271,7 +271,7 @@ fun SummaryCard(
                                                 monthSets,
                                                 monthContacts,
                                                 monthDates,
-                                                40.sp,
+                                                50.sp,
                                                 10.sp
                                             )
                                         }
