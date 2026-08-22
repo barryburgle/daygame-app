@@ -22,12 +22,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,13 +38,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.HeatmapEntityEnum
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.dialog.leadName
 import com.barryburgle.gameapp.ui.output.section.MonthSection
@@ -146,9 +145,22 @@ fun OutputScreen(
                             heatmapEntitySelected = newValue as HeatmapEntityEnum
                         }
                     }
+                    val leadsMap = state.allLeads.associateBy { it.id }
+                    val sessionsByDate =
+                        state.allSessionsUnlimited.groupBy { FormatService.parseDate(it.date) }
+                    val setsByDate = state.allSets.groupBy { FormatService.parseDate(it.date) }
+                    val datesByDate = state.allDates.filter { it.date != null }
+                        .groupBy { FormatService.parseDate(it.date!!) }
                     HeatmapCalendar(
                         modifier = Modifier.fillMaxWidth(),
-                        entries = getSeries(state, heatmapEntitySelected),
+                        entries = getSeries(
+                            state,
+                            heatmapEntitySelected,
+                            sessionsByDate,
+                            setsByDate,
+                            datesByDate,
+                            leadsMap
+                        ),
                         spaceFromLeft = spaceFromLeft + 3.dp,
                         textColor = MaterialTheme.colorScheme.onPrimary,
                         cellColor = MaterialTheme.colorScheme.onSurfaceVariant,
