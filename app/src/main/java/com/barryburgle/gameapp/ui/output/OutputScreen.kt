@@ -518,9 +518,14 @@ fun getSeries(
                         }: ${session.sets} sets"
                     }
                 }
-                val singleSetsSum = sets.size
-                if (singleSetsSum > 0) {
-                    desc += "\n[Single Sets] $singleSetsSum"
+                var singleSetsSum = 0
+                for (set in sets) {
+                    singleSetsSum += 1
+                    desc += "\n[Single Set] ${FormatService.getTime(set.startHour)} - ${
+                        FormatService.getTime(
+                            set.endHour
+                        )
+                    }: 1 set"
                 }
                 ContributionEntry(date, sessionSetsSum + singleSetsSum, desc)
             }
