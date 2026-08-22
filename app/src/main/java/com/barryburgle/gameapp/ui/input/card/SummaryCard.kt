@@ -21,6 +21,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -53,17 +57,17 @@ fun SummaryCard(
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val localContext = LocalContext.current.applicationContext
     val noEvents = state.allEvents.isEmpty()
-    var updatedDate = ""
-    var weekSets = 0
-    var weekContacts = 0
-    var weekSessionHours = 0L
-    var weekDates = 0
-    var weekDateHours = 0L
-    var monthSets = 0
-    var monthContacts = 0
-    var monthSessionHours = 0L
-    var monthDates = 0
-    var monthDateHours = 0L
+    var updatedDate by remember { mutableStateOf("") }
+    var weekSets by remember { mutableStateOf(0) }
+    var weekContacts by remember { mutableStateOf(0) }
+    var weekSessionHours by remember { mutableStateOf(0L) }
+    var weekDates by remember { mutableStateOf(0) }
+    var weekDateHours by remember { mutableStateOf(0L) }
+    var monthSets by remember { mutableStateOf(0) }
+    var monthContacts by remember { mutableStateOf(0) }
+    var monthSessionHours by remember { mutableStateOf(0L) }
+    var monthDates by remember { mutableStateOf(0) }
+    var monthDateHours by remember { mutableStateOf(0L) }
     if (!noEvents) {
         updatedDate = FormatService.getDate(state.allEvents.first().eventDate)
         val aggregatedWeekPeriodsList: List<AggregatedPeriod> =
