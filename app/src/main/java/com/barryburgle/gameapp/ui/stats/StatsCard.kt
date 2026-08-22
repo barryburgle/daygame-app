@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.ui.input.card.CardSection
@@ -46,6 +47,7 @@ fun StatsCard(
     description: String,
     copyReportOnClipboard: Boolean,
     firstQuantifierQuantity: String,
+    firstQuantifierIcon: Int? = null,
     firstQuantifierDescription: String,
     secondQuantifierQuantity: String,
     secondQuantifierIcon: Int? = null,
@@ -71,8 +73,8 @@ fun StatsCard(
     fourthPerformanceDescription: String? = null,
     fifthPerformanceQuantity: String? = null,
     fifthPerformanceDescription: String? = null,
+    countFontSize: TextUnit = 50.sp
 ) {
-    val countFontSize = 50.sp
     val perfFontSize = 15.sp
     val descriptionFontSize = 10.sp
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
@@ -206,13 +208,14 @@ fun StatsCard(
                             ) {
                                 DescribedQuantifier(
                                     quantity = firstQuantifierQuantity,
+                                    drawableIcon = if (firstQuantifierIcon != null) firstQuantifierIcon else null,
                                     quantityFontSize = countFontSize,
                                     description = firstQuantifierDescription,
                                     descriptionFontSize = descriptionFontSize
                                 )
                                 DescribedQuantifier(
                                     quantity = secondQuantifierQuantity,
-                                    icon = if (secondQuantifierIcon != null) secondQuantifierIcon else null,
+                                    drawableIcon = if (secondQuantifierIcon != null) secondQuantifierIcon else null,
                                     color = if (secondQuantifierColor != null) secondQuantifierColor else null,
                                     quantityFontSize = countFontSize,
                                     description = secondQuantifierDescription,
@@ -220,7 +223,7 @@ fun StatsCard(
                                 )
                                 DescribedQuantifier(
                                     quantity = thirdQuantifierQuantity,
-                                    icon = if (thirdQuantifierIcon != null) thirdQuantifierIcon else null,
+                                    drawableIcon = if (thirdQuantifierIcon != null) thirdQuantifierIcon else null,
                                     color = if (thirdQuantifierColor != null) thirdQuantifierColor else null,
                                     quantityFontSize = countFontSize,
                                     description = thirdQuantifierDescription,

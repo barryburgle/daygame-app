@@ -26,6 +26,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.StatsEvent
 import com.barryburgle.gameapp.model.enums.ChallengeMedalEnum
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
@@ -100,10 +102,13 @@ fun StatsScreen(
                             } minutes",
                             copyReportOnClipboard = state.copyReportOnClipboard,
                             firstQuantifierQuantity = "${sets}",
+                            firstQuantifierIcon = R.drawable.set_action,
                             firstQuantifierDescription = "Sets",
                             secondQuantifierQuantity = "${conversations}",
+                            secondQuantifierIcon = R.drawable.conversation_action,
                             secondQuantifierDescription = "Conversations",
                             thirdQuantifierQuantity = "${contacts}",
+                            thirdQuantifierIcon = R.drawable.contact_action,
                             thirdQuantifierDescription = "Contacts",
                             firstPerformanceQuantity = "${
                                 GlobalStatsService.computeGenericRatio(
@@ -128,7 +133,8 @@ fun StatsScreen(
                                     state.allSessions
                                 )
                             }",
-                            fourthPerformanceDescription = "Average\nIndex"
+                            fourthPerformanceDescription = "Average\nIndex",
+                            countFontSize = 35.sp
                         )
                     }
                 }
