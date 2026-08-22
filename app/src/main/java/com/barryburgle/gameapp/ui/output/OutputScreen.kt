@@ -479,12 +479,14 @@ fun legendLead(legend: String, legendColor: Color) {
     }
 }
 
-fun getSeries(state: OutputState, heatmapEntity: HeatmapEntityEnum): List<ContributionEntry> {
-    val leadsMap = state.allLeads.associateBy { it.id }
-    val sessionsByDate = state.allSessionsUnlimited.groupBy { FormatService.parseDate(it.date) }
-    val setsByDate = state.allSets.groupBy { FormatService.parseDate(it.date) }
-    val datesByDate = state.allDates.filter { it.date != null }.groupBy { FormatService.parseDate(it.date!!) }
-
+fun getSeries(
+    state: OutputState,
+    heatmapEntity: HeatmapEntityEnum,
+    sessionsByDate: Map<LocalDate, List<AbstractSession>>,
+    setsByDate: Map<LocalDate, List<SingleSet>>,
+    datesByDate: Map<LocalDate, List<Date>>,
+    leadsMap: Map<Long, Lead>
+): List<ContributionEntry> {
     return when (heatmapEntity) {
         HeatmapEntityEnum.SETS -> {
             val allDates = (sessionsByDate.keys + setsByDate.keys).distinct()
@@ -506,13 +508,9 @@ fun getSeries(state: OutputState, heatmapEntity: HeatmapEntityEnum): List<Contri
                 }
                 val singleSetsSum = sets.size
                 if (singleSetsSum > 0) {
-                    desc += "\n[Single Sets] ${singleSetsSum}"
+                    desc += "\n[Single Sets] $singleSetsSum"
                 }
-                ContributionEntry(
-                    date,
-                    sessionSetsSum + singleSetsSum,
-                    desc
-                )
+                ContributionEntry(date, sessionSetsSum + singleSetsSum, desc)
             }
         }
 
@@ -527,15 +525,17 @@ fun getSeries(state: OutputState, heatmapEntity: HeatmapEntityEnum): List<Contri
                 for (session in sessions) {
                     if (session.convos > 0) {
                         sessionConvosSum += session.convos
-                        desc += "\n[Session] ${FormatService.getTime(session.startHour)} - ${FormatService.getTime(session.endHour)}: ${session.convos} conversations"
+                        desc += "\n[Session] ${FormatService.getTime(session.startHour)} - ${
+                            FormatService.getTime(
+                                session.endHour
+                            )
+                        }: ${session.convos} conversations"
                     }
                 }
-
                 val singleConvosSum = sets.count { it.conversation }
                 if (singleConvosSum > 0) {
                     desc += "\n[Single Conversations] $singleConvosSum"
                 }
-
                 ContributionEntry(date, sessionConvosSum + singleConvosSum, desc)
             }
         }
@@ -551,14 +551,17 @@ fun getSeries(state: OutputState, heatmapEntity: HeatmapEntityEnum): List<Contri
                 for (session in sessions) {
                     if (session.contacts > 0) {
                         sessionContactsSum += session.contacts
-                        desc += "\n[Session] ${FormatService.getTime(session.startHour)} - ${FormatService.getTime(session.endHour)}: ${session.contacts} contacts"
+                        desc += "\n[Session] ${FormatService.getTime(session.startHour)} - ${
+                            FormatService.getTime(
+                                session.endHour
+                            )
+                        }: ${session.contacts} contacts"
                     }
                 }
                 val singleContactsSum = sets.count { it.contact }
                 if (singleContactsSum > 0) {
                     desc += "\n[Single Contact] $singleContactsSum"
                 }
-
                 ContributionEntry(date, sessionContactsSum + singleContactsSum, desc)
             }
         }
@@ -579,18 +582,17 @@ fun getSeries(state: OutputState, heatmapEntity: HeatmapEntityEnum): List<Contri
             datesByDate.mapNotNull { (date, dates) ->
                 var dateCount = 0.0f
                 var desc = ""
-
                 for (singleDate in dates) {
                     dateCount += 1.0f
                     val dateLead = singleDate.leadId?.let { leadsMap[it] }
-
                     if (dateLead != null) {
-                        desc += "\n[${CountryEnum.getFlagByAlpha3(dateLead.nationality)} ${dateLead.name}] " +
-                                "${singleDate.dateType.replaceFirstChar { it.uppercase() }} " +
-                                "${FormatService.getTime(singleDate.startHour)} - ${FormatService.getTime(singleDate.endHour)}"
+                        desc += "\n[${CountryEnum.getFlagByAlpha3(dateLead.nationality)} ${dateLead.name}] ${singleDate.dateType.replaceFirstChar { it.uppercase() }} ${
+                            FormatService.getTime(
+                                singleDate.startHour
+                            )
+                        } - ${FormatService.getTime(singleDate.endHour)}"
                     }
                 }
-
                 ContributionEntry(date = date, count = dateCount, desc = desc)
             }
         }
@@ -608,18 +610,18 @@ fun getSeries(state: OutputState, heatmapEntity: HeatmapEntityEnum): List<Contri
                         datesRecSum += 1.0f
                         val dateLead = singleDate.leadId?.let { leadsMap[it] }
                         if (dateLead != null) {
-                            desc += "\n[${CountryEnum.getFlagByAlpha3(dateLead.nationality)} ${dateLead.name}] " +
-                                    "${singleDate.dateType.replaceFirstChar { it.uppercase() }} " +
-                                    "${FormatService.getTime(singleDate.startHour)} - ${FormatService.getTime(singleDate.endHour)}"
+                            desc += "\n[${CountryEnum.getFlagByAlpha3(dateLead.nationality)} ${dateLead.name}] ${singleDate.dateType.replaceFirstChar { it.uppercase() }} ${
+                                FormatService.getTime(
+                                    singleDate.startHour
+                                )
+                            } - ${FormatService.getTime(singleDate.endHour)}"
                         }
                     }
                 }
-
                 val setsRecSum = sets.count { it.recorded }
                 if (setsRecSum > 0) {
                     desc += "\n[Single Recording] $setsRecSum"
                 }
-
                 ContributionEntry(date, datesRecSum + setsRecSum, desc)
             }
         }
