@@ -17,7 +17,6 @@ import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 @Composable
 fun SummaryBody(
     period: String,
-    timeSpentDescription: String,
     sets: Int,
     contacts: Int,
     dates: Int,
@@ -56,6 +55,4 @@ fun SummaryBody(
             )
         }
     }
-    Spacer(modifier = Modifier.height(10.dp))
-    LittleBodyText(timeSpentDescription + " in the " + period.lowercase() + ".")
 }
