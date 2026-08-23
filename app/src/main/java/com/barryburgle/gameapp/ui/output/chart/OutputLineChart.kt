@@ -35,7 +35,9 @@ fun OutputLineChart(
     movingAverageWindow: Int = 4,
     movingAverageActive: Boolean = true,
     legendActive: Boolean = true,
-    transparentBackgroundActive: Boolean = false
+    transparentBackgroundActive: Boolean = false,
+    paddingOn: Boolean = true,
+    modifier: Modifier = Modifier
 ) {
     val defaultSurfaceColor = MaterialTheme.colorScheme.surface.toArgb()
     val surfaceColor = if (transparentBackgroundActive) Color.TRANSPARENT else defaultSurfaceColor
@@ -46,7 +48,7 @@ fun OutputLineChart(
     val commonLineWidth = 1f
     val inChartTextSize = 12f
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(
                 composeBackgroundColor,
                 Shapes.large
@@ -56,13 +58,13 @@ fun OutputLineChart(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
-                modifier = Modifier
-                    .padding(5.dp),
+                modifier = if (paddingOn) modifier
+                    .padding(5.dp) else modifier,
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 if (description != "") {
                     Column(
-                        modifier = Modifier
+                        modifier = modifier
                             .padding(5.dp)
                             .fillMaxWidth()
                     ) {
