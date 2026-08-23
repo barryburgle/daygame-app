@@ -32,16 +32,23 @@ fun OutputLineChart(
     barEntryList: List<BarEntry>,
     description: String = "",
     integerValues: Boolean,
-    movingAverageWindow: Int
+    movingAverageWindow: Int = 4,
+    movingAverageActive: Boolean = true,
+    legendActive: Boolean = true,
+    transparentBackgroundActive: Boolean = false
 ) {
-    val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
+    val defaultSurfaceColor = MaterialTheme.colorScheme.surface.toArgb()
+    val surfaceColor = if (transparentBackgroundActive) Color.TRANSPARENT else defaultSurfaceColor
+    val composeBackgroundColor =
+        if (transparentBackgroundActive) androidx.compose.ui.graphics.Color.Transparent else MaterialTheme.colorScheme.surface
+
     val onSurfaceColor = MaterialTheme.colorScheme.onPrimary.toArgb()
     val commonLineWidth = 1f
     val inChartTextSize = 12f
     Column(
         modifier = Modifier
             .background(
-                MaterialTheme.colorScheme.surface,
+                composeBackgroundColor,
                 Shapes.large
             )
     ) {
@@ -70,7 +77,7 @@ fun OutputLineChart(
                 }
                 val gradientColors = intArrayOf(
                     MaterialTheme.colorScheme.onSurface.toArgb(),
-                    MaterialTheme.colorScheme.surface.toArgb()
+                    surfaceColor
                 )
                 AndroidView(
                     modifier = Modifier
@@ -81,7 +88,8 @@ fun OutputLineChart(
                                 LineChart(context),
                                 surfaceColor,
                                 onSurfaceColor,
-                                inChartTextSize
+                                inChartTextSize,
+                                legendActive
                             )
                         val formatter: ValueFormatter = object : ValueFormatter() {
                             override fun getFormattedValue(value: Float): String {
@@ -126,21 +134,25 @@ fun OutputLineChart(
                                 mode = LineDataSet.Mode.HORIZONTAL_BEZIER
                                 enableDashedLine(15f, 10f, 0f)
                             }
-                        val movingAverageDataset =
-                            LineDataSet(
-                                SessionManager.computeMovingAverage(
-                                    barEntryList,
-                                    minOf(movingAverageWindow, barEntryList.size)
-                                ),
-                                "Last ${movingAverageWindow} average"
-                            ).apply {
-                                color = Color.RED
-                                lineWidth = commonLineWidth
-                                setDrawValues(false)
-                                setDrawCircles(false)
-                                mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-                            }
-                        val barData = LineData(dataset, averageDataset, movingAverageDataset)
+                        val dataSetsList = mutableListOf<LineDataSet>(dataset, averageDataset)
+                        if (movingAverageActive) {
+                            val movingAverageDataset =
+                                LineDataSet(
+                                    SessionManager.computeMovingAverage(
+                                        barEntryList,
+                                        minOf(movingAverageWindow, barEntryList.size)
+                                    ),
+                                    "Last ${movingAverageWindow} average"
+                                ).apply {
+                                    color = Color.RED
+                                    lineWidth = commonLineWidth
+                                    setDrawValues(false)
+                                    setDrawCircles(false)
+                                    mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+                                }
+                            dataSetsList.add(movingAverageDataset)
+                        }
+                        val barData = LineData(dataSetsList.toList())
                         barChart.data = barData
                         barChart.invalidate()
                         barChart
@@ -154,7 +166,8 @@ fun styleLineChart(
     lineChart: LineChart,
     surfaceColor: Int,
     onSurfacecolor: Int,
-    inChartTextSize: Float
+    inChartTextSize: Float,
+    legendActive: Boolean
 ): LineChart {
     lineChart.apply {
         setBackgroundColor(surfaceColor)
@@ -170,7 +183,7 @@ fun styleLineChart(
         setScaleEnabled(false)
         setPinchZoom(false)
         description = null
-        legend.isEnabled = true
+        legend.isEnabled = legendActive
         legend.textColor = onSurfacecolor
         legend.textSize = inChartTextSize
         extraBottomOffset = 15f
