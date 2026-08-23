@@ -42,9 +42,11 @@ import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.card.body.ChallengeBody
 import com.barryburgle.gameapp.ui.input.card.body.SummaryBody
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.output.chart.OutputLineChart
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import com.github.mikephil.charting.data.BarEntry
 import java.time.LocalDate
 
 @ExperimentalMaterial3Api
@@ -53,7 +55,6 @@ fun SummaryCard(
     state: InputState,
     modifier: Modifier = Modifier,
 ) {
-    // TODO: draw tow little charts on the edge right side of each week/month section for the three sets/contats/series in the last two weeks/months (fading away on left)
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val localContext = LocalContext.current.applicationContext
     val noEvents = state.allEvents.isEmpty()
@@ -68,6 +69,8 @@ fun SummaryCard(
     var monthSessionHours by remember { mutableStateOf(0L) }
     var monthDates by remember { mutableStateOf(0) }
     var monthDateHours by remember { mutableStateOf(0L) }
+    var weekChartEntries by remember { mutableStateOf(listOf<BarEntry>()) }
+    var monthChartEntries by remember { mutableStateOf(listOf<BarEntry>()) }
     if (!noEvents) {
         updatedDate = FormatService.getDate(state.allEvents.first().eventDate)
         val aggregatedWeekPeriodsList: List<AggregatedPeriod> =
@@ -94,6 +97,10 @@ fun SummaryCard(
             weekContacts = aggregatedWeekSessions.last().contacts.toInt()
             weekSessionHours =
                 aggregatedWeekSessions.last().timeSpent.toLong()
+            val lastThreeWeeks = aggregatedWeekSessions.takeLast(3)
+            weekChartEntries = lastThreeWeeks.mapIndexed { index, period ->
+                BarEntry(index.toFloat(), period.sets.toFloat())
+            }
         }
         if (aggregatedWeekDates.isNotEmpty()) {
             weekDates = aggregatedWeekDates.last().dates.toInt()
@@ -105,6 +112,10 @@ fun SummaryCard(
             monthContacts = aggregatedMonthSessions.last().contacts.toInt()
             monthSessionHours =
                 aggregatedMonthSessions.last().timeSpent.toLong()
+            val lastThreeMonths = aggregatedMonthSessions.takeLast(3)
+            monthChartEntries = lastThreeMonths.mapIndexed { index, period ->
+                BarEntry(index.toFloat(), period.sets.toFloat())
+            }
         }
         if (aggregatedMonthDates.isNotEmpty()) {
             monthDates = aggregatedMonthDates.last().dates.toInt()
@@ -252,33 +263,27 @@ fun SummaryCard(
                                     modifier = Modifier.fillMaxHeight()
                                 ) {
                                     if (state.showCurrentWeekSummary) {
-                                        CardSection {
-                                            SummaryBody(
-                                                "Last week",
-                                                weekTimeSpent,
-                                                weekSets,
-                                                weekContacts,
-                                                weekDates,
-                                                50.sp,
-                                                10.sp
-                                            )
-                                        }
+                                        SummaryCardSection(
+                                            "Last week",
+                                            weekTimeSpent,
+                                            weekSets,
+                                            weekContacts,
+                                            weekDates,
+                                            weekChartEntries
+                                        )
                                     }
                                     if (state.showCurrentWeekSummary && state.showCurrentMonthSummary) {
                                         Spacer(modifier = Modifier.height(5.dp))
                                     }
                                     if (state.showCurrentMonthSummary) {
-                                        CardSection {
-                                            SummaryBody(
-                                                "Last month",
-                                                monthTimeSpent,
-                                                monthSets,
-                                                monthContacts,
-                                                monthDates,
-                                                50.sp,
-                                                10.sp
-                                            )
-                                        }
+                                        SummaryCardSection(
+                                            "Last month",
+                                            weekTimeSpent,
+                                            monthSets,
+                                            monthContacts,
+                                            monthDates,
+                                            monthChartEntries
+                                        )
                                     }
                                     if ((state.showCurrentWeekSummary || state.showCurrentMonthSummary) && state.showCurrentChallengeSummary) {
                                         Spacer(modifier = Modifier.height(5.dp))
@@ -298,6 +303,66 @@ fun SummaryCard(
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SummaryCardSection(
+    periodDesc: String,
+    timeSpent: String,
+    sets: Int,
+    contacts: Int,
+    dates: Int,
+    chartEntries: List<BarEntry>
+) {
+    CardSection {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Top
+        ) {
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(0.7f)
+                    ) {
+                        SummaryBody(
+                            periodDesc,
+                            sets,
+                            contacts,
+                            dates,
+                            50.sp,
+                            10.sp
+                        )
+                    }
+                    if (chartEntries.isNotEmpty()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight(),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            OutputLineChart(
+                                barEntryList = chartEntries,
+                                integerValues = true,
+                                movingAverageActive = false,
+                                legendActive = false,
+                                transparentBackgroundActive = true,
+                                paddingOn = false,
+                                modifier = Modifier.fillMaxHeight()
+                            )
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                LittleBodyText(timeSpent + " in the " + periodDesc.lowercase() + ".")
             }
         }
     }
