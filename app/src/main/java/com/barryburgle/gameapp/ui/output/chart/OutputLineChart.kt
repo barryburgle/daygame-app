@@ -30,7 +30,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 @Composable
 fun OutputLineChart(
     barEntryList: List<BarEntry>,
-    description: String,
+    description: String = "",
     integerValues: Boolean,
     movingAverageWindow: Int
 ) {
@@ -53,17 +53,19 @@ fun OutputLineChart(
                     .padding(5.dp),
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .fillMaxWidth()
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
+                if (description != "") {
+                    Column(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth()
                     ) {
-                        SmallTitleText(description)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            SmallTitleText(description)
+                        }
                     }
                 }
                 val gradientColors = intArrayOf(
