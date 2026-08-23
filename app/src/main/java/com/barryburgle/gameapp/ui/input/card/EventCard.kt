@@ -270,18 +270,29 @@ fun EventCard(
                                         leadsToShare = listOf()
                                     }
                                     var report = sortableGameEvent.event.shareReport(leadsToShare)
-                                    if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
-                                        var eventDate: Date = sortableGameEvent.event as Date
-                                        report = eventDate.shareDateReport(
-                                            leadsToShare, simplePlusOneReport
-                                        )
-                                    } else if (AchievedChallenge::class.java.simpleName.equals(
-                                            sortableGameEvent.classType
-                                        )
-                                    ) {
-                                        var achievedChallenge: AchievedChallenge =
-                                            sortableGameEvent.event as AchievedChallenge
-                                        report = achievedChallenge.getAchievedChallengeReport(false)
+                                    report = when (sortableGameEvent.classType) {
+                                        AbstractSession::class.java.simpleName -> {
+                                            val abstractSession =
+                                                sortableGameEvent.event as AbstractSession
+                                            abstractSession.shareSessionReport(
+                                                leadsToShare, pinPoints
+                                            )
+                                        }
+
+                                        Date::class.java.simpleName -> {
+                                            val eventDate = sortableGameEvent.event as Date
+                                            eventDate.shareDateReport(
+                                                leadsToShare, simplePlusOneReport
+                                            )
+                                        }
+
+                                        AchievedChallenge::class.java.simpleName -> {
+                                            val achievedChallenge =
+                                                sortableGameEvent.event as AchievedChallenge
+                                            achievedChallenge.getAchievedChallengeReport(false)
+                                        }
+
+                                        else -> report
                                     }
                                     if (copyReportOnClipboard) {
                                         clipboardManager.setText(
@@ -484,14 +495,14 @@ fun EventCard(
                             if (isLiveSession) {
                                 IconShadowButton(
                                     onClick = {
-                                    onEvent(
-                                        GameEvent.StopLiveSession(sortableGameEvent.event as AbstractSession)
-                                    )
-                                    val intent = Intent(
-                                        context, PersistentNotificationService::class.java
-                                    )
-                                    context.stopService(intent)
-                                },
+                                        onEvent(
+                                            GameEvent.StopLiveSession(sortableGameEvent.event as AbstractSession)
+                                        )
+                                        val intent = Intent(
+                                            context, PersistentNotificationService::class.java
+                                        )
+                                        context.stopService(intent)
+                                    },
                                     onLongClick = {
                                         showCancelLiveSessionConfirmDialog = true
                                     },

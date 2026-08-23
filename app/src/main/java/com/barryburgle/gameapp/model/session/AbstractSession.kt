@@ -68,6 +68,38 @@ data class AbstractSession(
         return stickingPoints
     }
 
+    fun shareSessionReport(leads: List<Lead>, pinpoints: List<PinPoint>): String {
+        var report = shareReport(leads)
+        if (pinpoints.isNotEmpty() && sessionTime > 0) {
+            val startTime = FormatService.parseTime(startHour)
+            val chartLength = 12
+            val timelineIcons = arrayOfNulls<String>(chartLength + 1)
+
+            pinpoints.forEach { pin ->
+                val pinTime = FormatService.parseTime(pin.localTimestamp.substring(0, 16) + 'Z')
+                val elapsedMinutes = java.time.Duration.between(startTime, pinTime).toMinutes()
+                val ratio = (elapsedMinutes.toFloat() / sessionTime.toFloat()).coerceIn(0f, 1f)
+                val index = (ratio * chartLength).toInt().coerceIn(0, chartLength)
+
+                val emoji = when (pin.pinPointType.lowercase()) {
+                    "set" -> "🚶"
+                    "conversation" -> "🗪"
+                    "contact" -> "🪪"
+                    else -> "📍"
+                }
+                timelineIcons[index] = emoji
+            }
+
+            val sb = StringBuilder("\n\nTimeline:\n")
+            for (i in 0..chartLength) {
+                sb.append(timelineIcons[i] ?: "-")
+            }
+            report += sb.toString()
+        }
+        return report
+    }
+
+
     override fun shareReport(leads: List<Lead>): String {
         return "\uD83D\uDCC5 ${date.dropLast(7)} ${sessionTime}' session report:\n• ${sets} set${
             pluralMaker(

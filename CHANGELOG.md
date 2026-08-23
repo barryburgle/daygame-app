@@ -9,7 +9,7 @@
 - Now past backups are deleted only if deep validation of last backup went well ⛑️
 - Now backups only tables with new data 💾
 - Now all the exports are validated against app database after every single export 🚧
-- Pinpoints timeline on Live Session card ──●─
+- Pinpoints timeline on Live Session card and in session report ──●─
 - Last 3 periods plotted as line chart on Summary card 📌
 
 **Bugfixes**
