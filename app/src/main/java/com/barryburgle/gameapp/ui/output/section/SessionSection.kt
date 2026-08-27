@@ -26,7 +26,8 @@ fun LazyListScope.SessionSection(
                 chartLabel = "Sets",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastSessionsShown
             )
         }
     }
@@ -45,7 +46,8 @@ fun LazyListScope.SessionSection(
                 chartLabel = "Conversations",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastSessionsShown
             )
         }
     }
@@ -64,7 +66,8 @@ fun LazyListScope.SessionSection(
                 chartLabel = "Contacts",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastSessionsShown
             )
         }
     }
@@ -83,7 +86,8 @@ fun LazyListScope.SessionSection(
                 chartLabel = "Index",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastSessionsShown
             )
         }
     }
@@ -102,7 +106,8 @@ fun LazyListScope.SessionSection(
                 chartLabel = "Approach Time [minutes]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastSessionsShown
             )
         }
     }
@@ -121,7 +126,8 @@ fun LazyListScope.SessionSection(
                 chartLabel = "Conversation Ratio [%]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastSessionsShown
             )
         }
     }
@@ -140,7 +146,8 @@ fun LazyListScope.SessionSection(
                 chartLabel = "Contact Ratio [%]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastSessionsShown
             )
         }
     }

@@ -38,7 +38,8 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Sets",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastWeeksShown
             )
         }
     }
@@ -57,7 +58,8 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Conversations",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastWeeksShown
             )
         }
     }
@@ -76,7 +78,8 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Contacts",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastWeeksShown
             )
         }
     }
@@ -95,7 +98,8 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Dates",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastWeeksShown
             )
         }
     }
@@ -114,7 +118,8 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Average Session Index",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastWeeksShown
             )
         }
     }
@@ -133,7 +138,8 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Session Time [Hours]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastWeeksShown
             )
         }
     }
@@ -152,7 +158,8 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Date Time [Hours]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastWeeksShown
             )
         }
     }
@@ -171,7 +178,8 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Average Conv. Ratio [%]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastWeeksShown
             )
         }
     }
@@ -190,7 +198,8 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Average Contact Ratio [%]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastWeeksShown
             )
         }
     }
@@ -212,7 +221,8 @@ fun LazyListScope.WeekSection(
                 chartLabel = "Date Ratio [%]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastWeeksShown
             )
         }
     }

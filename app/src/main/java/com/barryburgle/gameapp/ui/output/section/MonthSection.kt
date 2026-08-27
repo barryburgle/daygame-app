@@ -41,7 +41,8 @@ fun LazyListScope.MonthSection(
                 chartLabel = "Sets",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastMonthsShown
             )
         }
     }
@@ -60,7 +61,8 @@ fun LazyListScope.MonthSection(
                 chartLabel = "Conversations",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastMonthsShown
             )
         }
     }
@@ -79,7 +81,8 @@ fun LazyListScope.MonthSection(
                 chartLabel = "Contacts",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastMonthsShown
             )
         }
     }
@@ -98,7 +101,8 @@ fun LazyListScope.MonthSection(
                 chartLabel = "Dates",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastMonthsShown
             )
         }
     }
@@ -117,7 +121,8 @@ fun LazyListScope.MonthSection(
                 chartLabel = "Average Session Index",
                 barEntryList = it as List<BarEntry>,
                 integerValues = false,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastMonthsShown
             )
         }
     }
@@ -136,7 +141,8 @@ fun LazyListScope.MonthSection(
                 chartLabel = "Session Time [Hours]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastMonthsShown
             )
         }
     }
@@ -155,7 +161,8 @@ fun LazyListScope.MonthSection(
                 chartLabel = "Date Time [Hours]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastMonthsShown
             )
         }
     }
@@ -174,7 +181,8 @@ fun LazyListScope.MonthSection(
                 chartLabel = "Average Conv. Ratio [%]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastMonthsShown
             )
         }
     }
@@ -194,7 +202,8 @@ fun LazyListScope.MonthSection(
                 chartLabel = "Average Contact Ratio [%]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastMonthsShown
             )
         }
     }
@@ -216,7 +225,8 @@ fun LazyListScope.MonthSection(
                 chartLabel = "Date Ratio [%]",
                 barEntryList = it as List<BarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastMonthsShown
             )
         }
     }
