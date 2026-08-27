@@ -37,8 +37,12 @@ fun OutputLineChart(
     legendActive: Boolean = true,
     transparentBackgroundActive: Boolean = false,
     paddingOn: Boolean = true,
+    isScrollable: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    val normalizedBarEntryList = barEntryList.mapIndexed { index, entry ->
+        BarEntry((index).toFloat(), entry.y)
+    }
     val defaultSurfaceColor = MaterialTheme.colorScheme.surface.toArgb()
     val surfaceColor = if (transparentBackgroundActive) Color.TRANSPARENT else defaultSurfaceColor
     val composeBackgroundColor =
@@ -58,13 +62,14 @@ fun OutputLineChart(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
-                modifier = if (paddingOn) modifier
-                    .padding(5.dp) else modifier,
+                modifier = if (paddingOn) Modifier
+                    .padding(5.dp)
+                    .fillMaxSize() else Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 if (description != "") {
                     Column(
-                        modifier = modifier
+                        modifier = Modifier
                             .padding(5.dp)
                             .fillMaxWidth()
                     ) {
@@ -91,7 +96,8 @@ fun OutputLineChart(
                                 surfaceColor,
                                 onSurfaceColor,
                                 inChartTextSize,
-                                legendActive
+                                legendActive,
+                                isScrollable
                             )
                         val formatter: ValueFormatter = object : ValueFormatter() {
                             override fun getFormattedValue(value: Float): String {
@@ -101,13 +107,13 @@ fun OutputLineChart(
                         val leftAxis: YAxis = barChart.getAxisLeft()
                         leftAxis.setValueFormatter(formatter)
                         val dataset =
-                            LineDataSet(barEntryList, description).apply {
+                            LineDataSet(normalizedBarEntryList, description).apply {
                                 color = onSurfaceColor
                                 valueTextColor = onSurfaceColor
                                 valueTextSize = inChartTextSize
                                 setDrawValues(true)
                                 if (integerValues) {
-                                    valueFormatter = IntegerValueFormatter()
+                                    valueFormatter = formatter
                                 }
                                 lineWidth = commonLineWidth
                                 isHighlightEnabled = true
@@ -126,7 +132,7 @@ fun OutputLineChart(
                             }
                         val averageDataset =
                             LineDataSet(
-                                SessionManager.computeAverageBarEntryList(barEntryList),
+                                SessionManager.computeAverageBarEntryList(normalizedBarEntryList),
                                 "Average"
                             ).apply {
                                 color = Color.YELLOW
@@ -141,8 +147,8 @@ fun OutputLineChart(
                             val movingAverageDataset =
                                 LineDataSet(
                                     SessionManager.computeMovingAverage(
-                                        barEntryList,
-                                        minOf(movingAverageWindow, barEntryList.size)
+                                        normalizedBarEntryList,
+                                        minOf(movingAverageWindow, normalizedBarEntryList.size)
                                     ),
                                     "Last ${movingAverageWindow} average"
                                 ).apply {
@@ -156,6 +162,10 @@ fun OutputLineChart(
                         }
                         val barData = LineData(dataSetsList.toList())
                         barChart.data = barData
+                        if (isScrollable) {
+                            barChart.setVisibleXRangeMaximum(12f)
+                            barChart.moveViewToX(normalizedBarEntryList.size.toFloat())
+                        }
                         barChart.invalidate()
                         barChart
                     })
@@ -169,7 +179,8 @@ fun styleLineChart(
     surfaceColor: Int,
     onSurfacecolor: Int,
     inChartTextSize: Float,
-    legendActive: Boolean
+    legendActive: Boolean,
+    isScrollable: Boolean = false
 ): LineChart {
     lineChart.apply {
         setBackgroundColor(surfaceColor)
@@ -180,9 +191,10 @@ fun styleLineChart(
         xAxis.apply {
             isEnabled = false
         }
-        setTouchEnabled(false)
-        isDragEnabled = false
-        setScaleEnabled(false)
+        setTouchEnabled(isScrollable)
+        isDragEnabled = isScrollable
+        isScaleXEnabled = isScrollable
+        isScaleYEnabled = false
         setPinchZoom(false)
         description = null
         legend.isEnabled = legendActive
