@@ -19,6 +19,9 @@ data class OutputState(
     val datesByWeek: List<AggregatedDates> = emptyList(),
     val datesByMonth: List<AggregatedDates> = emptyList(),
     val movingAverageWindow: Int = 4,
+    val lastSessionsShown: Int = 8,
+    val lastWeeksShown: Int = 8,
+    val lastMonthsShown: Int = 4,
     val showLeadsLegend: Boolean = false,
     val showIndexFormula: Boolean = false,
     val showCustomSummaryDialog: Boolean = false
