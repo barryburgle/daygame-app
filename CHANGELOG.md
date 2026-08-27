@@ -6,6 +6,7 @@
 - Pinpoints week vs. day-time chart: know when most of the interaction happen at a glance 👀
 - Pinpoints on map can now be filtered by type: show where the juiciest interactions happened 📍
 - Tap on the sitting reminder notification to open the timer for some rest 🕐
+- Tap on any chart in Dashboard to get to view the whole time series in landscape 📊
 - Now past backups are deleted only if deep validation of last backup went well ⛑️
 - Now backups only tables with new data 💾
 - Now all the exports are validated against app database after every single export 🚧
