@@ -11,7 +11,7 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.manager.SessionManager
-import com.barryburgle.gameapp.ui.CombineFourteen
+import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,9 +28,7 @@ class OutputViewModel(
     private val setDao: SetDao
 ) : ViewModel() {
     private val _state = MutableStateFlow(OutputState())
-
-    private val _allSessionsLimited = abstractSessionDao.getAllLimit()
-    private val _allSessionsUnlimited = abstractSessionDao.getAll()
+    private val _allSessions = abstractSessionDao.getAll()
     private val _allLeads = leadDao.getAll()
     private val _allDates = dateDao.getAll()
     private val _allSet = setDao.getAll()
@@ -47,10 +45,9 @@ class OutputViewModel(
     private val _lastMonthsShown = settingDao.getLastMonthsShown()
     private val _averageLast = settingDao.getAverageLast()
 
-    val state = CombineFourteen(
+    val state = CombineThirteen(
         _state,
-        _allSessionsLimited,
-        _allSessionsUnlimited,
+        _allSessions,
         _allLeads,
         _allDates,
         _allSet,
@@ -63,10 +60,9 @@ class OutputViewModel(
         _lastWeeksShown,
         _lastMonthsShown
     )
-    { state, allSessionsLimited, allSessionsUnlimited, allLeads, allDates, allSets, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast, lastSessionsShown, lastWeeksShown, lastMonthsShown ->
+    { state, allSessions, allLeads, allDates, allSets, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast, lastSessionsShown, lastWeeksShown, lastMonthsShown ->
         state.copy(
-            allSessionsLimited = SessionManager.normalizeSessionsIds(allSessionsLimited),
-            allSessionsUnlimited = SessionManager.normalizeSessionsIds(allSessionsUnlimited),
+            allSessions = SessionManager.normalizeSessionsIds(allSessions),
             allLeads = allLeads,
             allDates = allDates,
             allSets = allSets,

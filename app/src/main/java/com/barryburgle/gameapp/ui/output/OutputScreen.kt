@@ -147,7 +147,7 @@ fun OutputScreen(
                     }
                     val leadsMap = state.allLeads.associateBy { it.id }
                     val sessionsByDate =
-                        state.allSessionsUnlimited.groupBy { FormatService.parseDate(it.date) }
+                        state.allSessions.groupBy { FormatService.parseDate(it.date) }
                     val setsByDate = state.allSets.groupBy { FormatService.parseDate(it.date) }
                     val datesByDate = state.allDates.filter { it.date != null }
                         .groupBy { FormatService.parseDate(it.date!!) }
