@@ -19,9 +19,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +36,17 @@ import androidx.compose.ui.window.DialogProperties
 import com.barryburgle.gameapp.ui.output.chart.OutputLineChart
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.github.mikephil.charting.data.BarEntry
+import java.util.UUID
+
+private data class FullScreenChartState(
+    val barEntryList: List<BarEntry>,
+    val integerValues: Boolean,
+    val movingAverageWindow: Int
+)
+
+private var activeFullScreenState by mutableStateOf<FullScreenChartState?>(null)
+
+private var dialogHostId by mutableStateOf<String?>(null)
 
 @Composable
 fun OutputCard(
@@ -53,9 +65,16 @@ fun OutputCard(
     movingAverageWindow: Int,
     lastShown: Int
 ) {
-    var isFullScreen by rememberSaveable { mutableStateOf(false) }
+    val cardId = remember { UUID.randomUUID().toString() }
+
     Card(
-        modifier = modifier.clickable { isFullScreen = true },
+        modifier = modifier.clickable {
+            activeFullScreenState = FullScreenChartState(
+                barEntryList = barEntryList,
+                integerValues = integerValues,
+                movingAverageWindow = movingAverageWindow
+            )
+        },
         colors = CardDefaults.cardColors(
             MaterialTheme.colorScheme.surface
         ),
@@ -71,53 +90,81 @@ fun OutputCard(
             )
         }
     }
+
     Spacer(modifier = Modifier.width(5.dp))
-    if (isFullScreen) {
+    if (activeFullScreenState != null) {
         // TODO: we need to support x-axis labels for all charts
         // This means rethinking db queries with query-level labels generation
         // Labels should be then carried on an additional field at this level through barEntries or wrapper object
-        val context = LocalContext.current
-
-        DisposableEffect(Unit) {
-            var currentContext = context
-            var activity: Activity? = null
-            while (currentContext is ContextWrapper) {
-                if (currentContext is Activity) {
-                    activity = currentContext
-                    break
-                }
-                currentContext = currentContext.baseContext
-            }
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-            onDispose {
-                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        LaunchedEffect(activeFullScreenState, dialogHostId) {
+            if (dialogHostId == null) {
+                dialogHostId = cardId
             }
         }
+        DisposableEffect(Unit) {
+            onDispose {
+                if (dialogHostId == cardId) {
+                    dialogHostId = null
+                }
+            }
+        }
+        if (dialogHostId == cardId) {
+            val currentData = activeFullScreenState!!
+            val context = LocalContext.current
 
-        Dialog(
-            onDismissRequest = { isFullScreen = false },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+            fun setOrientation(orientation: Int) {
+                var currentContext = context
+                var activity: Activity? = null
+                while (currentContext is ContextWrapper) {
+                    if (currentContext is Activity) {
+                        activity = currentContext
+                        break
+                    }
+                    currentContext = currentContext.baseContext
+                }
+                activity?.requestedOrientation = orientation
+            }
+
+            DisposableEffect(Unit) {
+                setOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE)
+                onDispose {
+                    // Left empty intentionally to prevent loop
+                }
+            }
+
+            Dialog(
+                onDismissRequest = {
+                    setOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                    activeFullScreenState = null
+                    dialogHostId = null
+                },
+                properties = DialogProperties(usePlatformDefaultWidth = false)
             ) {
-                OutputLineChart(
-                    barEntryList = barEntryList,
-                    integerValues = integerValues,
-                    movingAverageWindow = movingAverageWindow,
-                    isScrollable = true,
-                    modifier = Modifier.fillMaxSize()
-                )
-                IconShadowButton(
-                    onClick = { isFullScreen = false },
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Close full screen",
-                    boxModifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(16.dp),
-                    modifier = Modifier.clip(CircleShape)
-                )
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    OutputLineChart(
+                        barEntryList = currentData.barEntryList,
+                        integerValues = currentData.integerValues,
+                        movingAverageWindow = currentData.movingAverageWindow,
+                        isScrollable = true,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    IconShadowButton(
+                        onClick = {
+                            setOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                            activeFullScreenState = null
+                            dialogHostId = null
+                        },
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Close full screen",
+                        boxModifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(16.dp),
+                        modifier = Modifier.clip(CircleShape)
+                    )
+                }
             }
         }
     }
