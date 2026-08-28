@@ -20,16 +20,22 @@ import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.ui.theme.Shapes
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 
+data class LabeledBarEntry(
+    val entry: BarEntry,
+    val label: String
+)
 
 @Composable
 fun OutputLineChart(
-    barEntryList: List<BarEntry>,
+    labeledEntries: List<LabeledBarEntry>,
     description: String = "",
     integerValues: Boolean,
     movingAverageWindow: Int = 4,
@@ -38,10 +44,11 @@ fun OutputLineChart(
     transparentBackgroundActive: Boolean = false,
     paddingOn: Boolean = true,
     isScrollable: Boolean = false,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showLabels: Boolean = false
 ) {
-    val normalizedBarEntryList = barEntryList.mapIndexed { index, entry ->
-        BarEntry((index).toFloat(), entry.y)
+    val normalizedBarEntryList = labeledEntries.mapIndexed { index, labeledEntry ->
+        BarEntry((index).toFloat(), labeledEntry.entry.y)
     }
     val defaultSurfaceColor = MaterialTheme.colorScheme.surface.toArgb()
     val surfaceColor = if (transparentBackgroundActive) Color.TRANSPARENT else defaultSurfaceColor
@@ -50,7 +57,8 @@ fun OutputLineChart(
 
     val onSurfaceColor = MaterialTheme.colorScheme.onPrimary.toArgb()
     val commonLineWidth = 1f
-    val inChartTextSize = 12f
+    val inChartValueTextSize = 12f
+    val inChartLabelTextSize = 10f
     Column(
         modifier = modifier
             .background(
@@ -95,10 +103,26 @@ fun OutputLineChart(
                                 LineChart(context),
                                 surfaceColor,
                                 onSurfaceColor,
-                                inChartTextSize,
+                                inChartValueTextSize,
                                 legendActive,
                                 isScrollable
                             )
+                        if (showLabels) {
+                            val xAxisLabels = labeledEntries.map { it.label }
+                            if (xAxisLabels.isNotEmpty()) {
+                                barChart.xAxis.apply {
+                                    isEnabled = true
+                                    valueFormatter = IndexAxisValueFormatter(xAxisLabels)
+                                    position = XAxis.XAxisPosition.BOTTOM
+                                    textColor = onSurfaceColor
+                                    textSize = inChartLabelTextSize
+                                    setDrawGridLines(false)
+                                    granularity = 1f
+                                    isGranularityEnabled = true
+                                    setLabelCount(25, false)
+                                }
+                            }
+                        }
                         val formatter: ValueFormatter = object : ValueFormatter() {
                             override fun getFormattedValue(value: Float): String {
                                 return value.toInt().toString()
@@ -110,7 +134,7 @@ fun OutputLineChart(
                             LineDataSet(normalizedBarEntryList, description).apply {
                                 color = onSurfaceColor
                                 valueTextColor = onSurfaceColor
-                                valueTextSize = inChartTextSize
+                                valueTextSize = inChartValueTextSize
                                 setDrawValues(true)
                                 if (integerValues) {
                                     valueFormatter = formatter
