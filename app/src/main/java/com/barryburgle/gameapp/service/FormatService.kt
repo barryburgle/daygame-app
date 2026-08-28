@@ -11,6 +11,7 @@ class FormatService {
         val SAVE_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX")
         val SAVE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX")
         val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        val SHORT_YEAR_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yy")
         val TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm")
         val NO_DATE = "No date"
 
@@ -28,6 +29,15 @@ class FormatService {
                 return NO_DATE
             }
             return DATE_FORMATTER.format(parseDate(localDate))
+        }
+
+        fun getDateForCharLabel(
+            localDate: String?
+        ): String {
+            if(localDate==null){
+                return NO_DATE
+            }
+            return SHORT_YEAR_DATE_FORMATTER.format(parseDate(localDate))
         }
 
         fun getTime(
