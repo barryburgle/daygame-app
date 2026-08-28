@@ -14,5 +14,5 @@ class AggregatedSessions(
     @ColumnInfo(name = "year_number") override var yearNumber: Int,
     @ColumnInfo(name = "period_number") override var periodNumber: Int,
     @ColumnInfo(name = "time_spent") var timeSpent: Float,
-    @ColumnInfo(name = "label") var label: String = ""
+    @ColumnInfo(name = "label") override var label: String
 ) : PeriodAware

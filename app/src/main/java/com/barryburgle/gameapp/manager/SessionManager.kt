@@ -15,7 +15,8 @@ class SessionManager {
             var aggregatedSessions: List<AggregatedSessions> = mutableListOf()
             var count: Int = 1
             for (aggregatedPeriod in aggregatedPeriodList) {
-                var addingAggregatedSessions = AggregatedSessions(0f, 0f, 0f, 0f, 0f, 0f, count, 0,0f)
+                var addingAggregatedSessions =
+                    AggregatedSessions(0f, 0f, 0f, 0f, 0f, 0f, count, 0, 0f, "")
                 if (aggregatedPeriod.aggregatedSessions != null) {
                     addingAggregatedSessions = aggregatedPeriod.aggregatedSessions!!
                     addingAggregatedSessions.periodNumber = count
@@ -35,7 +36,7 @@ class SessionManager {
             var aggregatedDates: List<AggregatedDates> = mutableListOf()
             var count: Int = 1
             for (aggregatedPeriod in aggregatedPeriodList) {
-                var addingAggregatedDates = AggregatedDates(0f, count, 0,0f)
+                var addingAggregatedDates = AggregatedDates(0f, count, 0, 0f, "")
                 if (aggregatedPeriod.aggregatedDates != null) {
                     addingAggregatedDates = aggregatedPeriod.aggregatedDates!!
                     addingAggregatedDates.periodNumber = count

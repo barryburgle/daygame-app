@@ -8,5 +8,6 @@ class AggregatedDates(
     @ColumnInfo(name = "dates") var dates: Float,
     @ColumnInfo(name = "year_number") override var yearNumber: Int,
     @ColumnInfo(name = "period_number") override var periodNumber: Int,
-    @ColumnInfo(name = "date_time_spent") var dateTimeSpent: Float
+    @ColumnInfo(name = "date_time_spent") var dateTimeSpent: Float,
+    @ColumnInfo(name = "label") override var label: String
 ) : PeriodAware
