@@ -42,6 +42,7 @@ import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.card.body.ChallengeBody
 import com.barryburgle.gameapp.ui.input.card.body.SummaryBody
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.output.chart.LabeledBarEntry
 import com.barryburgle.gameapp.ui.output.chart.OutputLineChart
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -69,8 +70,8 @@ fun SummaryCard(
     var monthSessionHours by remember { mutableStateOf(0L) }
     var monthDates by remember { mutableStateOf(0) }
     var monthDateHours by remember { mutableStateOf(0L) }
-    var weekChartEntries by remember { mutableStateOf(listOf<BarEntry>()) }
-    var monthChartEntries by remember { mutableStateOf(listOf<BarEntry>()) }
+    var weekChartEntries by remember { mutableStateOf(listOf<LabeledBarEntry>()) }
+    var monthChartEntries by remember { mutableStateOf(listOf<LabeledBarEntry>()) }
     if (!noEvents) {
         updatedDate = FormatService.getDate(state.allEvents.first().eventDate)
         val aggregatedWeekPeriodsList: List<AggregatedPeriod> =
@@ -99,7 +100,13 @@ fun SummaryCard(
                 aggregatedWeekSessions.last().timeSpent.toLong()
             val lastThreeWeeks = aggregatedWeekSessions.takeLast(3)
             weekChartEntries = lastThreeWeeks.mapIndexed { index, period ->
-                BarEntry(index.toFloat(), period.sets.toFloat())
+                LabeledBarEntry(
+                    BarEntry(
+                        index.toFloat(),
+                        period.sets
+                    ),
+                    period.label
+                )
             }
         }
         if (aggregatedWeekDates.isNotEmpty()) {
@@ -114,7 +121,13 @@ fun SummaryCard(
                 aggregatedMonthSessions.last().timeSpent.toLong()
             val lastThreeMonths = aggregatedMonthSessions.takeLast(3)
             monthChartEntries = lastThreeMonths.mapIndexed { index, period ->
-                BarEntry(index.toFloat(), period.sets.toFloat())
+                LabeledBarEntry(
+                    BarEntry(
+                        index.toFloat(),
+                        period.sets
+                    ),
+                    period.label
+                )
             }
         }
         if (aggregatedMonthDates.isNotEmpty()) {
@@ -315,7 +328,7 @@ private fun SummaryCardSection(
     sets: Int,
     contacts: Int,
     dates: Int,
-    chartEntries: List<BarEntry>
+    labeledBarEntries: List<LabeledBarEntry>
 ) {
     CardSection {
         Row(
@@ -343,14 +356,14 @@ private fun SummaryCardSection(
                             10.sp
                         )
                     }
-                    if (chartEntries.isNotEmpty()) {
+                    if (labeledBarEntries.isNotEmpty()) {
                         Column(
                             modifier = Modifier
                                 .fillMaxHeight(),
                             verticalArrangement = Arrangement.Center
                         ) {
                             OutputLineChart(
-                                barEntryList = chartEntries,
+                                labeledEntries = labeledBarEntries,
                                 integerValues = true,
                                 movingAverageActive = false,
                                 legendActive = false,
