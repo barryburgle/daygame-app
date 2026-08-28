@@ -33,13 +33,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.barryburgle.gameapp.ui.output.chart.LabeledBarEntry
 import com.barryburgle.gameapp.ui.output.chart.OutputLineChart
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
-import com.github.mikephil.charting.data.BarEntry
 import java.util.UUID
 
 private data class FullScreenChartState(
-    val barEntryList: List<BarEntry>,
+    val labeledEntries: List<LabeledBarEntry>,
     val integerValues: Boolean,
     val movingAverageWindow: Int
 )
@@ -60,7 +60,7 @@ fun OutputCard(
             elevation = 5.dp,
             shape = MaterialTheme.shapes.large
         ),
-    barEntryList: List<BarEntry>,
+    labeledEntries: List<LabeledBarEntry>,
     integerValues: Boolean,
     movingAverageWindow: Int,
     lastShown: Int
@@ -70,7 +70,7 @@ fun OutputCard(
     Card(
         modifier = modifier.clickable {
             activeFullScreenState = FullScreenChartState(
-                barEntryList = barEntryList,
+                labeledEntries = labeledEntries,
                 integerValues = integerValues,
                 movingAverageWindow = movingAverageWindow
             )
@@ -82,7 +82,7 @@ fun OutputCard(
     ) {
         Row {
             OutputLineChart(
-                barEntryList = barEntryList.takeLast(lastShown),
+                labeledEntries = labeledEntries.takeLast(lastShown),
                 description = chartLabel,
                 integerValues = integerValues,
                 movingAverageWindow = movingAverageWindow,
@@ -93,9 +93,6 @@ fun OutputCard(
 
     Spacer(modifier = Modifier.width(5.dp))
     if (activeFullScreenState != null) {
-        // TODO: we need to support x-axis labels for all charts
-        // This means rethinking db queries with query-level labels generation
-        // Labels should be then carried on an additional field at this level through barEntries or wrapper object
         LaunchedEffect(activeFullScreenState, dialogHostId) {
             if (dialogHostId == null) {
                 dialogHostId = cardId
@@ -145,11 +142,12 @@ fun OutputCard(
                     contentAlignment = Alignment.Center
                 ) {
                     OutputLineChart(
-                        barEntryList = currentData.barEntryList,
+                        labeledEntries = currentData.labeledEntries,
                         integerValues = currentData.integerValues,
                         movingAverageWindow = currentData.movingAverageWindow,
                         isScrollable = true,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        showLabels = true
                     )
                     IconShadowButton(
                         onClick = {
