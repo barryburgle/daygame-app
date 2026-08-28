@@ -13,7 +13,7 @@ interface AggregatedDatesDao {
         const val QUERY_DATES_BY_WEEKS =
             "SELECT COUNT(*) as dates, CAST(strftime('%Y', meeting_date) as INTEGER) as year_number, CAST(week_number as INTEGER) as period_number, SUM(date_time)/60 as date_time_spent from meeting GROUP BY strftime('%Y', meeting_date), week_number"
         const val QUERY_DATES_BY_MONTHS =
-            "SELECT COUNT(*) as dates, CAST(strftime('%Y', meeting_date) as INTEGER) as year_number, CAST(strftime('%m', meeting_date) as INTEGER) as period_number, SUM(date_time)/60 as date_time_spent from meeting GROUP BY strftime('%Y', meeting_date), strftime('%m', meeting_date)"
+            "SELECT COUNT(*) as dates, CAST(strftime('%Y', meeting_date) as INTEGER) as year_number, CAST(strftime('%m', meeting_date) as INTEGER) as period_number, CAST(strftime('%Y', meeting_date) as INTEGER) || '-' || CAST(strftime('%m', meeting_date) as INTEGER) as label, SUM(date_time)/60 as date_time_spent from meeting GROUP BY strftime('%Y', meeting_date), strftime('%m', meeting_date)"
     }
 
     @Query(QUERY_DATES_BY_WEEKS)
