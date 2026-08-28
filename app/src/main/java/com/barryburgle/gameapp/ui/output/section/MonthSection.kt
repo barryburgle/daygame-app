@@ -4,8 +4,10 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.ui.unit.Dp
 import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.model.stat.AggregatedPeriod
+import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.service.GlobalStatsService
 import com.barryburgle.gameapp.ui.output.OutputCard
+import com.barryburgle.gameapp.ui.output.chart.LabeledBarEntry
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.github.mikephil.charting.data.BarEntry
 
@@ -29,9 +31,12 @@ fun LazyListScope.MonthSection(
     item {
         aggregatedMonthSessions.map { singleMonth ->
             singleMonth.periodNumber?.let {
-                BarEntry(
-                    it.toFloat(),
-                    singleMonth.sets
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        singleMonth.sets
+                    ),
+                    singleMonth.label
                 )
             }
         }?.let { it ->
@@ -39,7 +44,7 @@ fun LazyListScope.MonthSection(
                 height = height,
                 width = width,
                 chartLabel = "Sets",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
                 movingAverageWindow = state.movingAverageWindow,
                 lastShown = state.lastMonthsShown
@@ -49,9 +54,12 @@ fun LazyListScope.MonthSection(
     item {
         aggregatedMonthSessions.map { singleMonth ->
             singleMonth.periodNumber?.let {
-                BarEntry(
-                    it.toFloat(),
-                    singleMonth.convos
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        singleMonth.convos
+                    ),
+                    singleMonth.label
                 )
             }
         }?.let { it ->
@@ -59,7 +67,7 @@ fun LazyListScope.MonthSection(
                 height = height,
                 width = width,
                 chartLabel = "Conversations",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
                 movingAverageWindow = state.movingAverageWindow,
                 lastShown = state.lastMonthsShown
@@ -69,9 +77,12 @@ fun LazyListScope.MonthSection(
     item {
         aggregatedMonthSessions.map { singleMonth ->
             singleMonth.periodNumber?.let {
-                BarEntry(
-                    it.toFloat(),
-                    singleMonth.contacts
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        singleMonth.contacts
+                    ),
+                    singleMonth.label
                 )
             }
         }?.let { it ->
@@ -79,7 +90,7 @@ fun LazyListScope.MonthSection(
                 height = height,
                 width = width,
                 chartLabel = "Contacts",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
                 movingAverageWindow = state.movingAverageWindow,
                 lastShown = state.lastMonthsShown
@@ -89,9 +100,12 @@ fun LazyListScope.MonthSection(
     item {
         aggregatedMonthDates.map { singleMonth ->
             singleMonth.periodNumber?.let {
-                BarEntry(
-                    it.toFloat(),
-                    singleMonth.dates
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        singleMonth.dates
+                    ),
+                    singleMonth.label
                 )
             }
         }?.let { it ->
@@ -99,7 +113,7 @@ fun LazyListScope.MonthSection(
                 height = height,
                 width = width,
                 chartLabel = "Dates",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
                 movingAverageWindow = state.movingAverageWindow,
                 lastShown = state.lastMonthsShown
@@ -109,9 +123,12 @@ fun LazyListScope.MonthSection(
     item {
         aggregatedMonthSessions.map { singleMonth ->
             singleMonth.periodNumber?.let {
-                BarEntry(
-                    it.toFloat(),
-                    singleMonth.avgIndex
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        singleMonth.avgIndex
+                    ),
+                    singleMonth.label
                 )
             }
         }?.let { it ->
@@ -119,7 +136,7 @@ fun LazyListScope.MonthSection(
                 height = height,
                 width = width,
                 chartLabel = "Average Session Index",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = false,
                 movingAverageWindow = state.movingAverageWindow,
                 lastShown = state.lastMonthsShown
@@ -127,11 +144,14 @@ fun LazyListScope.MonthSection(
         }
     }
     item {
-        aggregatedMonthSessions.map { weekStat ->
-            weekStat.periodNumber?.let {
-                BarEntry(
-                    it.toFloat(),
-                    weekStat.timeSpent
+        aggregatedMonthSessions.map { singleMonth ->
+            singleMonth.periodNumber?.let {
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        singleMonth.timeSpent
+                    ),
+                    singleMonth.label
                 )
             }
         }?.let { it ->
@@ -139,7 +159,7 @@ fun LazyListScope.MonthSection(
                 height = height,
                 width = width,
                 chartLabel = "Session Time [Hours]",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
                 movingAverageWindow = state.movingAverageWindow,
                 lastShown = state.lastMonthsShown
@@ -147,11 +167,14 @@ fun LazyListScope.MonthSection(
         }
     }
     item {
-        aggregatedMonthDates.map { weekStat ->
-            weekStat.periodNumber?.let {
-                BarEntry(
-                    it.toFloat(),
-                    weekStat.dateTimeSpent
+        aggregatedMonthDates.map { singleMonth ->
+            singleMonth.periodNumber?.let {
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        singleMonth.dateTimeSpent
+                    ),
+                    singleMonth.label
                 )
             }
         }?.let { it ->
@@ -159,7 +182,7 @@ fun LazyListScope.MonthSection(
                 height = height,
                 width = width,
                 chartLabel = "Date Time [Hours]",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
                 movingAverageWindow = state.movingAverageWindow,
                 lastShown = state.lastMonthsShown
@@ -169,9 +192,12 @@ fun LazyListScope.MonthSection(
     item {
         aggregatedMonthSessions.map { singleMonth ->
             singleMonth.periodNumber?.let {
-                BarEntry(
-                    it.toFloat(),
-                    singleMonth.avgConvoRatio * 100
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        singleMonth.avgConvoRatio * 100
+                    ),
+                    singleMonth.label
                 )
             }
         }?.let { it ->
@@ -179,7 +205,7 @@ fun LazyListScope.MonthSection(
                 height = height,
                 width = width,
                 chartLabel = "Average Conv. Ratio [%]",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
                 movingAverageWindow = state.movingAverageWindow,
                 lastShown = state.lastMonthsShown
@@ -190,9 +216,12 @@ fun LazyListScope.MonthSection(
     item {
         aggregatedMonthSessions.map { singleMonth ->
             singleMonth.periodNumber?.let {
-                BarEntry(
-                    it.toFloat(),
-                    singleMonth.avgContactRatio * 100
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        singleMonth.avgContactRatio * 100
+                    ),
+                    singleMonth.label
                 )
             }
         }?.let { it ->
@@ -200,7 +229,7 @@ fun LazyListScope.MonthSection(
                 height = height,
                 width = width,
                 chartLabel = "Average Contact Ratio [%]",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
                 movingAverageWindow = state.movingAverageWindow,
                 lastShown = state.lastMonthsShown
@@ -210,12 +239,15 @@ fun LazyListScope.MonthSection(
     item {
         aggregatedMonthSessions.map { singleMonth ->
             singleMonth.periodNumber?.let {
-                BarEntry(
-                    it.toFloat(),
-                    GlobalStatsService.computeGenericRatio(
-                        singleMonth.sets.toInt(),
-                        aggregatedMonthDates.get(it).dates.toInt()
-                    ).toFloat()
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        GlobalStatsService.computeGenericRatio(
+                            singleMonth.sets.toInt(),
+                            aggregatedMonthDates.get(it).dates.toInt()
+                        ).toFloat()
+                    ),
+                    singleMonth.label
                 )
             }
         }?.let { it ->
@@ -223,7 +255,7 @@ fun LazyListScope.MonthSection(
                 height = height,
                 width = width,
                 chartLabel = "Date Ratio [%]",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
                 movingAverageWindow = state.movingAverageWindow,
                 lastShown = state.lastMonthsShown
