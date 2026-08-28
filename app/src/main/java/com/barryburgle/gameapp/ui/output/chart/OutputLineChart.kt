@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.output.chart
 
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import androidx.compose.foundation.background
@@ -27,6 +28,9 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.renderer.XAxisRenderer
+import com.github.mikephil.charting.utils.MPPointF
+import com.github.mikephil.charting.utils.Utils
 
 data class LabeledBarEntry(
     val entry: BarEntry,
@@ -121,6 +125,24 @@ fun OutputLineChart(
                                     isGranularityEnabled = true
                                     setLabelCount(25, false)
                                 }
+                                barChart.setXAxisRenderer(object : XAxisRenderer(barChart.viewPortHandler, barChart.xAxis, barChart.getTransformer(YAxis.AxisDependency.LEFT)) {
+                                    override fun drawLabel(
+                                        c: Canvas?,
+                                        formattedLabel: String?,
+                                        x: Float,
+                                        y: Float,
+                                        anchor: MPPointF?,
+                                        angleDegrees: Float
+                                    ) {
+                                        if (formattedLabel == null || c == null) return
+                                        val lines = formattedLabel.split("\n")
+                                        var currentY = y
+                                        for (line in lines) {
+                                            Utils.drawXAxisValue(c, line, x, currentY, mAxisLabelPaint, anchor, angleDegrees)
+                                            currentY += mAxisLabelPaint.textSize + Utils.convertDpToPixel(2f)
+                                        }
+                                    }
+                                })
                             }
                         }
                         val formatter: ValueFormatter = object : ValueFormatter() {
@@ -224,8 +246,7 @@ fun styleLineChart(
         legend.isEnabled = legendActive
         legend.textColor = onSurfacecolor
         legend.textSize = inChartTextSize
-        extraBottomOffset = 15f
+        extraBottomOffset = 30f // Increased offset to accommodate multiline labels without getting clipped
     }
     return lineChart
 }
-
