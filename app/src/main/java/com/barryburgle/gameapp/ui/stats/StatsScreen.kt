@@ -380,18 +380,17 @@ fun StatsScreen(
                             secondQuantifierQuantity = goldMedals.toString(),
                             secondQuantifierIcon = ChallengeMedalEnum.GOLD.getIcon(),
                             secondQuantifierColor = ChallengeMedalEnum.GOLD.getColor(),
-                            secondQuantifierDescription = ChallengeMedalEnum.GOLD.getDescription()
-                                .replace("\n", "") + "s",
+                            secondQuantifierDescription = ChallengeMedalEnum.GOLD.getDescription() + "s",
                             thirdQuantifierQuantity = silverMedals.toString(),
                             thirdQuantifierIcon = ChallengeMedalEnum.SILVER.getIcon(),
                             thirdQuantifierColor = ChallengeMedalEnum.SILVER.getColor(),
                             thirdQuantifierDescription = ChallengeMedalEnum.SILVER.getDescription()
-                                .replace("\n", "") + "s",
+                                    + "s",
                             fourthQuantifierQuantity = bronzeMedals.toString(),
                             fourthQuantifierIcon = ChallengeMedalEnum.BRONZE.getIcon(),
                             fourthQuantifierColor = ChallengeMedalEnum.BRONZE.getColor(),
                             fourthQuantifierDescription = ChallengeMedalEnum.BRONZE.getDescription()
-                                .replace("\n", "") + "s",
+                                    + "s",
                             firstPerformanceQuantity = "${
                                 GlobalStatsService.computeGenericRatio(
                                     state.allChallenges.size, completedChallenges
