@@ -30,7 +30,7 @@ fun SummaryBody(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             DescribedQuantifier(
                 quantity = "${sets}",
