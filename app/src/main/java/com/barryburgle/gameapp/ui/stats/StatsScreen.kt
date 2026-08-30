@@ -236,7 +236,8 @@ fun StatsScreen(
                                     instantDates
                                 )
                             } %",
-                            thirdPerformanceDescription = "iDate\nRatio"
+                            thirdPerformanceDescription = "iDate\nRatio",
+                            countFontSize = 35.sp
                         )
                     }
                 }
@@ -285,6 +286,7 @@ fun StatsScreen(
                                 )
                             } %",
                             thirdPerformanceDescription = "Date to Lead\nRatio",
+                            countFontSize = 35.sp
                         )
                     }
                 }
@@ -342,7 +344,8 @@ fun StatsScreen(
                                     kisses, lays
                                 )
                             } %",
-                            fourthPerformanceDescription = "Lay to Kiss\nRatio"
+                            fourthPerformanceDescription = "Lay to Kiss\nRatio",
+                            countFontSize = 35.sp
                         )
                     }
                 }
@@ -405,6 +408,7 @@ fun StatsScreen(
                             secondPerformanceDescription = "Challenges\nExceeded",
                             thirdPerformanceQuantity = "${(averageCompletionRatio * 10000).toInt() / 100} %",
                             thirdPerformanceDescription = "Average\nCompletion\nRatio",
+                            countFontSize = 35.sp
                         )
                     }
                 }
