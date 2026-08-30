@@ -452,9 +452,9 @@ fun sectionTitleAndDescription(
     title: String, description: String
 ) {
     Column {
-        MediumTitleText(title)
+        MediumTitleText(title, true)
         Spacer(modifier = Modifier.height(5.dp))
-        LittleBodyText(description)
+        LittleBodyText(description, italic = true)
         Spacer(modifier = Modifier.height(10.dp))
     }
 }

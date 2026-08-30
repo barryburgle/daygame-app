@@ -256,7 +256,7 @@ fun EventCard(
                             if (isLiveSession) {
                                 eventTitle = "Live " + eventTitle.lowercase()
                             }
-                            LargeTitleText(eventTitle)
+                            LargeTitleText(eventTitle, true)
                         }
                         Row(
                             modifier = Modifier.width(160.dp),
