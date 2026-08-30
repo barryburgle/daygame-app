@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -18,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -70,7 +69,6 @@ fun DescribedQuantifier(
                         if (!quantity.isNullOrBlank()) {
                             Box(
                                 modifier = Modifier
-                                    .offset(x = 0.dp, y = (-2).dp)
                                     .size(20.dp)
                                     .background(
                                         MaterialTheme.colorScheme.primary,
@@ -81,8 +79,8 @@ fun DescribedQuantifier(
                                 Text(
                                     text = quantity,
                                     color = MaterialTheme.colorScheme.onPrimary,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Black,
                                     style = androidx.compose.ui.text.TextStyle(
                                         platformStyle = androidx.compose.ui.text.PlatformTextStyle(
                                             includeFontPadding = false
@@ -98,16 +96,32 @@ fun DescribedQuantifier(
                     if (!quantity.isNullOrBlank()) {
                         shownQuantity = quantity
                     }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = shownQuantity, fontSize = quantityFontSize)
+                    Box(
+                        modifier = Modifier.wrapContentSize(),
+                        contentAlignment = Alignment.TopEnd
+                    ) {
+                        Text(
+                            text = shownQuantity,
+                            fontSize = quantityFontSize,
+                            fontWeight = FontWeight.Black,
+                            modifier = Modifier.padding(top = 8.dp, end = 8.dp)
+                        )
                         if (drawableIcon != null) {
-                            Image(
-                                painter = painterResource(drawableIcon),
-                                contentDescription = description,
-                                modifier = Modifier.height(50.dp),
-                                contentScale = ContentScale.Fit,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(22.dp)
+                                    .shadow(elevation = 4.dp, shape = RoundedCornerShape(50.dp))
+                                    .background(color = MaterialTheme.colorScheme.background, shape = RoundedCornerShape(50.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(drawableIcon),
+                                    contentDescription = description,
+                                    modifier = Modifier.size(16.dp),
+                                    contentScale = ContentScale.Fit,
+                                    colorFilter = ColorFilter.tint(color ?: MaterialTheme.colorScheme.primary)
+                                )
+                            }
                         }
                     }
                     Row(
