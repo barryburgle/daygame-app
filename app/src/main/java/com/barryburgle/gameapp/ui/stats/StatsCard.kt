@@ -32,7 +32,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.barryburgle.gameapp.ui.input.card.CardSection
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -191,108 +190,126 @@ fun StatsCard(
                 }
                 Row(
                     modifier = Modifier
-                        .padding(5.dp)
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxHeight()
                     ) {
-                        CardSection {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceAround
+                        ) {
+                            DescribedQuantifier(
+                                quantity = firstQuantifierQuantity,
+                                drawableIcon = if (firstQuantifierIcon != null) firstQuantifierIcon else null,
+                                quantityFontSize = countFontSize,
+                                description = firstQuantifierDescription,
+                                descriptionFontSize = descriptionFontSize
+                            )
+                            DescribedQuantifier(
+                                quantity = secondQuantifierQuantity,
+                                drawableIcon = if (secondQuantifierIcon != null) secondQuantifierIcon else null,
+                                color = if (secondQuantifierColor != null) secondQuantifierColor else null,
+                                quantityFontSize = countFontSize,
+                                description = secondQuantifierDescription,
+                                descriptionFontSize = descriptionFontSize
+                            )
+                            DescribedQuantifier(
+                                quantity = thirdQuantifierQuantity,
+                                drawableIcon = if (thirdQuantifierIcon != null) thirdQuantifierIcon else null,
+                                color = if (thirdQuantifierColor != null) thirdQuantifierColor else null,
+                                quantityFontSize = countFontSize,
+                                description = thirdQuantifierDescription,
+                                descriptionFontSize = descriptionFontSize
+                            )
+                            if (fourthQuantifierQuantity != null && fourthQuantifierDescription != null && fifthQuantifierQuantity == null) {
+                                DescribedQuantifier(
+                                    quantity = fourthQuantifierQuantity,
+                                    drawableIcon = if (fourthQuantifierIcon != null) fourthQuantifierIcon else null,
+                                    color = if (fourthQuantifierColor != null) fourthQuantifierColor else null,
+                                    quantityFontSize = countFontSize,
+                                    description = fourthQuantifierDescription,
+                                    descriptionFontSize = descriptionFontSize
+                                )
+                            }
+                        }
+                        if (fourthQuantifierQuantity != null && fifthQuantifierQuantity != null) {
+                            Spacer(modifier = Modifier.height(12.dp))
                             Row(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight(),
+                                    .fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
-                                DescribedQuantifier(
-                                    quantity = firstQuantifierQuantity,
-                                    drawableIcon = if (firstQuantifierIcon != null) firstQuantifierIcon else null,
-                                    quantityFontSize = countFontSize,
-                                    description = firstQuantifierDescription,
-                                    descriptionFontSize = descriptionFontSize
-                                )
-                                DescribedQuantifier(
-                                    quantity = secondQuantifierQuantity,
-                                    drawableIcon = if (secondQuantifierIcon != null) secondQuantifierIcon else null,
-                                    color = if (secondQuantifierColor != null) secondQuantifierColor else null,
-                                    quantityFontSize = countFontSize,
-                                    description = secondQuantifierDescription,
-                                    descriptionFontSize = descriptionFontSize
-                                )
-                                DescribedQuantifier(
-                                    quantity = thirdQuantifierQuantity,
-                                    drawableIcon = if (thirdQuantifierIcon != null) thirdQuantifierIcon else null,
-                                    color = if (thirdQuantifierColor != null) thirdQuantifierColor else null,
-                                    quantityFontSize = countFontSize,
-                                    description = thirdQuantifierDescription,
-                                    descriptionFontSize = descriptionFontSize
-                                )
-                                if (fourthQuantifierQuantity != null && fourthQuantifierDescription != null) {
-                                    DescribedQuantifier(
-                                        quantity = fourthQuantifierQuantity,
-                                        icon = if (fourthQuantifierIcon != null) fourthQuantifierIcon else null,
-                                        color = if (fourthQuantifierColor != null) fourthQuantifierColor else null,
-                                        quantityFontSize = countFontSize,
-                                        description = fourthQuantifierDescription,
-                                        descriptionFontSize = descriptionFontSize
-                                    )
-                                }
-                                if (fifthQuantifierQuantity != null && fifthQuantifierDescription != null) {
-                                    DescribedQuantifier(
-                                        quantity = fifthQuantifierQuantity,
-                                        quantityFontSize = countFontSize,
-                                        description = fifthQuantifierDescription,
-                                        descriptionFontSize = descriptionFontSize
-                                    )
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.7f),
+                                    horizontalArrangement = Arrangement.SpaceAround,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    if (fourthQuantifierQuantity != null && fourthQuantifierDescription != null) {
+                                        DescribedQuantifier(
+                                            quantity = fourthQuantifierQuantity,
+                                            drawableIcon = if (fourthQuantifierIcon != null) fourthQuantifierIcon else null,
+                                            color = if (fourthQuantifierColor != null) fourthQuantifierColor else null,
+                                            quantityFontSize = countFontSize,
+                                            description = fourthQuantifierDescription,
+                                            descriptionFontSize = descriptionFontSize
+                                        )
+                                    }
+                                    if (fifthQuantifierQuantity != null && fifthQuantifierDescription != null) {
+                                        DescribedQuantifier(
+                                            quantity = fifthQuantifierQuantity,
+                                            quantityFontSize = countFontSize,
+                                            description = fifthQuantifierDescription,
+                                            descriptionFontSize = descriptionFontSize
+                                        )
+                                    }
                                 }
                             }
                         }
                         Spacer(modifier = Modifier.height(12.dp))
-                        CardSection {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            DescribedQuantifier(
+                                quantity = firstPerformanceQuantity,
+                                quantityFontSize = perfFontSize,
+                                description = firstPerformanceDescription,
+                                descriptionFontSize = descriptionFontSize
+                            )
+                            DescribedQuantifier(
+                                quantity = secondPerformanceQuantity,
+                                quantityFontSize = perfFontSize,
+                                description = secondPerformanceDescription,
+                                descriptionFontSize = descriptionFontSize
+                            )
+                            if (thirdPerformanceQuantity != null && thirdPerformanceDescription != null) {
                                 DescribedQuantifier(
-                                    quantity = firstPerformanceQuantity,
+                                    quantity = thirdPerformanceQuantity,
                                     quantityFontSize = perfFontSize,
-                                    description = firstPerformanceDescription,
+                                    description = thirdPerformanceDescription,
                                     descriptionFontSize = descriptionFontSize
                                 )
+                            }
+                            if (fourthPerformanceQuantity != null && fourthPerformanceDescription != null) {
                                 DescribedQuantifier(
-                                    quantity = secondPerformanceQuantity,
+                                    quantity = fourthPerformanceQuantity,
                                     quantityFontSize = perfFontSize,
-                                    description = secondPerformanceDescription,
+                                    description = fourthPerformanceDescription,
                                     descriptionFontSize = descriptionFontSize
                                 )
-                                if (thirdPerformanceQuantity != null && thirdPerformanceDescription != null) {
-                                    DescribedQuantifier(
-                                        quantity = thirdPerformanceQuantity,
-                                        quantityFontSize = perfFontSize,
-                                        description = thirdPerformanceDescription,
-                                        descriptionFontSize = descriptionFontSize
-                                    )
-                                }
-                                if (fourthPerformanceQuantity != null && fourthPerformanceDescription != null) {
-                                    DescribedQuantifier(
-                                        quantity = fourthPerformanceQuantity,
-                                        quantityFontSize = perfFontSize,
-                                        description = fourthPerformanceDescription,
-                                        descriptionFontSize = descriptionFontSize
-                                    )
-                                }
-                                if (fifthPerformanceQuantity != null && fifthPerformanceDescription != null) {
-                                    DescribedQuantifier(
-                                        quantity = fifthPerformanceQuantity,
-                                        quantityFontSize = perfFontSize,
-                                        description = fifthPerformanceDescription,
-                                        descriptionFontSize = descriptionFontSize
-                                    )
-                                }
+                            }
+                            if (fifthPerformanceQuantity != null && fifthPerformanceDescription != null) {
+                                DescribedQuantifier(
+                                    quantity = fifthPerformanceQuantity,
+                                    quantityFontSize = perfFontSize,
+                                    description = fifthPerformanceDescription,
+                                    descriptionFontSize = descriptionFontSize
+                                )
                             }
                         }
                     }
