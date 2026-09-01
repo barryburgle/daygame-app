@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.enums.ChallengeMedalEnum
 import com.barryburgle.gameapp.model.enums.ChallengeTypeEnum
@@ -44,7 +45,8 @@ fun ChallengeBody(
             quantity = "${achievedChallenge.challenge.goal}",
             quantityFontSize = countFontSize,
             description = description,
-            descriptionFontSize = descriptionFontSize
+            descriptionFontSize = descriptionFontSize,
+            drawableIcon = ChallengeTypeEnum.getIcon(achievedChallenge.challenge.type)
         )
         var achievedToPrint = achievedChallenge.achieved.toString()
         if (ChallengeTypeEnum.isTypeAchievedInteger(achievedChallenge.challenge.type)) {
@@ -57,7 +59,8 @@ fun ChallengeBody(
             quantity = achievedToPrint,
             quantityFontSize = countFontSize,
             description = achievedDescription,
-            descriptionFontSize = descriptionFontSize
+            descriptionFontSize = descriptionFontSize,
+            drawableIcon = ChallengeTypeEnum.getIcon(achievedChallenge.challenge.type)
         )
         val challengeEnumValue = ChallengeMedalService.getMedal(achievedChallenge)
         DescribedIcon(

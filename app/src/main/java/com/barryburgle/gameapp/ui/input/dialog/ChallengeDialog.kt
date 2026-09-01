@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.enums.ChallengeTypeEnum
@@ -107,7 +108,7 @@ fun ChallengeDialog(
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
                                         Icon(
-                                            imageVector = challengeType.getIcon(),
+                                            painter = painterResource(challengeType.getIcon()),
                                             contentDescription = state.challengeType,
                                             tint = MaterialTheme.colorScheme.onPrimary,
                                             modifier = Modifier
@@ -127,7 +128,7 @@ fun ChallengeDialog(
                         onClick = {
                             challengeTypesExpanded = true
                         },
-                        imageVector = ChallengeTypeEnum.getIcon(state.challengeType),
+                        drawableIcon = ChallengeTypeEnum.getIcon(state.challengeType),
                         contentDescription = "Challenge type",
                         title = updatedChallengeType,
                         color = MaterialTheme.colorScheme.primaryContainer,
