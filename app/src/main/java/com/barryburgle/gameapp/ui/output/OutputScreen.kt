@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.net.Uri
 import android.provider.ContactsContract
 import android.widget.Toast
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
@@ -47,6 +50,7 @@ import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.ui.input.LeadDialog
 import com.barryburgle.gameapp.ui.input.dialog.leadName
 import com.barryburgle.gameapp.ui.output.section.MonthSection
 import com.barryburgle.gameapp.ui.output.section.SessionSection
@@ -81,15 +85,28 @@ fun OutputScreen(
     val uriHandler = LocalUriHandler.current
     var heatmapEntitySelected by remember { mutableStateOf(HeatmapEntityEnum.SETS) }
     var isCustomSummaryMode by remember { mutableStateOf(false) }
+    val blurBackground by animateDpAsState(
+        targetValue = if (state.isInOverlay || state.isUpdatingLead) 10.dp else 0.dp,
+        animationSpec = tween(durationMillis = 350),
+        label = "blurBackground"
+    )
     Scaffold(
         topBar = {
             BlurStatusBar()
         },
     ) { padding ->
-        InsertInvite(state, 0.dp)
+        if (state.isUpdatingLead) {
+            LeadDialog(
+                state = state,
+                onEvent = onEvent,
+                description = "Update the lead"
+            )
+        }
+        InsertInvite(state, blurBackground)
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .blur(blurBackground)
                 .offset(
                     y = spaceFromTop - 20.dp
                 ),
@@ -242,7 +259,10 @@ fun OutputScreen(
                             item {
                                 Row(
                                     modifier = Modifier.combinedClickable(
-                                        onClick = {},
+                                        onClick = {
+                                            onEvent(OutputEvent.SetIsInOverlayToTrue)
+                                            onEvent(OutputEvent.EditLead(lead, true))
+                                        },
                                         onLongClick = {
                                             if (lead.contact == ContactTypeEnum.NUMBER.getField() && lead.contactLookupKey != null) {
                                                 try {
