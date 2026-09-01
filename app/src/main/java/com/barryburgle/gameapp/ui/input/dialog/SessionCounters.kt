@@ -3,16 +3,11 @@ package com.barryburgle.gameapp.ui.input.dialog
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Timelapse
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,12 +16,10 @@ import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
+import com.barryburgle.gameapp.ui.input.CounterColumn
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
-import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 
 @Composable
 fun SessionCounters(
@@ -155,38 +148,5 @@ fun shareEvent(
         )
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         localContext.startActivity(shareIntent)
-    }
-}
-
-@Composable
-fun CounterColumn(
-    count: Int,
-    label: String,
-    @DrawableRes iconRes: Int? = null,
-    onIncrement: () -> Unit,
-    onDecrement: () -> Unit
-) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        IconShadowButton(
-            onClick = onDecrement,
-            imageVector = Icons.Default.Remove,
-            contentDescription = "Less"
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            DescribedQuantifier(
-                quantity = count.toString(),
-                quantityFontSize = 50.sp,
-                description = label,
-                descriptionFontSize = 10.sp,
-                drawableIcon = iconRes
-            )
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        IconShadowButton(
-            onClick = onIncrement,
-            imageVector = Icons.Default.Add,
-            contentDescription = "More"
-        )
     }
 }
