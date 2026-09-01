@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -50,7 +49,7 @@ import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.EntityService
-import com.barryburgle.gameapp.ui.input.InputCounter
+import com.barryburgle.gameapp.ui.input.CounterColumn
 import com.barryburgle.gameapp.ui.input.dialog.component.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
@@ -211,121 +210,49 @@ fun SessionDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        IconShadowButton(
-                            onClick = {
-                                setsCount--
-                                onEvent(GameEvent.SetSets(setsCount.toString()))
-                            },
-                            imageVector = Icons.Default.Remove,
-                            contentDescription = "Less"
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            InputCounter(
-                                count = setsCount,
-                                style = MaterialTheme.typography.titleSmall
-                            )
-                            Image(
-                                painter = painterResource(R.drawable.set_action),
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                contentDescription = "sets",
-                                modifier = Modifier.height(30.dp),
-                                contentScale = ContentScale.Fit
-                            )
+                    CounterColumn(
+                        count = setsCount,
+                        label = "Sets",
+                        onIncrement = {
+                            setsCount++
+                            onEvent(GameEvent.SetSets(setsCount.toString()))
+                        },
+                        onDecrement = {
+                            setsCount--
+                            onEvent(GameEvent.SetSets(setsCount.toString()))
                         }
-                        LittleBodyText(if (setsCount != 1) "Sets" else "Set")
-                        Spacer(modifier = Modifier.height(4.dp))
-                        IconShadowButton(
-                            onClick = {
+                    )
+                    CounterColumn(
+                        count = convosCount,
+                        label = "Conversations",
+                        onIncrement = {
+                            convosCount++
+                            onEvent(GameEvent.SetConvos(convosCount.toString()))
+                            if (state.followCount) {
                                 setsCount++
-                                onEvent(GameEvent.SetSets(setsCount.toString()))
-                            },
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "More"
-                        )
-                    }
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        IconShadowButton(
-                            onClick = {
-                                convosCount--
-                                onEvent(GameEvent.SetConvos(convosCount.toString()))
-                            },
-                            imageVector = Icons.Default.Remove,
-                            contentDescription = "Less"
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            InputCounter(
-                                count = convosCount,
-                                style = MaterialTheme.typography.titleSmall
-                            )
-                            Image(
-                                painter = painterResource(R.drawable.conversation_action),
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                contentDescription = "conversations",
-                                modifier = Modifier.height(30.dp),
-                                contentScale = ContentScale.Fit
-                            )
+                            }
+                        },
+                        onDecrement = {
+                            convosCount--
+                            onEvent(GameEvent.SetConvos(convosCount.toString()))
                         }
-                        LittleBodyText(if (convosCount != 1) "Conversations" else "Conversation")
-                        Spacer(modifier = Modifier.height(4.dp))
-                        IconShadowButton(
-                            onClick = {
+                    )
+                    CounterColumn(
+                        count = contactsCount,
+                        label = "Contacts",
+                        onIncrement = {
+                            contactsCount++
+                            onEvent(GameEvent.SetContacts(contactsCount.toString()))
+                            if (state.followCount) {
+                                setsCount++
                                 convosCount++
-                                onEvent(GameEvent.SetConvos(convosCount.toString()))
-                                if (state.followCount) {
-                                    setsCount++
-                                }
-                            },
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "More"
-                        )
-                    }
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        IconShadowButton(
-                            onClick = {
-                                contactsCount--
-                                onEvent(GameEvent.SetContacts(contactsCount.toString()))
-                            },
-                            imageVector = Icons.Default.Remove,
-                            contentDescription = "Less"
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            InputCounter(
-                                count = contactsCount,
-                                style = MaterialTheme.typography.titleSmall
-                            )
-                            Image(
-                                painter = painterResource(R.drawable.contact_action),
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                contentDescription = "contacts",
-                                modifier = Modifier.height(30.dp),
-                                contentScale = ContentScale.Fit
-                            )
+                            }
+                        },
+                        onDecrement = {
+                            contactsCount--
+                            onEvent(GameEvent.SetContacts(contactsCount.toString()))
                         }
-                        LittleBodyText(if (contactsCount != 1) "Contacts" else "Contact")
-                        Spacer(modifier = Modifier.height(4.dp))
-                        IconShadowButton(
-                            onClick = {
-                                contactsCount++
-                                onEvent(GameEvent.SetContacts(contactsCount.toString()))
-                                if (state.followCount) {
-                                    setsCount++
-                                    convosCount++
-                                }
-                            },
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "More"
-                        )
-                    }
+                    )
                 }
                 DialogTextComponent(
                     state.stickingPoints,
