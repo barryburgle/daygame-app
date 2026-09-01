@@ -42,7 +42,7 @@ fun ChallengeBody(
         DescribedQuantifier(
             quantity = "${achievedChallenge.challenge.goal}",
             quantityFontSize = countFontSize,
-            description = achievedChallenge.challenge.type.replaceFirstChar { it.lowercase() },
+            description = achievedChallenge.challenge.type.replaceFirstChar { it.lowercase() } + "s",
             descriptionFontSize = descriptionFontSize
         )
         var achievedToPrint = achievedChallenge.achieved.toString()
