@@ -39,19 +39,20 @@ fun ChallengeBody(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val description = ChallengeTypeEnum.getDescription(achievedChallenge.challenge.type)
         DescribedQuantifier(
             quantity = "${achievedChallenge.challenge.goal}",
             quantityFontSize = countFontSize,
-            description = achievedChallenge.challenge.type.replaceFirstChar { it.lowercase() } + "s",
+            description = description,
             descriptionFontSize = descriptionFontSize
         )
         var achievedToPrint = achievedChallenge.achieved.toString()
         if (ChallengeTypeEnum.isTypeAchievedInteger(achievedChallenge.challenge.type)) {
             achievedToPrint = achievedChallenge.achieved.toInt().toString()
         }
-        val challengeTypeValue = ChallengeTypeEnum.getValue(achievedChallenge.challenge.type)
         var achievedDescription =
-            challengeTypeValue.getType() + "s " + challengeTypeValue.getSuccessVerb()
+            description + " " + ChallengeTypeEnum.getValue(achievedChallenge.challenge.type)
+                .getSuccessVerb()
         DescribedQuantifier(
             quantity = achievedToPrint,
             quantityFontSize = countFontSize,
