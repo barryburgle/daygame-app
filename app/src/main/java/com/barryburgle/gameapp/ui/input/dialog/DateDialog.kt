@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -33,11 +34,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
-import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.DateTypeEnum
 import com.barryburgle.gameapp.service.EntityService
-import com.barryburgle.gameapp.ui.input.InputCountComponent
+import com.barryburgle.gameapp.ui.input.CounterColumn
 import com.barryburgle.gameapp.ui.input.dialog.component.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
@@ -65,9 +65,20 @@ fun DateDialog(
     var leadsExpanded by remember { mutableStateOf(false) }
     var dateTypesExpanded by remember { mutableStateOf(false) }
     var locationTextFieldExpanded by remember { mutableStateOf(false) }
+    var dateNumberStart =
+        if (state.isAddingDate) 0 else state.editDate?.dateNumber
+    var dateCostStart = if (state.isAddingDate) 0 else state.editDate?.cost
+    var dateNumber by remember {
+        mutableStateOf(if (dateNumberStart == null) 0 else dateNumberStart)
+    }
+    var dateCost by remember {
+        mutableStateOf(if (dateCostStart == null) 0 else dateCostStart)
+    }
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = modifier.shadow(elevation = 10.dp),
+        modifier = modifier
+            .shadow(elevation = 10.dp)
+            .fillMaxHeight(0.9f),
         onDismissRequest = {
             onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideDialog)
@@ -291,20 +302,29 @@ fun DateDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
-                    InputCountComponent(
-                        inputTitle = "Date",
-                        style = MaterialTheme.typography.titleSmall,
-                        onEvent = onEvent as (GenericEvent) -> Unit,
-                        countStart = if (state.isAddingDate) 0 else state.editDate?.dateNumber,
-                        saveEvent = GameEvent::SetDateNumber,
-                        zeroValue = "iDate"
+                    CounterColumn(
+                        count = dateNumber,
+                        label = "Date",
+                        onIncrement = {
+                            dateNumber += 1
+                            onEvent(GameEvent.SetDateNumber(dateNumber.toString()))
+                        },
+                        onDecrement = {
+                            dateNumber -= 1
+                            onEvent(GameEvent.SetDateNumber(dateNumber.toString()))
+                        }
                     )
-                    InputCountComponent(
-                        inputTitle = "€",
-                        style = MaterialTheme.typography.titleSmall,
-                        onEvent = onEvent as (GenericEvent) -> Unit,
-                        countStart = if (state.isAddingDate) 0 else state.editDate?.cost,
-                        saveEvent = GameEvent::SetCost
+                    CounterColumn(
+                        count = dateCost,
+                        label = "€",
+                        onIncrement = {
+                            dateCost += 1
+                            onEvent(GameEvent.SetCost(dateCost.toString()))
+                        },
+                        onDecrement = {
+                            dateCost -= 1
+                            onEvent(GameEvent.SetCost(dateCost.toString()))
+                        }
                     )
                 }
                 Row(
