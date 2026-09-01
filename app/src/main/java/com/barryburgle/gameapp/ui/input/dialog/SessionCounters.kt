@@ -159,10 +159,10 @@ fun shareEvent(
 }
 
 @Composable
-private fun CounterColumn(
+fun CounterColumn(
     count: Int,
     label: String,
-    @DrawableRes iconRes: Int,
+    @DrawableRes iconRes: Int? = null,
     onIncrement: () -> Unit,
     onDecrement: () -> Unit
 ) {
