@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,23 +14,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Timelapse
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
-import com.barryburgle.gameapp.ui.input.InputCounter
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
-import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 
 @Composable
 fun SessionCounters(
@@ -179,16 +174,14 @@ private fun CounterColumn(
         )
         Spacer(modifier = Modifier.height(4.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            InputCounter(count = count, style = MaterialTheme.typography.titleSmall)
-            Image(
-                painter = painterResource(iconRes),
-                contentDescription = label,
-                modifier = Modifier.height(30.dp),
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
+            DescribedQuantifier(
+                quantity = count.toString(),
+                quantityFontSize = 50.sp,
+                description = label,
+                descriptionFontSize = 10.sp,
+                drawableIcon = iconRes
             )
         }
-        LittleBodyText(label)
         Spacer(modifier = Modifier.height(4.dp))
         IconShadowButton(
             onClick = onIncrement,
