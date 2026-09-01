@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
@@ -226,6 +228,14 @@ fun EventCard(
                         .fillMaxWidth()
                 ) {
                     LittleBodyText(sortableGameEvent.event.getEventDescription())
+                    eventHeader(
+                        listOf(
+                            sortableGameEvent.event.getHeaderWeekday(),
+                            sortableGameEvent.event.getHeaderDate(),
+                            sortableGameEvent.event.getHeaderTime(),
+                            sortableGameEvent.event.getHeaderDuration()
+                        )
+                    )
                     Spacer(modifier = Modifier.width(3.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -741,6 +751,40 @@ fun EventCard(
                                 )
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun eventHeader(headerParts: List<String>) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 2.dp, top = 2.dp, end = 2.dp, bottom = 10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        headerParts.forEach {
+            if (it != null && it.isNotEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colorScheme.onPrimary.copy(0.1f),
+                            shape = RoundedCornerShape(15.dp)
+                        )
+                ) {
+                    Row(
+                        modifier = Modifier.padding(
+                            start = 12.dp,
+                            top = 7.dp,
+                            end = 12.dp,
+                            bottom = 7.dp
+                        )
+                    ) {
+                        LittleBodyText(it)
                     }
                 }
             }
