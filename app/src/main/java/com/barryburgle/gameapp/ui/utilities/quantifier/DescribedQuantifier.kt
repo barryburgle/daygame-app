@@ -1,5 +1,11 @@
 package com.barryburgle.gameapp.ui.utilities.quantifier
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -100,18 +106,38 @@ fun DescribedQuantifier(
                         modifier = Modifier.wrapContentSize(),
                         contentAlignment = Alignment.TopEnd
                     ) {
-                        Text(
-                            text = shownQuantity,
-                            fontSize = quantityFontSize,
-                            fontWeight = FontWeight.Black,
-                            modifier = Modifier.padding(top = 8.dp, end = 8.dp)
-                        )
+                        AnimatedContent(
+                            targetState = shownQuantity,
+                            transitionSpec = {
+                                val prevInt = initialState.toIntOrNull() ?: 0
+                                val currInt = targetState.toIntOrNull() ?: 0
+                                if (currInt >= prevInt) {
+                                    (slideInVertically { height -> height } + fadeIn()) togetherWith
+                                            (slideOutVertically { height -> -height } + fadeOut())
+                                } else {
+                                    (slideInVertically { height -> -height } + fadeIn()) togetherWith
+                                            (slideOutVertically { height -> height } + fadeOut())
+                                }
+                            },
+                            modifier = Modifier.padding(top = 8.dp, end = 8.dp),
+                            label = "DescribedQuantifierSlide"
+                        ) { targetVal ->
+                            Text(
+                                text = targetVal,
+                                fontSize = quantityFontSize,
+                                fontWeight = FontWeight.Black
+                            )
+                        }
+
                         if (drawableIcon != null) {
                             Box(
                                 modifier = Modifier
                                     .size(22.dp)
                                     .shadow(elevation = 4.dp, shape = RoundedCornerShape(50.dp))
-                                    .background(color = MaterialTheme.colorScheme.background, shape = RoundedCornerShape(50.dp)),
+                                    .background(
+                                        color = MaterialTheme.colorScheme.background,
+                                        shape = RoundedCornerShape(50.dp)
+                                    ),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Image(
@@ -119,7 +145,9 @@ fun DescribedQuantifier(
                                     contentDescription = description,
                                     modifier = Modifier.size(16.dp),
                                     contentScale = ContentScale.Fit,
-                                    colorFilter = ColorFilter.tint(color ?: MaterialTheme.colorScheme.primary)
+                                    colorFilter = ColorFilter.tint(
+                                        color ?: MaterialTheme.colorScheme.primary
+                                    )
                                 )
                             }
                         }
