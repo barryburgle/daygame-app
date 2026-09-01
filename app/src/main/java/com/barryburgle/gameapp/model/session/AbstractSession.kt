@@ -45,14 +45,20 @@ data class AbstractSession(
         return Icons.Filled.CalendarToday
     }
 
-    override fun getEventDescription(): String {
-        return "${
-            DayOfWeek.of(dayOfWeek).toString().lowercase()
-                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-        } ${FormatService.getDate(date)}"
+    override fun getEventStickingPoints(): String {
+        return stickingPoints
     }
 
-    override fun getEventDuration(): String {
+    override fun getHeaderWeekday(): String {
+        return DayOfWeek.of(dayOfWeek).toString().lowercase()
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+    }
+
+    override fun getHeaderDate(): String {
+        return FormatService.getDate(date)
+    }
+
+    override fun getHeaderTime(): String {
         return "${
             FormatService.getTime(
                 startHour
@@ -61,11 +67,11 @@ data class AbstractSession(
             FormatService.getTime(
                 endHour
             )
-        }: ${sessionTime} minutes"
+        }"
     }
 
-    override fun getEventStickingPoints(): String {
-        return stickingPoints
+    override fun getHeaderDuration(): String {
+        return "${sessionTime}'"
     }
 
     fun shareSessionReport(leads: List<Lead>, pinpoints: List<PinPoint>): String {

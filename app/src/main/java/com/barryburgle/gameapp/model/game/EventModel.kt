@@ -5,16 +5,19 @@ import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 
 interface EventModel {
-
     fun getEventDate(): String?
 
     fun getEventTitle(): String
 
     fun getEventIcon(): ImageVector
 
-    fun getEventDescription(): String
+    fun getHeaderWeekday(): String
 
-    fun getEventDuration(): String
+    fun getHeaderDate(): String
+
+    fun getHeaderTime(): String
+
+    fun getHeaderDuration(): String
 
     fun getEventStickingPoints(): String?
 

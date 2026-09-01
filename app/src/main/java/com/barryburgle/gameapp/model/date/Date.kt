@@ -47,14 +47,16 @@ open class Date(
         return DateTypeEnum.getIcon(dateType)
     }
 
-    override fun getEventDescription(): String {
-        return "${
-            DayOfWeek.of(dayOfWeek).toString().lowercase()
-                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-        } ${FormatService.getDate(date)}"
+    override fun getHeaderWeekday(): String {
+        return DayOfWeek.of(dayOfWeek).toString().lowercase()
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
     }
 
-    override fun getEventDuration(): String {
+    override fun getHeaderDate(): String {
+        return FormatService.getDate(date)
+    }
+
+    override fun getHeaderTime(): String {
         return "${
             FormatService.getTime(
                 startHour
@@ -63,7 +65,11 @@ open class Date(
             FormatService.getTime(
                 endHour
             )
-        }: ${dateTime} minutes"
+        }"
+    }
+
+    override fun getHeaderDuration(): String {
+        return "${dateTime}'"
     }
 
     override fun getEventStickingPoints(): String? {
