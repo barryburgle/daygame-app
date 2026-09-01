@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
-import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
@@ -67,7 +66,7 @@ fun InputLeadDialog(
     state: InputState,
     onEvent: (GameEvent) -> Unit,
     description: String,
-    modifier: Modifier = Modifier.height(480.dp)
+    modifier: Modifier = Modifier.height(500.dp)
 ) {
     LeadDialogContent(
         isUpdatingLead = state.isUpdatingLead,
@@ -125,7 +124,7 @@ fun OutputLeadDialog(
     state: OutputState,
     onEvent: (OutputEvent) -> Unit,
     description: String,
-    modifier: Modifier = Modifier.height(480.dp)
+    modifier: Modifier = Modifier.height(500.dp)
 ) {
     LeadDialogContent(
         isUpdatingLead = state.isUpdatingLead,
@@ -330,7 +329,7 @@ fun LeadDialogContent(
                                             country.flag + "  " + country.countryName
                                         )
                                         if (count <= shownNationalities && suggestLeadsNationality) {
-                                             Icon(
+                                            Icon(
                                                 imageVector = Icons.Default.Star,
                                                 contentDescription = "Suggested country",
                                                 tint = MaterialTheme.colorScheme.inversePrimary,
@@ -432,17 +431,16 @@ fun LeadDialogContent(
                     }
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.width(60.dp)
+                        modifier = Modifier.width(80.dp)
                     ) {
-                        InputCountComponent(
-                            inputTitle = "Years old",
-                            modifier = Modifier,
-                            style = MaterialTheme.typography.titleSmall,
-                            onEvent = {},
-                            countStart = leadAge.toInt(),
-                            saveEvent = { newAge ->
-                                onSetLeadAge(newAge)
-                                object : GenericEvent {}
+                        CounterColumn(
+                            count = leadAge.toInt(),
+                            label = "Years old",
+                            onIncrement = {
+                                onSetLeadAge((leadAge + 1).toString())
+                            },
+                            onDecrement = {
+                                onSetLeadAge((leadAge - 1).toString())
                             }
                         )
                     }
