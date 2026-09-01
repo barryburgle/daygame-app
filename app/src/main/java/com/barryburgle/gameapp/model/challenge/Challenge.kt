@@ -1,5 +1,7 @@
 package com.barryburgle.gameapp.model.challenge
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -32,7 +34,7 @@ open class Challenge(
     }
 
     override fun getEventIcon(): ImageVector {
-        return ChallengeTypeEnum.getIcon(type)
+        return Icons.Default.EmojiEvents
     }
 
     override fun getEventDescription(): String {
