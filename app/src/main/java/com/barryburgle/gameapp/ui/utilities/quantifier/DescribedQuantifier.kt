@@ -53,12 +53,10 @@ fun DescribedQuantifier(
     }
 
     Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
-            modifier = Modifier
-                .padding(5.dp)
+            modifier = Modifier.padding(5.dp)
         ) {
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -67,8 +65,7 @@ fun DescribedQuantifier(
             ) {
                 if (icon != null) {
                     Box(
-                        modifier = Modifier.wrapContentSize(),
-                        contentAlignment = Alignment.TopEnd
+                        modifier = Modifier.wrapContentSize(), contentAlignment = Alignment.TopEnd
                     ) {
                         DescribedIcon(
                             description,
@@ -83,10 +80,8 @@ fun DescribedQuantifier(
                                 modifier = Modifier
                                     .size(20.dp)
                                     .background(
-                                        MaterialTheme.colorScheme.primary,
-                                        RoundedCornerShape(50.dp)
-                                    ),
-                                contentAlignment = Alignment.Center
+                                        MaterialTheme.colorScheme.primary, RoundedCornerShape(50.dp)
+                                    ), contentAlignment = Alignment.Center
                             ) {
                                 Text(
                                     text = quantity,
@@ -96,8 +91,7 @@ fun DescribedQuantifier(
                                     style = androidx.compose.ui.text.TextStyle(
                                         platformStyle = androidx.compose.ui.text.PlatformTextStyle(
                                             includeFontPadding = false
-                                        ),
-                                        lineHeight = 0.sp
+                                        ), lineHeight = 0.sp
                                     )
                                 )
                             }
@@ -109,10 +103,8 @@ fun DescribedQuantifier(
                         shownQuantity = quantity
                     }
                     val oldShownQuantity = if (oldQuantity.isBlank()) "No" else oldQuantity
-
                     Box(
-                        modifier = Modifier.wrapContentSize(),
-                        contentAlignment = Alignment.TopEnd
+                        modifier = Modifier.wrapContentSize(), contentAlignment = Alignment.TopEnd
                     ) {
                         Row(
                             modifier = Modifier.padding(top = 8.dp, end = 8.dp),
@@ -130,11 +122,9 @@ fun DescribedQuantifier(
                                     shownQuantity[charIndex]
                                 }
                                 AnimatedContent(
-                                    targetState = char,
-                                    transitionSpec = {
+                                    targetState = char, transitionSpec = {
                                         integerTransitionSpec(newDigit, oldDigit)
-                                    },
-                                    label = "DescribedQuantifierDigitSlide"
+                                    }, label = "DescribedQuantifierDigitSlide"
                                 ) { targetChar ->
                                     Text(
                                         text = targetChar.toString(),
@@ -151,10 +141,9 @@ fun DescribedQuantifier(
                                     .size(22.dp)
                                     .shadow(elevation = 4.dp, shape = RoundedCornerShape(50.dp))
                                     .background(
-                                        color = MaterialTheme.colorScheme.background,
+                                        color = MaterialTheme.colorScheme.tertiary,
                                         shape = RoundedCornerShape(50.dp)
-                                    ),
-                                contentAlignment = Alignment.Center
+                                    ), contentAlignment = Alignment.Center
                             ) {
                                 Image(
                                     painter = painterResource(drawableIcon),
@@ -162,7 +151,7 @@ fun DescribedQuantifier(
                                     modifier = Modifier.size(16.dp),
                                     contentScale = ContentScale.Fit,
                                     colorFilter = ColorFilter.tint(
-                                        color ?: MaterialTheme.colorScheme.primary
+                                        color ?: MaterialTheme.colorScheme.onPrimary
                                     )
                                 )
                             }
@@ -188,11 +177,9 @@ fun integerTransitionSpec(newDigit: Int, oldDigit: Int): ContentTransform {
     if (newDigit > oldDigit) {
         return ContentTransform(
             targetContentEnter = slideInVertically { it },
-            initialContentExit = slideOutVertically { -it }
-        )
+            initialContentExit = slideOutVertically { -it })
     }
     return ContentTransform(
         targetContentEnter = slideInVertically { -it },
-        initialContentExit = slideOutVertically { it }
-    )
+        initialContentExit = slideOutVertically { it })
 }

@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
@@ -77,7 +78,7 @@ fun Timeline(
         rememberVectorPainter(ImageVector.vectorResource(id = R.drawable.contact_action))
     val primaryContainerColor = MaterialTheme.colorScheme.primaryContainer
     val onPrimaryColor = MaterialTheme.colorScheme.onPrimary
-    val inversePrimaryColor = MaterialTheme.colorScheme.inversePrimary
+    val tertiaryColor = MaterialTheme.colorScheme.tertiary
 
     val startTime = FormatService.parseTime(abstractSession.startHour)
 
@@ -161,7 +162,7 @@ fun Timeline(
                             drawIntoCanvas { canvas ->
                                 val paint = android.graphics.Paint().apply {
                                     isAntiAlias = true
-                                    color = android.graphics.Color.WHITE
+                                    color = tertiaryColor.toArgb()
                                     setShadowLayer(
                                         with(density) { 4.dp.toPx() },
                                         0f,
