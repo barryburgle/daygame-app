@@ -347,13 +347,13 @@ fun InputScreen(
             SessionDialog(state = state, onEvent = onEvent, "Edit a session")
         }
         if (state.isAddingLead) {
-            LeadDialog(state = state, onEvent = onEvent, "Add a lead")
+            InputLeadDialog(state = state, onEvent = onEvent, "Add a lead")
         }
         if (state.isModifyingLead) {
-            LeadDialog(state = state, onEvent = onEvent, "Modify the lead")
+            InputLeadDialog(state = state, onEvent = onEvent, "Modify the lead")
         }
         if (state.isUpdatingLead) {
-            LeadDialog(state = state, onEvent = onEvent, "Update the lead")
+            InputLeadDialog(state = state, onEvent = onEvent, "Update the lead")
         }
         if (state.isAddingDate) {
             DateDialog(state = state, onEvent = onEvent, "Add a date")
