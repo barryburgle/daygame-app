@@ -1,11 +1,9 @@
 package com.barryburgle.gameapp.ui.utilities.quantifier
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +17,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -42,6 +45,13 @@ fun DescribedQuantifier(
     description: String,
     descriptionFontSize: TextUnit
 ) {
+    var oldQuantity by remember {
+        mutableStateOf(quantity ?: "No")
+    }
+    SideEffect {
+        oldQuantity = quantity ?: "No"
+    }
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -98,31 +108,41 @@ fun DescribedQuantifier(
                     if (!quantity.isNullOrBlank()) {
                         shownQuantity = quantity
                     }
+                    val oldShownQuantity = if (oldQuantity.isBlank()) "No" else oldQuantity
+
                     Box(
                         modifier = Modifier.wrapContentSize(),
                         contentAlignment = Alignment.TopEnd
                     ) {
-                        AnimatedContent(
-                            targetState = shownQuantity,
-                            transitionSpec = {
-                                val prevInt = initialState.toIntOrNull() ?: 0
-                                val currInt = targetState.toIntOrNull() ?: 0
-                                if (currInt >= prevInt) {
-                                    (slideInVertically { height -> height } + fadeIn()) togetherWith
-                                            (slideOutVertically { height -> -height } + fadeOut())
-                                } else {
-                                    (slideInVertically { height -> -height } + fadeIn()) togetherWith
-                                            (slideOutVertically { height -> height } + fadeOut())
-                                }
-                            },
+                        Row(
                             modifier = Modifier.padding(top = 8.dp, end = 8.dp),
-                            label = "DescribedQuantifierSlide"
-                        ) { targetVal ->
-                            Text(
-                                text = targetVal,
-                                fontSize = quantityFontSize,
-                                fontWeight = FontWeight.Black
-                            )
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            for (charIndex in shownQuantity.indices) {
+                                val oldChar = oldShownQuantity.getOrNull(charIndex)
+                                val newChar = shownQuantity[charIndex]
+                                val oldDigit = oldChar?.toString()?.toIntOrNull() ?: 0
+                                val newDigit = newChar.toString().toIntOrNull() ?: 0
+                                val char = if (oldChar == newChar) {
+                                    oldShownQuantity[charIndex]
+                                } else {
+                                    shownQuantity[charIndex]
+                                }
+                                AnimatedContent(
+                                    targetState = char,
+                                    transitionSpec = {
+                                        integerTransitionSpec(newDigit, oldDigit)
+                                    },
+                                    label = "DescribedQuantifierDigitSlide"
+                                ) { targetChar ->
+                                    Text(
+                                        text = targetChar.toString(),
+                                        fontSize = quantityFontSize,
+                                        fontWeight = FontWeight.Black
+                                    )
+                                }
+                            }
                         }
 
                         if (drawableIcon != null) {
@@ -162,4 +182,17 @@ fun DescribedQuantifier(
             }
         }
     }
+}
+
+fun integerTransitionSpec(newDigit: Int, oldDigit: Int): ContentTransform {
+    if (newDigit > oldDigit) {
+        return ContentTransform(
+            targetContentEnter = slideInVertically { it },
+            initialContentExit = slideOutVertically { -it }
+        )
+    }
+    return ContentTransform(
+        targetContentEnter = slideInVertically { -it },
+        initialContentExit = slideOutVertically { it }
+    )
 }
