@@ -227,13 +227,27 @@ fun EventCard(
                         .padding(5.dp)
                         .fillMaxWidth()
                 ) {
-                    LittleBodyText(sortableGameEvent.event.getEventDescription())
+                    var eventDuration = sortableGameEvent.event.getHeaderDuration()
+                    if (isLiveSession) {
+                        val session = sortableGameEvent.event as AbstractSession
+                        val nowLocalDateTime = LocalDateTime.now()
+                        val nowTime = getParsedHour(
+                            session.date.substring(0, 10),
+                            nowLocalDateTime.toLocalTime().toString().substring(0, 5)
+                        )
+                        val startTime = getParsedHour(
+                            session.startHour.substring(0, 10), session.startHour.substring(11, 16)
+                        )
+                        liveSessionTime = getTime(startTime, nowTime)
+                        eventDuration =
+                            liveSessionTime.toString() + "'"
+                    }
                     eventHeader(
                         listOf(
                             sortableGameEvent.event.getHeaderWeekday(),
                             sortableGameEvent.event.getHeaderDate(),
                             sortableGameEvent.event.getHeaderTime(),
-                            sortableGameEvent.event.getHeaderDuration()
+                            eventDuration
                         )
                     )
                     Spacer(modifier = Modifier.width(3.dp))
@@ -552,24 +566,6 @@ fun EventCard(
                             }
                         }
                     }
-                    var eventDuration = sortableGameEvent.event.getEventDuration()
-                    if (isLiveSession) {
-                        val session = sortableGameEvent.event as AbstractSession
-                        val nowLocalDateTime = LocalDateTime.now()
-                        val nowTime = getParsedHour(
-                            session.date.substring(0, 10),
-                            nowLocalDateTime.toLocalTime().toString().substring(0, 5)
-                        )
-                        val startTime = getParsedHour(
-                            session.startHour.substring(0, 10), session.startHour.substring(11, 16)
-                        )
-                        liveSessionTime = getTime(startTime, nowTime)
-                        eventDuration =
-                            eventDuration.substring(0, 8) + nowLocalDateTime.toLocalTime()
-                                .toString()
-                                .substring(0, 5) + ": " + liveSessionTime.toString() + " minutes"
-                    }
-                    LittleBodyText(eventDuration)
                 }
                 Row(
                     modifier = Modifier
