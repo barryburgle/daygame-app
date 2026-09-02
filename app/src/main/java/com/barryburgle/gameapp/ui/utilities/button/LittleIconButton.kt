@@ -12,12 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun LittleIconButton(
     onClick: () -> Unit,
-    imageVector: ImageVector
+    imageVector: ImageVector,
+    height: Dp = 10.dp
 ) {
     IconButton(
         modifier = Modifier,
@@ -34,7 +36,7 @@ fun LittleIconButton(
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.secondaryContainer,
                 modifier = Modifier
-                    .height(10.dp)
+                    .height(height)
                     .scale(2f)
             )
         }
