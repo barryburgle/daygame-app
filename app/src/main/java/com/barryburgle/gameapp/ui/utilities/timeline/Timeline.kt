@@ -55,6 +55,7 @@ import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
+import com.barryburgle.gameapp.ui.utilities.animation.ProgressBarBrush
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
@@ -76,24 +77,19 @@ fun Timeline(
         rememberVectorPainter(ImageVector.vectorResource(id = R.drawable.conversation_action))
     val contactPainter =
         rememberVectorPainter(ImageVector.vectorResource(id = R.drawable.contact_action))
-    val primaryContainerColor = MaterialTheme.colorScheme.primaryContainer
     val onPrimaryColor = MaterialTheme.colorScheme.onPrimary
     val tertiaryColor = MaterialTheme.colorScheme.tertiary
-
+    val primaryContainerColor = MaterialTheme.colorScheme.primaryContainer
+    val lineBrush = ProgressBarBrush(MaterialTheme.colorScheme.onTertiary)
     val startTime = FormatService.parseTime(abstractSession.startHour)
-
     var selectedPinPoint by remember { mutableStateOf<PinPoint?>(null) }
     var popupPositionX by remember { mutableStateOf(0f) }
     var showDeleteConfirmDialog by remember { mutableStateOf(false) }
-
     val density = LocalDensity.current
     val circleRadiusPx = with(density) { 16.dp.toPx() }
-
     val clickableRegions =
         remember(pinPoints, sessionDuration) { mutableListOf<Pair<Offset, PinPoint>>() }
-
     Spacer(modifier = Modifier.height(10.dp))
-
     Box(modifier = modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -127,9 +123,7 @@ fun Timeline(
             ) {
                 val width = size.width
                 val midY = size.height / 2
-
                 clickableRegions.clear()
-
                 drawLine(
                     color = primaryContainerColor,
                     start = Offset(0f, midY),
@@ -137,7 +131,13 @@ fun Timeline(
                     strokeWidth = 10.dp.toPx(),
                     cap = StrokeCap.Round
                 )
-
+                drawLine(
+                    brush = lineBrush,
+                    start = Offset(0f, midY),
+                    end = Offset(width, midY),
+                    strokeWidth = 10.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
                 pinPoints.forEach { pin ->
                     val pinTime = FormatService.parseTime(pin.localTimestamp.substring(0, 16) + 'Z')
                     if (sessionDuration > 0) {
