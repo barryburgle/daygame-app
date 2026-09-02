@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Map
@@ -685,13 +684,27 @@ fun EventCard(
                             ) {
                                 sectionDescription = "Description"
                             }
-                            CardSection(width = width) {
+                            CardSection {
                                 if (isLiveSession) {
                                     DialogTextComponent(
-                                        (sortableGameEvent.event as AbstractSession).stickingPoints,
-                                        "Sticking points",
-                                        100.dp,
-                                        ""
+                                        value = (sortableGameEvent.event as AbstractSession).stickingPoints,
+                                        placeholder = "Type here your sticking points",
+                                        emptyValue = "",
+                                        validContent = validStickingPoints,
+                                        onCopyClick = {
+                                            if (stickingPoints != null) {
+                                                clipboardManager.setText(
+                                                    AnnotatedString(
+                                                        stickingPoints
+                                                    )
+                                                )
+                                                Toast.makeText(
+                                                    localContext,
+                                                    "Sticking points copied",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
                                     ) {
                                         onEvent(
                                             GameEvent.SetLiveStickingPoints(
@@ -724,27 +737,6 @@ fun EventCard(
                                         }
                                     }
                                 }
-                            }
-                            if (validStickingPoints) {
-                                Spacer(modifier = Modifier.width(10.dp))
-                                IconShadowButton(
-                                    onClick = {
-                                        if (stickingPoints != null) {
-                                            clipboardManager.setText(
-                                                AnnotatedString(
-                                                    stickingPoints
-                                                )
-                                            )
-                                            Toast.makeText(
-                                                localContext,
-                                                "Sticking points copied",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    },
-                                    imageVector = Icons.Default.ContentCopy,
-                                    contentDescription = "Copy Sticking Points"
-                                )
                             }
                         }
                     }
