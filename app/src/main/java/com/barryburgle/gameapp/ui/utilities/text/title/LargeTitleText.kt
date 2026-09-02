@@ -14,7 +14,7 @@ fun LargeTitleText(
         Text(
             text = text,
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontWeight = FontWeight.Black
         )
     } else {
