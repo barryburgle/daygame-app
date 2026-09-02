@@ -22,12 +22,16 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.ui.input.card.DeleteConfirmationDialog
 import com.barryburgle.gameapp.ui.utilities.button.LittleIconButton
 import kotlin.math.sin
 
@@ -41,6 +45,20 @@ fun DialogTextComponent(
     onCopyClick: () -> Unit,
     onValueChange: (String) -> Unit
 ) {
+    var showDeleteTextDialog by remember { mutableStateOf(false) }
+    if (showDeleteTextDialog) {
+        DeleteConfirmationDialog(
+            placeholder,
+            "Do you want to delete your ${placeholder}?",
+            onConfirmRequest = {
+                onValueChange(emptyValue)
+                showDeleteTextDialog = false
+            },
+            onDismissRequest = {
+                showDeleteTextDialog = false
+            },
+        )
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -57,7 +75,7 @@ fun DialogTextComponent(
                     onValueChange = { onValueChange(it) },
                     placeholder = {
                         if (value.isEmpty()) {
-                            WavyPlaceholder(text = placeholder)
+                            WavyPlaceholder(text = "Type here your " + placeholder)
                         }
                     },
                     shape = MaterialTheme.shapes.large,
@@ -81,7 +99,7 @@ fun DialogTextComponent(
                 ) {
                     LittleIconButton(
                         onClick = {
-                            onValueChange(emptyValue)
+                            showDeleteTextDialog = true
                         },
                         imageVector = Icons.Default.Delete,
                         height = 15.dp

@@ -115,7 +115,7 @@ fun EventCard(
     var showMapDialog by remember { mutableStateOf(false) }
 
     if (showCancelLiveSessionConfirmDialog) {
-        deleteEventConfirmationDialog(
+        DeleteConfirmationDialog(
             "Live Session",
             "Do you want to stop the current Live Session without saving result?",
             onConfirmRequest = {
@@ -131,7 +131,7 @@ fun EventCard(
         )
     }
     if (showDeleteSessionConfirmDialog) {
-        deleteEventConfirmationDialog(
+        DeleteConfirmationDialog(
             "Session",
             "Do you want to delete this session?",
             onConfirmRequest = {
@@ -148,7 +148,7 @@ fun EventCard(
         )
     }
     if (showDeleteSetConfirmDialog) {
-        deleteEventConfirmationDialog(
+        DeleteConfirmationDialog(
             "Set",
             "Do you want to delete this set?",
             onConfirmRequest = {
@@ -165,7 +165,7 @@ fun EventCard(
         )
     }
     if (showDeleteDateConfirmDialog) {
-        deleteEventConfirmationDialog(
+        DeleteConfirmationDialog(
             "Date",
             "Do you want to delete this date?",
             onConfirmRequest = {
@@ -182,7 +182,7 @@ fun EventCard(
         )
     }
     if (showDeleteChallengeConfirmDialog) {
-        deleteEventConfirmationDialog(
+        DeleteConfirmationDialog(
             "Challenge",
             "Do you want to delete this challenge?",
             onConfirmRequest = {
@@ -688,7 +688,7 @@ fun EventCard(
                                 if (isLiveSession) {
                                     DialogTextComponent(
                                         value = (sortableGameEvent.event as AbstractSession).stickingPoints,
-                                        placeholder = "Type here your sticking points",
+                                        placeholder = "sticking points",
                                         emptyValue = "",
                                         validContent = validStickingPoints,
                                         onCopyClick = {
@@ -862,7 +862,7 @@ private fun LeadsRow(
 }
 
 @Composable
-fun deleteEventConfirmationDialog(
+fun DeleteConfirmationDialog(
     title: String, description: String, onConfirmRequest: () -> Unit, onDismissRequest: () -> Unit
 ) {
     AlertDialog(
