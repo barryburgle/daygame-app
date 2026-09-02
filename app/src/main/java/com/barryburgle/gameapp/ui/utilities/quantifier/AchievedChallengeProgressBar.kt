@@ -22,17 +22,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
+import com.barryburgle.gameapp.ui.utilities.animation.ProgressBarBrush
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
 fun AchievedChallengeProgressBar(achievedChallenge: AchievedChallenge) {
-    val transition = rememberInfiniteTransition(label = "shimmer")
-    val xOffset by transition.animateFloat(
-        initialValue = 0f, targetValue = 4000f, animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 4000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ), label = "xOffset"
-    )
     val timePassingRatio = (achievedChallenge.getTimePassingPerc() * 100).toInt()
     val completionRatio = (achievedChallenge.getCompletionPerc() * 100).toInt()
     var completionDesc = "Time to get on with some work"
@@ -55,23 +49,13 @@ fun AchievedChallengeProgressBar(achievedChallenge: AchievedChallenge) {
                 color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(5.dp)
             ), horizontalArrangement = Arrangement.Start
     ) {
-        val shimmerCompletionColors = listOf(
-            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
-            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f),
-            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
-        )
-        val completionBrush = Brush.linearGradient(
-            colors = shimmerCompletionColors,
-            start = Offset(xOffset - 1000f, 0f),
-            end = Offset(xOffset, 0f),
-            tileMode = TileMode.Clamp
-        )
         Row(
             modifier = Modifier
                 .fillMaxWidth(completionRatio.toFloat() / 100)
                 .height(10.dp)
                 .background(
-                    brush = completionBrush, shape = RoundedCornerShape(5.dp)
+                    brush = ProgressBarBrush(MaterialTheme.colorScheme.onTertiary),
+                    shape = RoundedCornerShape(5.dp)
                 )
         ) {}
     }
@@ -90,23 +74,12 @@ fun AchievedChallengeProgressBar(achievedChallenge: AchievedChallenge) {
                 color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(5.dp)
             ), horizontalArrangement = Arrangement.Start
     ) {
-        val shimmerTimeColors = listOf(
-            MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.9f),
-            MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.05f),
-            MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.9f),
-        )
-        val timeBrush = Brush.linearGradient(
-            colors = shimmerTimeColors,
-            start = Offset(xOffset - 800f, 0f),
-            end = Offset(xOffset, 0f),
-            tileMode = TileMode.Clamp
-        )
         Row(
             modifier = Modifier
                 .fillMaxWidth(timePassingRatio.toFloat() / 100)
                 .height(10.dp)
                 .background(
-                    brush = timeBrush,
+                    brush = ProgressBarBrush(MaterialTheme.colorScheme.onTertiary),
                     shape = RoundedCornerShape(5.dp)
                 )
         ) {}
