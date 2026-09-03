@@ -8,10 +8,11 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
@@ -29,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
@@ -51,6 +51,10 @@ fun DialogTextComponent(
 ) {
     val validContent = !value.isBlank()
     val onPrimaryColor: Color = MaterialTheme.colorScheme.onPrimary
+    val backgroundColor: Color = MaterialTheme.colorScheme.onBackground
+    val containerColor = onPrimaryColor.copy(alpha = 0.07f)
+    val opaqueContainerColor =
+        lerp(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f), onPrimaryColor, 0.07f)
     var showDeleteTextDialog by remember { mutableStateOf(false) }
     if (showDeleteTextDialog) {
         DeleteConfirmationDialog(
@@ -65,79 +69,70 @@ fun DialogTextComponent(
             },
         )
     }
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.large)
-            .background(onPrimaryColor.copy(alpha = 0.07f)),
-        verticalArrangement = Arrangement.Center
+            .background(containerColor)
     ) {
-        Row(
+        TextField(
+            value = value,
+            onValueChange = { onValueChange(it) },
+            placeholder = {
+                if (value.isEmpty()) {
+                    WavyPlaceholder(text = "Type here your " + placeholder)
+                }
+            },
+            singleLine = singleLine,
+            shape = MaterialTheme.shapes.large,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+                errorContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            ),
             modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.fillMaxWidth(if (validContent) 0.85f else 1f)) {
-                TextField(
-                    value = value,
-                    onValueChange = { onValueChange(it) },
-                    placeholder = {
-                        if (value.isEmpty()) {
-                            WavyPlaceholder(text = "Type here your " + placeholder)
-                        }
-                    },
-                    singleLine = singleLine,
-                    shape = MaterialTheme.shapes.large,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        errorContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            }
-            if (validContent) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Transparent)
-                        .wrapContentHeight()
-                        .drawWithContent {
+                .fillMaxWidth()
+                .then(
+                    if (validContent) {
+                        Modifier.drawWithContent {
                             drawContent()
                             drawRect(
-                                brush = getLittleIconButtonBrush(
-                                    onPrimaryColor
-                                ),
-                                blendMode = BlendMode.SrcAtop
-                            )
-                        },
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        LittleIconButton(
-                            onClick = {
-                                showDeleteTextDialog = true
-                            },
-                            imageVector = Icons.Default.Delete,
-                            height = 15.dp
-                        )
-                        if (onCopyClick != null && !singleLine) {
-                            LittleIconButton(
-                                onClick = onCopyClick,
-                                imageVector = Icons.Default.ContentCopy,
-                                height = 15.dp
+                                brush = Brush.horizontalGradient(
+                                    0.85f to Color.Transparent,
+                                    1.0f to opaqueContainerColor
+                                )
                             )
                         }
-                    }
+                    } else Modifier
+                )
+        )
+        if (validContent) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.End
+            ) {
+                LittleIconButton(
+                    onClick = {
+                        showDeleteTextDialog = true
+                    },
+                    imageVector = Icons.Default.Delete,
+                    height = 15.dp,
+                    color = backgroundColor
+                )
+                if (onCopyClick != null && !singleLine) {
+                    LittleIconButton(
+                        onClick = onCopyClick,
+                        imageVector = Icons.Default.ContentCopy,
+                        height = 15.dp,
+                        color = backgroundColor
+                    )
                 }
             }
         }
@@ -175,14 +170,4 @@ fun WavyPlaceholder(text: String) {
             )
         }
     }
-}
-
-fun getLittleIconButtonBrush(semiOpaqueBackground: Color): Brush {
-    return Brush.horizontalGradient(
-        0f to semiOpaqueBackground.copy(alpha = 0f),
-        0.25f to semiOpaqueBackground.copy(alpha = 0.03f),
-        0.50f to semiOpaqueBackground.copy(alpha = 0.05f),
-        0.75f to semiOpaqueBackground.copy(alpha = 0.06f),
-        1.0f to semiOpaqueBackground.copy(alpha = 0.07f)
-    )
 }
