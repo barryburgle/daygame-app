@@ -41,10 +41,10 @@ fun DialogTextComponent(
     value: String,
     placeholder: String,
     emptyValue: String = "",
-    validContent: Boolean,
     onCopyClick: () -> Unit,
     onValueChange: (String) -> Unit
 ) {
+    val validContent = !value.isBlank()
     var showDeleteTextDialog by remember { mutableStateOf(false) }
     if (showDeleteTextDialog) {
         DeleteConfirmationDialog(
