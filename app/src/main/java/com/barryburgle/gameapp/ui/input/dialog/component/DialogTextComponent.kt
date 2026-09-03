@@ -41,6 +41,7 @@ fun DialogTextComponent(
     value: String,
     placeholder: String,
     emptyValue: String = "",
+    singleLine: Boolean = true,
     onCopyClick: (() -> Unit)? = null,
     onValueChange: (String) -> Unit,
 ) {
@@ -78,6 +79,7 @@ fun DialogTextComponent(
                             WavyPlaceholder(text = "Type here your " + placeholder)
                         }
                     },
+                    singleLine = singleLine,
                     shape = MaterialTheme.shapes.large,
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
@@ -94,22 +96,25 @@ fun DialogTextComponent(
             }
             if (validContent) {
                 Column(
-                    modifier = Modifier.height(100.dp),
-                    verticalArrangement = Arrangement.SpaceAround
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    LittleIconButton(
-                        onClick = {
-                            showDeleteTextDialog = true
-                        },
-                        imageVector = Icons.Default.Delete,
-                        height = 15.dp
-                    )
-                    if (onCopyClick != null) {
+                    Column(
+                        verticalArrangement = Arrangement.SpaceAround
+                    ) {
                         LittleIconButton(
-                            onClick = onCopyClick,
-                            imageVector = Icons.Default.ContentCopy,
+                            onClick = {
+                                showDeleteTextDialog = true
+                            },
+                            imageVector = Icons.Default.Delete,
                             height = 15.dp
                         )
+                        if (onCopyClick != null && !singleLine) {
+                            LittleIconButton(
+                                onClick = onCopyClick,
+                                imageVector = Icons.Default.ContentCopy,
+                                height = 15.dp
+                            )
+                        }
                     }
                 }
             }
