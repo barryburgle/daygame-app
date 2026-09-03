@@ -671,12 +671,6 @@ fun EventCard(
                                 .fillMaxWidth()
                         ) {
                             var stickingPoints = sortableGameEvent.event.getEventStickingPoints()
-                            val validStickingPoints =
-                                stickingPoints != null && !stickingPoints.isBlank()
-                            var width = 1f
-                            if (validStickingPoints) {
-                                width = 0.8f
-                            }
                             var sectionDescription = "Sticking points"
                             if (AchievedChallenge::class.java.simpleName.equals(
                                     sortableGameEvent.classType
@@ -689,8 +683,6 @@ fun EventCard(
                                     DialogTextComponent(
                                         value = (sortableGameEvent.event as AbstractSession).stickingPoints,
                                         placeholder = "sticking points",
-                                        emptyValue = "",
-                                        validContent = validStickingPoints,
                                         onCopyClick = {
                                             if (stickingPoints != null) {
                                                 clipboardManager.setText(
