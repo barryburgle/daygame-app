@@ -74,16 +74,7 @@ fun DialogTextComponent(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .drawWithContent {
-                    drawContent()
-                    drawRect(
-                        brush = getLittleIconButtonBrush(
-                            onPrimaryColor
-                        ),
-                        blendMode = BlendMode.SrcAtop
-                    )
-                },
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.fillMaxWidth(if (validContent) 0.85f else 1f)) {
@@ -114,7 +105,17 @@ fun DialogTextComponent(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight(),
+                        .background(Color.Transparent)
+                        .wrapContentHeight()
+                        .drawWithContent {
+                            drawContent()
+                            drawRect(
+                                brush = getLittleIconButtonBrush(
+                                    onPrimaryColor
+                                ),
+                                blendMode = BlendMode.SrcAtop
+                            )
+                        },
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -178,10 +179,10 @@ fun WavyPlaceholder(text: String) {
 
 fun getLittleIconButtonBrush(semiOpaqueBackground: Color): Brush {
     return Brush.horizontalGradient(
-        0.88f to semiOpaqueBackground.copy(alpha = 0f),
-        0.91f to semiOpaqueBackground.copy(alpha = 0.03f),
-        0.94f to semiOpaqueBackground.copy(alpha = 0.05f),
-        0.97f to semiOpaqueBackground.copy(alpha = 0.06f),
+        0f to semiOpaqueBackground.copy(alpha = 0f),
+        0.25f to semiOpaqueBackground.copy(alpha = 0.03f),
+        0.50f to semiOpaqueBackground.copy(alpha = 0.05f),
+        0.75f to semiOpaqueBackground.copy(alpha = 0.06f),
         1.0f to semiOpaqueBackground.copy(alpha = 0.07f)
     )
 }
