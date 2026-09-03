@@ -1,14 +1,20 @@
 package com.barryburgle.gameapp.ui.input.dialog
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ContentPaste
@@ -27,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -74,11 +81,12 @@ fun DateDialog(
     var dateCost by remember {
         mutableStateOf(if (dateCostStart == null) 0 else dateCostStart)
     }
+    val stickingPointsPagerState = rememberPagerState(pageCount = { 2 })
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier
             .shadow(elevation = 10.dp)
-            .fillMaxHeight(0.9f),
+            .fillMaxHeight(0.85f),
         onDismissRequest = {
             onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideDialog)
@@ -287,88 +295,134 @@ fun DateDialog(
                 BasicAnimatedVisibility(
                     visibilityFlag = !locationTextFieldExpanded,
                 ) {
-                    Spacer(modifier = Modifier.height(7.dp))
-                    DialogTextComponent(
-                        value = state.stickingPoints,
-                        placeholder = "sticking points",
-                        singleLine = false
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        onEvent(GameEvent.SetStickingPoints(it))
-                    }
-                    Spacer(modifier = Modifier.height(7.dp))
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    CounterColumn(
-                        count = dateNumber,
-                        label = "Date",
-                        onIncrement = {
-                            dateNumber += 1
-                            onEvent(GameEvent.SetDateNumber(dateNumber.toString()))
-                        },
-                        onDecrement = {
-                            dateNumber -= 1
-                            onEvent(GameEvent.SetDateNumber(dateNumber.toString()))
+                        Spacer(modifier = Modifier.height(7.dp))
+                        HorizontalPager(
+                            state = stickingPointsPagerState,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                        ) { page ->
+                            when (page) {
+                                0 -> {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceAround,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        CounterColumn(
+                                            count = dateNumber,
+                                            label = "Date",
+                                            onIncrement = {
+                                                dateNumber += 1
+                                                onEvent(GameEvent.SetDateNumber(dateNumber.toString()))
+                                            },
+                                            onDecrement = {
+                                                dateNumber -= 1
+                                                onEvent(GameEvent.SetDateNumber(dateNumber.toString()))
+                                            }
+                                        )
+                                        CounterColumn(
+                                            count = dateCost,
+                                            label = "€",
+                                            onIncrement = {
+                                                dateCost += 1
+                                                onEvent(GameEvent.SetCost(dateCost.toString()))
+                                            },
+                                            onDecrement = {
+                                                dateCost -= 1
+                                                onEvent(GameEvent.SetCost(dateCost.toString()))
+                                            }
+                                        )
+                                    }
+                                }
+
+                                else -> {
+                                    Column(
+                                        modifier = Modifier.fillMaxHeight(),
+                                        verticalArrangement = Arrangement.SpaceAround
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            ToggleIcon(
+                                                "pull",
+                                                state.pull,
+                                                false,
+                                                R.drawable.pull_b
+                                            ) {
+                                                onEvent(GameEvent.SwitchPull)
+                                            }
+                                            ToggleIcon(
+                                                "bounce",
+                                                state.bounce,
+                                                false,
+                                                R.drawable.bounce_b
+                                            ) {
+                                                onEvent(GameEvent.SwitchBounce)
+                                            }
+                                            ToggleIcon(
+                                                "kiss",
+                                                state.kiss,
+                                                false,
+                                                R.drawable.kiss_b
+                                            ) {
+                                                onEvent(GameEvent.SwitchKiss)
+                                            }
+                                            ToggleIcon(
+                                                "lay",
+                                                state.lay,
+                                                false,
+                                                R.drawable.bed_b
+                                            ) {
+                                                onEvent(GameEvent.SwitchLay)
+                                            }
+                                            ToggleIcon(
+                                                "recorded",
+                                                state.recorded,
+                                                true,
+                                                R.drawable.microphone_b
+                                            ) {
+                                                onEvent(GameEvent.SwitchRecorded)
+                                            }
+                                        }
+                                        DialogTextComponent(
+                                            value = state.stickingPoints,
+                                            placeholder = "sticking points",
+                                            singleLine = false
+                                        ) {
+                                            onEvent(GameEvent.SetStickingPoints(it))
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    )
-                    CounterColumn(
-                        count = dateCost,
-                        label = "€",
-                        onIncrement = {
-                            dateCost += 1
-                            onEvent(GameEvent.SetCost(dateCost.toString()))
-                        },
-                        onDecrement = {
-                            dateCost -= 1
-                            onEvent(GameEvent.SetCost(dateCost.toString()))
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            repeat(2) { dotIndex ->
+                                val isSelected = stickingPointsPagerState.currentPage == dotIndex
+                                Box(
+                                    modifier = Modifier
+                                        .size(if (isSelected) 7.dp else 6.dp)
+                                        .clip(CircleShape)
+                                        .background(
+                                            if (isSelected) MaterialTheme.colorScheme.primary
+                                            else MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                                alpha = 0.35f
+                                            )
+                                        )
+                                )
+                            }
                         }
-                    )
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    ToggleIcon(
-                        "pull",
-                        state.pull,
-                        false,
-                        R.drawable.pull_b
-                    ) {
-                        onEvent(GameEvent.SwitchPull)
-                    }
-                    ToggleIcon(
-                        "bounce",
-                        state.bounce,
-                        false,
-                        R.drawable.bounce_b
-                    ) {
-                        onEvent(GameEvent.SwitchBounce)
-                    }
-                    ToggleIcon(
-                        "kiss",
-                        state.kiss,
-                        false,
-                        R.drawable.kiss_b
-                    ) {
-                        onEvent(GameEvent.SwitchKiss)
-                    }
-                    ToggleIcon(
-                        "lay",
-                        state.lay,
-                        false,
-                        R.drawable.bed_b
-                    ) {
-                        onEvent(GameEvent.SwitchLay)
-                    }
-                    ToggleIcon(
-                        "recorded",
-                        state.recorded,
-                        true,
-                        R.drawable.microphone_b
-                    ) {
-                        onEvent(GameEvent.SwitchRecorded)
+                        Spacer(modifier = Modifier.height(7.dp))
                     }
                 }
             }
