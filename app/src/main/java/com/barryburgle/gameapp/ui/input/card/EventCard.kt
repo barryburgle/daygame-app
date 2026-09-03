@@ -683,6 +683,7 @@ fun EventCard(
                                     DialogTextComponent(
                                         value = (sortableGameEvent.event as AbstractSession).stickingPoints,
                                         placeholder = "sticking points",
+                                        singleLine = false,
                                         onCopyClick = {
                                             if (stickingPoints != null) {
                                                 clipboardManager.setText(
