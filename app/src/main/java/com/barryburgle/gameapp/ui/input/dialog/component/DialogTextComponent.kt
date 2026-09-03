@@ -40,7 +40,7 @@ import kotlin.math.sin
 fun DialogTextComponent(
     value: String,
     placeholder: String,
-    emptyValue: String,
+    emptyValue: String = "",
     validContent: Boolean,
     onCopyClick: () -> Unit,
     onValueChange: (String) -> Unit
