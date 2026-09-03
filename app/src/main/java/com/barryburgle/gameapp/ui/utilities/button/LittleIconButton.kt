@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -19,8 +20,10 @@ import androidx.compose.ui.unit.dp
 fun LittleIconButton(
     onClick: () -> Unit,
     imageVector: ImageVector,
-    height: Dp = 10.dp
+    height: Dp = 10.dp,
+    color: Color? = null
 ) {
+    val tint = color ?: MaterialTheme.colorScheme.secondaryContainer
     IconButton(
         modifier = Modifier,
         onClick = {
@@ -34,7 +37,7 @@ fun LittleIconButton(
             Icon(
                 imageVector = imageVector,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondaryContainer,
+                tint = tint,
                 modifier = Modifier
                     .height(height)
                     .scale(2f)
