@@ -177,44 +177,13 @@ fun SetDialog(
                     visibilityFlag = !locationTextFieldExpanded,
                 ) {
                     Spacer(modifier = Modifier.height(7.dp))
-                    // TODO: refactor the following row to use it in SetDialog, DateDialog, SessionDialog and ChallengeDialog
-                    // taking in input the state field, the event method, placeholder and height
                     DialogTextComponent(
-                        state.stickingPoints,
-                        "Sticking points",
-                        100.dp,
-                        ""
+                        value = state.stickingPoints,
+                        placeholder = "sticking points",
+                        singleLine = false
                     ) {
                         onEvent(GameEvent.SetStickingPoints(it))
                     }
-                    /*Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        OutlinedTextField(
-                            value = state.stickingPoints,
-                            onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
-                            placeholder = { LittleBodyText("Sticking points") },
-                            shape = MaterialTheme.shapes.large,
-                            modifier = Modifier
-                                .height(100.dp)
-                                .fillMaxWidth(0.75f)
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Column(
-                            modifier = Modifier
-                                .height(100.dp),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            IconShadowButton(
-                                onClick = {
-                                    onEvent(GameEvent.SetStickingPoints(InputDialogConstant.EMPTY_STICKING_POINTS))
-                                },
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete Sticking Points"
-                            )
-                        }
-                    }*/
                     Spacer(modifier = Modifier.height(7.dp))
                 }
                 Row(

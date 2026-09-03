@@ -255,10 +255,9 @@ fun SessionDialog(
                     )
                 }
                 DialogTextComponent(
-                    state.stickingPoints,
-                    "Sticking points",
-                    100.dp,
-                    ""
+                    value = state.stickingPoints,
+                    placeholder = "sticking points",
+                    singleLine = false
                 ) {
                     onEvent(GameEvent.SetStickingPoints(it))
                 }
