@@ -73,15 +73,19 @@ fun ChallengeDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DialogTextComponent(state.challengeName, "Challenge name", 60.dp, "") {
+                DialogTextComponent(
+                    value = state.challengeName,
+                    placeholder = "challenge name",
+                    singleLine = true
+                ) {
                     onEvent(GameEvent.SetChallengeName(it))
                 }
                 Spacer(modifier = Modifier.height(7.dp))
                 DialogTextComponent(
-                    state.challengeDescription,
-                    "Challenge description",
-                    80.dp,
-                    ""
+                    value = state.challengeDescription,
+                    placeholder = "challenge description",
+                    singleLine = true
+
                 ) {
                     onEvent(GameEvent.SetChallengeDescription(it))
                 }
