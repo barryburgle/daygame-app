@@ -40,8 +40,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
@@ -70,6 +73,7 @@ fun SessionDialog(
     modifier: Modifier = Modifier
 ) {
     val localContext = LocalContext.current.applicationContext
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
     var latestDateValue = state.date
     var latestStartHour = state.startHour
     var latestEndHour = state.endHour
@@ -254,10 +258,23 @@ fun SessionDialog(
                         }
                     )
                 }
+                val stickingPoints = state.stickingPoints
                 DialogTextComponent(
                     value = state.stickingPoints,
                     placeholder = "sticking points",
-                    singleLine = false
+                    singleLine = false,
+                    onCopyClick = {
+                        clipboardManager.setText(
+                            AnnotatedString(
+                                stickingPoints
+                            )
+                        )
+                        Toast.makeText(
+                            localContext,
+                            "Sticking points copied",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 ) {
                     onEvent(GameEvent.SetStickingPoints(it))
                 }

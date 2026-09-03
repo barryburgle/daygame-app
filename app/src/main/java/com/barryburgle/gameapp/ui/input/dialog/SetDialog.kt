@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
@@ -24,7 +23,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
@@ -52,6 +54,7 @@ fun SetDialog(
     modifier: Modifier = Modifier
 ) {
     val localContext = LocalContext.current.applicationContext
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
     var latestDateValue = state.date
     var latestStartHour = state.startHour
     var latestEndHour = state.endHour
@@ -177,10 +180,23 @@ fun SetDialog(
                     visibilityFlag = !locationTextFieldExpanded,
                 ) {
                     Spacer(modifier = Modifier.height(7.dp))
+                    val stickingPoints = state.stickingPoints
                     DialogTextComponent(
                         value = state.stickingPoints,
                         placeholder = "sticking points",
-                        singleLine = false
+                        singleLine = false,
+                        onCopyClick = {
+                            clipboardManager.setText(
+                                AnnotatedString(
+                                    stickingPoints
+                                )
+                            )
+                            Toast.makeText(
+                                localContext,
+                                "Sticking points copied",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     ) {
                         onEvent(GameEvent.SetStickingPoints(it))
                     }
