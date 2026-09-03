@@ -41,8 +41,8 @@ fun DialogTextComponent(
     value: String,
     placeholder: String,
     emptyValue: String = "",
-    onCopyClick: () -> Unit,
-    onValueChange: (String) -> Unit
+    onCopyClick: (() -> Unit)? = null,
+    onValueChange: (String) -> Unit,
 ) {
     val validContent = !value.isBlank()
     var showDeleteTextDialog by remember { mutableStateOf(false) }
@@ -69,7 +69,7 @@ fun DialogTextComponent(
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Column(modifier = Modifier.fillMaxWidth(0.85f)) {
+            Column(modifier = Modifier.fillMaxWidth(if (validContent) 0.85f else 1f)) {
                 TextField(
                     value = value,
                     onValueChange = { onValueChange(it) },
@@ -104,11 +104,13 @@ fun DialogTextComponent(
                         imageVector = Icons.Default.Delete,
                         height = 15.dp
                     )
-                    LittleIconButton(
-                        onClick = onCopyClick,
-                        imageVector = Icons.Default.ContentCopy,
-                        height = 15.dp
-                    )
+                    if (onCopyClick != null) {
+                        LittleIconButton(
+                            onClick = onCopyClick,
+                            imageVector = Icons.Default.ContentCopy,
+                            height = 15.dp
+                        )
+                    }
                 }
             }
         }
