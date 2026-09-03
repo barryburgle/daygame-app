@@ -28,6 +28,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.font.FontStyle
@@ -47,6 +50,7 @@ fun DialogTextComponent(
     onValueChange: (String) -> Unit,
 ) {
     val validContent = !value.isBlank()
+    val onPrimaryColor: Color = MaterialTheme.colorScheme.onPrimary
     var showDeleteTextDialog by remember { mutableStateOf(false) }
     if (showDeleteTextDialog) {
         DeleteConfirmationDialog(
@@ -65,11 +69,22 @@ fun DialogTextComponent(
         modifier = Modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.large)
-            .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.07f)),
+            .background(onPrimaryColor.copy(alpha = 0.07f)),
         verticalArrangement = Arrangement.Center
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .drawWithContent {
+                    drawContent()
+                    drawRect(
+                        brush = getLittleIconButtonBrush(
+                            onPrimaryColor
+                        ),
+                        blendMode = BlendMode.SrcAtop
+                    )
+                },
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.fillMaxWidth(if (validContent) 0.85f else 1f)) {
                 TextField(
@@ -159,4 +174,14 @@ fun WavyPlaceholder(text: String) {
             )
         }
     }
+}
+
+fun getLittleIconButtonBrush(semiOpaqueBackground: Color): Brush {
+    return Brush.horizontalGradient(
+        0.88f to semiOpaqueBackground.copy(alpha = 0f),
+        0.91f to semiOpaqueBackground.copy(alpha = 0.03f),
+        0.94f to semiOpaqueBackground.copy(alpha = 0.05f),
+        0.97f to semiOpaqueBackground.copy(alpha = 0.06f),
+        1.0f to semiOpaqueBackground.copy(alpha = 0.07f)
+    )
 }
