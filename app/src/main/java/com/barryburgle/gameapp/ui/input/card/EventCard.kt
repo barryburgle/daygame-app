@@ -77,7 +77,7 @@ import com.barryburgle.gameapp.ui.input.dialog.shareEvent
 import com.barryburgle.gameapp.ui.input.liveSessionPulsingColor
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
-import com.barryburgle.gameapp.ui.tool.dialog.MapDialog
+import com.barryburgle.gameapp.ui.input.dialog.MapDialog
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText

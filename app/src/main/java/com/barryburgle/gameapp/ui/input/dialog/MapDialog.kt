@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.ui.tool.dialog
+package com.barryburgle.gameapp.ui.input.dialog
 
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,17 +33,21 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
+import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
@@ -130,7 +135,7 @@ fun MapDialog(
                                 isEnabled = true
                             }
                             overlays.add(rotationGestureOverlay)
-                            zoomController.setVisibility(org.osmdroid.views.CustomZoomButtonsController.Visibility.NEVER)
+                            zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
 
                             if (boundingBox != null && pinPoints.size > 1) {
                                 post {
@@ -164,9 +169,9 @@ fun MapDialog(
                                             ) + 'Z'
                                         )
                                 val drawableResId = when (pinPoint.pinPointType) {
-                                    PinPointTypeEnum.SET.getField() -> com.barryburgle.gameapp.R.drawable.set_action
-                                    PinPointTypeEnum.CONVERSATION.getField() -> com.barryburgle.gameapp.R.drawable.conversation_action
-                                    PinPointTypeEnum.CONTACT.getField() -> com.barryburgle.gameapp.R.drawable.contact_action
+                                    PinPointTypeEnum.SET.getField() -> R.drawable.set_action
+                                    PinPointTypeEnum.CONVERSATION.getField() -> R.drawable.conversation_action
+                                    PinPointTypeEnum.CONTACT.getField() -> R.drawable.contact_action
                                     else -> android.R.drawable.ic_menu_myplaces
                                 }
                                 val backgroundCircle = GradientDrawable().apply {
@@ -207,19 +212,19 @@ fun MapDialog(
                                                 bubbleView.clipToOutline = true
                                                 bubbleView.setPadding(24, 60, 24, 60)
                                                 val titleView =
-                                                    bubbleView.findViewById<android.widget.TextView>(
+                                                    bubbleView.findViewById<TextView>(
                                                         org.osmdroid.library.R.id.bubble_title
                                                     )
                                                 titleView?.setTextColor(textColor)
 
                                                 val descriptionView =
-                                                    bubbleView.findViewById<android.widget.TextView>(
+                                                    bubbleView.findViewById<TextView>(
                                                         org.osmdroid.library.R.id.bubble_description
                                                     )
                                                 descriptionView?.setTextColor(textColor)
 
                                                 val subDescriptionView =
-                                                    bubbleView.findViewById<android.widget.TextView>(
+                                                    bubbleView.findViewById<TextView>(
                                                         org.osmdroid.library.R.id.bubble_subdescription
                                                     )
                                                 subDescriptionView?.setTextColor(textColor)
