@@ -71,7 +71,7 @@ import com.barryburgle.gameapp.ui.input.card.body.DateBody
 import com.barryburgle.gameapp.ui.input.card.body.LiveSessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SetBody
-import com.barryburgle.gameapp.ui.input.dialog.component.DialogTextComponent
+import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.dialog.leadName
 import com.barryburgle.gameapp.ui.input.dialog.shareEvent
 import com.barryburgle.gameapp.ui.input.liveSessionPulsingColor

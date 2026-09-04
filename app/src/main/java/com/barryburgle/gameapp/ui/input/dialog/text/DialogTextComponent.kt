@@ -1,4 +1,4 @@
-package com.barryburgle.gameapp.ui.input.dialog.component
+package com.barryburgle.gameapp.ui.input.dialog.text
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
