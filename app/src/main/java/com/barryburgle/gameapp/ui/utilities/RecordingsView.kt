@@ -11,14 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.FiberManualRecord
-import androidx.compose.material.icons.filled.FiberSmartRecord
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
@@ -65,10 +62,9 @@ fun RecordingsView(
     recordingsFolder: String = "",
     recordingsEnabled: Boolean = false,
     showRecordingButtons: Boolean = true,
-    showDeleteButtons: Boolean = false,
     onTapRecordingStart: () -> Unit = {},
-    onTapRecordingPause: () -> Unit = {},
     onTapRecordingStop: () -> Unit = {},
+    onTapRecordingDiscard: (String) -> Unit = {},
     onTapPlaybackPlay: (String) -> Unit = {},
     onTapPlaybackPause: () -> Unit = {},
     onTapRecordingDelete: (String) -> Unit = {},
@@ -104,23 +100,12 @@ fun RecordingsView(
             ) {
 
                 RecordingButton(
-                    onClick = onTapRecordingStart,
-                    imageVector = if (recordingState.state == RecordingStateEnum.RECORDING_PAUSED) Icons.Default.FiberSmartRecord else Icons.Default.FiberManualRecord,
-                    contentDescription = if (recordingState.state == RecordingStateEnum.RECORDING_PAUSED) "Resume recording" else "Start recording",
-                    enabled = recordingState.state != RecordingStateEnum.RECORDING,
+                    onClick = if (recordingState.state == RecordingStateEnum.RECORDING) onTapRecordingStop else onTapRecordingStart,
+                    onLongClick = { onTapRecordingDiscard(recordingState.activeFileName.orEmpty()) },
+                    imageVector = if (recordingState.state == RecordingStateEnum.RECORDING) Icons.Default.Stop else Icons.Default.FiberManualRecord,
+                    contentDescription = "Start recording",
+                    enabled = true,
                     accent = MaterialTheme.colorScheme.onErrorContainer
-                )
-                RecordingButton(
-                    onClick = onTapRecordingStop,
-                    imageVector = Icons.Default.Stop,
-                    contentDescription = "Stop recording",
-                    enabled = recordingState.state.isRecording()
-                )
-                RecordingButton(
-                    onClick = onTapRecordingPause,
-                    imageVector = Icons.Default.Pause,
-                    contentDescription = "Pause recording",
-                    enabled = recordingState.state == RecordingStateEnum.RECORDING
                 )
             }
         }
@@ -181,10 +166,9 @@ fun RecordingsView(
                         isActive = recordingState.state.isPlaying() && recordingState.activeFileName == recording,
                         isThisPlaying = isThisPlaying,
                         isRecording = recordingState.state.isRecording(),
-                        showDeleteButton = showDeleteButtons,
                         onTapPlaybackPlay = { onTapPlaybackPlay(recording) },
                         onTapPlaybackPause = onTapPlaybackPause,
-                        onTapDelete = { pendingDeletion = recording },
+//                        onTapDelete = { pendingDeletion = recording },
                         onSeek = onSetPlaybackPosition
                     )
                 }
@@ -201,10 +185,8 @@ private fun RecordingDetails(
     isActive: Boolean,
     isThisPlaying: Boolean,
     isRecording: Boolean,
-    showDeleteButton: Boolean,
     onTapPlaybackPlay: () -> Unit,
     onTapPlaybackPause: () -> Unit,
-    onTapDelete: () -> Unit,
     onSeek: (Int) -> Unit
 ) {
     // the player only knows the duration of the file it has loaded, so a row that isn't playing
@@ -221,20 +203,11 @@ private fun RecordingDetails(
     ) {
         RecordingButton(
             onClick = { if (isThisPlaying) onTapPlaybackPause() else onTapPlaybackPlay() },
+            onLongClick = { if (isThisPlaying) onTapPlaybackPause() else onTapPlaybackPlay() },
             imageVector = if (isThisPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
             contentDescription = if (isThisPlaying) "Pause playback" else "Play recording",
             enabled = !isRecording
         )
-        if (showDeleteButton) {
-            Spacer(modifier = Modifier.width(12.dp))
-            RecordingButton(
-                onClick = onTapDelete,
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Delete recording",
-                enabled = !isRecording,
-                accent = MaterialTheme.colorScheme.onErrorContainer
-            )
-        }
         Spacer(modifier = Modifier.weight(1f))
         PlaybackTimes(isActive, fileDurationMs)
     }
@@ -328,6 +301,7 @@ private fun entryBackground(): Color = lerp(
 @Composable
 private fun RecordingButton(
     onClick: () -> Unit,
+    onLongClick: () -> Unit,
     imageVector: ImageVector,
     contentDescription: String,
     enabled: Boolean,
@@ -337,6 +311,7 @@ private fun RecordingButton(
     val container = MaterialTheme.colorScheme.tertiary
     IconShadowButton(
         onClick = onClick,
+        onLongClick = onLongClick,
         imageVector = imageVector,
         contentDescription = if (enabled) contentDescription else "$contentDescription (unavailable)",
         // faded towards the card colour

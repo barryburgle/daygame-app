@@ -48,7 +48,6 @@ import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.CombineSeven
 import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.CombineSixteen
-import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.input.dialog.InputDialogConstant
 import com.barryburgle.gameapp.ui.input.state.DialogSettingsState
 import com.barryburgle.gameapp.ui.input.state.ExportSettingsState
@@ -934,16 +933,8 @@ class InputViewModel(
                         "Microphone permission needed, enable it in app settings",
                         Toast.LENGTH_LONG
                     ).show()
-                } else if (RecordingService.state.value.state == RecordingStateEnum.RECORDING_PAUSED) {
-                    resumeRecording()
                 } else if (!RecordingService.state.value.state.isRecording()) {
                     startRecording(event.sessionId, state.value.recordingsFolder)
-                }
-            }
-
-            is GameEvent.TapRecordingPause -> {
-                if (RecordingService.state.value.state == RecordingStateEnum.RECORDING) {
-                    pauseRecording()
                 }
             }
 
@@ -951,6 +942,13 @@ class InputViewModel(
                 if (RecordingService.state.value.state.isRecording()) {
                     stopRecording()
                     Toast.makeText(context, "Recording saved", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            is GameEvent.TapRecordingDiscard -> {
+                if (RecordingService.state.value.state.isRecording()) {
+                    discardRecording(state.value.recordingsFolder)
+                    Toast.makeText(context, "Recording discarded", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -1830,8 +1828,14 @@ class InputViewModel(
     }
 
     private fun stopRecording() = recorderCommand(RecordingService.ACTION_STOP_RECORDING)
-    private fun pauseRecording() = recorderCommand(RecordingService.ACTION_PAUSE_RECORDING)
-    private fun resumeRecording() = recorderCommand(RecordingService.ACTION_RESUME_RECORDING)
+
+    private fun discardRecording(folder: String) {
+        context.startForegroundService(
+            Intent(context, RecordingService::class.java).apply {
+                action = RecordingService.ACTION_DISCARD_RECORDING
+                putExtra(RecordingService.EXTRA_FOLDER, folder)
+            })
+    }
 
     private fun startPlayback(fileName: String, folder: String) {
         context.startService(

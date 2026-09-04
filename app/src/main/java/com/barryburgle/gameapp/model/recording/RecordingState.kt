@@ -3,11 +3,10 @@ package com.barryburgle.gameapp.model.recording
 enum class RecordingStateEnum {
     IDLE,
     RECORDING,
-    RECORDING_PAUSED,
     PLAYING,
     PLAYBACK_PAUSED;
 
-    fun isRecording(): Boolean = this == RECORDING || this == RECORDING_PAUSED
+    fun isRecording(): Boolean = this == RECORDING
 
     fun isPlaying(): Boolean = this == PLAYING || this == PLAYBACK_PAUSED
 }

@@ -71,7 +71,7 @@ sealed interface GameEvent : GenericEvent {
 
     data class TapRecordingStart(val sessionId: Long) : GameEvent
     object TapRecordingStop : GameEvent
-    object TapRecordingPause : GameEvent
+    data class TapRecordingDiscard(val fileName: String) : GameEvent
     data class TapPlaybackPlay(val fileName: String) : GameEvent
     object TapPlaybackPause : GameEvent
     data class SetPlaybackPosition(val positionMs: Int) : GameEvent

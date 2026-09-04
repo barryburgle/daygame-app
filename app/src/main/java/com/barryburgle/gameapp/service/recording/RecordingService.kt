@@ -39,8 +39,7 @@ class RecordingService : Service() {
     companion object {
         const val ACTION_START_RECORDING = "ACTION_START_RECORDING"
         const val ACTION_STOP_RECORDING = "ACTION_STOP_RECORDING"
-        const val ACTION_PAUSE_RECORDING = "ACTION_PAUSE_RECORDING"
-        const val ACTION_RESUME_RECORDING = "ACTION_RESUME_RECORDING"
+        const val ACTION_DISCARD_RECORDING = "ACTION_DISCARD_RECORDING"
         const val ACTION_START_PLAYBACK = "ACTION_START_PLAYBACK"
         const val ACTION_PAUSE_PLAYBACK = "ACTION_PAUSE_PLAYBACK"
         const val ACTION_STOP_PLAYBACK = "ACTION_STOP_PLAYBACK"
@@ -179,8 +178,9 @@ class RecordingService : Service() {
             )
 
             ACTION_STOP_RECORDING -> stopRecording()
-            ACTION_PAUSE_RECORDING -> pauseRecording()
-            ACTION_RESUME_RECORDING -> resumeRecording()
+            ACTION_DISCARD_RECORDING -> discardRecording(
+                intent.getStringExtra(EXTRA_FOLDER).orEmpty()
+            )
             ACTION_START_PLAYBACK -> startPlayback(
                 intent.getStringExtra(EXTRA_FILE_NAME),
                 intent.getStringExtra(EXTRA_FOLDER).orEmpty()
@@ -259,27 +259,6 @@ class RecordingService : Service() {
         }
     }
 
-    private fun pauseRecording() {
-        if (_state.value.state == RecordingStateEnum.RECORDING) {
-            recorder?.pause()
-            // the file name is carried through: the row keeps marking itself as the live one
-            _state.value = RecordingState(
-                RecordingStateEnum.RECORDING_PAUSED,
-                _state.value.activeFileName
-            )
-        }
-    }
-
-    private fun resumeRecording() {
-        if (_state.value.state == RecordingStateEnum.RECORDING_PAUSED) {
-            recorder?.resume()
-            _state.value = RecordingState(
-                RecordingStateEnum.RECORDING,
-                _state.value.activeFileName
-            )
-        }
-    }
-
     private fun stopRecording() {
         try {
             recorder?.stop()
@@ -294,6 +273,16 @@ class RecordingService : Service() {
         }
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelfIfIdle()
+    }
+
+    private fun discardRecording(folder: String) {
+        val currentFileName = _state.value.activeFileName
+        stopRecording()
+        if (currentFileName != null) {
+            File(recordingsFolder(folder), currentFileName).delete()
+        } else {
+            throw RuntimeException("Not active file to discard")
+        }
     }
 
     private fun startPlayback(fileName: String?, folder: String) {

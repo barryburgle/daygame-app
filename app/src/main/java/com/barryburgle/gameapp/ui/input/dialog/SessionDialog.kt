@@ -352,7 +352,6 @@ fun SessionDialog(
                         recordingsFolder = state.recordingsFolder,
                         recordingsEnabled = state.recordingsEnabled,
                         showRecordingButtons = false,
-                        showDeleteButtons = true,
                         onTapPlaybackPlay = { onEvent(GameEvent.TapPlaybackPlay(it)) },
                         onTapPlaybackPause = { onEvent(GameEvent.TapPlaybackPause) },
                         onTapRecordingDelete = { onEvent(GameEvent.TapRecordingDelete(it)) },
