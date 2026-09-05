@@ -11,17 +11,22 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.setting.Setting
+import com.barryburgle.gameapp.service.recording.RecordingService
+import com.barryburgle.gameapp.ui.CombineNine
+import com.barryburgle.gameapp.ui.CombineTwentyone
 import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.CombineTen
 import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.CombineTwenty
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ToolViewModel(
     private val abstractSessionDao: AbstractSessionDao,
@@ -151,8 +156,10 @@ class ToolViewModel(
     private val _lastSessionsShown = settingDao.getLastSessionsShown()
     private val _lastWeeksShown = settingDao.getLastWeeksShown()
     private val _lastMonthsShown = settingDao.getLastMonthsShown()
+    private val _recordingsFolder = settingDao.getRecordingsFolder()
+    private val _recordingsEnabled = settingDao.getRecordingsEnabled()
     val state =
-        CombineNineteen(
+        CombineTwentyone(
             _state,
             _allSessions,
             _allLeads,
@@ -171,8 +178,10 @@ class ToolViewModel(
             _latestDownloadUrl,
             _lastSessionsShown,
             _lastWeeksShown,
-            _lastMonthsShown
-        ) { state, allSessions, allLeads, allDates, allSets, allChallenges, allPinPoints, allSettings, importExportSettingState, generalSettingState, liveSessionSettingState, averageLast, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown ->
+            _lastMonthsShown,
+            _recordingsFolder,
+            _recordingsEnabled
+        ) { state, allSessions, allLeads, allDates, allSets, allChallenges, allPinPoints, allSettings, importExportSettingState, generalSettingState, liveSessionSettingState, averageLast, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown, recordingsFolder, recordingsEnabled ->
             state.copy(
                 exportSessionsFileName = importExportSettingState.exportSessionsFilename,
                 importSessionsFileName = importExportSettingState.importSessionsFilename,
@@ -228,6 +237,8 @@ class ToolViewModel(
                 showCurrentWeekSummary = generalSettingState.showCurrentWeekSummary.toBoolean(),
                 showCurrentMonthSummary = generalSettingState.showCurrentMonthSummary.toBoolean(),
                 showCurrentChallengeSummary = generalSettingState.showCurrentChallengeSummary.toBoolean(),
+                recordingsFolder = recordingsFolder,
+                recordingsEnabled = recordingsEnabled.toBoolean(),
                 liveSessionNotificationEnabled = liveSessionSettingState.liveSessionNotificationEnabled.toBoolean(),
                 liveSessionSittingReminderEnabled = liveSessionSettingState.liveSessionSittingReminderEnabled.toBoolean(),
                 liveSessionSittingReminderInterval = liveSessionSettingState.liveSessionSittingReminderInterval.toInt(),
@@ -430,6 +441,28 @@ class ToolViewModel(
                 val backupFolder = _state.value.backupFolder
                 val setting = Setting(SettingDao.BACKUP_FOLDER_ID, backupFolder)
                 viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SwitchRecordingsEnabled -> {
+                val enabled = state.value.recordingsEnabled
+                viewModelScope.launch {
+                    settingDao.insert(
+                        Setting(SettingDao.RECORDINGS_ENABLED_ID, enabled.not().toString())
+                    )
+                }
+            }
+
+            is ToolEvent.SetRecordingsFolder -> {
+                // change recordings folder and move the existing files to it
+                val previousFolder = state.value.recordingsFolder
+                viewModelScope.launch {
+                    settingDao.insert(
+                        Setting(SettingDao.RECORDINGS_FOLDER_ID, event.recordingsFolder)
+                    )
+                    withContext(Dispatchers.IO) {
+                        RecordingService.moveRecordings(previousFolder, event.recordingsFolder)
+                    }
+                }
             }
 
             is ToolEvent.SetAllSessions -> {
@@ -935,7 +968,16 @@ class ToolViewModel(
             }
 
             is ToolEvent.DeleteAllSessions -> {
-                viewModelScope.launch { abstractSessionDao.deleteAll() }
+                val folder = state.value.recordingsFolder
+                viewModelScope.launch {
+                    abstractSessionDao.deleteAll()
+                    // all audio recordings are deleted too, these avoids issues when creating
+                    // new sessions
+                    // TODO: better approach? warn user about this?
+                    withContext(Dispatchers.IO) {
+                        RecordingService.deleteAllRecordings(folder)
+                    }
+                }
             }
 
             is ToolEvent.DeleteAllLeads -> {

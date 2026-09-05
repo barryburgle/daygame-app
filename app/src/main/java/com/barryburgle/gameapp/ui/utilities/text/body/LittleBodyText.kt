@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.utilities.text.body
 
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,14 +13,18 @@ fun LittleBodyText(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onPrimary,
-    italic: Boolean = false
+    italic: Boolean = false,
+    onLongClick: (() -> Unit)? = null
 ) {
     if (italic) {
         Text(
             text = text,
             style = MaterialTheme.typography.bodySmall,
             color = color,
-            modifier = modifier,
+            modifier = modifier.combinedClickable(
+                onClick = { },
+                onLongClick = onLongClick
+            ),
             fontStyle = FontStyle.Italic
         )
     } else {
@@ -27,7 +32,10 @@ fun LittleBodyText(
             text = text,
             style = MaterialTheme.typography.bodySmall,
             color = color,
-            modifier = modifier
+            modifier = modifier.combinedClickable(
+                onClick = { },
+                onLongClick = onLongClick
+            ),
         )
     }
 }

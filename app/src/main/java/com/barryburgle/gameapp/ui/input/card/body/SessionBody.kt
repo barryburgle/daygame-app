@@ -13,9 +13,12 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.service.recording.RecordingService
+import com.barryburgle.gameapp.ui.utilities.RecordingsView
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.timeline.Timeline
@@ -28,7 +31,11 @@ fun SessionBody(
     countFontSize: TextUnit,
     descriptionFontSize: TextUnit,
     perfFontSize: TextUnit,
-    onEvent: (GameEvent) -> Unit
+    onEvent: (GameEvent) -> Unit,
+    recordingState: RecordingState = RecordingState(),
+    recordings: List<String> = emptyList(),
+    recordingsFolder: String = "",
+    recordingsEnabled: Boolean = false
 ) {
     LittleBodyText("Session stats:")
     Row(
@@ -100,6 +107,21 @@ fun SessionBody(
             leads,
             onEvent,
             modifier = Modifier.fillMaxWidth()
+        )
+    }
+    // if audio recordings exist, show them
+    val sessionRecordings = RecordingService.recordingsOf(abstractSession.id, recordings)
+    if (sessionRecordings.isNotEmpty()) {
+        Spacer(modifier = Modifier.height(12.dp))
+        RecordingsView(
+            recordingState = recordingState,
+            recordings = sessionRecordings,
+            recordingsFolder = recordingsFolder,
+            recordingsEnabled = recordingsEnabled,
+            showRecordingButtons = false,
+            onTapPlaybackPlay = { onEvent(GameEvent.TapPlaybackPlay(it)) },
+            onTapPlaybackPause = { onEvent(GameEvent.TapPlaybackPause) },
+            onSetPlaybackPosition = { onEvent(GameEvent.SetPlaybackPosition(it)) }
         )
     }
 }

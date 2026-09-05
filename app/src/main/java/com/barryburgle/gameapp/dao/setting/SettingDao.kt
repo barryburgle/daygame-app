@@ -18,6 +18,8 @@ interface SettingDao {
         const val EXPORT_FOLDER_ID: String = "export_folder"
         const val IMPORT_FOLDER_ID: String = "import_folder"
         const val BACKUP_FOLDER_ID: String = "backup_folder"
+        const val RECORDINGS_FOLDER_ID: String = "recordings_folder"
+        const val RECORDINGS_ENABLED_ID: String = "recordings_enabled"
         const val EXPORT_HEADER_ID: String = "export_header"
         const val IMPORT_HEADER_ID: String = "import_header"
         const val BACKUP_ACTIVE_ID: String = "backup_active"
@@ -101,6 +103,9 @@ interface SettingDao {
         const val DEFAULT_EXPORT_FOLDER: String = "Download"
         const val DEFAULT_IMPORT_FOLDER: String = "Download"
         const val DEFAULT_BACKUP_FOLDER: String = "Backup_Daygame"
+        const val DEFAULT_RECORDINGS_FOLDER: String = "dg_recordings"
+        // off until the user enables it, which is also when the mic permission is asked for
+        const val DEFAULT_RECORDINGS_ENABLED_FLAG: String = "false"
         const val DEFAULT_EXPORT_HEADER_FLAG: String = "false"
         const val DEFAULT_IMPORT_HEADER_FLAG: String = "false"
         const val DEFAULT_BACKUP_ACTIVE_FLAG: String = "true"
@@ -211,6 +216,12 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_BACKUP_FOLDER}' ELSE value END FROM setting WHERE id = '${BACKUP_FOLDER_ID}'")
     fun getBackupFolder(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_RECORDINGS_FOLDER}' ELSE value END FROM setting WHERE id = '${RECORDINGS_FOLDER_ID}'")
+    fun getRecordingsFolder(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_RECORDINGS_ENABLED_FLAG}' ELSE value END FROM setting WHERE id = '${RECORDINGS_ENABLED_ID}'")
+    fun getRecordingsEnabled(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_EXPORT_HEADER_FLAG}' ELSE value END FROM setting WHERE id = '${EXPORT_HEADER_ID}'")
     fun getExportHeaderFlag(): Flow<String>

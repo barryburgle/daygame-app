@@ -11,12 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
-import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.service.recording.RecordingService
+import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.AbstractSessionService
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.dialog.SessionCounters
+import com.barryburgle.gameapp.ui.utilities.RecordingsView
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.timeline.Timeline
@@ -31,6 +34,10 @@ fun LiveSessionBody(
     liveSessionLeads: Int,
     liveSessionShareEnabled: Boolean,
     copyReportOnClipboard: Boolean,
+    recordingState: RecordingState = RecordingState(),
+    recordings: List<String> = emptyList(),
+    recordingsFolder: String = "",
+    recordingsEnabled: Boolean = false,
     pinPoints: List<PinPoint>,
     leads: List<Lead>,
     pullOClockReminderInterval: Int
@@ -112,6 +119,22 @@ fun LiveSessionBody(
             descriptionFontSize = descriptionFontSize
         )
     }
+
+    Spacer(modifier = Modifier.height(12.dp))
+    RecordingsView(
+        recordingState = recordingState,
+        recordings = RecordingService.recordingsOf(abstractSession.id, recordings),
+        recordingsFolder = recordingsFolder,
+        recordingsEnabled = recordingsEnabled,
+        onTapRecordingStart = { onEvent(GameEvent.TapRecordingStart(abstractSession.id!!)) },
+        onTapRecordingStop = { onEvent(GameEvent.TapRecordingStop) },
+        onTapRecordingDiscard = { onEvent(GameEvent.TapRecordingDiscard(it)) },
+        onTapPlaybackPlay = { onEvent(GameEvent.TapPlaybackPlay(it)) },
+        onTapPlaybackPause = { onEvent(GameEvent.TapPlaybackPause) },
+        onTapRecordingDelete = { onEvent(GameEvent.TapRecordingDelete(it)) },
+        onSetPlaybackPosition = { onEvent(GameEvent.SetPlaybackPosition(it)) }
+    )
+
     if (pinPoints.isNotEmpty()) {
         Spacer(modifier = Modifier.height(12.dp))
         Timeline(
