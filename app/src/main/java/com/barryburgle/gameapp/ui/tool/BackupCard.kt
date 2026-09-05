@@ -129,7 +129,6 @@ fun BackupCard(
                             onEvent = onEvent as (GenericEvent) -> Unit,
                             saveEvent = ToolEvent::SetLastBackup
                         )
-                        // TODO: make backup importing fault resistant: if some file is not found the others should be imported anyway
                         IconButtonSetting(
                             text = "Import all backups",
                             imageVector = Icons.Default.CloudDownload,

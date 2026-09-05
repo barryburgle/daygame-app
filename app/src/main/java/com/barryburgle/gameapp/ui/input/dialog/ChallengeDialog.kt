@@ -26,11 +26,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
-import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.ChallengeTypeEnum
-import com.barryburgle.gameapp.ui.input.InputCountComponent
+import com.barryburgle.gameapp.ui.input.CounterColumn
 import com.barryburgle.gameapp.ui.input.dialog.component.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
@@ -44,10 +44,20 @@ fun ChallengeDialog(
     state: InputState,
     onEvent: (GameEvent) -> Unit,
     description: String,
-    modifier: Modifier = Modifier.height(580.dp)
+    modifier: Modifier = Modifier.height(600.dp)
 ) {
     val localContext = LocalContext.current.applicationContext
     var challengeTypesExpanded by remember { mutableStateOf(false) }
+    var challengeGoalStart =
+        if (state.isAddingChallenge) state.defaultChallengeGoal else state.challengeGoal.toInt()
+    var challengeDaysStart =
+        if (state.isAddingChallenge) 1 else state.challengeDuration.toInt() + 1
+    var challengeGoal by remember {
+        mutableStateOf(if (challengeGoalStart == null) state.defaultChallengeGoal else challengeGoalStart)
+    }
+    var challengeDays by remember {
+        mutableStateOf(if (challengeDaysStart == null) 1 else challengeDaysStart)
+    }
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier.shadow(elevation = 10.dp),
@@ -63,15 +73,19 @@ fun ChallengeDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DialogTextComponent(state.challengeName, "Challenge name", 60.dp, "") {
+                DialogTextComponent(
+                    value = state.challengeName,
+                    placeholder = "challenge name",
+                    singleLine = true
+                ) {
                     onEvent(GameEvent.SetChallengeName(it))
                 }
                 Spacer(modifier = Modifier.height(7.dp))
                 DialogTextComponent(
-                    state.challengeDescription,
-                    "Challenge description",
-                    80.dp,
-                    ""
+                    value = state.challengeDescription,
+                    placeholder = "challenge description",
+                    singleLine = true
+
                 ) {
                     onEvent(GameEvent.SetChallengeDescription(it))
                 }
@@ -98,7 +112,7 @@ fun ChallengeDialog(
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
                                         Icon(
-                                            imageVector = challengeType.getIcon(),
+                                            painter = painterResource(challengeType.getIcon()),
                                             contentDescription = state.challengeType,
                                             tint = MaterialTheme.colorScheme.onPrimary,
                                             modifier = Modifier
@@ -118,7 +132,7 @@ fun ChallengeDialog(
                         onClick = {
                             challengeTypesExpanded = true
                         },
-                        imageVector = ChallengeTypeEnum.getIcon(state.challengeType),
+                        drawableIcon = ChallengeTypeEnum.getIcon(state.challengeType),
                         contentDescription = "Challenge type",
                         title = updatedChallengeType,
                         color = MaterialTheme.colorScheme.primaryContainer,
@@ -158,20 +172,29 @@ fun ChallengeDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
-                    InputCountComponent(
-                        inputTitle = if (updatedChallengeType.equals("Type")) "Choose goal" else updatedChallengeType,
-                        style = MaterialTheme.typography.titleSmall,
-                        onEvent = onEvent as (GenericEvent) -> Unit,
-                        countStart = if (state.isAddingChallenge) state.defaultChallengeGoal else state.challengeGoal.toInt(),
-                        increment = state.incrementChallengeGoal,
-                        saveEvent = GameEvent::SetChallengeGoal,
+                    CounterColumn(
+                        count = challengeGoal,
+                        label = if (updatedChallengeType.equals("Type")) "Choose goal" else updatedChallengeType,
+                        onIncrement = {
+                            challengeGoal += state.incrementChallengeGoal
+                            onEvent(GameEvent.SetChallengeGoal(challengeGoal.toString()))
+                        },
+                        onDecrement = {
+                            challengeGoal -= 1
+                            onEvent(GameEvent.SetChallengeGoal(challengeGoal.toString()))
+                        }
                     )
-                    InputCountComponent(
-                        inputTitle = "Days",
-                        style = MaterialTheme.typography.titleSmall,
-                        onEvent = onEvent as (GenericEvent) -> Unit,
-                        countStart = if (state.isAddingChallenge) 1 else state.challengeDuration.toInt() + 1,
-                        saveEvent = GameEvent::SetChallengeDuration,
+                    CounterColumn(
+                        count = challengeDays,
+                        label = "Days",
+                        onIncrement = {
+                            challengeDays += 1
+                            onEvent(GameEvent.SetChallengeDuration(challengeDays.toString()))
+                        },
+                        onDecrement = {
+                            challengeDays -= 1
+                            onEvent(GameEvent.SetChallengeDuration(challengeDays.toString()))
+                        }
                     )
                 }
             }

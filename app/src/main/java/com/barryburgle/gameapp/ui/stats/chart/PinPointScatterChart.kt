@@ -78,6 +78,8 @@ fun PinPointScatterChart(
                     textColor = primaryColor
                     textSize = inChartTextSize
                     granularity = 1f
+                    axisMinimum = 11f
+                    axisMaximum = 23f
                     valueFormatter = object : ValueFormatter() {
                         override fun getFormattedValue(value: Float): String {
                             val totalMinutes = (value * 60).toInt()
@@ -102,25 +104,6 @@ fun PinPointScatterChart(
             val layer2Colors = mutableListOf<Int>()
             val layer3Entries = mutableListOf<Entry>()
             val layer3Colors = mutableListOf<Int>()
-
-            val timeValues = pinPoints.mapNotNull { pinPoint ->
-                try {
-                    val ldt = LocalDateTime.parse(pinPoint.localTimestamp.substring(0, 19))
-                    ldt.hour + ldt.minute / 60f
-                } catch (e: Exception) {
-                    null
-                }
-            }
-
-            if (timeValues.isNotEmpty()) {
-                val minTime = timeValues.minOrNull()!! - 1f // -30 mins
-                val maxTime = timeValues.maxOrNull()!! + 1f // +30 mins
-                chart.axisLeft.axisMinimum = minTime
-                chart.axisLeft.axisMaximum = maxTime
-            } else {
-                chart.axisLeft.axisMinimum = 8f
-                chart.axisLeft.axisMaximum = 24f
-            }
 
             pinPoints.forEach { pinPoint ->
                 val dayBase = pinPoint.dayOfWeek.toFloat()

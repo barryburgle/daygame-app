@@ -23,7 +23,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,8 +42,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
@@ -53,7 +55,7 @@ import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.EntityService
 import com.barryburgle.gameapp.service.recording.RecordingService
-import com.barryburgle.gameapp.ui.input.InputCounter
+import com.barryburgle.gameapp.ui.input.CounterColumn
 import com.barryburgle.gameapp.ui.input.dialog.component.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
@@ -75,6 +77,7 @@ fun SessionDialog(
     modifier: Modifier = Modifier
 ) {
     val localContext = LocalContext.current.applicationContext
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
     var latestDateValue = state.date
     var latestStartHour = state.startHour
     var latestEndHour = state.endHour
@@ -218,127 +221,67 @@ fun SessionDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        IconShadowButton(
-                            onClick = {
-                                setsCount--
-                                onEvent(GameEvent.SetSets(setsCount.toString()))
-                            },
-                            imageVector = Icons.Default.Remove,
-                            contentDescription = "Less"
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            InputCounter(
-                                count = setsCount,
-                                style = MaterialTheme.typography.titleSmall
-                            )
-                            Image(
-                                painter = painterResource(R.drawable.set_action),
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                contentDescription = "sets",
-                                modifier = Modifier.height(30.dp),
-                                contentScale = ContentScale.Fit
-                            )
+                    CounterColumn(
+                        count = setsCount,
+                        label = "Sets",
+                        onIncrement = {
+                            setsCount++
+                            onEvent(GameEvent.SetSets(setsCount.toString()))
+                        },
+                        onDecrement = {
+                            setsCount--
+                            onEvent(GameEvent.SetSets(setsCount.toString()))
                         }
-                        LittleBodyText(if (setsCount != 1) "Sets" else "Set")
-                        Spacer(modifier = Modifier.height(4.dp))
-                        IconShadowButton(
-                            onClick = {
+                    )
+                    CounterColumn(
+                        count = convosCount,
+                        label = "Conversations",
+                        onIncrement = {
+                            convosCount++
+                            onEvent(GameEvent.SetConvos(convosCount.toString()))
+                            if (state.followCount) {
                                 setsCount++
-                                onEvent(GameEvent.SetSets(setsCount.toString()))
-                            },
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "More"
-                        )
-                    }
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        IconShadowButton(
-                            onClick = {
-                                convosCount--
-                                onEvent(GameEvent.SetConvos(convosCount.toString()))
-                            },
-                            imageVector = Icons.Default.Remove,
-                            contentDescription = "Less"
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            InputCounter(
-                                count = convosCount,
-                                style = MaterialTheme.typography.titleSmall
-                            )
-                            Image(
-                                painter = painterResource(R.drawable.conversation_action),
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                contentDescription = "conversations",
-                                modifier = Modifier.height(30.dp),
-                                contentScale = ContentScale.Fit
-                            )
+                            }
+                        },
+                        onDecrement = {
+                            convosCount--
+                            onEvent(GameEvent.SetConvos(convosCount.toString()))
                         }
-                        LittleBodyText(if (convosCount != 1) "Conversations" else "Conversation")
-                        Spacer(modifier = Modifier.height(4.dp))
-                        IconShadowButton(
-                            onClick = {
+                    )
+                    CounterColumn(
+                        count = contactsCount,
+                        label = "Contacts",
+                        onIncrement = {
+                            contactsCount++
+                            onEvent(GameEvent.SetContacts(contactsCount.toString()))
+                            if (state.followCount) {
+                                setsCount++
                                 convosCount++
-                                onEvent(GameEvent.SetConvos(convosCount.toString()))
-                                if (state.followCount) {
-                                    setsCount++
-                                }
-                            },
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "More"
-                        )
-                    }
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        IconShadowButton(
-                            onClick = {
-                                contactsCount--
-                                onEvent(GameEvent.SetContacts(contactsCount.toString()))
-                            },
-                            imageVector = Icons.Default.Remove,
-                            contentDescription = "Less"
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            InputCounter(
-                                count = contactsCount,
-                                style = MaterialTheme.typography.titleSmall
-                            )
-                            Image(
-                                painter = painterResource(R.drawable.contact_action),
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                contentDescription = "contacts",
-                                modifier = Modifier.height(30.dp),
-                                contentScale = ContentScale.Fit
-                            )
+                            }
+                        },
+                        onDecrement = {
+                            contactsCount--
+                            onEvent(GameEvent.SetContacts(contactsCount.toString()))
                         }
-                        LittleBodyText(if (contactsCount != 1) "Contacts" else "Contact")
-                        Spacer(modifier = Modifier.height(4.dp))
-                        IconShadowButton(
-                            onClick = {
-                                contactsCount++
-                                onEvent(GameEvent.SetContacts(contactsCount.toString()))
-                                if (state.followCount) {
-                                    setsCount++
-                                    convosCount++
-                                }
-                            },
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "More"
-                        )
-                    }
+                    )
                 }
+                val stickingPoints = state.stickingPoints
                 DialogTextComponent(
-                    state.stickingPoints,
-                    "Sticking points",
-                    100.dp,
-                    ""
+                    value = state.stickingPoints,
+                    placeholder = "sticking points",
+                    singleLine = false,
+                    onCopyClick = {
+                        clipboardManager.setText(
+                            AnnotatedString(
+                                stickingPoints
+                            )
+                        )
+                        Toast.makeText(
+                            localContext,
+                            "Sticking points copied",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 ) {
                     onEvent(GameEvent.SetStickingPoints(it))
                 }

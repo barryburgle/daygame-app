@@ -6,16 +6,23 @@
 - Pinpoints week vs. day-time chart: know when most of the interaction happen at a glance 👀
 - Pinpoints on map can now be filtered by type: show where the juiciest interactions happened 📍
 - Tap on the sitting reminder notification to open the timer for some rest 🕐
+- Tap on any chart in Dashboard to get to view the whole time series in landscape 📊
 - Now past backups are deleted only if deep validation of last backup went well ⛑️
 - Now backups only tables with new data 💾
 - Now all the exports are validated against app database after every single export 🚧
-- Pinpoints timeline on Live Session card ──●─
+- Pinpoints timeline on Live Session card and in session report ──●─
+- Last 3 periods plotted as line chart on Summary card 📌
+- Now you can tap & edit leads from the Dashboard tab 🪪
 - Live session audio recordings
 
 **Bugfixes**
 - Live session card counter performance issues
 - Map and timeline pinpoints colors
 - Info dialog entry spacing
+- Removed screen reload on already-selected navigation tab pressed again
+- Gesture-based backward navigation works between tabs
+- Importing backups is fault resistant: if some files are not found in the backup folder the others will anyway be imported
+- Minor UI improvements & optimizations
 
 # Version 1.13.0 (2026-07-05)
 **Features**

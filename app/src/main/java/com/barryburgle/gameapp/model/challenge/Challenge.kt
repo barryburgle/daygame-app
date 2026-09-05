@@ -1,14 +1,18 @@
 package com.barryburgle.gameapp.model.challenge
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.barryburgle.gameapp.model.enums.ChallengeTypeEnum
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.EventModel
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.FormatService
+import java.time.DayOfWeek
+import java.time.temporal.ChronoUnit
+import java.util.Locale
 
 @Entity(tableName = "challenge")
 open class Challenge(
@@ -32,22 +36,39 @@ open class Challenge(
     }
 
     override fun getEventIcon(): ImageVector {
-        return ChallengeTypeEnum.getIcon(type)
+        return Icons.Default.EmojiEvents
     }
 
-    override fun getEventDescription(): String {
+    override fun getHeaderWeekday(): String {
+        return DayOfWeek.of(dayOfWeek).toString().lowercase()
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+    }
+
+    override fun getHeaderDate(): String {
+        return "${FormatService.getDate(startDate).take(5)} ⮕ ${
+            FormatService.getDate(
+                endDate
+            ).take(5)
+        }"
+    }
+
+    override fun getHeaderTime(): String {
+        // Returning here the name since we already use getHeaderDate for dates
         if (!name!!.isBlank()) {
             return "\"" + name?.replaceFirstChar { it.uppercase() } + "\""
         }
         return ""
     }
 
-    override fun getEventDuration(): String {
-        return "${FormatService.getDate(startDate)} ⮕ ${
-            FormatService.getDate(
-                endDate
-            )
-        }"
+    fun getTotalDays(): Long {
+        return ChronoUnit.DAYS.between(
+            FormatService.parseDate(startDate),
+            FormatService.parseDate(endDate)
+        ) + 1
+    }
+
+    override fun getHeaderDuration(): String {
+        return ""
     }
 
     override fun getEventStickingPoints(): String? {

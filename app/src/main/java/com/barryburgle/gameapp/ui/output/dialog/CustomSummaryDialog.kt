@@ -64,18 +64,25 @@ fun CustomSummaryDialog(
     val descriptionFontSize = 10.sp
 
     val summaryEntries = remember(customSummaryStartDate, customSummaryEndDate, state) {
-        val rawData = listOf(
-            HeatmapEntityEnum.SETS to getSeries(state, HeatmapEntityEnum.SETS),
-            HeatmapEntityEnum.CONVERSATIONS to getSeries(state, HeatmapEntityEnum.CONVERSATIONS),
-            HeatmapEntityEnum.CONTACTS to getSeries(state, HeatmapEntityEnum.CONTACTS),
-            HeatmapEntityEnum.INDEX to getSeries(state, HeatmapEntityEnum.INDEX),
-            HeatmapEntityEnum.DATES to getSeries(state, HeatmapEntityEnum.DATES),
-            HeatmapEntityEnum.RECORDINGS to getSeries(state, HeatmapEntityEnum.RECORDINGS),
-            HeatmapEntityEnum.PULLED to getSeries(state, HeatmapEntityEnum.PULLED),
-            HeatmapEntityEnum.BOUNCED to getSeries(state, HeatmapEntityEnum.BOUNCED),
-            HeatmapEntityEnum.KISSED to getSeries(state, HeatmapEntityEnum.KISSED),
-            HeatmapEntityEnum.LAID to getSeries(state, HeatmapEntityEnum.LAID)
-        ).associate { (entity, series) ->
+        val leadsMap = state.allLeads.associateBy { it.id }
+        val sessionsByDate = state.allSessions.groupBy { FormatService.parseDate(it.date) }
+        val setsByDate = state.allSets.groupBy { FormatService.parseDate(it.date) }
+        val datesByDate = state.allDates.filter { it.date != null }.groupBy { FormatService.parseDate(it.date!!) }
+        val baseEntities = listOf(
+            HeatmapEntityEnum.SETS,
+            HeatmapEntityEnum.CONVERSATIONS,
+            HeatmapEntityEnum.CONTACTS,
+            HeatmapEntityEnum.INDEX,
+            HeatmapEntityEnum.DATES,
+            HeatmapEntityEnum.RECORDINGS,
+            HeatmapEntityEnum.PULLED,
+            HeatmapEntityEnum.BOUNCED,
+            HeatmapEntityEnum.KISSED,
+            HeatmapEntityEnum.LAID
+        )
+        val rawData = baseEntities.associateWith { entity ->
+            getSeries(state, entity, sessionsByDate, setsByDate, datesByDate, leadsMap)
+        }.mapValues { (entity, series) ->
             val filteredSeries = series.filter { entry ->
                 !entry.date.isBefore(customSummaryStartDate) && !entry.date.isAfter(customSummaryEndDate)
             }
@@ -85,7 +92,7 @@ fun CustomSummaryDialog(
             } else {
                 0f
             }
-            entity to Pair(total, rawAvg)
+            Pair(total, rawAvg)
         }
 
         val allSets = rawData[HeatmapEntityEnum.SETS]?.first ?: 0f
@@ -110,19 +117,6 @@ fun CustomSummaryDialog(
         val kissToBounceRatioVal = safeRatio(allKissed, allBounced)
         val layToKissRatioVal = safeRatio(allLaid, allKissed)
 
-        val baseEntities = listOf(
-            HeatmapEntityEnum.SETS,
-            HeatmapEntityEnum.CONVERSATIONS,
-            HeatmapEntityEnum.CONTACTS,
-            HeatmapEntityEnum.INDEX,
-            HeatmapEntityEnum.DATES,
-            HeatmapEntityEnum.RECORDINGS,
-            HeatmapEntityEnum.PULLED,
-            HeatmapEntityEnum.BOUNCED,
-            HeatmapEntityEnum.KISSED,
-            HeatmapEntityEnum.LAID
-        )
-
         val resultList = mutableListOf<SummaryEntryModel>()
 
         baseEntities.forEach { entity ->
@@ -141,7 +135,6 @@ fun CustomSummaryDialog(
                 )
             )
 
-            // Insert ratio entries after specific denominators
             when (entity) {
                 HeatmapEntityEnum.CONVERSATIONS -> {
                     resultList.add(SummaryEntryModel(label = "Conversation Ratio", total = 0f, average = conversationRatioVal + " %", isIndex = false, isRatio = true))

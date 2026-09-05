@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,8 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Map
@@ -119,7 +120,7 @@ fun EventCard(
     var showMapDialog by remember { mutableStateOf(false) }
 
     if (showCancelLiveSessionConfirmDialog) {
-        deleteEventConfirmationDialog(
+        DeleteConfirmationDialog(
             "Live Session",
             "Do you want to stop the current Live Session without saving result?",
             onConfirmRequest = {
@@ -135,7 +136,7 @@ fun EventCard(
         )
     }
     if (showDeleteSessionConfirmDialog) {
-        deleteEventConfirmationDialog(
+        DeleteConfirmationDialog(
             "Session",
             "Do you want to delete this session?",
             onConfirmRequest = {
@@ -152,7 +153,7 @@ fun EventCard(
         )
     }
     if (showDeleteSetConfirmDialog) {
-        deleteEventConfirmationDialog(
+        DeleteConfirmationDialog(
             "Set",
             "Do you want to delete this set?",
             onConfirmRequest = {
@@ -169,7 +170,7 @@ fun EventCard(
         )
     }
     if (showDeleteDateConfirmDialog) {
-        deleteEventConfirmationDialog(
+        DeleteConfirmationDialog(
             "Date",
             "Do you want to delete this date?",
             onConfirmRequest = {
@@ -186,7 +187,7 @@ fun EventCard(
         )
     }
     if (showDeleteChallengeConfirmDialog) {
-        deleteEventConfirmationDialog(
+        DeleteConfirmationDialog(
             "Challenge",
             "Do you want to delete this challenge?",
             onConfirmRequest = {
@@ -230,7 +231,29 @@ fun EventCard(
                         .padding(5.dp)
                         .fillMaxWidth()
                 ) {
-                    LittleBodyText(sortableGameEvent.event.getEventDescription())
+                    var eventDuration = sortableGameEvent.event.getHeaderDuration()
+                    if (isLiveSession) {
+                        val session = sortableGameEvent.event as AbstractSession
+                        val nowLocalDateTime = LocalDateTime.now()
+                        val nowTime = getParsedHour(
+                            session.date.substring(0, 10),
+                            nowLocalDateTime.toLocalTime().toString().substring(0, 5)
+                        )
+                        val startTime = getParsedHour(
+                            session.startHour.substring(0, 10), session.startHour.substring(11, 16)
+                        )
+                        liveSessionTime = getTime(startTime, nowTime)
+                        eventDuration =
+                            liveSessionTime.toString() + "'"
+                    }
+                    eventHeader(
+                        listOf(
+                            sortableGameEvent.event.getHeaderWeekday(),
+                            sortableGameEvent.event.getHeaderDate(),
+                            sortableGameEvent.event.getHeaderTime(),
+                            eventDuration
+                        )
+                    )
                     Spacer(modifier = Modifier.width(3.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -261,7 +284,7 @@ fun EventCard(
                             if (isLiveSession) {
                                 eventTitle = "Live " + eventTitle.lowercase()
                             }
-                            LargeTitleText(eventTitle)
+                            LargeTitleText(eventTitle, true)
                         }
                         Row(
                             modifier = Modifier.width(160.dp),
@@ -275,18 +298,29 @@ fun EventCard(
                                         leadsToShare = listOf()
                                     }
                                     var report = sortableGameEvent.event.shareReport(leadsToShare)
-                                    if (Date::class.java.simpleName.equals(sortableGameEvent.classType)) {
-                                        var eventDate: Date = sortableGameEvent.event as Date
-                                        report = eventDate.shareDateReport(
-                                            leadsToShare, simplePlusOneReport
-                                        )
-                                    } else if (AchievedChallenge::class.java.simpleName.equals(
-                                            sortableGameEvent.classType
-                                        )
-                                    ) {
-                                        var achievedChallenge: AchievedChallenge =
-                                            sortableGameEvent.event as AchievedChallenge
-                                        report = achievedChallenge.getAchievedChallengeReport(false)
+                                    report = when (sortableGameEvent.classType) {
+                                        AbstractSession::class.java.simpleName -> {
+                                            val abstractSession =
+                                                sortableGameEvent.event as AbstractSession
+                                            abstractSession.shareSessionReport(
+                                                leadsToShare, pinPoints
+                                            )
+                                        }
+
+                                        Date::class.java.simpleName -> {
+                                            val eventDate = sortableGameEvent.event as Date
+                                            eventDate.shareDateReport(
+                                                leadsToShare, simplePlusOneReport
+                                            )
+                                        }
+
+                                        AchievedChallenge::class.java.simpleName -> {
+                                            val achievedChallenge =
+                                                sortableGameEvent.event as AchievedChallenge
+                                            achievedChallenge.getAchievedChallengeReport(false)
+                                        }
+
+                                        else -> report
                                     }
                                     if (copyReportOnClipboard) {
                                         clipboardManager.setText(
@@ -489,14 +523,14 @@ fun EventCard(
                             if (isLiveSession) {
                                 IconShadowButton(
                                     onClick = {
-                                    onEvent(
-                                        GameEvent.StopLiveSession(sortableGameEvent.event as AbstractSession)
-                                    )
-                                    val intent = Intent(
-                                        context, PersistentNotificationService::class.java
-                                    )
-                                    context.stopService(intent)
-                                },
+                                        onEvent(
+                                            GameEvent.StopLiveSession(sortableGameEvent.event as AbstractSession)
+                                        )
+                                        val intent = Intent(
+                                            context, PersistentNotificationService::class.java
+                                        )
+                                        context.stopService(intent)
+                                    },
                                     onLongClick = {
                                         showCancelLiveSessionConfirmDialog = true
                                     },
@@ -536,24 +570,6 @@ fun EventCard(
                             }
                         }
                     }
-                    var eventDuration = sortableGameEvent.event.getEventDuration()
-                    if (isLiveSession) {
-                        val session = sortableGameEvent.event as AbstractSession
-                        val nowLocalDateTime = LocalDateTime.now()
-                        val nowTime = getParsedHour(
-                            session.date.substring(0, 10),
-                            nowLocalDateTime.toLocalTime().toString().substring(0, 5)
-                        )
-                        val startTime = getParsedHour(
-                            session.startHour.substring(0, 10), session.startHour.substring(11, 16)
-                        )
-                        liveSessionTime = getTime(startTime, nowTime)
-                        eventDuration =
-                            eventDuration.substring(0, 8) + nowLocalDateTime.toLocalTime()
-                                .toString()
-                                .substring(0, 5) + ": " + liveSessionTime.toString() + " minutes"
-                    }
-                    LittleBodyText(eventDuration)
                 }
                 Row(
                     modifier = Modifier
@@ -668,12 +684,6 @@ fun EventCard(
                                 .fillMaxWidth()
                         ) {
                             var stickingPoints = sortableGameEvent.event.getEventStickingPoints()
-                            val validStickingPoints =
-                                stickingPoints != null && !stickingPoints.isBlank()
-                            var width = 1f
-                            if (validStickingPoints) {
-                                width = 0.8f
-                            }
                             var sectionDescription = "Sticking points"
                             if (AchievedChallenge::class.java.simpleName.equals(
                                     sortableGameEvent.classType
@@ -681,13 +691,26 @@ fun EventCard(
                             ) {
                                 sectionDescription = "Description"
                             }
-                            CardSection(width = width) {
+                            CardSection {
                                 if (isLiveSession) {
                                     DialogTextComponent(
-                                        (sortableGameEvent.event as AbstractSession).stickingPoints,
-                                        "Sticking points",
-                                        100.dp,
-                                        ""
+                                        value = (sortableGameEvent.event as AbstractSession).stickingPoints,
+                                        placeholder = "sticking points",
+                                        singleLine = false,
+                                        onCopyClick = {
+                                            if (stickingPoints != null) {
+                                                clipboardManager.setText(
+                                                    AnnotatedString(
+                                                        stickingPoints
+                                                    )
+                                                )
+                                                Toast.makeText(
+                                                    localContext,
+                                                    "Sticking points copied",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
                                     ) {
                                         onEvent(
                                             GameEvent.SetLiveStickingPoints(
@@ -721,28 +744,41 @@ fun EventCard(
                                     }
                                 }
                             }
-                            if (validStickingPoints) {
-                                Spacer(modifier = Modifier.width(10.dp))
-                                IconShadowButton(
-                                    onClick = {
-                                        if (stickingPoints != null) {
-                                            clipboardManager.setText(
-                                                AnnotatedString(
-                                                    stickingPoints
-                                                )
-                                            )
-                                            Toast.makeText(
-                                                localContext,
-                                                "Sticking points copied",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    },
-                                    imageVector = Icons.Default.ContentCopy,
-                                    contentDescription = "Copy Sticking Points"
-                                )
-                            }
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun eventHeader(headerParts: List<String>) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 2.dp, top = 2.dp, end = 2.dp, bottom = 10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        headerParts.forEach {
+            if (it != null && it.isNotEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colorScheme.onPrimary.copy(0.1f),
+                            shape = RoundedCornerShape(15.dp)
+                        )
+                ) {
+                    Row(
+                        modifier = Modifier.padding(
+                            start = 12.dp,
+                            top = 7.dp,
+                            end = 12.dp,
+                            bottom = 7.dp
+                        )
+                    ) {
+                        LittleBodyText(it)
                     }
                 }
             }
@@ -832,7 +868,7 @@ private fun LeadsRow(
 }
 
 @Composable
-fun deleteEventConfirmationDialog(
+fun DeleteConfirmationDialog(
     title: String, description: String, onConfirmRequest: () -> Unit, onDismissRequest: () -> Unit
 ) {
     AlertDialog(

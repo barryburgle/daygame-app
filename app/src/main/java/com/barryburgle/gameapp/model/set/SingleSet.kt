@@ -46,14 +46,16 @@ open class SingleSet(
         return Icons.Filled.ChatBubbleOutline
     }
 
-    override fun getEventDescription(): String {
-        return "${
-            DayOfWeek.of(dayOfWeek).toString().lowercase()
-                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-        } ${FormatService.getDate(date)}"
+    override fun getHeaderWeekday(): String {
+        return DayOfWeek.of(dayOfWeek).toString().lowercase()
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
     }
 
-    override fun getEventDuration(): String {
+    override fun getHeaderDate(): String {
+        return FormatService.getDate(date)
+    }
+
+    override fun getHeaderTime(): String {
         return "${
             FormatService.getTime(
                 startHour
@@ -62,7 +64,11 @@ open class SingleSet(
             FormatService.getTime(
                 endHour
             )
-        }: ${setTime} minutes"
+        }"
+    }
+
+    override fun getHeaderDuration(): String {
+        return "${setTime}'"
     }
 
     override fun getEventStickingPoints(): String {

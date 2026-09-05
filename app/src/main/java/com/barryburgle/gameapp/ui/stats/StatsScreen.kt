@@ -26,6 +26,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.StatsEvent
 import com.barryburgle.gameapp.model.enums.ChallengeMedalEnum
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
@@ -100,10 +102,13 @@ fun StatsScreen(
                             } minutes",
                             copyReportOnClipboard = state.copyReportOnClipboard,
                             firstQuantifierQuantity = "${sets}",
+                            firstQuantifierIcon = R.drawable.set_action,
                             firstQuantifierDescription = "Sets",
                             secondQuantifierQuantity = "${conversations}",
+                            secondQuantifierIcon = R.drawable.conversation_action,
                             secondQuantifierDescription = "Conversations",
                             thirdQuantifierQuantity = "${contacts}",
+                            thirdQuantifierIcon = R.drawable.contact_action,
                             thirdQuantifierDescription = "Contacts",
                             firstPerformanceQuantity = "${
                                 GlobalStatsService.computeGenericRatio(
@@ -128,7 +133,8 @@ fun StatsScreen(
                                     state.allSessions
                                 )
                             }",
-                            fourthPerformanceDescription = "Average\nIndex"
+                            fourthPerformanceDescription = "Average\nIndex",
+                            countFontSize = 35.sp
                         )
                     }
                 }
@@ -198,10 +204,13 @@ fun StatsScreen(
                             description = "${timeSpentSentence} spent on single sets, " + contactSentence,
                             copyReportOnClipboard = state.copyReportOnClipboard,
                             firstQuantifierQuantity = "${state.allSets.size}",
+                            firstQuantifierIcon = R.drawable.set_action,
                             firstQuantifierDescription = "Sets",
                             secondQuantifierQuantity = "${conversations}",
+                            secondQuantifierIcon = R.drawable.conversation_action,
                             secondQuantifierDescription = "Conversations",
                             thirdQuantifierQuantity = "${contacts}",
+                            thirdQuantifierIcon = R.drawable.contact_action,
                             thirdQuantifierDescription = "Contacts",
                             fourthQuantifierQuantity = "${instantDates}",
                             fourthQuantifierDescription = "Instant\nDates",
@@ -227,7 +236,8 @@ fun StatsScreen(
                                     instantDates
                                 )
                             } %",
-                            thirdPerformanceDescription = "iDate\nRatio"
+                            thirdPerformanceDescription = "iDate\nRatio",
+                            countFontSize = 35.sp
                         )
                     }
                 }
@@ -276,6 +286,7 @@ fun StatsScreen(
                                 )
                             } %",
                             thirdPerformanceDescription = "Date to Lead\nRatio",
+                            countFontSize = 35.sp
                         )
                     }
                 }
@@ -333,7 +344,8 @@ fun StatsScreen(
                                     kisses, lays
                                 )
                             } %",
-                            fourthPerformanceDescription = "Lay to Kiss\nRatio"
+                            fourthPerformanceDescription = "Lay to Kiss\nRatio",
+                            countFontSize = 35.sp
                         )
                     }
                 }
@@ -371,18 +383,17 @@ fun StatsScreen(
                             secondQuantifierQuantity = goldMedals.toString(),
                             secondQuantifierIcon = ChallengeMedalEnum.GOLD.getIcon(),
                             secondQuantifierColor = ChallengeMedalEnum.GOLD.getColor(),
-                            secondQuantifierDescription = ChallengeMedalEnum.GOLD.getDescription()
-                                .replace("\n", "") + "s",
+                            secondQuantifierDescription = ChallengeMedalEnum.GOLD.getDescription() + "s",
                             thirdQuantifierQuantity = silverMedals.toString(),
                             thirdQuantifierIcon = ChallengeMedalEnum.SILVER.getIcon(),
                             thirdQuantifierColor = ChallengeMedalEnum.SILVER.getColor(),
                             thirdQuantifierDescription = ChallengeMedalEnum.SILVER.getDescription()
-                                .replace("\n", "") + "s",
+                                    + "s",
                             fourthQuantifierQuantity = bronzeMedals.toString(),
                             fourthQuantifierIcon = ChallengeMedalEnum.BRONZE.getIcon(),
                             fourthQuantifierColor = ChallengeMedalEnum.BRONZE.getColor(),
                             fourthQuantifierDescription = ChallengeMedalEnum.BRONZE.getDescription()
-                                .replace("\n", "") + "s",
+                                    + "s",
                             firstPerformanceQuantity = "${
                                 GlobalStatsService.computeGenericRatio(
                                     state.allChallenges.size, completedChallenges
@@ -397,6 +408,7 @@ fun StatsScreen(
                             secondPerformanceDescription = "Challenges\nExceeded",
                             thirdPerformanceQuantity = "${(averageCompletionRatio * 10000).toInt() / 100} %",
                             thirdPerformanceDescription = "Average\nCompletion\nRatio",
+                            countFontSize = 35.sp
                         )
                     }
                 }

@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,14 +18,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
@@ -55,6 +53,8 @@ fun Navigation(
     toolOnEvent: (ToolEvent) -> Unit
 ) {
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
     val items = listOf(
         BottomNavigationItem(
             title = "Game",
@@ -85,9 +85,7 @@ fun Navigation(
             destinationScreen = Screen.ToolScreen.route
         )
     )
-    var selectedItemIndex by rememberSaveable {
-        mutableStateOf(0)
-    }
+
     Scaffold(
         bottomBar = {
             androidx.compose.material3.Surface(
@@ -102,15 +100,20 @@ fun Navigation(
                 NavigationBar(
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
-                    items.forEachIndexed { index, item ->
-                        item.selected = selectedItemIndex == index
+                    items.forEach { item ->
+                        val isSelected =
+                            currentDestination?.hierarchy?.any { it.route == item.destinationScreen } == true
                         val selectedColor =
-                            if (item.selected) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimary
+                            if (isSelected) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimary
                         NavigationBarItem(
-                            selected = item.selected,
+                            selected = isSelected,
                             onClick = {
-                                selectedItemIndex = index
-                                navController.navigate(item.destinationScreen)
+                                if (!isSelected) {
+                                    navController.navigate(item.destinationScreen) {
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
                             },
                             label = { Text(text = item.title, color = selectedColor) },
                             icon = {
@@ -127,8 +130,6 @@ fun Navigation(
                                         }
                                     }
                                 ) {
-                                    if (isSystemInDarkTheme()) {
-                                    }
                                     Icon(
                                         painter = item.icon,
                                         contentDescription = item.title,

@@ -2,7 +2,9 @@ package com.barryburgle.gameapp.ui.output.section
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.ui.unit.Dp
+import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.output.OutputCard
+import com.barryburgle.gameapp.ui.output.chart.LabeledBarEntry
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.github.mikephil.charting.data.BarEntry
 
@@ -14,9 +16,12 @@ fun LazyListScope.SessionSection(
     item {
         state.allSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
-                BarEntry(
-                    it.toFloat(),
-                    abstractSession.sets.toFloat()
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        abstractSession.sets.toFloat()
+                    ),
+                    FormatService.getDateForCharLabel(abstractSession.date)
                 )
             }
         }?.let { it ->
@@ -24,18 +29,22 @@ fun LazyListScope.SessionSection(
                 height = height,
                 width = width,
                 chartLabel = "Sets",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastSessionsShown
             )
         }
     }
     item {
         state.allSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
-                BarEntry(
-                    it.toFloat(),
-                    abstractSession.convos.toFloat()
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        abstractSession.convos.toFloat()
+                    ),
+                    FormatService.getDateForCharLabel(abstractSession.date)
                 )
             }
         }?.let { it ->
@@ -43,18 +52,22 @@ fun LazyListScope.SessionSection(
                 height = height,
                 width = width,
                 chartLabel = "Conversations",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastSessionsShown
             )
         }
     }
     item {
         state.allSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
-                BarEntry(
-                    it.toFloat(),
-                    abstractSession.contacts.toFloat()
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        abstractSession.contacts.toFloat()
+                    ),
+                    FormatService.getDateForCharLabel(abstractSession.date)
                 )
             }
         }?.let { it ->
@@ -62,18 +75,22 @@ fun LazyListScope.SessionSection(
                 height = height,
                 width = width,
                 chartLabel = "Contacts",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastSessionsShown
             )
         }
     }
     item {
         state.allSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
-                BarEntry(
-                    it.toFloat(),
-                    abstractSession.index.toFloat()
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        abstractSession.index.toFloat()
+                    ),
+                    FormatService.getDateForCharLabel(abstractSession.date)
                 )
             }
         }?.let { it ->
@@ -81,18 +98,22 @@ fun LazyListScope.SessionSection(
                 height = height,
                 width = width,
                 chartLabel = "Index",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = false,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastSessionsShown
             )
         }
     }
     item {
         state.allSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
-                BarEntry(
-                    it.toFloat(),
-                    abstractSession.approachTime.toFloat()
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        abstractSession.approachTime.toFloat()
+                    ),
+                    FormatService.getDateForCharLabel(abstractSession.date)
                 )
             }
         }?.let { it ->
@@ -100,18 +121,22 @@ fun LazyListScope.SessionSection(
                 height = height,
                 width = width,
                 chartLabel = "Approach Time [minutes]",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastSessionsShown
             )
         }
     }
     item {
         state.allSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
-                BarEntry(
-                    it.toFloat(),
-                    abstractSession.convoRatio.toFloat() * 100
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        abstractSession.convoRatio.toFloat()
+                    ),
+                    FormatService.getDateForCharLabel(abstractSession.date)
                 )
             }
         }?.let { it ->
@@ -119,18 +144,22 @@ fun LazyListScope.SessionSection(
                 height = height,
                 width = width,
                 chartLabel = "Conversation Ratio [%]",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastSessionsShown
             )
         }
     }
     item {
         state.allSessions.map { abstractSession ->
             abstractSession.id?.toInt()?.let {
-                BarEntry(
-                    it.toFloat(),
-                    abstractSession.contactRatio.toFloat() * 100
+                LabeledBarEntry(
+                    BarEntry(
+                        it.toFloat(),
+                        abstractSession.contactRatio.toFloat()
+                    ),
+                    FormatService.getDateForCharLabel(abstractSession.date)
                 )
             }
         }?.let { it ->
@@ -138,9 +167,10 @@ fun LazyListScope.SessionSection(
                 height = height,
                 width = width,
                 chartLabel = "Contact Ratio [%]",
-                barEntryList = it as List<BarEntry>,
+                labeledEntries = it as List<LabeledBarEntry>,
                 integerValues = true,
-                movingAverageWindow = state.movingAverageWindow
+                movingAverageWindow = state.movingAverageWindow,
+                lastShown = state.lastSessionsShown
             )
         }
     }

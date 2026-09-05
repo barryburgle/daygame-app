@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.output.chart
 
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import androidx.compose.foundation.background
@@ -20,28 +21,52 @@ import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.ui.theme.Shapes
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.renderer.XAxisRenderer
+import com.github.mikephil.charting.utils.MPPointF
+import com.github.mikephil.charting.utils.Utils
 
+data class LabeledBarEntry(
+    val entry: BarEntry,
+    val label: String
+)
 
 @Composable
 fun OutputLineChart(
-    barEntryList: List<BarEntry>,
-    description: String,
+    labeledEntries: List<LabeledBarEntry>,
+    description: String = "",
     integerValues: Boolean,
-    movingAverageWindow: Int
+    movingAverageWindow: Int = 4,
+    movingAverageActive: Boolean = true,
+    legendActive: Boolean = true,
+    transparentBackgroundActive: Boolean = false,
+    paddingOn: Boolean = true,
+    isScrollable: Boolean = false,
+    modifier: Modifier = Modifier,
+    showLabels: Boolean = false
 ) {
-    val surfaceColor = MaterialTheme.colorScheme.surface.toArgb()
+    val normalizedBarEntryList = labeledEntries.mapIndexed { index, labeledEntry ->
+        BarEntry((index).toFloat(), labeledEntry.entry.y)
+    }
+    val defaultSurfaceColor = MaterialTheme.colorScheme.surface.toArgb()
+    val surfaceColor = if (transparentBackgroundActive) Color.TRANSPARENT else defaultSurfaceColor
+    val composeBackgroundColor =
+        if (transparentBackgroundActive) androidx.compose.ui.graphics.Color.Transparent else MaterialTheme.colorScheme.surface
+
     val onSurfaceColor = MaterialTheme.colorScheme.onPrimary.toArgb()
     val commonLineWidth = 1f
-    val inChartTextSize = 12f
+    val inChartValueTextSize = 12f
+    val inChartLabelTextSize = 10f
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(
-                MaterialTheme.colorScheme.surface,
+                composeBackgroundColor,
                 Shapes.large
             )
     ) {
@@ -49,26 +74,29 @@ fun OutputLineChart(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
-                modifier = Modifier
-                    .padding(5.dp),
+                modifier = if (paddingOn) Modifier
+                    .padding(5.dp)
+                    .fillMaxSize() else Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .fillMaxWidth()
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
+                if (description != "") {
+                    Column(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth()
                     ) {
-                        SmallTitleText(description)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            SmallTitleText(description)
+                        }
                     }
                 }
                 val gradientColors = intArrayOf(
                     MaterialTheme.colorScheme.onSurface.toArgb(),
-                    MaterialTheme.colorScheme.surface.toArgb()
+                    surfaceColor
                 )
                 AndroidView(
                     modifier = Modifier
@@ -79,8 +107,44 @@ fun OutputLineChart(
                                 LineChart(context),
                                 surfaceColor,
                                 onSurfaceColor,
-                                inChartTextSize
+                                inChartValueTextSize,
+                                legendActive,
+                                isScrollable
                             )
+                        if (showLabels) {
+                            val xAxisLabels = labeledEntries.map { it.label }
+                            if (xAxisLabels.isNotEmpty()) {
+                                barChart.xAxis.apply {
+                                    isEnabled = true
+                                    valueFormatter = IndexAxisValueFormatter(xAxisLabels)
+                                    position = XAxis.XAxisPosition.BOTTOM
+                                    textColor = onSurfaceColor
+                                    textSize = inChartLabelTextSize
+                                    setDrawGridLines(false)
+                                    granularity = 1f
+                                    isGranularityEnabled = true
+                                    setLabelCount(25, false)
+                                }
+                                barChart.setXAxisRenderer(object : XAxisRenderer(barChart.viewPortHandler, barChart.xAxis, barChart.getTransformer(YAxis.AxisDependency.LEFT)) {
+                                    override fun drawLabel(
+                                        c: Canvas?,
+                                        formattedLabel: String?,
+                                        x: Float,
+                                        y: Float,
+                                        anchor: MPPointF?,
+                                        angleDegrees: Float
+                                    ) {
+                                        if (formattedLabel == null || c == null) return
+                                        val lines = formattedLabel.split("\n")
+                                        var currentY = y
+                                        for (line in lines) {
+                                            Utils.drawXAxisValue(c, line, x, currentY, mAxisLabelPaint, anchor, angleDegrees)
+                                            currentY += mAxisLabelPaint.textSize + Utils.convertDpToPixel(2f)
+                                        }
+                                    }
+                                })
+                            }
+                        }
                         val formatter: ValueFormatter = object : ValueFormatter() {
                             override fun getFormattedValue(value: Float): String {
                                 return value.toInt().toString()
@@ -89,13 +153,13 @@ fun OutputLineChart(
                         val leftAxis: YAxis = barChart.getAxisLeft()
                         leftAxis.setValueFormatter(formatter)
                         val dataset =
-                            LineDataSet(barEntryList, description).apply {
+                            LineDataSet(normalizedBarEntryList, description).apply {
                                 color = onSurfaceColor
                                 valueTextColor = onSurfaceColor
-                                valueTextSize = inChartTextSize
+                                valueTextSize = inChartValueTextSize
                                 setDrawValues(true)
                                 if (integerValues) {
-                                    valueFormatter = IntegerValueFormatter()
+                                    valueFormatter = formatter
                                 }
                                 lineWidth = commonLineWidth
                                 isHighlightEnabled = true
@@ -114,7 +178,7 @@ fun OutputLineChart(
                             }
                         val averageDataset =
                             LineDataSet(
-                                SessionManager.computeAverageBarEntryList(barEntryList),
+                                SessionManager.computeAverageBarEntryList(normalizedBarEntryList),
                                 "Average"
                             ).apply {
                                 color = Color.YELLOW
@@ -124,22 +188,30 @@ fun OutputLineChart(
                                 mode = LineDataSet.Mode.HORIZONTAL_BEZIER
                                 enableDashedLine(15f, 10f, 0f)
                             }
-                        val movingAverageDataset =
-                            LineDataSet(
-                                SessionManager.computeMovingAverage(
-                                    barEntryList,
-                                    minOf(movingAverageWindow, barEntryList.size)
-                                ),
-                                "Last ${movingAverageWindow} average"
-                            ).apply {
-                                color = Color.RED
-                                lineWidth = commonLineWidth
-                                setDrawValues(false)
-                                setDrawCircles(false)
-                                mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-                            }
-                        val barData = LineData(dataset, averageDataset, movingAverageDataset)
+                        val dataSetsList = mutableListOf<LineDataSet>(dataset, averageDataset)
+                        if (movingAverageActive) {
+                            val movingAverageDataset =
+                                LineDataSet(
+                                    SessionManager.computeMovingAverage(
+                                        normalizedBarEntryList,
+                                        minOf(movingAverageWindow, normalizedBarEntryList.size)
+                                    ),
+                                    "Last ${movingAverageWindow} average"
+                                ).apply {
+                                    color = Color.RED
+                                    lineWidth = commonLineWidth
+                                    setDrawValues(false)
+                                    setDrawCircles(false)
+                                    mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+                                }
+                            dataSetsList.add(movingAverageDataset)
+                        }
+                        val barData = LineData(dataSetsList.toList())
                         barChart.data = barData
+                        if (isScrollable) {
+                            barChart.setVisibleXRangeMaximum(12f)
+                            barChart.moveViewToX(normalizedBarEntryList.size.toFloat())
+                        }
                         barChart.invalidate()
                         barChart
                     })
@@ -152,7 +224,9 @@ fun styleLineChart(
     lineChart: LineChart,
     surfaceColor: Int,
     onSurfacecolor: Int,
-    inChartTextSize: Float
+    inChartTextSize: Float,
+    legendActive: Boolean,
+    isScrollable: Boolean = false
 ): LineChart {
     lineChart.apply {
         setBackgroundColor(surfaceColor)
@@ -163,16 +237,16 @@ fun styleLineChart(
         xAxis.apply {
             isEnabled = false
         }
-        setTouchEnabled(false)
-        isDragEnabled = false
-        setScaleEnabled(false)
+        setTouchEnabled(isScrollable)
+        isDragEnabled = isScrollable
+        isScaleXEnabled = isScrollable
+        isScaleYEnabled = false
         setPinchZoom(false)
         description = null
-        legend.isEnabled = true
+        legend.isEnabled = legendActive
         legend.textColor = onSurfacecolor
         legend.textSize = inChartTextSize
-        extraBottomOffset = 15f
+        extraBottomOffset = 30f // Increased offset to accommodate multiline labels without getting clipped
     }
     return lineChart
 }
-

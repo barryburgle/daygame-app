@@ -44,10 +44,10 @@ import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.recording.RecordingStateEnum
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.service.recording.RecordingService
+import com.barryburgle.gameapp.ui.input.card.DeleteConfirmationDialog
 // TODO: deleteEventConfirmationDialog and liveSessionPulsingColor are generic pieces that happen to
 //  live in EventCard.kt / InputScreen.kt - cleaner would be to move them under ui/utilities/ so a
 //  utility doesn't import from a screen or a card
-import com.barryburgle.gameapp.ui.input.card.deleteEventConfirmationDialog
 import com.barryburgle.gameapp.ui.input.liveSessionPulsingColor
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -74,7 +74,7 @@ fun RecordingsView(
     var pendingDeletion by remember { mutableStateOf<String?>(null) }
     var expandedRecordings by remember { mutableStateOf(emptySet<String>()) }
     pendingDeletion?.let { fileName ->
-        deleteEventConfirmationDialog(
+        DeleteConfirmationDialog(
             "Recording",
             "Do you want to delete $fileName?",
             onConfirmRequest = {

@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -16,7 +17,8 @@ fun IconShadowButton(
     onLongClick: (() -> Unit)? = null,
     boxModifier: Modifier = Modifier,
     modifier: Modifier = Modifier,
-    imageVector: ImageVector,
+    imageVector: ImageVector? = null,
+    drawableIcon: Int = 0,
     contentDescription: String?,
     title: String? = null,
     color: Color? = null,
@@ -36,13 +38,24 @@ fun IconShadowButton(
         color = color,
         glowing = glowing
     ) {
-        Icon(
-            imageVector = imageVector,
-            contentDescription = contentDescription,
-            tint = iconTint,
-            modifier = Modifier
-                .height(20.dp)
-                .scale(1.2f)
-        )
+        if (imageVector != null) {
+            Icon(
+                imageVector = imageVector,
+                contentDescription = contentDescription,
+                tint = iconTint,
+                modifier = Modifier
+                    .height(20.dp)
+                    .scale(1.2f)
+            )
+        } else if (drawableIcon != 0) {
+            Icon(
+                painter = painterResource(drawableIcon),
+                contentDescription = contentDescription,
+                tint = iconTint,
+                modifier = Modifier
+                    .height(20.dp)
+                    .scale(1.2f)
+            )
+        }
     }
 }

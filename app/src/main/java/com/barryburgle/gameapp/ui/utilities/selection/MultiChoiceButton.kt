@@ -63,8 +63,8 @@ fun MultiChoiceButton(
                         )
                     },
                     colors = SegmentedButtonDefaults.colors(
-                        activeContentColor = MaterialTheme.colorScheme.onPrimary,
-                        inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        activeContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        inactiveContentColor = MaterialTheme.colorScheme.onPrimary,
                         activeContainerColor = MaterialTheme.colorScheme.primary,
                         inactiveContainerColor = MaterialTheme.colorScheme.surfaceVariant
                     ),

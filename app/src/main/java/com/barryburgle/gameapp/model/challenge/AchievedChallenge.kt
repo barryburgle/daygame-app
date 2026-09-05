@@ -26,12 +26,20 @@ open class AchievedChallenge(
         return challenge.getEventIcon()
     }
 
-    override fun getEventDescription(): String {
-        return challenge.getEventDescription()
+    override fun getHeaderWeekday(): String {
+        return challenge.getHeaderWeekday()
     }
 
-    override fun getEventDuration(): String {
-        return challenge.getEventDuration()
+    override fun getHeaderDate(): String {
+        return challenge.getHeaderDate()
+    }
+
+    override fun getHeaderTime(): String {
+        return challenge.getHeaderTime()
+    }
+
+    override fun getHeaderDuration(): String {
+        return challenge.getHeaderDuration()
     }
 
     override fun getEventStickingPoints(): String? {
@@ -51,10 +59,7 @@ open class AchievedChallenge(
             FormatService.parseDate(challenge.startDate),
             LocalDate.now()
         ) + 1
-        val totalTime = ChronoUnit.DAYS.between(
-            FormatService.parseDate(challenge.startDate),
-            FormatService.parseDate(challenge.endDate)
-        ) + 1
+        val totalTime = challenge.getTotalDays()
         return timePassed.toDouble() / totalTime.toDouble()
     }
 

@@ -103,9 +103,7 @@ import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
 import com.barryburgle.gameapp.ui.utilities.selection.MultiChoiceButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -349,13 +347,13 @@ fun InputScreen(
             SessionDialog(state = state, onEvent = onEvent, "Edit a session")
         }
         if (state.isAddingLead) {
-            LeadDialog(state = state, onEvent = onEvent, "Add a lead")
+            InputLeadDialog(state = state, onEvent = onEvent, "Add a lead")
         }
         if (state.isModifyingLead) {
-            LeadDialog(state = state, onEvent = onEvent, "Modify the lead")
+            InputLeadDialog(state = state, onEvent = onEvent, "Modify the lead")
         }
         if (state.isUpdatingLead) {
-            LeadDialog(state = state, onEvent = onEvent, "Update the lead")
+            InputLeadDialog(state = state, onEvent = onEvent, "Update the lead")
         }
         if (state.isAddingDate) {
             DateDialog(state = state, onEvent = onEvent, "Add a date")

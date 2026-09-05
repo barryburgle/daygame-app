@@ -11,12 +11,13 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.manager.SessionManager
-import com.barryburgle.gameapp.ui.CombineEleven
+import com.barryburgle.gameapp.ui.CombineSixteen
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class OutputViewModel(
     private val abstractSessionDao: AbstractSessionDao,
@@ -28,9 +29,7 @@ class OutputViewModel(
     private val setDao: SetDao
 ) : ViewModel() {
     private val _state = MutableStateFlow(OutputState())
-
-    private val _allSessionsLimited = abstractSessionDao.getAllLimit()
-    private val _allSessionsUnlimited = abstractSessionDao.getAll()
+    private val _allSessions = abstractSessionDao.getAll()
     private val _allLeads = leadDao.getAll()
     private val _allDates = dateDao.getAll()
     private val _allSet = setDao.getAll()
@@ -42,12 +41,17 @@ class OutputViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _datesByMonth = aggregatedDatesDao.groupStatsByMonth()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _lastSessionsShown = settingDao.getLastSessionsShown()
+    private val _lastWeeksShown = settingDao.getLastWeeksShown()
+    private val _lastMonthsShown = settingDao.getLastMonthsShown()
     private val _averageLast = settingDao.getAverageLast()
+    private val _suggestLeadsNationality = settingDao.getSuggestLeadsNationality()
+    private val _shownNationalities = settingDao.getShownNationalities()
+    private val _mostPopularLeadsNationalities = leadDao.getNationalityHistogram()
 
-    val state = CombineEleven(
+    val state = CombineSixteen(
         _state,
-        _allSessionsLimited,
-        _allSessionsUnlimited,
+        _allSessions,
         _allLeads,
         _allDates,
         _allSet,
@@ -55,12 +59,16 @@ class OutputViewModel(
         _sessionsByMonth,
         _datesByWeek,
         _datesByMonth,
-        _averageLast
-    )
-    { state, allSessionsLimited, allSessionsUnlimited, allLeads, allDates, allSets, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast ->
+        _averageLast,
+        _lastSessionsShown,
+        _lastWeeksShown,
+        _lastMonthsShown,
+        _suggestLeadsNationality,
+        _shownNationalities,
+        _mostPopularLeadsNationalities
+    ) { state, allSessions, allLeads, allDates, allSets, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast, lastSessionsShown, lastWeeksShown, lastMonthsShown, suggestLeadsNationality, shownNationalities, mostPopularLeadsNationalities ->
         state.copy(
-            allSessionsLimited = SessionManager.normalizeSessionsIds(allSessionsLimited),
-            allSessionsUnlimited = SessionManager.normalizeSessionsIds(allSessionsUnlimited),
+            allSessions = SessionManager.normalizeSessionsIds(allSessions),
             allLeads = allLeads,
             allDates = allDates,
             allSets = allSets,
@@ -68,7 +76,13 @@ class OutputViewModel(
             sessionsByMonth = sessionsByMonth,
             datesByWeek = datesByWeek,
             datesByMonth = datesByMonth,
-            movingAverageWindow = averageLast
+            movingAverageWindow = averageLast,
+            lastSessionsShown = lastSessionsShown,
+            lastWeeksShown = lastWeeksShown,
+            lastMonthsShown = lastMonthsShown,
+            suggestLeadsNationality = suggestLeadsNationality.toBoolean(),
+            shownNationalities = shownNationalities.toInt(),
+            mostPopularLeadsNationalities = mostPopularLeadsNationalities
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), OutputState())
 
@@ -97,6 +111,132 @@ class OutputViewModel(
                 _state.update {
                     it.copy(
                         showCustomSummaryDialog = _state.value.showCustomSummaryDialog.not()
+                    )
+                }
+            }
+
+            is OutputEvent.EditLead -> {
+                _state.update {
+                    it.copy(
+                        isUpdatingLead = event.isUpdatingLead,
+                        leadId = event.lead.id ?: 0L,
+                        leadInsertTime = event.lead.insertTime,
+                        leadSessionId = event.lead.sessionId,
+                        leadName = event.lead.name,
+                        leadContact = event.lead.contact,
+                        leadNationality = event.lead.nationality,
+                        leadAge = event.lead.age,
+                        leadContactLookupKey = event.lead.contactLookupKey,
+                        leadInstagramUrl = event.lead.instagramUrl,
+                        isInOverlay = true
+                    )
+                }
+            }
+
+            is OutputEvent.HideLeadDialog -> {
+                _state.update {
+                    it.copy(
+                        isUpdatingLead = false,
+                        isInOverlay = false,
+                        leadName = "",
+                        leadContact = "",
+                        leadNationality = "",
+                        countrySearch = "",
+                        leadAge = 20,
+                        leadContactLookupKey = null,
+                        leadInstagramUrl = null
+                    )
+                }
+            }
+
+            is OutputEvent.SetIsInOverlayToTrue -> {
+                _state.update {
+                    it.copy(isInOverlay = true)
+                }
+            }
+
+            is OutputEvent.SetIsInOverlayToFalse -> {
+                _state.update {
+                    it.copy(isInOverlay = false)
+                }
+            }
+
+            is OutputEvent.SetLeadName -> {
+                _state.update {
+                    it.copy(leadName = event.name)
+                }
+            }
+
+            is OutputEvent.SetLeadCountrySearch -> {
+                _state.update {
+                    it.copy(countrySearch = event.countrySearch)
+                }
+            }
+
+            is OutputEvent.SetLeadNationality -> {
+                _state.update {
+                    it.copy(leadNationality = event.nationality)
+                }
+            }
+
+            is OutputEvent.SetLeadContact -> {
+                _state.update {
+                    it.copy(leadContact = event.contact)
+                }
+            }
+
+            is OutputEvent.SetLeadContactLookupKey -> {
+                _state.update {
+                    it.copy(leadContactLookupKey = event.contactLookupKey)
+                }
+            }
+
+            is OutputEvent.SetLeadInstagramUrl -> {
+                _state.update {
+                    it.copy(leadInstagramUrl = event.instagramUrl)
+                }
+            }
+
+            is OutputEvent.SetLeadAge -> {
+                _state.update {
+                    it.copy(leadAge = event.age.toLong())
+                }
+            }
+
+            is OutputEvent.SaveLead -> {
+                viewModelScope.launch {
+                    leadDao.insert(event.lead)
+                }
+                _state.update {
+                    it.copy(
+                        isUpdatingLead = false,
+                        isInOverlay = false,
+                        leadName = "",
+                        leadContact = "",
+                        leadNationality = "",
+                        countrySearch = "",
+                        leadAge = 20,
+                        leadContactLookupKey = null,
+                        leadInstagramUrl = null
+                    )
+                }
+            }
+
+            is OutputEvent.DeleteLead -> {
+                viewModelScope.launch {
+                    leadDao.delete(event.lead)
+                }
+                _state.update {
+                    it.copy(
+                        isUpdatingLead = false,
+                        isInOverlay = false,
+                        leadName = "",
+                        leadContact = "",
+                        leadNationality = "",
+                        countrySearch = "",
+                        leadAge = 20,
+                        leadContactLookupKey = null,
+                        leadInstagramUrl = null
                     )
                 }
             }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
@@ -24,7 +23,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
@@ -52,6 +54,7 @@ fun SetDialog(
     modifier: Modifier = Modifier
 ) {
     val localContext = LocalContext.current.applicationContext
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
     var latestDateValue = state.date
     var latestStartHour = state.startHour
     var latestEndHour = state.endHour
@@ -177,44 +180,26 @@ fun SetDialog(
                     visibilityFlag = !locationTextFieldExpanded,
                 ) {
                     Spacer(modifier = Modifier.height(7.dp))
-                    // TODO: refactor the following row to use it in SetDialog, DateDialog, SessionDialog and ChallengeDialog
-                    // taking in input the state field, the event method, placeholder and height
+                    val stickingPoints = state.stickingPoints
                     DialogTextComponent(
-                        state.stickingPoints,
-                        "Sticking points",
-                        100.dp,
-                        ""
+                        value = state.stickingPoints,
+                        placeholder = "sticking points",
+                        singleLine = false,
+                        onCopyClick = {
+                            clipboardManager.setText(
+                                AnnotatedString(
+                                    stickingPoints
+                                )
+                            )
+                            Toast.makeText(
+                                localContext,
+                                "Sticking points copied",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     ) {
                         onEvent(GameEvent.SetStickingPoints(it))
                     }
-                    /*Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        OutlinedTextField(
-                            value = state.stickingPoints,
-                            onValueChange = { onEvent(GameEvent.SetStickingPoints(it)) },
-                            placeholder = { LittleBodyText("Sticking points") },
-                            shape = MaterialTheme.shapes.large,
-                            modifier = Modifier
-                                .height(100.dp)
-                                .fillMaxWidth(0.75f)
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Column(
-                            modifier = Modifier
-                                .height(100.dp),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            IconShadowButton(
-                                onClick = {
-                                    onEvent(GameEvent.SetStickingPoints(InputDialogConstant.EMPTY_STICKING_POINTS))
-                                },
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete Sticking Points"
-                            )
-                        }
-                    }*/
                     Spacer(modifier = Modifier.height(7.dp))
                 }
                 Row(
