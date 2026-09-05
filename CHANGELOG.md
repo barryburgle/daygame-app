@@ -10,6 +10,7 @@
 - Now backups only tables with new data 💾
 - Now all the exports are validated against app database after every single export 🚧
 - Pinpoints timeline on Live Session card ──●─
+- Live session audio recordings
 
 **Bugfixes**
 - Live session card counter performance issues
