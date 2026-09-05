@@ -144,6 +144,7 @@ fun RecordingsView(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     LittleBodyText(
+                        onLongClick = { pendingDeletion = recording },
                         text = recording.removeSuffix(RecordingService.RECORDING_FILE_EXTENSION),
                         modifier = Modifier.weight(1f),
                         color = if (isBeingRecorded) liveSessionPulsingColor()
@@ -168,7 +169,6 @@ fun RecordingsView(
                         isRecording = recordingState.state.isRecording(),
                         onTapPlaybackPlay = { onTapPlaybackPlay(recording) },
                         onTapPlaybackPause = onTapPlaybackPause,
-//                        onTapDelete = { pendingDeletion = recording },
                         onSeek = onSetPlaybackPosition
                     )
                 }
@@ -268,7 +268,9 @@ private fun RecordingProgressBar(isActive: Boolean, fileDurationMs: Int, onSeek:
                     modifier = Modifier
                         .size(THUMB_SIZE)
                         .background(
-                            color = if (isActive && durationMs > 0) barColor else barColor.copy(alpha = 0.4f),
+                            color = if (isActive && durationMs > 0) barColor else barColor.copy(
+                                alpha = 0.4f
+                            ),
                             shape = CircleShape
                         )
                 )
