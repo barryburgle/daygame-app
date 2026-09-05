@@ -147,7 +147,7 @@ fun RecordingsCard(
                     OutlinedTextField(
                         value = typedFolder,
                         onValueChange = { typedFolder = it },
-                        placeholder = { LittleBodyText("Insert here the recordings folder") },
+                        placeholder = { LittleBodyText("Recordings folder") },
                         shape = MaterialTheme.shapes.large,
                         modifier = Modifier.height(textFieldHeight),
                         singleLine = true
@@ -176,6 +176,7 @@ fun RecordingsCard(
                     )
                 }
             }
+            LittleBodyText("The recordings folder will be created and managed directly under the folder: /storage/0/emulated/${state.recordingsFolder}")
         }
     }
 }
