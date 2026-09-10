@@ -58,10 +58,12 @@ dependencies {
     implementation libs.navigation.fragment.ktx
     implementation libs.navigation.ui.ktx
     implementation libs.junit.ktx
+    implementation libs.ui.tooling.preview
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
     implementation libs.room.ktx
+    debugImplementation libs.ui.tooling
     kapt libs.room.compiler
     implementation libs.activity.compose
     implementation libs.datetime

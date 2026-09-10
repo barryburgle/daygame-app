@@ -22,6 +22,13 @@ class FormatService {
             return "${inPerc} %"
         }
 
+        fun getDuration(
+            milliseconds: Int
+        ): String {
+            val totalSeconds = milliseconds / 1000
+            return "${totalSeconds / 60}:${(totalSeconds % 60).toString().padStart(2, '0')}"
+        }
+
         fun getDate(
             localDate: String?
         ): String {

@@ -13,6 +13,7 @@
 - Pinpoints timeline on Live Session card and in session report ──●─
 - Last 3 periods plotted as line chart on Summary card 📌
 - Now you can tap & edit leads from the Dashboard tab 🪪
+- Live session audio recordings
 
 **Bugfixes**
 - Live session card counter performance issues
