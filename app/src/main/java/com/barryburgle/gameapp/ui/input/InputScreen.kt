@@ -421,6 +421,10 @@ fun InputScreen(
                                         true,
                                         state.followCount,
                                         state.liveSessionShareEnabled,
+                                        state.recordingState,
+                                        state.recordings,
+                                        state.recordingsFolder,
+                                        state.recordingsEnabled,
                                         state.pullOClockReminderInterval
                                     )
                                 }
@@ -460,6 +464,10 @@ fun InputScreen(
                                 state.simplePlusOneReport,
                                 state.neverShareLeadInfo,
                                 state.copyReportOnClipboard,
+                                recordingState = state.recordingState,
+                                recordings = state.recordings,
+                                recordingsFolder = state.recordingsFolder,
+                                recordingsEnabled = state.recordingsEnabled
                             )
                         }
                     }
