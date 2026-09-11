@@ -1,11 +1,15 @@
 package com.barryburgle.gameapp.ui.utilities.button
 
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -29,11 +33,20 @@ fun IconShadowButton(
     if (iconColor != null) {
         iconTint = iconColor
     }
+
+    val unifiedBoxModifier = boxModifier
+        .defaultMinSize(minWidth = 44.dp, minHeight = 44.dp)
+        .shadow(elevation = 4.dp, shape = CircleShape, clip = false)
+
+    val unifiedModifier = modifier
+        .defaultMinSize(minWidth = 44.dp, minHeight = 44.dp)
+        .clip(CircleShape)
+
     GenericShadowButton(
         onClick = onClick,
-        onLongClick = onLongClick,
-        boxModifier = boxModifier,
-        modifier = modifier,
+        onLongClick = onLongClick ?: {},
+        boxModifier = unifiedBoxModifier,
+        modifier = unifiedModifier,
         title = title,
         color = color,
         glowing = glowing
