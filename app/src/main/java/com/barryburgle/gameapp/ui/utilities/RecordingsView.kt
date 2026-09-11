@@ -28,6 +28,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.FastForward
+import androidx.compose.material.icons.filled.FastRewind
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Voicemail
@@ -66,6 +68,7 @@ import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
 //  live in EventCard.kt / InputScreen.kt - cleaner would be to move them under ui/utilities/ so a
 //  utility doesn't import from a screen or a card
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -254,25 +257,54 @@ fun RecordingsView(
             enter = fadeIn() + expandVertically(),
             exit = fadeOut() + shrinkVertically()
         ) {
-            Box(
+            val totalDurationMs = if (fileDurationMs > 0) fileDurationMs else 10000
+            val currentMs = (localProgress * totalDurationMs).toInt()
+
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 4.dp)
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                WavyProgressSlider(
-                    value = localProgress,
-                    onValueChange = { newProgress ->
-                        isDragging = true
-                        localProgress = newProgress
-                    },
-                    onValueChangeFinished = {
-                        isDragging = false
-                        val targetMs =
-                            if (fileDurationMs > 0) (localProgress * fileDurationMs).toInt() else (localProgress * 100).toInt()
-                        onSetPlaybackPosition(targetMs)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    IconShadowButton(
+                        onClick = {
+                            val targetMs = (currentMs - 5000).coerceAtLeast(0)
+                            localProgress = targetMs.toFloat() / totalDurationMs
+                            onSetPlaybackPosition(targetMs)
+                        },
+                        imageVector = Icons.Default.FastRewind,
+                        contentDescription = "Rewind 5 seconds"
+                    )
+                    WavyProgressSlider(
+                        value = localProgress,
+                        onValueChange = { newProgress ->
+                            isDragging = true
+                            localProgress = newProgress
+                        },
+                        onValueChangeFinished = {
+                            isDragging = false
+                            val targetMs = (localProgress * totalDurationMs).toInt()
+                            onSetPlaybackPosition(targetMs)
+                        },
+                        modifier = Modifier.weight(1f),
+                        currentMs = currentMs,
+                        totalDurationMs = totalDurationMs
+                    )
+                    IconShadowButton(
+                        onClick = {
+                            val targetMs = (currentMs + 5000).coerceAtMost(totalDurationMs)
+                            localProgress = targetMs.toFloat() / totalDurationMs
+                            onSetPlaybackPosition(targetMs)
+                        },
+                        imageVector = Icons.Default.FastForward,
+                        contentDescription = "Forward 5 seconds"
+                    )
+                }
             }
         }
     }
@@ -285,8 +317,10 @@ private fun WavyProgressSlider(
     onValueChange: (Float) -> Unit,
     onValueChangeFinished: () -> Unit,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.primary,
-    trackColor: Color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.25f)
+    color: Color = MaterialTheme.colorScheme.onTertiary,
+    trackColor: Color = MaterialTheme.colorScheme.primary,
+    currentMs: Int,
+    totalDurationMs: Int
 ) {
     // Continuous wave phase shift animation
     val infiniteTransition = rememberInfiniteTransition(label = "waveAnimation")
@@ -300,62 +334,84 @@ private fun WavyProgressSlider(
         label = "wavePhase"
     )
 
-    Slider(
-        value = value,
-        onValueChange = onValueChange,
-        onValueChangeFinished = onValueChangeFinished,
-        modifier = modifier,
-        thumb = {
-            Box(
-                modifier = Modifier
-                    .size(14.dp)
-                    .background(color, CircleShape)
-            )
-        },
-        track = { sliderState ->
-            Canvas(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(20.dp)
-            ) {
-                val width = size.width
-                val height = size.height
-                val centerY = height / 2f
-                val activeWidth = width * sliderState.value.coerceIn(0f, 1f)
-
-                // Inactive track line
-                drawLine(
-                    color = trackColor,
-                    start = Offset(activeWidth, centerY),
-                    end = Offset(width, centerY),
-                    strokeWidth = 4.dp.toPx(),
-                    cap = StrokeCap.Round
+    Column(modifier = modifier) {
+        Slider(
+            value = value,
+            onValueChange = onValueChange,
+            onValueChangeFinished = onValueChangeFinished,
+            modifier = Modifier.fillMaxWidth(),
+            thumb = {
+                Box(
+                    modifier = Modifier
+                        .size(14.dp)
+                        .background(color, CircleShape)
                 )
+            },
+            track = { sliderState ->
+                Canvas(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(20.dp)
+                ) {
+                    val width = size.width
+                    val height = size.height
+                    val centerY = height / 2f
+                    val activeWidth = width * sliderState.value.coerceIn(0f, 1f)
 
-                // Moving wave track
-                if (activeWidth > 0f) {
-                    val wavePath = Path()
-                    val waveLength = 16.dp.toPx()
-                    val amplitude = 3.dp.toPx()
-
-                    wavePath.moveTo(0f, centerY + sin(phase).toFloat() * amplitude)
-                    var x = 0f
-                    while (x <= activeWidth) {
-                        val y =
-                            centerY + sin((x / waveLength) * 2 * Math.PI + phase).toFloat() * amplitude
-                        wavePath.lineTo(x, y)
-                        x += 2f
-                    }
-
-                    drawPath(
-                        path = wavePath,
-                        color = color,
-                        style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
+                    // Inactive track line
+                    drawLine(
+                        color = trackColor,
+                        start = Offset(activeWidth, centerY),
+                        end = Offset(width, centerY),
+                        strokeWidth = 4.dp.toPx(),
+                        cap = StrokeCap.Round
                     )
+
+                    // Moving wave track
+                    if (activeWidth > 0f) {
+                        val wavePath = Path()
+                        val waveLength = 16.dp.toPx()
+                        val amplitude = 3.dp.toPx()
+
+                        wavePath.moveTo(0f, centerY + sin(phase).toFloat() * amplitude)
+                        var x = 0f
+                        while (x <= activeWidth) {
+                            val y =
+                                centerY + sin((x / waveLength) * 2 * Math.PI + phase).toFloat() * amplitude
+                            wavePath.lineTo(x, y)
+                            x += 2f
+                        }
+
+                        drawPath(
+                            path = wavePath,
+                            color = color.copy(alpha = 0.75f),
+                            style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
+                        )
+                    }
                 }
             }
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            LittleBodyText(
+                formatTimeMs(currentMs)
+            )
+            LittleBodyText(
+                formatTimeMs(totalDurationMs)
+            )
         }
-    )
+    }
+}
+
+private fun formatTimeMs(ms: Int): String {
+    val totalSeconds = (ms / 1000).coerceAtLeast(0)
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return "%02d:%02d".format(minutes, seconds)
 }
 
 @Composable
