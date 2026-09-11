@@ -1,5 +1,6 @@
 # Version 1.14.0 (2026-08-dd)
 **Features**
+- Record in-app your sets during a Live Session and play them back later 🎤
 - "Write her after" notification reminds you to write her after settable amount of minutes 🔔
 - "Custom Summary" allows you to get a comprehensive start-to-end-custom-dates summary of the stats of your Game from History grid 🏆
 - "Pull O'Clock": press the timer button on Live Session card before starting the set and get a notification to remind to close/pull after customizable amount of in-set minutes ⏱️
@@ -13,7 +14,6 @@
 - Pinpoints timeline on Live Session card and in session report ──●─
 - Last 3 periods plotted as line chart on Summary card 📌
 - Now you can tap & edit leads from the Dashboard tab 🪪
-- Live session audio recordings
 
 **Bugfixes**
 - Live session card counter performance issues
