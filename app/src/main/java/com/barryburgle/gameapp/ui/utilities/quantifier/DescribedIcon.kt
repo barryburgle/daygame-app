@@ -41,7 +41,7 @@ fun DescribedIcon(
         var color = defaultColor!!
         var flagDescription = trueFlagDescription
         if (!happened!!) {
-            color = MaterialTheme.colorScheme.inversePrimary
+            color = MaterialTheme.colorScheme.primary
             flagDescription = falseFlagDescription
         }
         if (!isBoolean!!) {
