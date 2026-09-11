@@ -21,6 +21,7 @@ fun IconShadowButton(
     onLongClick: (() -> Unit)? = null,
     boxModifier: Modifier = Modifier,
     modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
     imageVector: ImageVector? = null,
     drawableIcon: Int = 0,
     contentDescription: String?,
@@ -56,7 +57,7 @@ fun IconShadowButton(
                 imageVector = imageVector,
                 contentDescription = contentDescription,
                 tint = iconTint,
-                modifier = Modifier
+                modifier = iconModifier
                     .height(20.dp)
                     .scale(1.2f)
             )
@@ -65,7 +66,7 @@ fun IconShadowButton(
                 painter = painterResource(drawableIcon),
                 contentDescription = contentDescription,
                 tint = iconTint,
-                modifier = Modifier
+                modifier = iconModifier
                     .height(20.dp)
                     .scale(1.2f)
             )
