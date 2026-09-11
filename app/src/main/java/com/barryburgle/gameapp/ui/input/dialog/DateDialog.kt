@@ -327,29 +327,28 @@ fun DateDialog(
                                             horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
                                             ToggleIcon(
-                                                "pull", state.pull, false, R.drawable.pull_b
+                                                "pull", state.pull, R.drawable.pull_b
                                             ) {
                                                 onEvent(GameEvent.SwitchPull)
                                             }
                                             ToggleIcon(
-                                                "bounce", state.bounce, false, R.drawable.bounce_b
+                                                "bounce", state.bounce, R.drawable.bounce_b
                                             ) {
                                                 onEvent(GameEvent.SwitchBounce)
                                             }
                                             ToggleIcon(
-                                                "kiss", state.kiss, false, R.drawable.kiss_b
+                                                "kiss", state.kiss, R.drawable.kiss_b
                                             ) {
                                                 onEvent(GameEvent.SwitchKiss)
                                             }
                                             ToggleIcon(
-                                                "lay", state.lay, false, R.drawable.bed_b
+                                                "lay", state.lay, R.drawable.bed_b
                                             ) {
                                                 onEvent(GameEvent.SwitchLay)
                                             }
                                             ToggleIcon(
                                                 "recorded",
                                                 state.recorded,
-                                                true,
                                                 R.drawable.microphone_b
                                             ) {
                                                 onEvent(GameEvent.SwitchRecorded)

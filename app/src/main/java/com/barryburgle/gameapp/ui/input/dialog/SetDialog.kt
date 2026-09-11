@@ -209,7 +209,6 @@ fun SetDialog(
                     ToggleIcon(
                         SetSortType.CONVERSATION.getField(),
                         state.conversation,
-                        true,
                         R.drawable.chat_b
                     ) {
                         onEvent(GameEvent.SwitchConversation)
@@ -217,7 +216,6 @@ fun SetDialog(
                     ToggleIcon(
                         "contact",
                         state.contact,
-                        true,
                         R.drawable.contact_b
                     ) {
                         onEvent(GameEvent.SwitchContact)
@@ -225,7 +223,6 @@ fun SetDialog(
                     ToggleIcon(
                         "instant\ndate",
                         state.instantDate,
-                        true,
                         R.drawable.idate_b
                     ) {
                         onEvent(GameEvent.SwitchInstantDate)
@@ -241,7 +238,6 @@ fun SetDialog(
                     ToggleIcon(
                         "recorded",
                         state.recorded,
-                        true,
                         R.drawable.microphone_b
                     ) {
                         onEvent(GameEvent.SwitchRecorded)

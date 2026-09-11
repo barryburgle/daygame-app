@@ -386,7 +386,6 @@ fun LeadDialogContent(
                             ToggleIcon(
                                 "",
                                 ContactTypeEnum.NUMBER.getField().equals(leadContact),
-                                false,
                                 if (isDarkTheme) R.drawable.whatsapp_w else R.drawable.whatsapp_b,
                                 !leadContactLookupKey.isNullOrBlank() && leadContact == ContactTypeEnum.NUMBER.getField()
                             ) {
@@ -404,7 +403,6 @@ fun LeadDialogContent(
                             ToggleIcon(
                                 "",
                                 ContactTypeEnum.SOCIAL.getField().equals(leadContact),
-                                false,
                                 if (isDarkTheme) R.drawable.instagram_w else R.drawable.instagram_b,
                                 !leadInstagramUrl.isNullOrBlank() && leadContact == ContactTypeEnum.SOCIAL.getField()
                             ) {

@@ -20,7 +20,6 @@ import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 fun ToggleIcon(
     description: String,
     flag: Boolean,
-    smallerIcon: Boolean,
     @DrawableRes icon: Int,
     dotCondition: Boolean? = false,
     onCheckedChange: () -> Unit
@@ -29,16 +28,11 @@ fun ToggleIcon(
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         var iconColor: Color = MaterialTheme.colorScheme.secondaryContainer
         if (!flag) {
-            iconColor = MaterialTheme.colorScheme.inversePrimary
+            iconColor = MaterialTheme.colorScheme.primary
         }
         var iconModifier: Modifier = Modifier
             .fillMaxSize()
             .padding(7.dp)
-        if (smallerIcon) {
-            iconModifier = Modifier
-                .fillMaxSize(0.88f)
-                .padding(7.dp)
-        }
         ImageShadowButton(
             onClick = {
                 onCheckedChange()
