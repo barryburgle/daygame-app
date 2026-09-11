@@ -18,7 +18,7 @@ import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.AbstractSessionService
 import com.barryburgle.gameapp.service.FormatService
-import com.barryburgle.gameapp.ui.input.dialog.SessionCounters
+import com.barryburgle.gameapp.ui.input.dialog.LiveSessionInputButtons
 import com.barryburgle.gameapp.ui.utilities.RecordingsView
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -47,7 +47,7 @@ fun LiveSessionBody(
     var contactsCount = abstractSession.contacts + liveSessionLeads
     LittleBodyText("Live session:")
     Spacer(modifier = Modifier.height(7.dp))
-    SessionCounters(
+    LiveSessionInputButtons(
         setsCount = setsCount,
         convosCount = convosCount,
         contactsCount = contactsCount,
@@ -63,7 +63,12 @@ fun LiveSessionBody(
         liveSessionShareEnabled = liveSessionShareEnabled,
         copyReportOnClipboard = copyReportOnClipboard,
         onEvent = onEvent,
-        pullOClockReminderInterval = pullOClockReminderInterval
+        pullOClockReminderInterval = pullOClockReminderInterval,
+        recordingState = recordingState,
+        showRecordingButtons = recordingsEnabled,
+        onTapRecordingStart = { onEvent(GameEvent.TapRecordingStart(abstractSession.id!!)) },
+        onTapRecordingStop = { onEvent(GameEvent.TapRecordingStop) },
+        onTapRecordingDiscard = { onEvent(GameEvent.TapRecordingDiscard(it)) },
     )
     Spacer(modifier = Modifier.height(12.dp))
     Row(
