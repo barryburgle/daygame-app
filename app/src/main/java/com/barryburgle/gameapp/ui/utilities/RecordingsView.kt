@@ -27,11 +27,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.RotateLeft
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.FastForward
-import androidx.compose.material.icons.filled.FastRewind
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.RotateLeft
+import androidx.compose.material.icons.filled.RotateRight
 import androidx.compose.material.icons.filled.Voicemail
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -51,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -271,15 +273,22 @@ fun RecordingsView(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    IconShadowButton(
-                        onClick = {
-                            val targetMs = (currentMs - 5000).coerceAtLeast(0)
-                            localProgress = targetMs.toFloat() / totalDurationMs
-                            onSetPlaybackPosition(targetMs)
-                        },
-                        imageVector = Icons.Default.FastRewind,
-                        contentDescription = "Rewind 5 seconds"
-                    )
+                    Box(contentAlignment = Alignment.Center) {
+                        IconShadowButton(
+                            onClick = {
+                                val targetMs = (currentMs - 5000).coerceAtLeast(0)
+                                localProgress = targetMs.toFloat() / totalDurationMs
+                                onSetPlaybackPosition(targetMs)
+                            },
+                            imageVector = Icons.Default.RotateLeft,
+                            iconModifier = Modifier.scale(1.75f),
+                            contentDescription = "Rewind 5 seconds"
+                        )
+                        LittleBodyText(
+                            text = "5",
+                            color = MaterialTheme.colorScheme.inversePrimary
+                        )
+                    }
                     WavyProgressSlider(
                         value = localProgress,
                         onValueChange = { newProgress ->
@@ -295,15 +304,22 @@ fun RecordingsView(
                         currentMs = currentMs,
                         totalDurationMs = totalDurationMs
                     )
-                    IconShadowButton(
-                        onClick = {
-                            val targetMs = (currentMs + 5000).coerceAtMost(totalDurationMs)
-                            localProgress = targetMs.toFloat() / totalDurationMs
-                            onSetPlaybackPosition(targetMs)
-                        },
-                        imageVector = Icons.Default.FastForward,
-                        contentDescription = "Forward 5 seconds"
-                    )
+                    Box(contentAlignment = Alignment.Center) {
+                        IconShadowButton(
+                            onClick = {
+                                val targetMs = (currentMs + 10000).coerceAtMost(totalDurationMs)
+                                localProgress = targetMs.toFloat() / totalDurationMs
+                                onSetPlaybackPosition(targetMs)
+                            },
+                            imageVector = Icons.Default.RotateRight,
+                            iconModifier = Modifier.scale(1.75f),
+                            contentDescription = "Forward 10 seconds"
+                        )
+                        LittleBodyText(
+                            text = "10",
+                            color = MaterialTheme.colorScheme.inversePrimary
+                        )
+                    }
                 }
             }
         }
