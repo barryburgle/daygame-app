@@ -1,33 +1,26 @@
 package com.barryburgle.gameapp.ui.theme.palette
 
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
-import com.barryburgle.gameapp.ui.theme.Red30
 
-private val TappableColor = Color(0xFFF0972E)
-private val ContainerColor = Color(0xFF112726)
-private val InterestColor = Color(0xFFD46f2E)
-private val BackgroundColor = Color(0xFF224954)
-private val SelectedColor = Color(0xFF020303)
-private val TextColor = Color(0xFFFFF8F5)
-
-val UrbanColorPalette = lightColorScheme(
-    primary = InterestColor,
-    onPrimary = TextColor,
-    primaryContainer = TappableColor,
-    onPrimaryContainer = TextColor,
-    inversePrimary = InterestColor,
-    secondary = TextColor,
-    secondaryContainer = TextColor,
-    onErrorContainer = Red30,
-    background = BackgroundColor,
-    surface = ContainerColor,
-    onSurface = TextColor,
-    surfaceVariant = TappableColor,
-    onSurfaceVariant = SelectedColor,
-    outline = TextColor,
-    tertiary = TextColor,
-    onTertiary = BackgroundColor
+val UrbanSemanticPalette = SemanticPalette(
+    canvas = Color(0xFF224954),
+    ink = Color(0xFFFFF8F5),
+    card = Color(0xFF112726),
+    overlay = Color(0xFFF0972E),
+    tappable = Color(0xFFF0972E),
+    onTappable = Color(0xFFFFF8F5),
+    selectedFill = Color(0xFFD46f2E),
+    selectedInk = Color(0xFF020303),
+    control = Color(0xFF112726),
+    onControl = Color(0xFFFFF8F5),
+    shimmer = Color(0xFF6393A0),
+    activeIcon = Color(0xFFFFF8F5)
 )
 
-val UrbanColorPaletteHint = ColorPaletteHint(ContainerColor, InterestColor, BackgroundColor)
+val UrbanColorPalette = UrbanSemanticPalette.toColorScheme(isDark = false)
+
+val UrbanColorPaletteHint = ColorPaletteHint(
+    UrbanSemanticPalette.card,
+    UrbanSemanticPalette.selectedFill,
+    UrbanSemanticPalette.canvas
+)

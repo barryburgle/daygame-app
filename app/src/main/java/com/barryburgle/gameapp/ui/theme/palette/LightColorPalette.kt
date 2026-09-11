@@ -1,6 +1,5 @@
 package com.barryburgle.gameapp.ui.theme.palette
 
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 import com.barryburgle.gameapp.ui.theme.Grey30
 import com.barryburgle.gameapp.ui.theme.Grey50
@@ -8,37 +7,26 @@ import com.barryburgle.gameapp.ui.theme.Grey65
 import com.barryburgle.gameapp.ui.theme.Grey70
 import com.barryburgle.gameapp.ui.theme.Grey85
 import com.barryburgle.gameapp.ui.theme.Grey95
-import com.barryburgle.gameapp.ui.theme.Red30
 
-private val FirstColor = Grey85
-private val SecondColor = Grey65
-private val ThirdColor = Grey95
-private val FourthColor = Color.Black
-private val FifthColor = Grey70
-private val ErrorColor = Red30
-private val SixthColor = Color.White
-private val SeventhColor = Grey50
-private val EightColor = Grey30
-
-// TODO: use template of color like hustle color palette
-
-val LightColorPalette = lightColorScheme(
-    primary = FirstColor,
-    onPrimary = FourthColor,
-    primaryContainer = SecondColor,
-    onPrimaryContainer = FourthColor,
-    inversePrimary = ThirdColor,
-    secondary = FourthColor,
-    secondaryContainer = FifthColor,
-    onErrorContainer = ErrorColor,
-    background = SixthColor,
-    surface = ThirdColor,
-    onSurface = FourthColor,
-    surfaceVariant = SecondColor,
-    onSurfaceVariant = FourthColor,
-    outline = FourthColor,
-    tertiary = SeventhColor,
-    onTertiary = EightColor
+val LightSemanticPalette = SemanticPalette(
+    canvas = Color.White,
+    ink = Color.Black,
+    card = Grey95,
+    overlay = Grey65,
+    tappable = Grey65,
+    onTappable = Color.Black,
+    selectedFill = Grey85,
+    selectedInk = Color.Black,
+    control = Grey50,
+    onControl = Grey95,
+    shimmer = Grey30,
+    activeIcon = Grey70
 )
 
-val LightColorPaletteHint = ColorPaletteHint(Grey70, Color.White, Grey30)
+val LightColorPalette = LightSemanticPalette.toColorScheme(isDark = false)
+
+val LightColorPaletteHint = ColorPaletteHint(
+    LightSemanticPalette.activeIcon,
+    LightSemanticPalette.canvas,
+    LightSemanticPalette.shimmer
+)

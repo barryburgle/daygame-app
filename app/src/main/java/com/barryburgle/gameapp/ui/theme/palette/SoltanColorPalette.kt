@@ -1,33 +1,26 @@
 package com.barryburgle.gameapp.ui.theme.palette
 
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
-import com.barryburgle.gameapp.ui.theme.Red30
 
-private val InterestColor = Color(0xFF05147B)
-private val ContainerColor = Color(0xFF071DB0)
-private val SelectedColor = Color(0xFF7F8000)
-private val TappableColor = Color(0xFFA1901E)
-private val BackgroundColor = Color(0xFF030C4A)
-private val TextColor = Color(0xFFFFFF01)
-
-val SoltanColorPalette = lightColorScheme(
-    primary = InterestColor,
-    onPrimary = TextColor,
-    primaryContainer = TappableColor,
-    onPrimaryContainer = TextColor,
-    inversePrimary = InterestColor,
-    secondary = TextColor,
-    secondaryContainer = TextColor,
-    onErrorContainer = Red30,
-    background = BackgroundColor,
-    surface = ContainerColor,
-    onSurface = TextColor,
-    surfaceVariant = TappableColor,
-    onSurfaceVariant = SelectedColor,
-    outline = TextColor,
-    tertiary = TextColor,
-    onTertiary = BackgroundColor
+val SoltanSemanticPalette = SemanticPalette(
+    canvas = Color(0xFF05147B),
+    ink = Color(0xFFE8CD18),
+    card = Color(0xFF030C4A),
+    overlay = Color(0xFF05147B),
+    tappable = Color(0xFF071DB0),
+    onTappable = Color(0xFF7F8000),
+    selectedFill = Color(0xFF030C4A),
+    selectedInk = Color(0xFFFFFF01),
+    control = Color(0xFF7F8000),
+    onControl = Color(0xFF071DB0),
+    shimmer = Color(0xFFA1901E),
+    activeIcon = Color(0xFFCBB942)
 )
 
-val SoltanColorPaletteHint = ColorPaletteHint(ContainerColor, InterestColor, BackgroundColor)
+val SoltanColorPalette = SoltanSemanticPalette.toColorScheme(isDark = true)
+
+val SoltanColorPaletteHint = ColorPaletteHint(
+    SoltanSemanticPalette.canvas,
+    SoltanSemanticPalette.tappable,
+    SoltanSemanticPalette.control
+)

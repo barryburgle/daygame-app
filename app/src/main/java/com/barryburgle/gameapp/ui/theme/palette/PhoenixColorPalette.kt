@@ -1,33 +1,26 @@
 package com.barryburgle.gameapp.ui.theme.palette
 
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
-import com.barryburgle.gameapp.ui.theme.Red30
 
-private val TappableColor = Color(0xFFB2280F)
-private val ContainerColor = Color(0xFF73120A)
-private val InterestColor = Color(0xFF2B0804)
-private val BackgroundColor = Color(0xFFF28F22)
-private val SelectedColor = Color(0xFFD74916)
-private val TextColor = Color(0xFFFEF4CE)
-
-val PhoenixColorPalette = lightColorScheme(
-    primary = InterestColor,
-    onPrimary = TextColor,
-    primaryContainer = TappableColor,
-    onPrimaryContainer = TextColor,
-    inversePrimary = InterestColor,
-    secondary = TextColor,
-    secondaryContainer = TextColor,
-    onErrorContainer = Red30,
-    background = BackgroundColor,
-    surface = ContainerColor,
-    onSurface = TextColor,
-    surfaceVariant = TappableColor,
-    onSurfaceVariant = SelectedColor,
-    outline = TextColor,
-    tertiary = TextColor,
-    onTertiary = BackgroundColor
+val PhoenixSemanticPalette = SemanticPalette(
+    canvas = Color(0xFFF28F22),
+    ink = Color(0xFFFEF4CE),
+    card = Color(0xFF73120A),
+    overlay = Color(0xFFB2280F),
+    tappable = Color(0xFFB2280F),
+    onTappable = Color(0xFFFEF4CE),
+    selectedFill = Color(0xFF2B0804),
+    selectedInk = Color(0xFFD74916),
+    control = Color(0xFFC03D25),
+    onControl = Color(0xFFFEF4CE),
+    shimmer = Color(0xFFF28F22),
+    activeIcon = Color(0xFFFEF4CE)
 )
 
-val PhoenixColorPaletteHint = ColorPaletteHint(ContainerColor, InterestColor, BackgroundColor)
+val PhoenixColorPalette = PhoenixSemanticPalette.toColorScheme(isDark = false)
+
+val PhoenixColorPaletteHint = ColorPaletteHint(
+    PhoenixSemanticPalette.card,
+    PhoenixSemanticPalette.selectedFill,
+    PhoenixSemanticPalette.canvas
+)

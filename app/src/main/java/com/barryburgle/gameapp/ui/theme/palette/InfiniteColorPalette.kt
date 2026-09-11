@@ -1,33 +1,26 @@
 package com.barryburgle.gameapp.ui.theme.palette
 
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
-import com.barryburgle.gameapp.ui.theme.Red30
 
-private val InterestColor = Color(0xFF171E4F)
-private val ContainerColor = Color(0xFF2555c1)
-private val SelectedColor = Color(0xFF42B4C7)
-private val TappableColor = Color(0xFF4A504A)
-private val BackgroundColor = Color(0xFF857154)
-private val TextColor = Color(0xFFC2BFAC)
-
-val InfiniteColorPalette = lightColorScheme(
-    primary = InterestColor,
-    onPrimary = TextColor,
-    primaryContainer = TappableColor,
-    onPrimaryContainer = TextColor,
-    inversePrimary = InterestColor,
-    secondary = TextColor,
-    secondaryContainer = TextColor,
-    onErrorContainer = Red30,
-    background = BackgroundColor,
-    surface = ContainerColor,
-    onSurface = TextColor,
-    surfaceVariant = TappableColor,
-    onSurfaceVariant = SelectedColor,
-    outline = TextColor,
-    tertiary = TextColor,
-    onTertiary = BackgroundColor
+val InfiniteSemanticPalette = SemanticPalette(
+    canvas = Color(0xFF857154),
+    ink = Color(0xFFC2BFAC),
+    card = Color(0xFF2555c1),
+    overlay = Color(0xFF4A504A),
+    tappable = Color(0xFF4A504A),
+    onTappable = Color(0xFFC2BFAC),
+    selectedFill = Color(0xFF171E4F),
+    selectedInk = Color(0xFF42B4C7),
+    control = Color(0xFF2555c1),
+    onControl = Color(0xFF857154),
+    shimmer = Color(0xFF857154),
+    activeIcon = Color(0xFFC2BFAC)
 )
 
-val InfiniteColorPaletteHint = ColorPaletteHint(ContainerColor, InterestColor, BackgroundColor)
+val InfiniteColorPalette = InfiniteSemanticPalette.toColorScheme(isDark = false)
+
+val InfiniteColorPaletteHint = ColorPaletteHint(
+    InfiniteSemanticPalette.card,
+    InfiniteSemanticPalette.selectedFill,
+    InfiniteSemanticPalette.canvas
+)
