@@ -1,5 +1,17 @@
 package com.barryburgle.gameapp.ui.utilities
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,23 +23,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.FiberManualRecord
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.Voicemail
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,24 +49,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.recording.RecordingStateEnum
-import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.ui.input.card.DeleteConfirmationDialog
+import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
 // TODO: deleteEventConfirmationDialog and liveSessionPulsingColor are generic pieces that happen to
 //  live in EventCard.kt / InputScreen.kt - cleaner would be to move them under ui/utilities/ so a
 //  utility doesn't import from a screen or a card
-import com.barryburgle.gameapp.ui.input.liveSessionPulsingColor
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
-import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import kotlin.math.sin
 
 @Composable
 @Preview
@@ -66,9 +84,9 @@ fun RecordingsView(
     onTapRecordingDelete: (String) -> Unit = {},
     onSetPlaybackPosition: (Int) -> Unit = {}
 ) {
+    val NO_RECORDING_AVAILABLE = "No recordings available"
     if (!recordingsEnabled) return
     var pendingDeletion by remember { mutableStateOf<String?>(null) }
-    var expandedRecordings by remember { mutableStateOf(emptySet<String>()) }
     pendingDeletion?.let { fileName ->
         DeleteConfirmationDialog(
             "Recording",
@@ -80,199 +98,266 @@ fun RecordingsView(
             onDismissRequest = { pendingDeletion = null }
         )
     }
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
 
-    ) {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            LittleBodyText("Recordings:")
-        }
-        recordings.forEach { recording ->
-            val isThisPlaying =
-                recordingState.state == RecordingStateEnum.PLAYING && recordingState.activeFileName == recording
-            // the file the mic is writing right now: it can be looked at, not operated on
-            val isBeingRecorded =
-                recordingState.state.isRecording() && recordingState.activeFileName == recording
-            val isExpanded = recording in expandedRecordings
-            Spacer(modifier = Modifier.height(7.dp))
-            // each recording is its own tinted block so the entries read as separate things
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.medium)
-                    .background(entryBackground())
-                    .padding(horizontal = 10.dp, vertical = 4.dp)
-            ) {
-                // the whole header row is the toggle
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .then(
-                            if (isBeingRecorded)
-                                Modifier
-                            else
-                                Modifier.clickable {
-                                    expandedRecordings =
-                                        if (isExpanded) expandedRecordings - recording
-                                        else expandedRecordings + recording
-                                }
-                        )
-                        .padding(vertical = 6.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    LittleBodyText(
-                        onLongClick = { pendingDeletion = recording },
-                        text = recording.removeSuffix(RecordingService.RECORDING_FILE_EXTENSION),
-                        modifier = Modifier.weight(1f),
-                        color = if (isBeingRecorded) liveSessionPulsingColor()
-                                else MaterialTheme.colorScheme.onPrimary
-                    )
-                    if (!isBeingRecorded) {
-                        Icon(
-                            imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                            contentDescription = if (isExpanded) "Hide controls" else "Show controls",
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.height(20.dp)
-                        )
-                    }
-                }
-                if (isExpanded && !isBeingRecorded) {
-                    RecordingDetails(
-                        recording = recording,
-                        recordingsFolder = recordingsFolder,
-                        // only the loaded recording has a position: every other bar is inert
-                        isActive = recordingState.state.isPlaying() && recordingState.activeFileName == recording,
-                        isThisPlaying = isThisPlaying,
-                        isRecording = recordingState.state.isRecording(),
-                        onTapPlaybackPlay = { onTapPlaybackPlay(recording) },
-                        onTapPlaybackPause = onTapPlaybackPause,
-                        onSeek = onSetPlaybackPosition
-                    )
-                }
+    var dropdownExpanded by remember { mutableStateOf(false) }
+    var selectedRecording by remember(recordings) {
+        mutableStateOf(recordingState.activeFileName.takeIf { it in recordings }
+            ?: recordings.firstOrNull())
+    }
+
+    if (selectedRecording !in recordings) {
+        selectedRecording = recordings.firstOrNull()
+    }
+
+    val currentRecording = selectedRecording
+    val isThisPlaying =
+        recordingState.state == RecordingStateEnum.PLAYING && recordingState.activeFileName == currentRecording
+
+    // Local component progress and dragging state
+    var localProgress by remember(currentRecording) { mutableFloatStateOf(0f) }
+    var isDragging by remember { mutableStateOf(false) }
+
+    // Read recording duration for progress calculation
+    var fileDurationMs by remember(currentRecording) { mutableIntStateOf(0) }
+    LaunchedEffect(currentRecording, recordingsFolder) {
+        if (currentRecording != null && recordingsFolder.isNotEmpty()) {
+            fileDurationMs = withContext(Dispatchers.IO) {
+                RecordingService.durationOf(recordingsFolder, currentRecording)
             }
         }
     }
 
-}
-
-@Composable
-private fun RecordingDetails(
-    recording: String,
-    recordingsFolder: String,
-    isActive: Boolean,
-    isThisPlaying: Boolean,
-    isRecording: Boolean,
-    onTapPlaybackPlay: () -> Unit,
-    onTapPlaybackPause: () -> Unit,
-    onSeek: (Int) -> Unit
-) {
-    // the player only knows the duration of the file it has loaded, so a row that isn't playing
-    // reads its own once, off the main thread, to have a total to show and a bar to scale
-    var fileDurationMs by remember(recording) { mutableIntStateOf(0) }
-    LaunchedEffect(recording, recordingsFolder) {
-        fileDurationMs = withContext(Dispatchers.IO) { RecordingService.durationOf(recordingsFolder, recording) }
+    // Auto-advance progress cursor while playing
+    LaunchedEffect(isThisPlaying, isDragging, currentRecording) {
+        if (isThisPlaying && !isDragging) {
+            val totalDuration = if (fileDurationMs > 0) fileDurationMs.toFloat() else 10000f
+            val stepIntervalMs = 50L
+            if (localProgress >= 1f) {
+                localProgress = 0f
+            }
+            while (isThisPlaying && !isDragging && localProgress < 1f) {
+                delay(stepIntervalMs)
+                localProgress = (localProgress + (stepIntervalMs / totalDuration)).coerceAtMost(1f)
+            }
+            if (localProgress >= 1f) {
+                onTapPlaybackPause()
+            }
+        }
     }
-    Spacer(modifier = Modifier.height(4.dp))
-    RecordingProgressBar(isActive, fileDurationMs, onSeek)
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        RecordingButton(
-            onClick = { if (isThisPlaying) onTapPlaybackPause() else onTapPlaybackPlay() },
-            onLongClick = { if (isThisPlaying) onTapPlaybackPause() else onTapPlaybackPlay() },
-            imageVector = if (isThisPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-            contentDescription = if (isThisPlaying) "Pause playback" else "Play recording",
-            enabled = !isRecording
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        PlaybackTimes(isActive, fileDurationMs)
-    }
-}
-
-@Composable
-private fun PlaybackTimes(isActive: Boolean, fileDurationMs: Int) {
-    // collected here rather than in the parent so the buttons beside it don't recompose per tick
-    val progress by RecordingService.playbackProgress.collectAsState()
-    val positionMs = if (isActive) progress.positionMs else 0
-    val durationMs = if (isActive && progress.durationMs > 0) progress.durationMs else fileDurationMs
-    LittleBodyText("${FormatService.getDuration(positionMs)} / ${FormatService.getDuration(durationMs)}")
-}
-
-// the thumb/track slots that let the default tall pill thumb be replaced are still experimental
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun RecordingProgressBar(isActive: Boolean, fileDurationMs: Int, onSeek: (Int) -> Unit) {
-    // collected here rather than passed down through InputState: the position ticks a few times a
-    // second, and this way only this composable recomposes, not the row, the card or the screen
-    val progress by RecordingService.playbackProgress.collectAsState()
-    // while dragging, the thumb follows the finger instead of fighting the ticker
-    var scrubFraction by remember { mutableStateOf<Float?>(null) }
-    // the file's own duration keeps an idle bar full width; only the loaded one has a position
-    val durationMs = if (isActive && progress.durationMs > 0) progress.durationMs else fileDurationMs
-    val positionMs = if (isActive) progress.positionMs else 0
-    // onPrimary is what LittleBodyText draws the row label with, so it is the one color guaranteed
-    // to read against the card in both light and dark mode
-    val barColor = MaterialTheme.colorScheme.onPrimary
-    val sliderColors = SliderDefaults.colors(
-        thumbColor = barColor,
-        activeTrackColor = barColor,
-        inactiveTrackColor = barColor.copy(alpha = 0.25f),
-        disabledThumbColor = barColor.copy(alpha = 0.4f),
-        disabledActiveTrackColor = barColor.copy(alpha = 0.15f),
-        disabledInactiveTrackColor = barColor.copy(alpha = 0.15f)
-    )
-    Slider(
-        // coerced: currentPosition can briefly overshoot duration at the end of a clip
-        value = (scrubFraction
-            ?: if (durationMs > 0) positionMs.toFloat() / durationMs else 0f)
-            .coerceIn(0f, 1f),
-        onValueChange = { scrubFraction = it },
-        onValueChangeFinished = {
-            scrubFraction?.let { onSeek((it * durationMs).toInt()) }
-            scrubFraction = null
-        },
-        enabled = isActive && durationMs > 0,
-        colors = sliderColors,
-        // default thumb is too tall, so we add a small round one that suits a card row better
-        // the thumb is boxed to TRACK_BOX_HEIGHT because the slider top-aligns the thumb and track
-        thumb = {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            if (currentRecording != null) {
+                IconShadowButton(
+                    onClick = { pendingDeletion = currentRecording },
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete recording",
+                    iconColor = MaterialTheme.colorScheme.error
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+            }
             Box(
-                modifier = Modifier.size(width = THUMB_SIZE, height = TRACK_BOX_HEIGHT),
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(entryBackground())
+                    .clickable { dropdownExpanded = true }
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(THUMB_SIZE)
-                        .background(
-                            color = if (isActive && durationMs > 0) barColor else barColor.copy(
-                                alpha = 0.4f
-                            ),
-                            shape = CircleShape
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val filename =
+                        currentRecording?.removeSuffix(RecordingService.RECORDING_FILE_EXTENSION)
+                            ?.let { name ->
+                                if (name.length > 15) "${name.take(5)} ... ${name.takeLast(6)}" else name
+                            } ?: NO_RECORDING_AVAILABLE
+                    Row(
+                        modifier = Modifier.fillMaxWidth(0.95f),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Voicemail,
+                            contentDescription = "Recordings",
+                            modifier = Modifier
+                                .height(25.dp)
                         )
+                        MediumBodyText(filename)
+                    }
+                    if (filename != NO_RECORDING_AVAILABLE) {
+                        Spacer(modifier = Modifier.height(5.dp))
+                        WavyPlaceholder("Tap to select recordings")
+                    }
+                }
+                DropdownMenu(
+                    expanded = dropdownExpanded,
+                    onDismissRequest = { dropdownExpanded = false },
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(entryBackground())
+                ) {
+                    if (recordings.isEmpty()) {
+                        DropdownMenuItem(
+                            text = { Text(NO_RECORDING_AVAILABLE) },
+                            onClick = { dropdownExpanded = false },
+                            enabled = false
+                        )
+                    } else {
+                        recordings.forEach { recording ->
+                            val cleanName =
+                                recording.removeSuffix(RecordingService.RECORDING_FILE_EXTENSION)
+                            val isSelected = recording == currentRecording
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = cleanName,
+                                        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
+                                    )
+                                },
+                                onClick = {
+                                    selectedRecording = recording
+                                    dropdownExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+            if (currentRecording != null) {
+                Spacer(modifier = Modifier.width(12.dp))
+                IconShadowButton(
+                    onClick = {
+                        if (isThisPlaying) {
+                            onTapPlaybackPause()
+                        } else {
+                            if (localProgress >= 1f) localProgress = 0f
+                            onTapPlaybackPlay(currentRecording)
+                        }
+                    },
+                    imageVector = if (isThisPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    contentDescription = "Play/Pause",
                 )
             }
-        },
-        track = { sliderState ->
-            SliderDefaults.Track(
-                sliderState = sliderState,
-                enabled = isActive && durationMs > 0,
-                colors = sliderColors,
-                modifier = Modifier.height(TRACK_HEIGHT),
-                thumbTrackGapSize = 0.dp,
-                trackInsideCornerSize = 0.dp,
-                drawStopIndicator = null
+        }
+        AnimatedVisibility(
+            visible = isThisPlaying,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp)
+            ) {
+                WavyProgressSlider(
+                    value = localProgress,
+                    onValueChange = { newProgress ->
+                        isDragging = true
+                        localProgress = newProgress
+                    },
+                    onValueChangeFinished = {
+                        isDragging = false
+                        val targetMs =
+                            if (fileDurationMs > 0) (localProgress * fileDurationMs).toInt() else (localProgress * 100).toInt()
+                        onSetPlaybackPosition(targetMs)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun WavyProgressSlider(
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    onValueChangeFinished: () -> Unit,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.primary,
+    trackColor: Color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.25f)
+) {
+    // Continuous wave phase shift animation
+    val infiniteTransition = rememberInfiniteTransition(label = "waveAnimation")
+    val phase by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = (2 * Math.PI).toFloat(),
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "wavePhase"
+    )
+
+    Slider(
+        value = value,
+        onValueChange = onValueChange,
+        onValueChangeFinished = onValueChangeFinished,
+        modifier = modifier,
+        thumb = {
+            Box(
+                modifier = Modifier
+                    .size(14.dp)
+                    .background(color, CircleShape)
             )
         },
-        modifier = Modifier.fillMaxWidth()
+        track = { sliderState ->
+            Canvas(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(20.dp)
+            ) {
+                val width = size.width
+                val height = size.height
+                val centerY = height / 2f
+                val activeWidth = width * sliderState.value.coerceIn(0f, 1f)
+
+                // Inactive track line
+                drawLine(
+                    color = trackColor,
+                    start = Offset(activeWidth, centerY),
+                    end = Offset(width, centerY),
+                    strokeWidth = 4.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
+
+                // Moving wave track
+                if (activeWidth > 0f) {
+                    val wavePath = Path()
+                    val waveLength = 16.dp.toPx()
+                    val amplitude = 3.dp.toPx()
+
+                    wavePath.moveTo(0f, centerY + sin(phase).toFloat() * amplitude)
+                    var x = 0f
+                    while (x <= activeWidth) {
+                        val y =
+                            centerY + sin((x / waveLength) * 2 * Math.PI + phase).toFloat() * amplitude
+                        wavePath.lineTo(x, y)
+                        x += 2f
+                    }
+
+                    drawPath(
+                        path = wavePath,
+                        color = color,
+                        style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
+                    )
+                }
+            }
+        }
     )
 }
 
-// nudged away from the card colour rather than picked from a token: onSurface is dark on a light
-// palette and light on a dark one, so this separates the entry from the card either way
 @Composable
 private fun entryBackground(): Color = lerp(
     MaterialTheme.colorScheme.surface,
@@ -280,35 +365,4 @@ private fun entryBackground(): Color = lerp(
     ENTRY_BACKGROUND_BLEND
 )
 
-@Composable
-private fun RecordingButton(
-    onClick: () -> Unit,
-    onLongClick: () -> Unit,
-    imageVector: ImageVector,
-    contentDescription: String,
-    enabled: Boolean,
-    accent: Color? = null // null = the default tint
-) {
-    val base = accent ?: MaterialTheme.colorScheme.inversePrimary
-    val container = MaterialTheme.colorScheme.tertiary
-    IconShadowButton(
-        onClick = onClick,
-        onLongClick = onLongClick,
-        imageVector = imageVector,
-        contentDescription = if (enabled) contentDescription else "$contentDescription (unavailable)",
-        // faded towards the card colour
-        color = if (enabled) container
-                else lerp(container, MaterialTheme.colorScheme.surface, DISABLED_CONTAINER_BLEND),
-        iconColor = if (enabled) base else base.copy(alpha = DISABLED_ICON_ALPHA)
-    )
-}
-
-private val THUMB_SIZE = 12.dp
-private val TRACK_HEIGHT = 4.dp
-
-private const val ENTRY_BACKGROUND_BLEND = 0.08f // how far an entry sits off the card colour
-private const val DISABLED_CONTAINER_BLEND = 0.7f // how far the container fades towards the card
-private const val DISABLED_ICON_ALPHA = 0.38f
-
-// the thumb the track height to end up centred on the line
-private val TRACK_BOX_HEIGHT = 16.dp
+private const val ENTRY_BACKGROUND_BLEND = 0.08f
