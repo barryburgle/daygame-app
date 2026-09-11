@@ -124,19 +124,6 @@ fun LiveSessionBody(
             descriptionFontSize = descriptionFontSize
         )
     }
-
-    Spacer(modifier = Modifier.height(12.dp))
-    RecordingsView(
-        recordingState = recordingState,
-        recordings = RecordingService.recordingsOf(abstractSession.id, recordings),
-        recordingsFolder = recordingsFolder,
-        recordingsEnabled = recordingsEnabled,
-        onTapPlaybackPlay = { onEvent(GameEvent.TapPlaybackPlay(it)) },
-        onTapPlaybackPause = { onEvent(GameEvent.TapPlaybackPause) },
-        onTapRecordingDelete = { onEvent(GameEvent.TapRecordingDelete(it)) },
-        onSetPlaybackPosition = { onEvent(GameEvent.SetPlaybackPosition(it)) }
-    )
-
     if (pinPoints.isNotEmpty()) {
         Spacer(modifier = Modifier.height(12.dp))
         Timeline(
@@ -148,4 +135,15 @@ fun LiveSessionBody(
             modifier = Modifier.fillMaxWidth()
         )
     }
+    Spacer(modifier = Modifier.height(12.dp))
+    RecordingsView(
+        recordingState = recordingState,
+        recordings = RecordingService.recordingsOf(abstractSession.id, recordings),
+        recordingsFolder = recordingsFolder,
+        recordingsEnabled = recordingsEnabled,
+        onTapPlaybackPlay = { onEvent(GameEvent.TapPlaybackPlay(it)) },
+        onTapPlaybackPause = { onEvent(GameEvent.TapPlaybackPause) },
+        onTapRecordingDelete = { onEvent(GameEvent.TapRecordingDelete(it)) },
+        onSetPlaybackPosition = { onEvent(GameEvent.SetPlaybackPosition(it)) }
+    )
 }
