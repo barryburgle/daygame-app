@@ -61,10 +61,6 @@ fun RecordingsView(
     recordings: List<String> = emptyList(),
     recordingsFolder: String = "",
     recordingsEnabled: Boolean = false,
-    showRecordingButtons: Boolean = true,
-    onTapRecordingStart: () -> Unit = {},
-    onTapRecordingStop: () -> Unit = {},
-    onTapRecordingDiscard: (String) -> Unit = {},
     onTapPlaybackPlay: (String) -> Unit = {},
     onTapPlaybackPause: () -> Unit = {},
     onTapRecordingDelete: (String) -> Unit = {},
@@ -92,22 +88,6 @@ fun RecordingsView(
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             LittleBodyText("Recordings:")
-        }
-        // a finished session can only be played back, never recorded into
-        if (showRecordingButtons) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-
-                RecordingButton(
-                    onClick = if (recordingState.state == RecordingStateEnum.RECORDING) onTapRecordingStop else onTapRecordingStart,
-                    onLongClick = { onTapRecordingDiscard(recordingState.activeFileName.orEmpty()) },
-                    imageVector = if (recordingState.state == RecordingStateEnum.RECORDING) Icons.Default.Stop else Icons.Default.FiberManualRecord,
-                    contentDescription = "Start recording",
-                    enabled = true,
-                    accent = MaterialTheme.colorScheme.onErrorContainer
-                )
-            }
         }
         recordings.forEach { recording ->
             val isThisPlaying =

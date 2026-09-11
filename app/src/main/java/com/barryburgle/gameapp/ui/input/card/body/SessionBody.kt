@@ -118,7 +118,6 @@ fun SessionBody(
             recordings = sessionRecordings,
             recordingsFolder = recordingsFolder,
             recordingsEnabled = recordingsEnabled,
-            showRecordingButtons = false,
             onTapPlaybackPlay = { onEvent(GameEvent.TapPlaybackPlay(it)) },
             onTapPlaybackPause = { onEvent(GameEvent.TapPlaybackPause) },
             onSetPlaybackPosition = { onEvent(GameEvent.SetPlaybackPosition(it)) }
