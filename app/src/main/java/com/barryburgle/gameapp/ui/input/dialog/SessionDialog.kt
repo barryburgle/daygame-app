@@ -6,8 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,14 +52,12 @@ import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.EntityService
-import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.ui.input.CounterColumn
 import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
-import com.barryburgle.gameapp.ui.utilities.RecordingsView
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogTimeFormSection
@@ -106,9 +102,6 @@ fun SessionDialog(
         },
         text = {
             Column(
-                // without this the content is squeezed into whatever height the dialog has left
-                // rather than scrolling: the recordings list made it overflow
-                modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -265,6 +258,7 @@ fun SessionDialog(
                         }
                     )
                 }
+                Spacer(modifier = Modifier.height(7.dp))
                 val stickingPoints = state.stickingPoints
                 DialogTextComponent(
                     value = state.stickingPoints,
@@ -284,21 +278,6 @@ fun SessionDialog(
                     }
                 ) {
                     onEvent(GameEvent.SetStickingPoints(it))
-                }
-                // show RecordingView when updating a session
-                val sessionRecordings =
-                    RecordingService.recordingsOf(state.editAbstractSession?.id, state.recordings)
-                if (state.isUpdatingSession && sessionRecordings.isNotEmpty()) {
-                    RecordingsView(
-                        recordingState = state.recordingState,
-                        recordings = sessionRecordings,
-                        recordingsFolder = state.recordingsFolder,
-                        recordingsEnabled = state.recordingsEnabled,
-                        onTapPlaybackPlay = { onEvent(GameEvent.TapPlaybackPlay(it)) },
-                        onTapPlaybackPause = { onEvent(GameEvent.TapPlaybackPause) },
-                        onTapRecordingDelete = { onEvent(GameEvent.TapRecordingDelete(it)) },
-                        onSetPlaybackPosition = { onEvent(GameEvent.SetPlaybackPosition(it)) }
-                    )
                 }
             }
         },
