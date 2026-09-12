@@ -3,6 +3,8 @@ package com.barryburgle.gameapp.ui.utilities.selection
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -42,9 +46,11 @@ fun GenericSortingButton(
     // TODO: create a tripe-state selection process where either don't sort, sort ascending or sort descending by field
     // TODO: put on the left of every button (animating similarly to MultiChoiceButton) text either [no-icon = no selection, up-arrow = sort ascending, down-arrow = sort descending]
     val textBackgroundColor =
-        if (currentSort == sortType) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer
+        if (currentSort == sortType) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.primary
     val textButtonColor =
-        if (currentSort == sortType) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onPrimary
+        if (currentSort == sortType) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+    val borderColor =
+        if (currentSort == sortType) MaterialTheme.colorScheme.onSurface else Color.Transparent
     var buttonState by remember { mutableStateOf(IconShadowButtonState.IDLE) }
     val scale by animateFloatAsState(
         targetValue = if (buttonState == IconShadowButtonState.PRESSED) 0.92f else 1f,
@@ -55,6 +61,7 @@ fun GenericSortingButton(
         label = "ButtonScaleAnimation"
     )
     val haptic = LocalHapticFeedback.current
+
     Box(
         modifier = Modifier
             .pointerInput(Unit) {
@@ -80,7 +87,14 @@ fun GenericSortingButton(
             .background(
                 color = textBackgroundColor,
                 shape = RoundedCornerShape(30.dp)
-            ),
+            )
+            .border(
+                width = 1.5.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(30.dp)
+            )
+            .clip(RoundedCornerShape(30.dp))
+            .clickable { onEvent(genericEvent) },
         contentAlignment = Alignment.Center
     ) {
         IconButton(
