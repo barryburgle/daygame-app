@@ -432,13 +432,15 @@ fun LeadDialogContent(
                         modifier = Modifier.width(80.dp)
                     ) {
                         CounterColumn(
-                            count = leadAge.toInt(),
-                            label = "Years old",
+                            count = if (leadAge != 0L) leadAge.toString() else "NA",
+                            label = if (leadAge != 0L) "Years old" else "Age",
                             onIncrement = {
-                                onSetLeadAge((leadAge + 1).toString())
+                                var newLeadAge = if (leadAge != 0L) leadAge + 1 else 20
+                                onSetLeadAge(newLeadAge.toString())
                             },
                             onDecrement = {
-                                onSetLeadAge((leadAge - 1).toString())
+                                var newLeadAge = if (leadAge != 0L) leadAge - 1 else 20
+                                onSetLeadAge(newLeadAge.toString())
                             }
                         )
                     }

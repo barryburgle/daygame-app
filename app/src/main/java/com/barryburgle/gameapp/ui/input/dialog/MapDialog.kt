@@ -149,12 +149,13 @@ fun MapDialog(
                             pinPoints.forEach { pinPoint ->
                                 val markerGeoPoint = GeoPoint(pinPoint.latitude, pinPoint.longitude)
                                 val associatedLead = leads.find { it.pinPointId == pinPoint.id }
+                                val leadAgeDesc = if (associatedLead?.age != 0L) " ${associatedLead?.age}" else ""
                                 val markerTitle = if (associatedLead != null)
                                     "${associatedLead?.name} ${
                                         CountryEnum.getFlagByAlpha3(
                                             associatedLead?.nationality!!
                                         )
-                                    } ${associatedLead?.age} "
+                                    }${leadAgeDesc}"
                                 else pinPoint.pinPointType.replaceFirstChar { it.uppercase() }
                                 val markerSnippet = FormatService.getDate(
                                     pinPoint.localTimestamp.substring(

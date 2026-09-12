@@ -29,7 +29,10 @@ interface EventModel {
             leadsReport = ":"
             leads.forEach {
                 leadsReport =
-                    leadsReport + " " + CountryEnum.getFlagByAlpha3(it.nationality) + " " + it.age + "yo,"
+                    leadsReport + " " + CountryEnum.getFlagByAlpha3(it.nationality)
+                if (it.age != 0L) {
+                    leadsReport += " " + it.age + "yo,"
+                }
             }
             leadsReport = leadsReport.dropLast(1)
         }

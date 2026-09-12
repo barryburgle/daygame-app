@@ -201,9 +201,9 @@ fun Timeline(
 
         selectedPinPoint?.let { pin ->
             val associatedLead = leads.find { it.pinPointId == pin.id }
-
             val titleText = if (associatedLead != null) {
-                "${associatedLead.name} ${CountryEnum.getFlagByAlpha3(associatedLead.nationality)} ${associatedLead.age}"
+                val leadAgeDesc = if (associatedLead.age != 0L) " ${associatedLead.age}" else ""
+                "${associatedLead.name} ${CountryEnum.getFlagByAlpha3(associatedLead.nationality)}${leadAgeDesc}"
             } else {
                 pin.pinPointType.replaceFirstChar { it.uppercase() }
             }

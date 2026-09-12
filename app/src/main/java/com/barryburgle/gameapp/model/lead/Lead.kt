@@ -48,5 +48,5 @@ open class Lead(
         return result
     }
 
-    constructor() : this(0, "", null, "", "", "", 20, null)
+    constructor() : this(0, "", null, "", "", "", 0, null)
 }

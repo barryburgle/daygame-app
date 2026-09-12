@@ -133,8 +133,9 @@ fun DateDialog(
                                         state.allLeads.filter { lead -> lead.id == state.leadId }
                                     if (foundLead.size != 0) {
                                         val lead = foundLead.get(0)
+                                        val leadAgeDesc = if (lead.age != 0L) " ${lead.age}" else ""
                                         DialogFormSectionDescription(
-                                            CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age,
+                                            CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + leadAgeDesc,
                                             DialogConstant.DESCRIPTION_FONT_SIZE
                                         )
                                         leadIcon = Icons.Default.SwapHoriz
@@ -157,8 +158,9 @@ fun DateDialog(
                                 expanded = leadsExpanded,
                                 onDismissRequest = { leadsExpanded = false }) {
                                 state.allLeads.forEach { lead ->
+                                    val leadAgeDesc = if (lead.age != 0L) " ${lead.age}" else ""
                                     DropdownMenuItem(
-                                        text = { LittleBodyText(CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age) },
+                                        text = { LittleBodyText(CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + leadAgeDesc) },
                                         onClick = {
                                             onEvent(GameEvent.SetLeadId(lead.id))
                                             leadsExpanded = false

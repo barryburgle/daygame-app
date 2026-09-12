@@ -391,8 +391,9 @@ fun leadName(
                 }
                 if (outputShow || cardShow) {
                     // TODO: create MediumBodyText with variable injectable color
+                    val leadAgeDesc = if (lead.age != 0L) "${lead.age} " else ""
                     Text(
-                        text = "${lead.age} ${
+                        text = "${leadAgeDesc}${
                             CountryEnum.getFlagByAlpha3(
                                 lead.nationality
                             )

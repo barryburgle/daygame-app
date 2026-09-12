@@ -749,7 +749,7 @@ class InputViewModel(
                             leadContact = "",
                             leadNationality = "",
                             countryName = "",
-                            leadAge = 20,
+                            leadAge = 0,
                             justSaved = true
                         )
                     }
