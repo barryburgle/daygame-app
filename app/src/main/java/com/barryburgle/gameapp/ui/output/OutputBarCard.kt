@@ -50,7 +50,8 @@ fun OutputBarCard(
     ratio: Boolean,
     categories: List<String>? = null,
     statsLoadInfo: StatsLoadInfoEnum,
-    onEvent: (StatsEvent) -> Unit
+    onEvent: (StatsEvent) -> Unit,
+    caption: String = ""
 ) {
     var isPieChart by remember { mutableStateOf(false) }
 
@@ -81,6 +82,9 @@ fun OutputBarCard(
                         onCheckedChange = { isPieChart = !isPieChart }
                     )
                 }
+            }
+            if (caption.isNotEmpty()) {
+                LittleBodyText(caption)
             }
 
             if (isPieChart) {

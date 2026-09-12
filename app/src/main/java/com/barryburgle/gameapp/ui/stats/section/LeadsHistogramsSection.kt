@@ -16,23 +16,31 @@ fun LazyListScope.LeadsHistogramsSection(
     onEvent: (StatsEvent) -> Unit
 ) {
     item {
-        state.leadsAgeHistogram.map { ageHistogram ->
-            ageHistogram.metric?.let {
-                BarEntry(
-                    it.toFloat(), ageHistogram.frequency
+        val unknownAgeCount = state.leadsAgeHistogram
+            .find { it.metric == 0f }?.frequency?.toInt() ?: 0
+
+        state.leadsAgeHistogram
+            .filter { it.metric != 0f }
+            .mapNotNull { ageHistogram ->
+                ageHistogram.metric?.let {
+                    BarEntry(
+                        it.toFloat(), ageHistogram.frequency
+                    )
+                }
+            }
+            .takeIf { it.isNotEmpty() }
+            ?.let { barEntries ->
+                OutputBarCard(
+                    height = height,
+                    width = width,
+                    barEntryList = barEntries,
+                    integerValues = true,
+                    ratio = false,
+                    statsLoadInfo = StatsLoadInfoEnum.LEAD_AGES,
+                    onEvent = onEvent,
+                    caption = "There are also $unknownAgeCount leads with unknown age"
                 )
             }
-        }?.let { it ->
-            OutputBarCard(
-                height = height,
-                width = width,
-                barEntryList = it as List<BarEntry>,
-                integerValues = true,
-                ratio = false,
-                statsLoadInfo = StatsLoadInfoEnum.LEAD_AGES,
-                onEvent = onEvent
-            )
-        }
     }
     item {
         state.leadsNationalityHistogram.indices.map { index ->
