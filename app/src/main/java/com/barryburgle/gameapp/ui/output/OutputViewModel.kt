@@ -142,7 +142,7 @@ class OutputViewModel(
                         leadContact = "",
                         leadNationality = "",
                         countrySearch = "",
-                        leadAge = 20,
+                        leadAge = 0,
                         leadContactLookupKey = null,
                         leadInstagramUrl = null
                     )
@@ -215,7 +215,7 @@ class OutputViewModel(
                         leadContact = "",
                         leadNationality = "",
                         countrySearch = "",
-                        leadAge = 20,
+                        leadAge = 0,
                         leadContactLookupKey = null,
                         leadInstagramUrl = null
                     )
@@ -234,7 +234,7 @@ class OutputViewModel(
                         leadContact = "",
                         leadNationality = "",
                         countrySearch = "",
-                        leadAge = 20,
+                        leadAge = 0,
                         leadContactLookupKey = null,
                         leadInstagramUrl = null
                     )

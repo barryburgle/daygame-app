@@ -108,8 +108,9 @@ fun SetDialog(
                                         )
                                     } else {
                                         val lead = state.leads.get(0)
+                                        val leadAgeDesc = if (lead.age != 0L) " ${lead.age}" else ""
                                         DialogFormSectionDescription(
-                                            CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + " " + lead.age,
+                                            CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + leadAgeDesc,
                                             DialogConstant.DESCRIPTION_FONT_SIZE
                                         )
                                         leadIcon = Icons.Default.SwapHoriz
