@@ -298,9 +298,16 @@ fun DateDialog(
                                         horizontalArrangement = Arrangement.SpaceAround,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
+                                        val dateSuffix = when {
+                                            dateNumber == 0 -> ""
+                                            dateNumber in 11..13 -> "th"
+                                            dateNumber % 10 == 1 -> "st"
+                                            dateNumber % 10 == 2 -> "nd"
+                                            dateNumber % 10 == 3 -> "rd"
+                                            else -> "th"
+                                        }
                                         CounterColumn(
-                                            count = dateNumber,
-                                            count = dateNumber.toString(),
+                                            count = if (dateNumber != 0) "$dateNumber$dateSuffix" else "iDate",
                                             label = "Date",
                                             onIncrement = {
                                                 dateNumber += 1
