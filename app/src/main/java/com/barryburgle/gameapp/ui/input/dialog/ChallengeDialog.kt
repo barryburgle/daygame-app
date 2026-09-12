@@ -173,7 +173,7 @@ fun ChallengeDialog(
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     CounterColumn(
-                        count = challengeGoal,
+                        count = challengeGoal.toString(),
                         label = if (updatedChallengeType.equals("Type")) "Choose goal" else updatedChallengeType,
                         onIncrement = {
                             challengeGoal += state.incrementChallengeGoal
@@ -185,7 +185,7 @@ fun ChallengeDialog(
                         }
                     )
                     CounterColumn(
-                        count = challengeDays,
+                        count = challengeDays.toString(),
                         label = "Days",
                         onIncrement = {
                             challengeDays += 1

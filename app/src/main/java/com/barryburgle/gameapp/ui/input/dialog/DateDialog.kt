@@ -298,6 +298,7 @@ fun DateDialog(
                                     ) {
                                         CounterColumn(
                                             count = dateNumber,
+                                            count = dateNumber.toString(),
                                             label = "Date",
                                             onIncrement = {
                                                 dateNumber += 1
@@ -307,13 +308,17 @@ fun DateDialog(
                                                 dateNumber -= 1
                                                 onEvent(GameEvent.SetDateNumber(dateNumber.toString()))
                                             })
-                                        CounterColumn(count = dateCost, label = "€", onIncrement = {
-                                            dateCost += 1
-                                            onEvent(GameEvent.SetCost(dateCost.toString()))
-                                        }, onDecrement = {
-                                            dateCost -= 1
-                                            onEvent(GameEvent.SetCost(dateCost.toString()))
-                                        })
+                                        CounterColumn(
+                                            count = dateCost.toString(),
+                                            label = "€",
+                                            onIncrement = {
+                                                dateCost += 1
+                                                onEvent(GameEvent.SetCost(dateCost.toString()))
+                                            },
+                                            onDecrement = {
+                                                dateCost -= 1
+                                                onEvent(GameEvent.SetCost(dateCost.toString()))
+                                            })
                                     }
                                 }
 

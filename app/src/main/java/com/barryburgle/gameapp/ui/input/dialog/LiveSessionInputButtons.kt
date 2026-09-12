@@ -65,7 +65,7 @@ fun LiveSessionInputButtons(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         CounterColumn(
-            count = setsCount,
+            count = setsCount.toString(),
             label = if (setsCount != 1) "Sets" else "Set",
             iconRes = R.drawable.set_action,
             onIncrement = {
@@ -82,7 +82,7 @@ fun LiveSessionInputButtons(
             onDecrement = { onSetsChange(setsCount - 1) }
         )
         CounterColumn(
-            count = convosCount,
+            count = convosCount.toString(),
             label = if (convosCount != 1) "Conversations" else "Conversation",
             iconRes = R.drawable.conversation_action,
             onIncrement = {
@@ -99,7 +99,7 @@ fun LiveSessionInputButtons(
             onDecrement = { onConvosChange(convosCount - 1, false) }
         )
         CounterColumn(
-            count = contactsCount,
+            count = contactsCount.toString(),
             label = if (contactsCount != 1) "Contacts" else "Contact",
             iconRes = R.drawable.contact_action,
             onIncrement = {

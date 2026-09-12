@@ -222,7 +222,7 @@ fun SessionDialog(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     CounterColumn(
-                        count = setsCount,
+                        count = setsCount.toString(),
                         label = "Sets",
                         onIncrement = {
                             setsCount++
@@ -234,7 +234,7 @@ fun SessionDialog(
                         }
                     )
                     CounterColumn(
-                        count = convosCount,
+                        count = convosCount.toString(),
                         label = "Conversations",
                         onIncrement = {
                             convosCount++
@@ -249,7 +249,7 @@ fun SessionDialog(
                         }
                     )
                     CounterColumn(
-                        count = contactsCount,
+                        count = contactsCount.toString(),
                         label = "Contacts",
                         onIncrement = {
                             contactsCount++

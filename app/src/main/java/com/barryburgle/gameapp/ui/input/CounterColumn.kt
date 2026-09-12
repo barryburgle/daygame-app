@@ -19,7 +19,7 @@ import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 
 @Composable
 fun CounterColumn(
-    count: Int,
+    count: String,
     label: String,
     @DrawableRes iconRes: Int? = null,
     onIncrement: () -> Unit,
@@ -34,7 +34,7 @@ fun CounterColumn(
         Spacer(modifier = Modifier.height(4.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             DescribedQuantifier(
-                quantity = count.toString(),
+                quantity = count,
                 quantityFontSize = 50.sp,
                 description = label,
                 descriptionFontSize = 10.sp,
