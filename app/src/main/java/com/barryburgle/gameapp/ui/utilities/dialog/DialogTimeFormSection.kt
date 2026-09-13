@@ -1,6 +1,5 @@
 package com.barryburgle.gameapp.ui.utilities.dialog
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,8 +22,7 @@ fun DialogTimeFormSection(
     Column(
         modifier = Modifier
             .fillMaxWidth(0.5f)
-            .height(135.dp),
-        verticalArrangement = Arrangement.Top
+            .height(150.dp)
     ) {
         TimeInputFormButton(
             state.date,

@@ -2,13 +2,16 @@ package com.barryburgle.gameapp.ui.utilities.dialog
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.model.enums.TimeInputFormEnum
 import com.barryburgle.gameapp.service.FormatService
-import com.barryburgle.gameapp.ui.utilities.button.GenericShadowButton
+import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalDateTime
 
@@ -41,15 +44,21 @@ fun TimeInputFormButton(
         }
     }
     val displayValue = passStateValue(stateValue, latestDateValue)
-    GenericShadowButton(
+    val title = getButtonTitle(
+        timeInputFormEnum, buttonTextPrefix, displayValue
+    )
+    IconShadowButton(
         onClick = {
             dialogState.show()
         },
-        title = getButtonTitle(
-            timeInputFormEnum, buttonTextPrefix, displayValue
-        ),
+        imageVector = if (timeInputFormEnum == TimeInputFormEnum.DATE) Icons.Default.CalendarMonth else Icons.Default.AccessTime,
+        contentDescription = title,
+        title = title,
         color = MaterialTheme.colorScheme.primaryContainer,
-        modifier = Modifier.fillMaxWidth().height(35.dp)
+        iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(35.dp)
     )
 }
 
