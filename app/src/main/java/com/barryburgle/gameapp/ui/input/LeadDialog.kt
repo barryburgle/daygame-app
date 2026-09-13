@@ -14,14 +14,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -42,7 +42,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.PopupProperties
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.event.OutputEvent
@@ -57,8 +56,10 @@ import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.dropdown.Dropdown
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 import kotlinx.coroutines.delay
 
 @Composable
@@ -303,47 +304,59 @@ fun LeadDialogContent(
                                     }
                                 }
                         )
-                        DropdownMenu(
+                        val countriesList = CountryEnum.getInsertCountries(
+                            mostPopularLeadsNationalities,
+                            suggestLeadsNationality,
+                            countrySearch
+                        )
+                        Dropdown(
                             modifier = Modifier
                                 .width(200.dp)
                                 .heightIn(max = 450.dp),
-                            properties = PopupProperties(focusable = false),
                             expanded = expanded,
                             onDismissRequest = {
                                 expanded = false
-                            }) {
-                            var count = 0
-                            CountryEnum.getInsertCountries(
-                                mostPopularLeadsNationalities,
-                                suggestLeadsNationality,
-                                countrySearch
-                            ).forEach { country ->
-                                count++
-                                DropdownMenuItem(text = {
-                                    Row(
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically
+                            },
+                            items = countriesList,
+                            onItemClick = { country ->
+                                onSetLeadCountrySearch("")
+                                onSetLeadNationality(country.alpha3)
+                                isFocused = false
+                                focusManager.clearFocus()
+                            }
+                        ) { country ->
+                            val count = countriesList.indexOf(country) + 1
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Box(
+                                        modifier = Modifier.wrapContentSize()
                                     ) {
-                                        LittleBodyText(
-                                            country.flag + "  " + country.countryName
+                                        LargeTitleText(
+                                            country.flag
                                         )
                                         if (count <= shownNationalities && suggestLeadsNationality) {
                                             Icon(
                                                 imageVector = Icons.Default.Star,
                                                 contentDescription = "Suggested country",
-                                                tint = MaterialTheme.colorScheme.inversePrimary,
-                                                modifier = Modifier.height(50.dp)
+                                                tint = MaterialTheme.colorScheme.onPrimary.copy(
+                                                    alpha = 0.85f
+                                                ),
+                                                modifier = Modifier
+                                                    .height(20.dp)
+                                                    .align(Alignment.TopEnd)
+                                                    .offset(x = 6.dp, y = (-6.dp))
                                             )
                                         }
                                     }
-                                }, onClick = {
-                                    onSetLeadCountrySearch("")
-                                    onSetLeadNationality(country.alpha3)
-                                    expanded = false
-                                    isFocused = false
-                                    focusManager.clearFocus()
-                                })
+                                    Spacer(modifier = Modifier.width(3.dp))
+                                    SmallTitleText(
+                                        country.countryName
+                                    )
+                                }
                                 if (count == shownNationalities && suggestLeadsNationality) {
                                     Row(
                                         modifier = Modifier
