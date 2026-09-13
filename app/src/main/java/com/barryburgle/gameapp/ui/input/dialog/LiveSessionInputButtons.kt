@@ -136,7 +136,11 @@ fun LiveSessionInputButtons(
             Spacer(modifier = Modifier.height(5.dp))
             Column(
                 modifier = Modifier
-                    .fillMaxHeight(0.8f)
+                    .let {
+                        if (showRecordingButtons) it.fillMaxHeight(0.8f) else it.fillMaxHeight(
+                            0.35f
+                        )
+                    }
                     .background(
                         MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
                         shape = RoundedCornerShape(30.dp)
@@ -147,7 +151,7 @@ fun LiveSessionInputButtons(
                     modifier = Modifier
                         .fillMaxHeight(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween
+                    verticalArrangement = if (showRecordingButtons) Arrangement.SpaceBetween else Arrangement.Center
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -210,13 +214,15 @@ fun LiveSessionInputButtons(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(5.dp))
-            Text(
-                text = "Record",
-                fontSize = 10.sp,
-                lineHeight = 10.sp,
-                textAlign = TextAlign.Center
-            )
+            if (showRecordingButtons) {
+                Spacer(modifier = Modifier.height(5.dp))
+                Text(
+                    text = "Record",
+                    fontSize = 10.sp,
+                    lineHeight = 10.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }
