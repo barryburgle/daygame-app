@@ -27,20 +27,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.RotateLeft
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.RotateLeft
 import androidx.compose.material.icons.filled.RotateRight
 import androidx.compose.material.icons.filled.Voicemail
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -70,6 +66,8 @@ import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
 //  live in EventCard.kt / InputScreen.kt - cleaner would be to move them under ui/utilities/ so a
 //  utility doesn't import from a screen or a card
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.dropdown.Dropdown
+import com.barryburgle.gameapp.ui.utilities.dropdown.SelectableOption
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
 import kotlinx.coroutines.Dispatchers
@@ -204,37 +202,23 @@ fun RecordingsView(
                         WavyPlaceholder("Tap to select recordings")
                     }
                 }
-                DropdownMenu(
+                Dropdown(
                     expanded = dropdownExpanded,
                     onDismissRequest = { dropdownExpanded = false },
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(entryBackground())
-                ) {
-                    if (recordings.isEmpty()) {
-                        DropdownMenuItem(
-                            text = { Text(NO_RECORDING_AVAILABLE) },
-                            onClick = { dropdownExpanded = false },
-                            enabled = false
-                        )
-                    } else {
-                        recordings.forEach { recording ->
-                            val cleanName =
-                                recording.removeSuffix(RecordingService.RECORDING_FILE_EXTENSION)
-                            val isSelected = recording == currentRecording
-                            DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        text = cleanName,
-                                        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
-                                    )
-                                },
-                                onClick = {
-                                    selectedRecording = recording
-                                    dropdownExpanded = false
-                                }
-                            )
-                        }
+                    items = recordings,
+                    onItemClick = { recording ->
+                        selectedRecording = recording
+                        dropdownExpanded = false
+                    }
+                ) { recording ->
+                    val cleanName =
+                        recording.removeSuffix(RecordingService.RECORDING_FILE_EXTENSION)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        SelectableOption(cleanName)
                     }
                 }
             }
@@ -338,7 +322,6 @@ private fun WavyProgressSlider(
     currentMs: Int,
     totalDurationMs: Int
 ) {
-    // Continuous wave phase shift animation
     val infiniteTransition = rememberInfiniteTransition(label = "waveAnimation")
     val phase by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -374,7 +357,6 @@ private fun WavyProgressSlider(
                     val centerY = height / 2f
                     val activeWidth = width * sliderState.value.coerceIn(0f, 1f)
 
-                    // Inactive track line
                     drawLine(
                         color = trackColor,
                         start = Offset(activeWidth, centerY),
@@ -383,7 +365,6 @@ private fun WavyProgressSlider(
                         cap = StrokeCap.Round
                     )
 
-                    // Moving wave track
                     if (activeWidth > 0f) {
                         val wavePath = Path()
                         val waveLength = 16.dp.toPx()
