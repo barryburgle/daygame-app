@@ -16,12 +16,9 @@ import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,8 +35,9 @@ import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 import com.barryburgle.gameapp.ui.stats.chart.PinPointScatterChart
 import com.barryburgle.gameapp.ui.stats.state.StatsState
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.dropdown.Dropdown
+import com.barryburgle.gameapp.ui.utilities.dropdown.SelectableOption
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
-import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @ExperimentalMaterial3Api
@@ -104,35 +102,29 @@ fun PinPointScatterCard(
                                 imageVector = Icons.Default.FilterList,
                                 contentDescription = "Filter Types"
                             )
-                            DropdownMenu(
+                            Dropdown(
                                 expanded = expanded,
                                 onDismissRequest = { expanded = false },
-                                modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
-                            ) {
-                                PinPointTypeEnum.entries.forEach { type ->
+                                items = PinPointTypeEnum.entries,
+                                onItemClick = { type ->
                                     val isChecked = selectedTypes.contains(type)
-                                    DropdownMenuItem(
-                                        text = {
-                                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                                Checkbox(
-                                                    checked = isChecked,
-                                                    onCheckedChange = null
-                                                )
-                                                Spacer(modifier = Modifier.width(8.dp))
-                                                MediumBodyText(type.getField()
-                                                    .replaceFirstChar { it.uppercase() })
-                                            }
-                                        },
-                                        onClick = {
-                                            val newList = if (isChecked) {
-                                                if (selectedTypes.size > 1) selectedTypes - type else selectedTypes
-                                            } else {
-                                                selectedTypes + type
-                                            }
-                                            onEvent(StatsEvent.SelectTimePinPointType(newList))
-                                        }
-                                    )
+                                    val newList = if (isChecked) {
+                                        if (selectedTypes.size > 1) selectedTypes - type else selectedTypes
+                                    } else {
+                                        selectedTypes + type
+                                    }
+                                    onEvent(StatsEvent.SelectTimePinPointType(newList))
                                 }
+                            ) { type ->
+                                SelectableOption(
+                                    customContent = {
+                                        Checkbox(
+                                            checked = selectedTypes.contains(type),
+                                            onCheckedChange = null
+                                        )
+                                    },
+                                    optionName = type.getField().replaceFirstChar { it.uppercase() } + "s"
+                                )
                             }
                         }
                     }
