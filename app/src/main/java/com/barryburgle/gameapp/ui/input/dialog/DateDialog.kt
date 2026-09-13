@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -21,8 +22,6 @@ import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -56,8 +55,11 @@ import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogTimeFormSection
+import com.barryburgle.gameapp.ui.utilities.dropdown.Dropdown
+import com.barryburgle.gameapp.ui.utilities.dropdown.SelectableOption
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 
 @Composable
 fun DateDialog(
@@ -145,26 +147,39 @@ fun DateDialog(
                             Column(
                                 modifier = Modifier.width(DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                             ) {
-                                IconShadowButton(
-                                    onClick = {
-                                        leadsExpanded = true
-                                    }, imageVector = leadIcon, contentDescription = "Add lead"
-                                )
-                            }
-                            DropdownMenu(
-                                modifier = Modifier
-                                    .width(200.dp)
-                                    .height(450.dp),
-                                expanded = leadsExpanded,
-                                onDismissRequest = { leadsExpanded = false }) {
-                                state.allLeads.forEach { lead ->
-                                    val leadAgeDesc = if (lead.age != 0L) " ${lead.age}" else ""
-                                    DropdownMenuItem(
-                                        text = { LittleBodyText(CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + leadAgeDesc) },
-                                        onClick = {
-                                            onEvent(GameEvent.SetLeadId(lead.id))
-                                            leadsExpanded = false
-                                        })
+                                Box {
+                                    IconShadowButton(
+                                        onClick = { leadsExpanded = true },
+                                        imageVector = leadIcon,
+                                        contentDescription = "Add lead"
+                                    )
+                                    Dropdown(
+                                        expanded = leadsExpanded,
+                                        onDismissRequest = { leadsExpanded = false },
+                                        items = state.allLeads,
+                                        onItemClick = { lead -> onEvent(GameEvent.SetLeadId(lead.id)) }
+                                    ) { lead ->
+                                        val leadAgeDesc = if (lead.age != 0L) " ${lead.age}" else ""
+                                        Column(modifier = Modifier.fillMaxWidth()) {
+                                            Row(
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                modifier = Modifier.fillMaxWidth(),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Box(
+                                                    modifier = Modifier.wrapContentSize()
+                                                ) {
+                                                    LargeTitleText(
+                                                        CountryEnum.getFlagByAlpha3(lead.nationality)
+                                                    )
+                                                }
+                                                Spacer(modifier = Modifier.width(3.dp))
+                                                SmallTitleText(
+                                                    lead.name + leadAgeDesc
+                                                )
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -182,55 +197,46 @@ fun DateDialog(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(135.dp),
+                            .height(150.dp),
                         verticalArrangement = Arrangement.Top
                     ) {
-                        DropdownMenu(
-                            modifier = Modifier
-                                .width(175.dp)
-                                .height(280.dp),
-                            expanded = dateTypesExpanded,
-                            onDismissRequest = { dateTypesExpanded = false }) {
-                            DateTypeEnum.values().forEach { dateType ->
-                                DropdownMenuItem(text = {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceAround,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Icon(
-                                            imageVector = DateTypeEnum.getIcon(dateType.getType()),
-                                            contentDescription = state.dateType,
-                                            tint = MaterialTheme.colorScheme.onPrimary,
-                                            modifier = Modifier.height(15.dp)
-                                        )
-                                        LittleBodyText(
-                                            dateType.getType().replaceFirstChar { it.uppercase() })
-                                    }
-                                }, onClick = {
-                                    onEvent(GameEvent.SetDateType(dateType.getType()))
-                                    dateTypesExpanded = false
-                                })
+                        Box {
+                            IconShadowButton(
+                                onClick = { dateTypesExpanded = true },
+                                imageVector = DateTypeEnum.getIcon(state.dateType),
+                                contentDescription = "Date type",
+                                title = if (state.dateType.isBlank()) "Date type" else state.dateType.replaceFirstChar { it.uppercase() },
+                                color = MaterialTheme.colorScheme.primaryContainer,
+                                iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(35.dp)
+                            )
+
+                            Dropdown(
+                                expanded = dateTypesExpanded,
+                                onDismissRequest = { dateTypesExpanded = false },
+                                items = DateTypeEnum.values().toList(),
+                                onItemClick = { dateType -> onEvent(GameEvent.SetDateType(dateType.getType())) }
+                            ) { dateType ->
+                                SelectableOption(
+                                    customContent =
+                                        {
+                                            Icon(
+                                                imageVector = DateTypeEnum.getIcon(dateType.getType()),
+                                                contentDescription = state.dateType,
+                                                tint = MaterialTheme.colorScheme.onPrimary,
+                                                modifier = Modifier.height(15.dp)
+                                            )
+                                        },
+                                    optionName = dateType.getType()
+                                        .replaceFirstChar { it.uppercase() })
                             }
                         }
-                        IconShadowButton(
-                            onClick = {
-                                dateTypesExpanded = true
-                            },
-                            imageVector = DateTypeEnum.getIcon(state.dateType),
-                            contentDescription = "Date type",
-                            title = if (state.dateType.isBlank()) "Date type" else state.dateType.replaceFirstChar { it.uppercase() },
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(35.dp)
-                        )
+
                         Spacer(modifier = Modifier.height(10.dp))
                         IconShadowButton(
-                            onClick = {
-                                locationTextFieldExpanded = !locationTextFieldExpanded
-                            },
+                            onClick = { locationTextFieldExpanded = !locationTextFieldExpanded },
                             imageVector = Icons.Default.PinDrop,
                             contentDescription = "Location",
                             title = "Location",
@@ -244,11 +250,13 @@ fun DateDialog(
                         val localContext = LocalContext.current.applicationContext
                         IconShadowButton(
                             onClick = {
-                                var tweetUrl: String = clipboardManager.getText()!!.toString()
+                                val tweetUrl: String = clipboardManager.getText()!!.toString()
                                 if (tweetUrl.startsWith("https://x.com/")) {
                                     onEvent(GameEvent.SetTweetUrl(tweetUrl))
                                     Toast.makeText(
-                                        localContext, "Copied tweet url", Toast.LENGTH_SHORT
+                                        localContext,
+                                        "Copied tweet url",
+                                        Toast.LENGTH_SHORT
                                     ).show()
                                 }
                             },
@@ -340,24 +348,20 @@ fun DateDialog(
                                             modifier = Modifier.fillMaxWidth(),
                                             horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
-                                            ToggleIcon(
-                                                "pull", state.pull, R.drawable.pull_b
-                                            ) {
+                                            ToggleIcon("pull", state.pull, R.drawable.pull_b) {
                                                 onEvent(GameEvent.SwitchPull)
                                             }
                                             ToggleIcon(
-                                                "bounce", state.bounce, R.drawable.bounce_b
+                                                "bounce",
+                                                state.bounce,
+                                                R.drawable.bounce_b
                                             ) {
                                                 onEvent(GameEvent.SwitchBounce)
                                             }
-                                            ToggleIcon(
-                                                "kiss", state.kiss, R.drawable.kiss_b
-                                            ) {
+                                            ToggleIcon("kiss", state.kiss, R.drawable.kiss_b) {
                                                 onEvent(GameEvent.SwitchKiss)
                                             }
-                                            ToggleIcon(
-                                                "lay", state.lay, R.drawable.bed_b
-                                            ) {
+                                            ToggleIcon("lay", state.lay, R.drawable.bed_b) {
                                                 onEvent(GameEvent.SwitchLay)
                                             }
                                             ToggleIcon(
@@ -418,12 +422,12 @@ fun DateDialog(
         confirmButton = {
             ConfirmButton {
                 if (EntityService.getParsedHour(
-                        state.date, state.startHour
+                        state.date,
+                        state.startHour
                     ) > EntityService.getParsedHour(state.date, state.endHour)
                 ) {
-                    Toast.makeText(
-                        localContext, "Please choose valid hours", Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(localContext, "Please choose valid hours", Toast.LENGTH_SHORT)
+                        .show()
                 } else if (state.leadId == 0L) {
                     Toast.makeText(localContext, "Please choose a lead", Toast.LENGTH_SHORT).show()
                 } else {
