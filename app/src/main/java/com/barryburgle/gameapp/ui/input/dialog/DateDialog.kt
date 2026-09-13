@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -19,12 +20,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ContentPaste
-import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +48,6 @@ import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
-import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
@@ -57,7 +55,6 @@ import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogTimeFormSection
 import com.barryburgle.gameapp.ui.utilities.dropdown.Dropdown
 import com.barryburgle.gameapp.ui.utilities.dropdown.SelectableOption
-import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 
@@ -75,7 +72,6 @@ fun DateDialog(
     var latestEndHour = state.endHour
     var leadsExpanded by remember { mutableStateOf(false) }
     var dateTypesExpanded by remember { mutableStateOf(false) }
-    var locationTextFieldExpanded by remember { mutableStateOf(false) }
     var dateNumberStart = if (state.isAddingDate) 0 else state.editDate?.dateNumber
     var dateCostStart = if (state.isAddingDate) 0 else state.editDate?.cost
     var dateNumber by remember {
@@ -84,12 +80,11 @@ fun DateDialog(
     var dateCost by remember {
         mutableStateOf(if (dateCostStart == null) 0 else dateCostStart)
     }
-    val stickingPointsPagerState = rememberPagerState(pageCount = { 2 })
+    val stickingPointsPagerState = rememberPagerState(pageCount = { 3 })
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier
-            .shadow(elevation = 10.dp)
-            .fillMaxHeight(0.9f),
+            .shadow(elevation = 10.dp),
         onDismissRequest = {
             onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideDialog)
@@ -235,18 +230,6 @@ fun DateDialog(
                         }
 
                         Spacer(modifier = Modifier.height(10.dp))
-                        IconShadowButton(
-                            onClick = { locationTextFieldExpanded = !locationTextFieldExpanded },
-                            imageVector = Icons.Default.PinDrop,
-                            contentDescription = "Location",
-                            title = "Location",
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(35.dp)
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
                         val localContext = LocalContext.current.applicationContext
                         IconShadowButton(
                             onClick = {
@@ -271,156 +254,170 @@ fun DateDialog(
                         )
                     }
                 }
-                BasicAnimatedVisibility(
-                    visibilityFlag = locationTextFieldExpanded,
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(7.dp))
-                    OutlinedTextField(
-                        value = state.location,
-                        onValueChange = { onEvent(GameEvent.SetLocation(it)) },
-                        placeholder = { LittleBodyText("Location") },
-                        shape = MaterialTheme.shapes.large,
-                        modifier = Modifier.height(80.dp)
-                    )
-                    Spacer(modifier = Modifier.height(7.dp))
-                }
-                BasicAnimatedVisibility(
-                    visibilityFlag = !locationTextFieldExpanded,
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Spacer(modifier = Modifier.height(7.dp))
-                        HorizontalPager(
-                            state = stickingPointsPagerState,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp)
-                        ) { page ->
-                            val stickingPoints = state.stickingPoints
-                            when (page) {
-                                0 -> {
+                    HorizontalPager(
+                        state = stickingPointsPagerState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                    ) { page ->
+                        val stickingPoints = state.stickingPoints
+                        val location = state.location
+                        when (page) {
+                            0 -> {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceAround,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    val dateSuffix = when {
+                                        dateNumber == 0 -> ""
+                                        dateNumber in 11..13 -> "th"
+                                        dateNumber % 10 == 1 -> "st"
+                                        dateNumber % 10 == 2 -> "nd"
+                                        dateNumber % 10 == 3 -> "rd"
+                                        else -> "th"
+                                    }
+                                    CounterColumn(
+                                        count = if (dateNumber != 0) "$dateNumber$dateSuffix" else "iDate",
+                                        label = "Date",
+                                        onIncrement = {
+                                            dateNumber += 1
+                                            onEvent(GameEvent.SetDateNumber(dateNumber.toString()))
+                                        },
+                                        onDecrement = {
+                                            dateNumber -= 1
+                                            onEvent(GameEvent.SetDateNumber(dateNumber.toString()))
+                                        })
+                                    CounterColumn(
+                                        count = dateCost.toString(),
+                                        label = "€",
+                                        onIncrement = {
+                                            dateCost += 1
+                                            onEvent(GameEvent.SetCost(dateCost.toString()))
+                                        },
+                                        onDecrement = {
+                                            dateCost -= 1
+                                            onEvent(GameEvent.SetCost(dateCost.toString()))
+                                        })
+                                }
+                            }
+
+                            1 -> {
+                                Column(
+                                    modifier = Modifier.fillMaxHeight(),
+                                    verticalArrangement = Arrangement.SpaceAround
+                                ) {
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceAround,
-                                        verticalAlignment = Alignment.CenterVertically
+                                        horizontalArrangement = Arrangement.SpaceAround
                                     ) {
-                                        val dateSuffix = when {
-                                            dateNumber == 0 -> ""
-                                            dateNumber in 11..13 -> "th"
-                                            dateNumber % 10 == 1 -> "st"
-                                            dateNumber % 10 == 2 -> "nd"
-                                            dateNumber % 10 == 3 -> "rd"
-                                            else -> "th"
+                                        ToggleIcon("pull", state.pull, R.drawable.pull_b) {
+                                            onEvent(GameEvent.SwitchPull)
                                         }
-                                        CounterColumn(
-                                            count = if (dateNumber != 0) "$dateNumber$dateSuffix" else "iDate",
-                                            label = "Date",
-                                            onIncrement = {
-                                                dateNumber += 1
-                                                onEvent(GameEvent.SetDateNumber(dateNumber.toString()))
-                                            },
-                                            onDecrement = {
-                                                dateNumber -= 1
-                                                onEvent(GameEvent.SetDateNumber(dateNumber.toString()))
-                                            })
-                                        CounterColumn(
-                                            count = dateCost.toString(),
-                                            label = "€",
-                                            onIncrement = {
-                                                dateCost += 1
-                                                onEvent(GameEvent.SetCost(dateCost.toString()))
-                                            },
-                                            onDecrement = {
-                                                dateCost -= 1
-                                                onEvent(GameEvent.SetCost(dateCost.toString()))
-                                            })
+                                        ToggleIcon(
+                                            "bounce",
+                                            state.bounce,
+                                            R.drawable.bounce_b
+                                        ) {
+                                            onEvent(GameEvent.SwitchBounce)
+                                        }
+                                        ToggleIcon("kiss", state.kiss, R.drawable.kiss_b) {
+                                            onEvent(GameEvent.SwitchKiss)
+                                        }
+                                    }
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceAround
+                                    ) {
+                                        ToggleIcon("lay", state.lay, R.drawable.bed_b) {
+                                            onEvent(GameEvent.SwitchLay)
+                                        }
+                                        ToggleIcon(
+                                            "recorded",
+                                            state.recorded,
+                                            R.drawable.microphone_b
+                                        ) {
+                                            onEvent(GameEvent.SwitchRecorded)
+                                        }
                                     }
                                 }
+                            }
 
-                                else -> {
-                                    Column(
-                                        modifier = Modifier.fillMaxHeight(),
-                                        verticalArrangement = Arrangement.SpaceAround
-                                    ) {
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceAround
-                                        ) {
-                                            ToggleIcon("pull", state.pull, R.drawable.pull_b) {
-                                                onEvent(GameEvent.SwitchPull)
-                                            }
-                                            ToggleIcon(
-                                                "bounce",
-                                                state.bounce,
-                                                R.drawable.bounce_b
-                                            ) {
-                                                onEvent(GameEvent.SwitchBounce)
-                                            }
-                                            ToggleIcon("kiss", state.kiss, R.drawable.kiss_b) {
-                                                onEvent(GameEvent.SwitchKiss)
-                                            }
-                                        }
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceAround
-                                        ) {
-                                            ToggleIcon("lay", state.lay, R.drawable.bed_b) {
-                                                onEvent(GameEvent.SwitchLay)
-                                            }
-                                            ToggleIcon(
-                                                "recorded",
-                                                state.recorded,
-                                                R.drawable.microphone_b
-                                            ) {
-                                                onEvent(GameEvent.SwitchRecorded)
-                                            }
-                                        }
-                                        DialogTextComponent(
-                                            value = state.stickingPoints,
-                                            placeholder = "sticking points",
-                                            singleLine = false,
-                                            onCopyClick = {
-                                                clipboardManager.setText(
-                                                    AnnotatedString(
-                                                        stickingPoints
-                                                    )
+                            else -> {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .padding(horizontal = 8.dp),
+                                    verticalArrangement = Arrangement.Top,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    DialogTextComponent(
+                                        value = state.location,
+                                        placeholder = "location",
+                                        singleLine = true,
+                                        onCopyClick = {
+                                            clipboardManager.setText(
+                                                AnnotatedString(
+                                                    location
                                                 )
-                                                Toast.makeText(
-                                                    localContext,
-                                                    "Sticking points copied",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }) {
-                                            onEvent(GameEvent.SetStickingPoints(it))
-                                        }
+                                            )
+                                            Toast.makeText(
+                                                localContext,
+                                                "Location points copied",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }) {
+                                        onEvent(GameEvent.SetLocation(it))
+                                    }
+                                    Spacer(modifier = Modifier.height(5.dp))
+                                    DialogTextComponent(
+                                        value = state.stickingPoints,
+                                        placeholder = "sticking points",
+                                        singleLine = false,
+                                        onCopyClick = {
+                                            clipboardManager.setText(
+                                                AnnotatedString(
+                                                    stickingPoints
+                                                )
+                                            )
+                                            Toast.makeText(
+                                                localContext,
+                                                "Sticking points copied",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }) {
+                                        onEvent(GameEvent.SetStickingPoints(it))
                                     }
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            repeat(2) { dotIndex ->
-                                val isSelected = stickingPointsPagerState.currentPage == dotIndex
-                                Box(
-                                    modifier = Modifier
-                                        .size(if (isSelected) 7.dp else 6.dp)
-                                        .clip(CircleShape)
-                                        .background(
-                                            if (isSelected) MaterialTheme.colorScheme.primary
-                                            else MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                                alpha = 0.35f
-                                            )
-                                        )
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(7.dp))
                     }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        repeat(3) { dotIndex ->
+                            val isSelected = stickingPointsPagerState.currentPage == dotIndex
+                            Box(
+                                modifier = Modifier
+                                    .size(if (isSelected) 7.dp else 6.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        if (isSelected) MaterialTheme.colorScheme.primary
+                                        else MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                            alpha = 0.35f
+                                        )
+                                    )
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(7.dp))
                 }
             }
         },
