@@ -1,5 +1,10 @@
 package com.barryburgle.gameapp.ui.utilities.button
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.CircleShape
@@ -15,6 +20,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun IconShadowButton(
     onClick: () -> Unit,
@@ -43,33 +49,50 @@ fun IconShadowButton(
         .defaultMinSize(minWidth = 44.dp, minHeight = 44.dp)
         .clip(CircleShape)
 
-    GenericShadowButton(
-        onClick = onClick,
-        onLongClick = onLongClick ?: {},
-        boxModifier = unifiedBoxModifier,
-        modifier = unifiedModifier,
-        title = title,
-        color = color,
-        glowing = glowing
-    ) {
-        if (imageVector != null) {
-            Icon(
-                imageVector = imageVector,
-                contentDescription = contentDescription,
-                tint = iconTint,
-                modifier = iconModifier
-                    .height(20.dp)
-                    .scale(1.2f)
-            )
-        } else if (drawableIcon != 0) {
-            Icon(
-                painter = painterResource(drawableIcon),
-                contentDescription = contentDescription,
-                tint = iconTint,
-                modifier = iconModifier
-                    .height(20.dp)
-                    .scale(1.2f)
-            )
+    Box {
+        GenericShadowButton(
+            onClick = onClick,
+            onLongClick = onLongClick ?: {},
+            boxModifier = unifiedBoxModifier,
+            modifier = unifiedModifier,
+            title = title,
+            color = color,
+            glowing = glowing
+        ) {
+            if (imageVector != null) {
+                Icon(
+                    imageVector = imageVector,
+                    contentDescription = contentDescription,
+                    tint = iconTint,
+                    modifier = iconModifier
+                        .height(20.dp)
+                        .scale(1.2f)
+                )
+            } else if (drawableIcon != 0) {
+                Icon(
+                    painter = painterResource(drawableIcon),
+                    contentDescription = contentDescription,
+                    tint = iconTint,
+                    modifier = iconModifier
+                        .height(20.dp)
+                        .scale(1.2f)
+                )
+            }
         }
+        Spacer(
+            modifier = Modifier
+                .matchParentSize()
+                .clip(CircleShape)
+                .then(
+                    if (onLongClick != null) {
+                        Modifier.combinedClickable(
+                            onClick = onClick,
+                            onLongClick = onLongClick
+                        )
+                    } else {
+                        Modifier.clickable(onClick = onClick)
+                    }
+                )
+        )
     }
 }
