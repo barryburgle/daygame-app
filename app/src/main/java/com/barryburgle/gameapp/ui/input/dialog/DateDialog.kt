@@ -89,7 +89,7 @@ fun DateDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier
             .shadow(elevation = 10.dp)
-            .fillMaxHeight(0.85f),
+            .fillMaxHeight(0.9f),
         onDismissRequest = {
             onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideDialog)
@@ -346,7 +346,7 @@ fun DateDialog(
                                     ) {
                                         Row(
                                             modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
+                                            horizontalArrangement = Arrangement.SpaceAround
                                         ) {
                                             ToggleIcon("pull", state.pull, R.drawable.pull_b) {
                                                 onEvent(GameEvent.SwitchPull)
@@ -361,6 +361,11 @@ fun DateDialog(
                                             ToggleIcon("kiss", state.kiss, R.drawable.kiss_b) {
                                                 onEvent(GameEvent.SwitchKiss)
                                             }
+                                        }
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceAround
+                                        ) {
                                             ToggleIcon("lay", state.lay, R.drawable.bed_b) {
                                                 onEvent(GameEvent.SwitchLay)
                                             }

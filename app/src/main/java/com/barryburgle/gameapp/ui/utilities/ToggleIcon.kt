@@ -46,9 +46,7 @@ fun ToggleIcon(
                 modifier = Modifier
                     .fillMaxSize()
                     .shadow(
-                        elevation = 10.dp,
-                        shape = CircleShape,
-                        clip = false
+                        elevation = 2.dp, shape = CircleShape, clip = false
                     )
             ) {
                 ImageShadowButton(
