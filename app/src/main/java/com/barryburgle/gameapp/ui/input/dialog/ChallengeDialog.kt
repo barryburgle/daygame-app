@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,7 +23,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.enums.ChallengeTypeEnum
@@ -36,7 +32,8 @@ import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
-import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import com.barryburgle.gameapp.ui.utilities.dropdown.Dropdown
+import com.barryburgle.gameapp.ui.utilities.dropdown.SelectableOption
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @Composable
@@ -96,37 +93,22 @@ fun ChallengeDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    DropdownMenu(
+                    Dropdown(
                         modifier = Modifier
                             .width(175.dp)
                             .height(220.dp),
                         expanded = challengeTypesExpanded,
-                        onDismissRequest = { challengeTypesExpanded = false }
-                    ) {
-                        ChallengeTypeEnum.values().forEach { challengeType ->
-                            DropdownMenuItem(
-                                text = {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceAround,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(challengeType.getIcon()),
-                                            contentDescription = state.challengeType,
-                                            tint = MaterialTheme.colorScheme.onPrimary,
-                                            modifier = Modifier
-                                                .height(15.dp)
-                                        )
-                                        LittleBodyText(challengeType.getDescription())
-                                    }
-                                },
-                                onClick = {
-                                    onEvent(GameEvent.SetChallengeType(challengeType.getType()))
-                                    challengeTypesExpanded = false
-                                }
-                            )
+                        onDismissRequest = { challengeTypesExpanded = false },
+                        items = ChallengeTypeEnum.values().toList(),
+                        onItemClick = { challengeType ->
+                            onEvent(GameEvent.SetChallengeType(challengeType.getType()))
                         }
+                    ) { challengeType ->
+                        SelectableOption(
+                            challengeType.getIcon(),
+                            state.challengeType,
+                            challengeType.getDescription()
+                        )
                     }
                     IconShadowButton(
                         onClick = {
