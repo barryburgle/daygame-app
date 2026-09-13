@@ -79,22 +79,29 @@ fun <T> Dropdown(
 
 @Composable
 fun SelectableOption(
-    @DrawableRes icon: Int,
-    iconDescription: String,
-    optionName: String
+    optionName: String,
+    modifier: Modifier = Modifier,
+    customContent: @Composable (() -> Unit)? = null,
+    @DrawableRes icon: Int? = null,
+    iconDescription: String? = null
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceAround
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            painter = painterResource(icon),
-            contentDescription = iconDescription,
-            tint = MaterialTheme.colorScheme.onPrimary,
-            modifier = Modifier
-                .height(20.dp)
-                .scale(1.2f)
-        )
+        if (customContent != null) {
+            customContent()
+        } else if (icon != null) {
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = iconDescription,
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .height(20.dp)
+                    .scale(1.2f)
+            )
+        }
         Spacer(modifier = Modifier.width(7.dp))
         SmallTitleText(optionName)
     }

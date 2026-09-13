@@ -105,9 +105,9 @@ fun ChallengeDialog(
                         }
                     ) { challengeType ->
                         SelectableOption(
-                            challengeType.getIcon(),
-                            state.challengeType,
-                            challengeType.getDescription()
+                            icon = challengeType.getIcon(),
+                            iconDescription = state.challengeType,
+                            optionName = challengeType.getDescription()
                         )
                     }
                     IconShadowButton(
