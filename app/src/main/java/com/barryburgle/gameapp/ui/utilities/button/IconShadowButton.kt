@@ -17,6 +17,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
@@ -45,9 +47,10 @@ fun IconShadowButton(
         .defaultMinSize(minWidth = 44.dp, minHeight = 44.dp)
         .shadow(elevation = 4.dp, shape = CircleShape, clip = false)
 
-    val unifiedModifier = modifier
-        .defaultMinSize(minWidth = 44.dp, minHeight = 44.dp)
-        .clip(CircleShape)
+    val unifiedModifier =
+        modifier
+            .defaultMinSize(minWidth = 44.dp, minHeight = 44.dp)
+            .clip(CircleShape)
 
     Box {
         GenericShadowButton(
@@ -79,18 +82,25 @@ fun IconShadowButton(
                 )
             }
         }
+        val haptic = LocalHapticFeedback.current
         Spacer(
             modifier = Modifier
                 .matchParentSize()
                 .clip(CircleShape)
                 .then(
                     if (onLongClick != null) {
-                        Modifier.combinedClickable(
-                            onClick = onClick,
-                            onLongClick = onLongClick
-                        )
+                        Modifier.combinedClickable(onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
+                            onClick()
+                        }, onLongClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onLongClick()
+                        })
                     } else {
-                        Modifier.clickable(onClick = onClick)
+                        Modifier.clickable(onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
+                            onClick()
+                        })
                     }
                 )
         )
