@@ -4,12 +4,17 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +37,7 @@ fun DescribedIcon(
     @DrawableRes icon: Int,
     happened: Boolean? = true,
     isBoolean: Boolean? = true,
-    defaultColor: Color? = MaterialTheme.colorScheme.secondaryContainer
+    defaultColor: Color? = MaterialTheme.colorScheme.onSurfaceVariant
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -47,17 +52,30 @@ fun DescribedIcon(
         if (!isBoolean!!) {
             image(icon, flagDescription, color)
         } else {
-            Column(
-                modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.background,
-                        shape = RoundedCornerShape(25.dp)
+            Box(modifier = Modifier.size(50.dp)) {
+                Column(
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colorScheme.background,
+                            shape = RoundedCornerShape(25.dp)
+                        )
+                        .size(50.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    image(icon, flagDescription, color)
+                }
+                if (happened) {
+                    Icon(
+                        imageVector = Icons.Filled.CheckCircle,
+                        contentDescription = "Checked",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .size(16.dp)
+                            .align(Alignment.BottomEnd)
+                            .offset(x = 2.dp, y = 2.dp)
                     )
-                    .size(50.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                image(icon, flagDescription, color)
+                }
             }
         }
         Spacer(modifier = Modifier.height(5.dp))
