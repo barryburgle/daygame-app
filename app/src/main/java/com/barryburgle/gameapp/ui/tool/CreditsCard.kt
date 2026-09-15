@@ -122,6 +122,16 @@ fun CreditsCard(
                                 })
                             Spacer(modifier = Modifier.height(5.dp))
                             ImageButtonSetting(
+                                text = "Report a bug or request a feature opening a GitHub Issue",
+                                icon = R.drawable.conversation_action,
+                                contentDescription = "Project issues",
+                                color = MaterialTheme.colorScheme.surfaceVariant,
+                                iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                onClick = {
+                                    uriHandler.openUri("https://github.com/barryburgle/daygame-app/issues")
+                                })
+                            Spacer(modifier = Modifier.height(5.dp))
+                            ImageButtonSetting(
                                 text = "Barry Burgle's blog",
                                 icon = R.drawable.bb_v3b,
                                 contentDescription = "Barry Blog",
