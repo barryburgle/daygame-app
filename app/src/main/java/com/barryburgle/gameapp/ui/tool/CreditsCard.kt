@@ -92,7 +92,11 @@ fun CreditsCard(
                                 state, currentVersion, onEvent, context
                             )
                             Spacer(modifier = Modifier.height(5.dp))
-                            if (state.latestAvailable != null && !state.latestAvailable.isEmpty()) {
+                            if (currentVersion != null && isNewerVersion(
+                                    currentVersion,
+                                    state.latestAvailable
+                                )
+                            ) {
                                 IconButtonSetting(
                                     text = "Update to version ${state.latestAvailable}",
                                     imageVector = Icons.Default.Download,
@@ -174,7 +178,7 @@ fun versionInfo(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (state.latestAvailable != null && !state.latestAvailable.isEmpty()) {
+                if (isNewerVersion(currentVersion, latestVersion)) {
                     changelog(latestVersion, state, onEvent)
                 } else {
                     SmallTitleText(info)
@@ -203,6 +207,21 @@ fun versionInfo(
             }
         }
     }
+}
+
+private fun isNewerVersion(current: String, latest: String): Boolean {
+    val currentParts =
+        current.removePrefix("v").removePrefix("V").split(".").map { it.toIntOrNull() ?: 0 }
+    val latestParts =
+        latest.removePrefix("v").removePrefix("V").split(".").map { it.toIntOrNull() ?: 0 }
+
+    for (i in 0 until maxOf(currentParts.size, latestParts.size)) {
+        val c = currentParts.getOrElse(i) { 0 }
+        val l = latestParts.getOrElse(i) { 0 }
+        if (l > c) return true
+        if (l < c) return false
+    }
+    return false
 }
 
 @Composable
