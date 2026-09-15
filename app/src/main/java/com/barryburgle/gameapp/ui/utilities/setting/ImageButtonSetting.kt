@@ -20,7 +20,8 @@ fun ImageButtonSetting(
     text: String,
     @DrawableRes icon: Int,
     contentDescription: String?, onClick: () -> Unit,
-    color: Color? = null
+    color: Color? = null,
+    iconColor: Color? = null
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -43,7 +44,8 @@ fun ImageButtonSetting(
                 icon = icon,
                 contentDescription = contentDescription,
                 onClick = onClick,
-                color = color
+                color = color,
+                iconColor = iconColor
             )
         }
     }
