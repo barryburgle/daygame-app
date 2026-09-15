@@ -13,6 +13,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.dao.setting.SettingDao
+import com.barryburgle.gameapp.model.enums.RecordingActionEnum
 import com.barryburgle.gameapp.model.recording.PlaybackProgress
 import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.recording.RecordingStateEnum
@@ -37,13 +38,6 @@ import java.util.Date
 class RecordingService : Service() {
 
     companion object {
-        const val ACTION_START_RECORDING = "ACTION_START_RECORDING"
-        const val ACTION_STOP_RECORDING = "ACTION_STOP_RECORDING"
-        const val ACTION_DISCARD_RECORDING = "ACTION_DISCARD_RECORDING"
-        const val ACTION_START_PLAYBACK = "ACTION_START_PLAYBACK"
-        const val ACTION_PAUSE_PLAYBACK = "ACTION_PAUSE_PLAYBACK"
-        const val ACTION_STOP_PLAYBACK = "ACTION_STOP_PLAYBACK"
-        const val ACTION_SEEK_PLAYBACK = "ACTION_SEEK_PLAYBACK"
         const val EXTRA_SESSION_ID = "EXTRA_SESSION_ID"
         const val EXTRA_FILE_NAME = "EXTRA_FILE_NAME"
         const val EXTRA_POSITION_MS = "EXTRA_POSITION_MS"
@@ -103,14 +97,15 @@ class RecordingService : Service() {
         // descending so each card lists newest first
         fun listRecordings(folder: String): List<String> = recordingsFolder(folder)
             .listFiles()?.filter { it.name.endsWith(RECORDING_FILE_EXTENSION) }
-            ?.map { it.name } ?.sortedDescending() ?: emptyList()
+            ?.map { it.name }?.sortedDescending() ?: emptyList()
 
 
         // return list of recordings for a session
-        fun recordingsOf(sessionId: Long?, recordings: List<String>): List<String> = recordings.filter {
-            // the trailing underscore is what keeps session 1 from matching session 11 files
-            it.startsWith("$RECORDING_FILE_NAME${sessionId}_")
-        }
+        fun recordingsOf(sessionId: Long?, recordings: List<String>): List<String> =
+            recordings.filter {
+                // the trailing underscore is what keeps session 1 from matching session 11 files
+                it.startsWith("$RECORDING_FILE_NAME${sessionId}_")
+            }
 
         // get the duration of a recording file
         // MediaPlayer only knows the duration of the file it has loaded. This function is used to
@@ -172,23 +167,29 @@ class RecordingService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            ACTION_START_RECORDING -> startRecording(
+            RecordingActionEnum.START_RECORDING.action -> startRecording(
                 intent.getLongExtra(EXTRA_SESSION_ID, 0),
                 intent.getStringExtra(EXTRA_FOLDER).orEmpty()
             )
 
-            ACTION_STOP_RECORDING -> stopRecording()
-            ACTION_DISCARD_RECORDING -> discardRecording(
+            RecordingActionEnum.STOP_RECORDING.action -> stopRecording()
+            RecordingActionEnum.DISCARD_RECORDING.action -> discardRecording(
                 intent.getStringExtra(EXTRA_FOLDER).orEmpty()
             )
-            ACTION_START_PLAYBACK -> startPlayback(
+
+            RecordingActionEnum.START_PLAYBACK.action -> startPlayback(
                 intent.getStringExtra(EXTRA_FILE_NAME),
                 intent.getStringExtra(EXTRA_FOLDER).orEmpty()
             )
 
-            ACTION_PAUSE_PLAYBACK -> pausePlayback()
-            ACTION_STOP_PLAYBACK -> stopPlayback()
-            ACTION_SEEK_PLAYBACK -> seekPlayback(intent.getIntExtra(EXTRA_POSITION_MS, 0))
+            RecordingActionEnum.PAUSE_PLAYBACK.action -> pausePlayback()
+            RecordingActionEnum.STOP_PLAYBACK.action -> stopPlayback()
+            RecordingActionEnum.SEEK_PLAYBACK.action -> seekPlayback(
+                intent.getIntExtra(
+                    EXTRA_POSITION_MS,
+                    0
+                )
+            )
         }
         return START_NOT_STICKY
     }
@@ -233,22 +234,22 @@ class RecordingService : Service() {
                 )
             )
             recorder = (
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                    MediaRecorder(this)
-                else
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                        MediaRecorder(this)
+                    else
                     // TODO: will need to update this to the new constructor
                     // deprecated, but only option that exists on API 27–30 devices, our minSdk
                     // is 27 at the moment
-                    @Suppress("DEPRECATION") MediaRecorder()).apply {
-                        setAudioSource(MediaRecorder.AudioSource.MIC)
-                        setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-                        setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-                        setAudioEncodingBitRate(64_000) // quite low bit rate, but enough for speech
-                        setAudioSamplingRate(44_100)
-                        setOutputFile(outputFile.absolutePath)
-                        prepare()
-                        start()
-                    }
+                        @Suppress("DEPRECATION") MediaRecorder()).apply {
+                setAudioSource(MediaRecorder.AudioSource.MIC)
+                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+                setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+                setAudioEncodingBitRate(64_000) // quite low bit rate, but enough for speech
+                setAudioSamplingRate(44_100)
+                setOutputFile(outputFile.absolutePath)
+                prepare()
+                start()
+            }
             _state.value = RecordingState(RecordingStateEnum.RECORDING, outputFile.name)
         } catch (e: Exception) {
             Log.e("RecordingService", e.message, e)

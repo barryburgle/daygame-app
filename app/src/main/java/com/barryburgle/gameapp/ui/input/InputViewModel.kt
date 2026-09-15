@@ -26,6 +26,7 @@ import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.DateTypeEnum
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.enums.GameEventSortType
+import com.barryburgle.gameapp.model.enums.RecordingActionEnum
 import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
@@ -467,7 +468,8 @@ class InputViewModel(
     ) { state, exportSettings, dialogSettings, shareSettings, recordingsSettings, sortTypes,
         allEvents, showSessions, showSets, showDates, showChallenges, mostPopularLeadsNationalities,
         sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, theme, recordingState,
-        recordings -> state.copy(
+        recordings ->
+        state.copy(
             allSessions = exportSettings.allSessions,
             allLeads = exportSettings.allLeads,
             allDates = exportSettings.allDates,
@@ -1821,18 +1823,18 @@ class InputViewModel(
     private fun startRecording(sessionId: Long, folder: String) {
         context.startForegroundService(
             Intent(context, RecordingService::class.java).apply {
-                action = RecordingService.ACTION_START_RECORDING
+                action = RecordingActionEnum.START_RECORDING.action
                 putExtra(RecordingService.EXTRA_SESSION_ID, sessionId)
                 putExtra(RecordingService.EXTRA_FOLDER, folder)
             })
     }
 
-    private fun stopRecording() = recorderCommand(RecordingService.ACTION_STOP_RECORDING)
+    private fun stopRecording() = recorderCommand(RecordingActionEnum.STOP_RECORDING.action)
 
     private fun discardRecording(folder: String) {
         context.startForegroundService(
             Intent(context, RecordingService::class.java).apply {
-                action = RecordingService.ACTION_DISCARD_RECORDING
+                action = RecordingActionEnum.DISCARD_RECORDING.action
                 putExtra(RecordingService.EXTRA_FOLDER, folder)
             })
     }
@@ -1840,19 +1842,19 @@ class InputViewModel(
     private fun startPlayback(fileName: String, folder: String) {
         context.startService(
             Intent(context, RecordingService::class.java).apply {
-                action = RecordingService.ACTION_START_PLAYBACK
+                action = RecordingActionEnum.START_PLAYBACK.action
                 putExtra(RecordingService.EXTRA_FILE_NAME, fileName)
                 putExtra(RecordingService.EXTRA_FOLDER, folder)
             })
     }
 
-    private fun stopPlayback() = recorderCommand(RecordingService.ACTION_STOP_PLAYBACK)
-    private fun pausePlayback() = recorderCommand(RecordingService.ACTION_PAUSE_PLAYBACK)
+    private fun stopPlayback() = recorderCommand(RecordingActionEnum.STOP_PLAYBACK.action)
+    private fun pausePlayback() = recorderCommand(RecordingActionEnum.PAUSE_PLAYBACK.action)
 
     private fun seekPlayback(positionMs: Int) {
         context.startService(
             Intent(context, RecordingService::class.java).apply {
-                action = RecordingService.ACTION_SEEK_PLAYBACK
+                action = RecordingActionEnum.SEEK_PLAYBACK.action
                 putExtra(RecordingService.EXTRA_POSITION_MS, positionMs)
             })
     }
