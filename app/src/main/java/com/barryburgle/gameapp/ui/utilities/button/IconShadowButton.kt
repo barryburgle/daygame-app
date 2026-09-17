@@ -28,7 +28,7 @@ fun IconShadowButton(
     onClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
     boxModifier: Modifier = Modifier,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.scale(1.2f),
     iconModifier: Modifier = Modifier,
     imageVector: ImageVector? = null,
     drawableIcon: Int = 0,
