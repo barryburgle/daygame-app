@@ -224,7 +224,7 @@ fun LiveSessionInputButtons(
                                 },
                                 imageVector = if (recordingState.state == RecordingStateEnum.RECORDING) Icons.Default.Stop else Icons.Default.FiberManualRecord,
                                 contentDescription = "Record a set",
-                                iconColor = MaterialTheme.colorScheme.onErrorContainer
+                                iconColor = if (recordingState.state == RecordingStateEnum.RECORDING) null else MaterialTheme.colorScheme.onErrorContainer
                             )
                         }
                     }
