@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
+import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.recording.RecordingStateEnum
 import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
@@ -38,6 +39,7 @@ import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.setting.SliderSetting
 import com.barryburgle.gameapp.ui.utilities.setting.SwitchSetting
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
@@ -182,6 +184,16 @@ fun RecordingsCard(
             }
             Spacer(modifier = Modifier.height(5.dp))
             LittleBodyText("The recordings folder will be created and managed directly under the folder: /storage/emulated/0/${state.recordingsFolder}")
+            Spacer(modifier = Modifier.height(8.dp))
+            SliderSetting(
+                "Recordings quality",
+                "The higher the recording quality the better it will sound the bigger the recording files",
+                AudioRecordingQualityEnum.fromKey(state.audioRecordingQuality).value,
+                AudioRecordingQualityEnum.getRange()
+            ) {
+
+                onEvent(ToolEvent.SetAudioRecordingQuality(it))
+            }
         }
     }
 }
