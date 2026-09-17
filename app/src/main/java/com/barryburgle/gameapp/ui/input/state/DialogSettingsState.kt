@@ -1,5 +1,7 @@
 package com.barryburgle.gameapp.ui.input.state
 
+import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
+
 
 data class DialogSettingsState(
     val notificationTime: String = "",
@@ -15,5 +17,6 @@ data class DialogSettingsState(
     var liveSessionShareEnabled: Boolean = true,
     var writeHerAfterReminderEnabled: Boolean = true,
     var writeHerReminderInterval: Int = 60,
-    var pullOClockReminderInterval: Int = 7
+    var pullOClockReminderInterval: Int = 7,
+    var audioRecordingQuality: String = AudioRecordingQualityEnum.getDefault().description
 )

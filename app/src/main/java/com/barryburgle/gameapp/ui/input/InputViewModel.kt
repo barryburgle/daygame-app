@@ -43,11 +43,11 @@ import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.service.set.SetService
+import com.barryburgle.gameapp.ui.CombineFiftheen
 import com.barryburgle.gameapp.ui.CombineFive
-import com.barryburgle.gameapp.ui.CombineFourteen
 import com.barryburgle.gameapp.ui.CombineNine
-import com.barryburgle.gameapp.ui.CombineSeven
 import com.barryburgle.gameapp.ui.CombineNineteen
+import com.barryburgle.gameapp.ui.CombineSeven
 import com.barryburgle.gameapp.ui.CombineSixteen
 import com.barryburgle.gameapp.ui.input.dialog.InputDialogConstant
 import com.barryburgle.gameapp.ui.input.state.DialogSettingsState
@@ -205,6 +205,7 @@ class InputViewModel(
     private val _writeHerAfterReminderEnabled = settingDao.getWriteHerAfterReminderEnabled()
     private val _writeHerReminderInterval = settingDao.getWriteHerReminderInterval()
     private val _pullOClockReminderInterval = settingDao.getPullOClockReminderInterval()
+    private val _audioRecordingQuality = settingDao.getAudioRecordingQuality()
     private val _sessionsByWeek = aggregatedSessionsDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _sessionsByMonth = aggregatedSessionsDao.groupStatsByMonth()
@@ -355,7 +356,7 @@ class InputViewModel(
             lastBackup = lastBackup.toInt()
         )
     }
-    val _dialogSettings = CombineFourteen(
+    val _dialogSettings = CombineFiftheen(
         _notificationTime,
         _generateiDate,
         _pinPointInteractions,
@@ -370,7 +371,8 @@ class InputViewModel(
         _writeHerAfterReminderEnabled,
         _writeHerReminderInterval,
         _pullOClockReminderInterval,
-    ) { notificationTime, generateiDate, pinPointInteractions, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled, writeHerAfterReminderEnabled, writeHerReminderInterval, pullOClockReminderInterval ->
+        _audioRecordingQuality
+    ) { notificationTime, generateiDate, pinPointInteractions, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled, writeHerAfterReminderEnabled, writeHerReminderInterval, pullOClockReminderInterval, audioRecordingQuality ->
         DialogSettingsState(
             notificationTime = notificationTime,
             generateiDate = generateiDate.toBoolean(),
@@ -385,7 +387,8 @@ class InputViewModel(
             liveSessionShareEnabled = liveSessionShareEnabled.toBoolean(),
             writeHerAfterReminderEnabled = writeHerAfterReminderEnabled.toBoolean(),
             writeHerReminderInterval = writeHerReminderInterval.toInt(),
-            pullOClockReminderInterval = pullOClockReminderInterval.toInt()
+            pullOClockReminderInterval = pullOClockReminderInterval.toInt(),
+            audioRecordingQuality = audioRecordingQuality
         )
     }
     val _shareSettings = CombineSeven(
@@ -518,6 +521,7 @@ class InputViewModel(
             writeHerAfterReminderEnabled = dialogSettings.writeHerAfterReminderEnabled,
             writeHerReminderInterval = dialogSettings.writeHerReminderInterval,
             pullOClockReminderInterval = dialogSettings.pullOClockReminderInterval,
+            audioRecordingQuality = dialogSettings.audioRecordingQuality,
             mostPopularLeadsNationalities = mostPopularLeadsNationalities,
             sessionsByWeek = sessionsByWeek,
             sessionsByMonth = sessionsByMonth,

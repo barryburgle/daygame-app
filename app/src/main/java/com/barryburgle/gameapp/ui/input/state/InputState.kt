@@ -4,6 +4,7 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.enums.ChallengeSortType
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.GameEventSortType
@@ -122,6 +123,7 @@ data class InputState(
     override var writeHerAfterReminderEnabled: Boolean = true,
     override var writeHerReminderInterval: Int = 60,
     override var pullOClockReminderInterval: Int = 7,
+    override var audioRecordingQuality: String = AudioRecordingQualityEnum.getDefault().description,
     val mostPopularLeadsNationalities: List<CategoryHistogram> = emptyList(),
     val sessionsByWeek: List<AggregatedSessions> = emptyList(),
     val sessionsByMonth: List<AggregatedSessions> = emptyList(),

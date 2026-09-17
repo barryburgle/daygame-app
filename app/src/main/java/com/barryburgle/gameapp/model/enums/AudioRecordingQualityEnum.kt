@@ -13,7 +13,7 @@ enum class AudioRecordingQualityEnum(
     VERY_HIGH("very_high", 256_000, 48_000, 4);
 
     companion object {
-        fun getDefaultValue(): String = LOW.description
+        fun getDefault(): AudioRecordingQualityEnum = LOW
 
         fun fromKey(value: String?): AudioRecordingQualityEnum {
             return entries.find { it.description == value } ?: LOW

@@ -86,7 +86,7 @@ data class ToolsState(
     override var writeHerAfterReminderEnabled: Boolean = true,
     override var writeHerReminderInterval: Int = 60,
     override var pullOClockReminderInterval: Int = 7,
-    override var audioRecordingQuality: String = AudioRecordingQualityEnum.getDefaultValue()
+    override var audioRecordingQuality: String = AudioRecordingQualityEnum.getDefault().description
 ) : ExportState(
     null,
     exportSessionsFileName,
