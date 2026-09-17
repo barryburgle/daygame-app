@@ -177,6 +177,7 @@ fun RecordingsCard(
                 }
             }
             LittleBodyText("The recordings folder will be created and managed directly under the folder: /storage/0/emulated/${state.recordingsFolder}")
+            LittleBodyText("The recordings folder will be created and managed directly under the folder: /storage/emulated/0/${state.recordingsFolder}")
         }
     }
 }

@@ -98,7 +98,7 @@ fun DeleteCard(
                                 }
                                 Spacer(modifier = Modifier.height(5.dp))
                                 var description =
-                                    if (state.archiveBackupFolder) "The backup folder content will be to moved to /emulated/0/storage/${state.exportFolder}/${state.backupFolder}/${CSVFindService.ARCHIVE_FOLDER} before cleaning" else
+                                    if (state.archiveBackupFolder) "The backup folder content will be to moved to /storage/emulated/0/${state.exportFolder}/${state.backupFolder}/${CSVFindService.ARCHIVE_FOLDER} before cleaning" else
                                         "The backup folder content will be progressively overwritten after ${state.lastBackup} data insertions. If you want to preserve backups from overwriting please enable the previous option"
                                 LittleBodyText(description)
                             }

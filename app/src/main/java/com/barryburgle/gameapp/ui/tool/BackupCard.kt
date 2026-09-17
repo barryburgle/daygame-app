@@ -121,7 +121,7 @@ fun BackupCard(
                                 modifier = Modifier.height(textFieldHeight)
                             )
                         }
-                        LittleBodyText("The backup folder will be created and managed directly under the export folder: /emulated/0/storage/${state.exportFolder}/${state.backupFolder}")
+                        LittleBodyText("The backup folder will be created and managed directly under the export folder: /storage/emulated/0/${state.exportFolder}/${state.backupFolder}")
                         CountSetting(
                             text = "Keep last ${state.lastBackup} backups",
                             count = state.lastBackup,
