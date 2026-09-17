@@ -21,6 +21,10 @@ import androidx.compose.material.icons.filled.Timelapse
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ClipboardManager
@@ -35,6 +39,7 @@ import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.recording.RecordingStateEnum
 import com.barryburgle.gameapp.ui.input.CounterColumn
+import com.barryburgle.gameapp.ui.input.card.DeleteConfirmationDialog
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 
 @Composable
@@ -58,6 +63,24 @@ fun LiveSessionInputButtons(
     // TODO: integrate this in session dialog: it works but only on the backend, leaving stale unchanged values on the dialog
     val localContext = LocalContext.current
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
+    var pendingDiscarding by remember { mutableStateOf<String?>(null) }
+    pendingDiscarding?.let { fileName ->
+        DeleteConfirmationDialog(
+            "Recording",
+            "Do you want to discard the ongoing recording?",
+            onConfirmRequest = {
+                onTapRecordingDiscard(recordingState.activeFileName.orEmpty())
+                Toast.makeText(
+                    localContext,
+                    "Record discarded",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                pendingDiscarding = null
+            },
+            onDismissRequest = { pendingDiscarding = null }
+        )
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -197,14 +220,7 @@ fun LiveSessionInputButtons(
                                         ).show()
                                     }
                                 }, onLongClick = {
-                                    onTapRecordingDiscard(recordingState.activeFileName.orEmpty())
-                                    // TODO: we should show a deletion confirmation dialog here as done for live session discard
-                                    Toast.makeText(
-                                        localContext,
-                                        "Record discarded",
-                                        Toast.LENGTH_SHORT
-                                    )
-                                        .show()
+                                    pendingDiscarding = recordingState.activeFileName
                                 },
                                 imageVector = if (recordingState.state == RecordingStateEnum.RECORDING) Icons.Default.Stop else Icons.Default.FiberManualRecord,
                                 contentDescription = "Record a set",
