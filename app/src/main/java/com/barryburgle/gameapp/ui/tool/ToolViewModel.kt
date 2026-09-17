@@ -13,7 +13,7 @@ import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.service.recording.RecordingService
-import com.barryburgle.gameapp.ui.CombineTen
+import com.barryburgle.gameapp.ui.CombineEleven
 import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.CombineTwenty
 import com.barryburgle.gameapp.ui.CombineTwentyone
@@ -122,18 +122,19 @@ class ToolViewModel(
         )
     }
 
-    val _liveSessionSettingState: Flow<LiveSessionSettingState> = CombineTen(
+    val _liveSessionSettingState: Flow<LiveSessionSettingState> = CombineEleven(
         settingDao.getPinPointInteractions(),
         settingDao.getGenerateiDate(),
         settingDao.getFollowCount(),
         settingDao.getWriteHerAfterReminderEnabled(),
         settingDao.getWriteHerReminderInterval(),
         settingDao.getPullOClockReminderInterval(),
+        settingDao.getAudioRecordingQuality(),
         settingDao.getLiveSessionNotificationEnabled(),
         settingDao.getLiveSessionSittingReminderEnabled(),
         settingDao.getLiveSessionSittingReminderInterval(),
         settingDao.getLiveSessionShareEnabled()
-    ) { pinPointInteractions, generateiDate, followCount, writeHerAfterReminderEnabled, writeHerReminderInterval, pullOClockReminderInterval, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
+    ) { pinPointInteractions, generateiDate, followCount, writeHerAfterReminderEnabled, writeHerReminderInterval, pullOClockReminderInterval, audioRecordingQuality, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
         LiveSessionSettingState(
             pinPointInteractions = pinPointInteractions,
             generateiDate = generateiDate,
@@ -141,6 +142,7 @@ class ToolViewModel(
             writeHerAfterReminderEnabled = writeHerAfterReminderEnabled,
             writeHerReminderInterval = writeHerReminderInterval,
             pullOClockReminderInterval = pullOClockReminderInterval,
+            audioRecordingQuality = audioRecordingQuality,
             liveSessionNotificationEnabled = liveSessionNotificationEnabled,
             liveSessionSittingReminderEnabled = liveSessionSittingReminderEnabled,
             liveSessionSittingReminderInterval = liveSessionSittingReminderInterval,
@@ -229,6 +231,7 @@ class ToolViewModel(
                 writeHerAfterReminderEnabled = liveSessionSettingState.writeHerAfterReminderEnabled.toBoolean(),
                 writeHerReminderInterval = liveSessionSettingState.writeHerReminderInterval.toInt(),
                 pullOClockReminderInterval = liveSessionSettingState.pullOClockReminderInterval.toInt(),
+                audioRecordingQuality = liveSessionSettingState.audioRecordingQuality,
                 shownNationalities = generalSettingState.shownNationalities.toInt(),
                 simplePlusOneReport = generalSettingState.simplePlusOneReport.toBoolean(),
                 neverShareLeadInfo = generalSettingState.neverShareLeadInfo.toBoolean(),
@@ -1189,6 +1192,7 @@ data class LiveSessionSettingState(
     val writeHerAfterReminderEnabled: String,
     val writeHerReminderInterval: String,
     val pullOClockReminderInterval: String,
+    val audioRecordingQuality: String,
     val liveSessionNotificationEnabled: String,
     val liveSessionSittingReminderEnabled: String,
     val liveSessionSittingReminderInterval: String,
