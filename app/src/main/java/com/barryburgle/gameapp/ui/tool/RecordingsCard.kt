@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -27,8 +27,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.recording.RecordingStateEnum
@@ -36,6 +36,7 @@ import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
+import com.barryburgle.gameapp.ui.tool.utils.RowTitle
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.setting.SwitchSetting
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -88,10 +89,10 @@ fun RecordingsCard(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
             modifier = Modifier.shadow(elevation = 10.dp),
             onDismissRequest = { showConfirmation = false },
-            title = { LargeTitleText(text = "Move recordings") },
+            title = { LargeTitleText(text = "Move all recordings") },
             text = {
                 LittleBodyText(
-                    "Move $movingCount recording${if (movingCount == 1) "" else "s"} to ${typedFolder.ifBlank { SettingDao.DEFAULT_RECORDINGS_FOLDER }}?"
+                    "Do you really want to move ${if (movingCount == 1) "" else "all the"} $movingCount recording${if (movingCount == 1) "" else "s"} to ${typedFolder.ifBlank { SettingDao.DEFAULT_RECORDINGS_FOLDER }} folder?"
                 )
             },
             confirmButton = {
@@ -109,7 +110,7 @@ fun RecordingsCard(
     GenericSettingsCard("Recordings", modifier) {
         SwitchSetting(
             "Enable Live session recordings", state.recordingsEnabled,
-            description = "Record audio during a Live Session and play it back from session cards"
+            description = "Record sets during a Live Session and play it back from session cards"
         ) {
             if (state.recordingsEnabled) {
                 if (RecordingService.state.value.state != RecordingStateEnum.IDLE) {
@@ -132,7 +133,10 @@ fun RecordingsCard(
         // a folder for a feature that is off is noise
         if (state.recordingsEnabled) {
             Spacer(modifier = Modifier.height(8.dp))
-            LittleBodyText("Folder where Live Session recordings are stored")
+            val textFieldColumnWidth = 230.dp
+            RowTitle(
+                "Recordings folder:", "", textFieldColumnWidth
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -169,14 +173,14 @@ fun RecordingsCard(
                                 showConfirmation = true
                             }
                         },
-                        imageVector = Icons.Default.Check,
-                        contentDescription = if (hasChange) "Apply recordings folder" else "unavailable",
+                        imageVector = Icons.Default.Replay,
+                        contentDescription = if (hasChange) "Apply and sync recordings folder" else "unavailable",
                         iconColor = if (hasChange) MaterialTheme.colorScheme.inversePrimary
                         else MaterialTheme.colorScheme.inversePrimary.copy(alpha = 0.38f)
                     )
                 }
             }
-            LittleBodyText("The recordings folder will be created and managed directly under the folder: /storage/0/emulated/${state.recordingsFolder}")
+            Spacer(modifier = Modifier.height(5.dp))
             LittleBodyText("The recordings folder will be created and managed directly under the folder: /storage/emulated/0/${state.recordingsFolder}")
         }
     }
