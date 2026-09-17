@@ -81,6 +81,9 @@ interface SettingDao {
 
         const val PULL_O_CLOCK_REMINDER_INTERVAL_ID: String =
             "pull_o_clock_reminder_interval"
+
+        const val AUDIO_RECORDING_QUALITY_ID: String =
+            "audio_recording_quality"
         const val DEFAULT_LEADS_EXPORT_FILE_NAME: String = "leads_export"
         const val DEFAULT_LEADS_IMPORT_FILE_NAME: String = "leads_export_yyyy_mm_dd_hh_mm.csv"
         const val DEFAULT_DATES_EXPORT_FILE_NAME: String = "dates_export"
@@ -104,6 +107,7 @@ interface SettingDao {
         const val DEFAULT_IMPORT_FOLDER: String = "Download"
         const val DEFAULT_BACKUP_FOLDER: String = "Backup_Daygame"
         const val DEFAULT_RECORDINGS_FOLDER: String = "dg_recordings"
+
         // off until the user enables it, which is also when the mic permission is asked for
         const val DEFAULT_RECORDINGS_ENABLED_FLAG: String = "false"
         const val DEFAULT_EXPORT_HEADER_FLAG: String = "false"
@@ -116,6 +120,7 @@ interface SettingDao {
         const val DEFAULT_WRITE_HER_REMINDER_ENABLED_FLAG: String = "true"
         const val DEFAULT_WRITE_HER_REMINDER_INTERVAL: String = "60"
         const val DEFAULT_PULL_O_CLOCK_INTERVAL: String = "7"
+        const val DEFAULT_AUDIO_RECORDING_QUALITY: String = "medium"
         const val DEFAULT_SHOWN_NATIONALITIES: String = "6"
         const val DEFAULT_ARCHIVE_BACKUP_FOLDER_FLAG: String = "true"
         const val DEFAULT_IS_CLEANING_FLAG: String = "false"
@@ -258,6 +263,9 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_PULL_O_CLOCK_INTERVAL}' ELSE value END FROM setting WHERE id = '${PULL_O_CLOCK_REMINDER_INTERVAL_ID}'")
     fun getPullOClockReminderInterval(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_AUDIO_RECORDING_QUALITY}' ELSE value END FROM setting WHERE id = '${AUDIO_RECORDING_QUALITY_ID}'")
+    fun getAudioRecordingQuality(): Flow<String>
 
     @Query(QUERY_SHOWN_NATIONALITIES)
     fun getShownNationalities(): Flow<String>

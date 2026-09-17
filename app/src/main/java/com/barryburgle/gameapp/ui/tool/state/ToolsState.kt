@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.ui.tool.state
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.enums.ThemeEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
@@ -84,7 +85,8 @@ data class ToolsState(
     override var liveSessionShareEnabled: Boolean = true,
     override var writeHerAfterReminderEnabled: Boolean = true,
     override var writeHerReminderInterval: Int = 60,
-    override var pullOClockReminderInterval: Int = 7
+    override var pullOClockReminderInterval: Int = 7,
+    override var audioRecordingQuality: String = AudioRecordingQualityEnum.getDefaultValue()
 ) : ExportState(
     null,
     exportSessionsFileName,

@@ -10,14 +10,13 @@ import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
+import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.service.recording.RecordingService
-import com.barryburgle.gameapp.ui.CombineNine
-import com.barryburgle.gameapp.ui.CombineTwentyone
-import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.CombineTen
 import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.CombineTwenty
+import com.barryburgle.gameapp.ui.CombineTwentyone
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -1110,6 +1109,23 @@ class ToolViewModel(
                     Setting(
                         SettingDao.PULL_O_CLOCK_REMINDER_INTERVAL_ID,
                         pullOClockReminderInterval.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetAudioRecordingQuality -> {
+                _state.update {
+                    it.copy(
+                        audioRecordingQuality = AudioRecordingQualityEnum.fromInt(event.audioRecordingQuality)
+                            .description
+                    )
+                }
+                val audioRecordingQuality =
+                    _state.value.audioRecordingQuality
+                val setting =
+                    Setting(
+                        SettingDao.AUDIO_RECORDING_QUALITY_ID,
+                        audioRecordingQuality
                     )
                 viewModelScope.launch { settingDao.insert(setting) }
             }
