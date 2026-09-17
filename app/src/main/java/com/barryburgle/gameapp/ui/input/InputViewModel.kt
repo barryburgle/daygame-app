@@ -21,6 +21,7 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.enums.ChallengeSortType
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.DateTypeEnum
@@ -940,7 +941,11 @@ class InputViewModel(
                         Toast.LENGTH_LONG
                     ).show()
                 } else if (!RecordingService.state.value.state.isRecording()) {
-                    startRecording(event.sessionId, state.value.recordingsFolder)
+                    startRecording(
+                        event.sessionId, state.value.recordingsFolder,
+                        AudioRecordingQualityEnum.fromKey(state.value.audioRecordingQuality).bitrate,
+                        AudioRecordingQualityEnum.fromKey(state.value.audioRecordingQuality).sampleRate
+                    )
                 }
             }
 
@@ -962,7 +967,12 @@ class InputViewModel(
                 if (RecordingService.state.value.state.isRecording()) {
                     Toast.makeText(context, "Stop the recording first", Toast.LENGTH_SHORT).show()
                 } else {
-                    startPlayback(event.fileName, state.value.recordingsFolder)
+                    startPlayback(
+                        event.fileName,
+                        state.value.recordingsFolder,
+                        AudioRecordingQualityEnum.fromKey(state.value.audioRecordingQuality).bitrate,
+                        AudioRecordingQualityEnum.fromKey(state.value.audioRecordingQuality).sampleRate
+                    )
                 }
             }
 
@@ -1824,12 +1834,14 @@ class InputViewModel(
 
     // the one command that needs foreground-service mode, which Android requires before the
     // mic can run with the app in the background
-    private fun startRecording(sessionId: Long, folder: String) {
+    private fun startRecording(sessionId: Long, folder: String, bitRate: Int, sampleRate: Int) {
         context.startForegroundService(
             Intent(context, RecordingService::class.java).apply {
                 action = RecordingActionEnum.START_RECORDING.action
                 putExtra(RecordingService.EXTRA_SESSION_ID, sessionId)
                 putExtra(RecordingService.EXTRA_FOLDER, folder)
+                putExtra(RecordingService.EXTRA_BIT_RATE, bitRate)
+                putExtra(RecordingService.EXTRA_SAMPLE_RATE, sampleRate)
             })
     }
 
@@ -1843,12 +1855,14 @@ class InputViewModel(
             })
     }
 
-    private fun startPlayback(fileName: String, folder: String) {
+    private fun startPlayback(fileName: String, folder: String, bitRate: Int, sampleRate: Int) {
         context.startService(
             Intent(context, RecordingService::class.java).apply {
                 action = RecordingActionEnum.START_PLAYBACK.action
                 putExtra(RecordingService.EXTRA_FILE_NAME, fileName)
                 putExtra(RecordingService.EXTRA_FOLDER, folder)
+                putExtra(RecordingService.EXTRA_BIT_RATE, bitRate)
+                putExtra(RecordingService.EXTRA_SAMPLE_RATE, sampleRate)
             })
     }
 

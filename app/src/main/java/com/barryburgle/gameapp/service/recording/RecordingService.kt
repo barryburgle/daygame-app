@@ -13,6 +13,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.dao.setting.SettingDao
+import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.enums.RecordingActionEnum
 import com.barryburgle.gameapp.model.recording.PlaybackProgress
 import com.barryburgle.gameapp.model.recording.RecordingState
@@ -42,6 +43,8 @@ class RecordingService : Service() {
         const val EXTRA_FILE_NAME = "EXTRA_FILE_NAME"
         const val EXTRA_POSITION_MS = "EXTRA_POSITION_MS"
         const val EXTRA_FOLDER = "EXTRA_FOLDER"
+        const val EXTRA_BIT_RATE = "EXTRA_BIT_RATE"
+        const val EXTRA_SAMPLE_RATE = "EXTRA_SAMPLE_RATE"
         const val PROGRESS_TICK_MS = 250L
         const val RECORDING_FILE_NAME = "dg"
         const val RECORDING_FILE_EXTENSION = ".m4a"
@@ -169,7 +172,12 @@ class RecordingService : Service() {
         when (intent?.action) {
             RecordingActionEnum.START_RECORDING.action -> startRecording(
                 intent.getLongExtra(EXTRA_SESSION_ID, 0),
-                intent.getStringExtra(EXTRA_FOLDER).orEmpty()
+                intent.getStringExtra(EXTRA_FOLDER).orEmpty(),
+                intent.getIntExtra(EXTRA_BIT_RATE, AudioRecordingQualityEnum.getDefault().bitrate),
+                intent.getIntExtra(
+                    EXTRA_SAMPLE_RATE,
+                    AudioRecordingQualityEnum.getDefault().sampleRate
+                ),
             )
 
             RecordingActionEnum.STOP_RECORDING.action -> stopRecording()
@@ -194,7 +202,7 @@ class RecordingService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun startRecording(sessionId: Long, folder: String) {
+    private fun startRecording(sessionId: Long, folder: String, bitRate: Int, sampleRate: Int) {
         // if already recording or paused, skip
         if (_state.value.state.isRecording()) {
             return
@@ -244,8 +252,8 @@ class RecordingService : Service() {
                 setAudioSource(MediaRecorder.AudioSource.MIC)
                 setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
                 setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-                setAudioEncodingBitRate(64_000) // quite low bit rate, but enough for speech
-                setAudioSamplingRate(44_100)
+                setAudioEncodingBitRate(bitRate)
+                setAudioSamplingRate(sampleRate)
                 setOutputFile(outputFile.absolutePath)
                 prepare()
                 start()
