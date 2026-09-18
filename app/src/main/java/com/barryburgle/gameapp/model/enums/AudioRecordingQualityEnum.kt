@@ -8,7 +8,7 @@ enum class AudioRecordingQualityEnum(
 ) {
     LOWEST("lowest", 24_000, 16_000, 0),
     LOW("low", 48_000, 16_000, 1), // Ideal for Speech-to-Text
-    MEDIUM("medium", 96_000, 22_005, 2),
+    MEDIUM("medium", 96_000, 32_000, 2),
     HIGH("high", 128_000, 44_100, 3),
     VERY_HIGH("very_high", 256_000, 48_000, 4);
 
