@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.ui.utilities.button
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
@@ -32,6 +34,8 @@ fun IconShadowButton(
     iconModifier: Modifier = Modifier,
     imageVector: ImageVector? = null,
     drawableIcon: Int = 0,
+    secondaryImageVector: ImageVector? = null,
+    secondaryDrawableIcon: Int = 0,
     contentDescription: String?,
     title: String? = null,
     color: Color? = null,
@@ -82,6 +86,28 @@ fun IconShadowButton(
                 )
             }
         }
+        if (secondaryImageVector != null) {
+            Icon(
+                imageVector = secondaryImageVector,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.3f), CircleShape)
+                    .scale(0.8f)
+            )
+        } else if (secondaryDrawableIcon != 0) {
+            Icon(
+                painter = painterResource(secondaryDrawableIcon),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.3f), CircleShape)
+                    .scale(0.8f)
+            )
+        }
+
         val haptic = LocalHapticFeedback.current
         Spacer(
             modifier = Modifier
