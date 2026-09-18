@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -218,13 +219,22 @@ fun LiveSessionInputButtons(
                                             "Recording started",
                                             Toast.LENGTH_SHORT
                                         ).show()
+                                        if (recordingState.triggerPullOClockWithRecordingsEnable) {
+                                            Toast.makeText(
+                                                localContext,
+                                                "Pull reminder set",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
                                     }
                                 }, onLongClick = {
                                     pendingDiscarding = recordingState.activeFileName
                                 },
                                 imageVector = if (recordingState.state == RecordingStateEnum.RECORDING) Icons.Default.Stop else Icons.Default.FiberManualRecord,
+                                modifier = Modifier.scale(1.5f),
                                 contentDescription = "Record a set",
-                                iconColor = if (recordingState.state == RecordingStateEnum.RECORDING) null else MaterialTheme.colorScheme.onErrorContainer
+                                iconColor = if (recordingState.state == RecordingStateEnum.RECORDING) null else MaterialTheme.colorScheme.onErrorContainer,
+                                secondaryImageVector = if (recordingState.triggerPullOClockWithRecordingsEnable) Icons.Default.Timelapse else null
                             )
                         }
                     }
@@ -238,6 +248,14 @@ fun LiveSessionInputButtons(
                     lineHeight = 10.sp,
                     textAlign = TextAlign.Center
                 )
+                if (recordingState.triggerPullOClockWithRecordingsEnable) {
+                    Text(
+                        text = "& Pull",
+                        fontSize = 10.sp,
+                        lineHeight = 10.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }
