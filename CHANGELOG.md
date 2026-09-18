@@ -2,8 +2,8 @@
 **Features**
 - Record in-app your sets during a Live Session and play them back later 🎤
 - "Write her after" notification reminds you to write her after settable amount of minutes 🔔
-- "Custom Summary" allows you to get a comprehensive start-to-end-custom-dates summary of the stats of your Game from History grid 🏆
-- "Pull O'Clock": press the timer button on Live Session card before starting the set and get a notification to remind to close/pull after customizable amount of in-set minutes ⏱️
+- "Custom Summary" allows you to get an all-stats comprehensive start-to-end custom-dates summary of your Game from History grid 🏆
+- "Pull O'Clock": press the timer button (or start a recording) on Live Session card before starting the set and get a notification to remind to close/pull after customizable amount of in-set minutes ⏱️
 - Pinpoints week vs. day-time chart: know when most of the interaction happen at a glance 👀
 - Pinpoints on map can now be filtered by type: show where the juiciest interactions happened 📍
 - Tap on the sitting reminder notification to open the timer for some rest 🕐
@@ -17,11 +17,13 @@
 
 **Bugfixes**
 - Live session card counter performance issues
+- Supports now NA lead age both on insert & charts
 - Map and timeline pinpoints colors
 - Info dialog entry spacing
 - Removed screen reload on already-selected navigation tab pressed again
 - Gesture-based backward navigation works between tabs
 - Importing backups is fault resistant: if some files are not found in the backup folder the others will anyway be imported
+- Cooler dropdown menus
 - Themes colors refined
 - Minor UI improvements & optimizations
 
