@@ -165,7 +165,7 @@ fun RecordingsView(
                     onClick = { pendingDeletion = currentRecording },
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Delete recording",
-                    iconColor = MaterialTheme.colorScheme.error
+                    iconColor = MaterialTheme.colorScheme.onErrorContainer
                 )
                 Spacer(modifier = Modifier.width(12.dp))
             }
