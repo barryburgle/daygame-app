@@ -88,4 +88,5 @@ sealed interface ToolEvent : GenericEvent {
 
     class SetPullOClockReminderInterval(val interval: String) : ToolEvent
     class SetAudioRecordingQuality(val audioRecordingQuality: Int) : ToolEvent
+    object SwitchTriggerPullOClockWithRecordings: ToolEvent
 }

@@ -194,6 +194,14 @@ fun RecordingsCard(
 
                 onEvent(ToolEvent.SetAudioRecordingQuality(it))
             }
+            Spacer(modifier = Modifier.height(8.dp))
+            SwitchSetting(
+                "Trigger pull o'clock reminder just by recording",
+                state.triggerPullOClockWithRecordingsEnable,
+                description = "Before starting the set just press the red Record button with the Pull o'clock icon on top and the app will start recording and also send you the reminder to pull after ${state.pullOClockReminderInterval} minutes"
+            ) {
+                onEvent(ToolEvent.SwitchTriggerPullOClockWithRecordings)
+            }
         }
     }
 }

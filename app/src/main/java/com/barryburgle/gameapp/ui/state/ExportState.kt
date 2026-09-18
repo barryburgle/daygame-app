@@ -40,8 +40,8 @@ open class ExportState(
     open var writeHerAfterReminderEnabled: Boolean = true,
     open var writeHerReminderInterval: Int = 60,
     open var pullOClockReminderInterval: Int = 7,
-    open var audioRecordingQuality: String = AudioRecordingQualityEnum.getDefault().description
-
+    open var audioRecordingQuality: String = AudioRecordingQualityEnum.getDefault().description,
+    open var triggerPullOClockWithRecordingsEnable: Boolean = false
 ) : AllEntityState(
     allSessions,
     allLeads,
