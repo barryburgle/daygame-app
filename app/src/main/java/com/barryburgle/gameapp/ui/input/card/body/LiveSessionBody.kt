@@ -11,17 +11,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
+import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.session.AbstractSession
-import com.barryburgle.gameapp.service.recording.RecordingService
-import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.AbstractSessionService
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.ui.input.dialog.LiveSessionInputButtons
 import com.barryburgle.gameapp.ui.utilities.RecordingsView
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
-import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.timeline.Timeline
 
 @Composable
@@ -45,8 +44,6 @@ fun LiveSessionBody(
     var setsCount = abstractSession.sets + liveSessionLeads
     var convosCount = abstractSession.convos + liveSessionLeads
     var contactsCount = abstractSession.contacts + liveSessionLeads
-    LittleBodyText("Live session:")
-    Spacer(modifier = Modifier.height(7.dp))
     LiveSessionInputButtons(
         setsCount = setsCount,
         convosCount = convosCount,

@@ -18,7 +18,6 @@ import com.barryburgle.gameapp.model.enums.DateTypeEnum
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedIcon
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
-import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
 fun DateBody(
@@ -26,7 +25,6 @@ fun DateBody(
     descriptionFontSize: TextUnit,
     perfFontSize: TextUnit
 ) {
-    LittleBodyText("Date recap:")
     Row(
         modifier = Modifier
             .padding(5.dp)

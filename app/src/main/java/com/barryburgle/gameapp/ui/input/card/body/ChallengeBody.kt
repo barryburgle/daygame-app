@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.enums.ChallengeMedalEnum
 import com.barryburgle.gameapp.model.enums.ChallengeTypeEnum
@@ -23,16 +22,13 @@ import com.barryburgle.gameapp.ui.utilities.button.TweetLinkButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.AchievedChallengeProgressBar
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedIcon
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
-import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
 fun ChallengeBody(
-    bodyTitle: String,
     achievedChallenge: AchievedChallenge,
     countFontSize: TextUnit,
     descriptionFontSize: TextUnit
 ) {
-    LittleBodyText(bodyTitle)
     Row(
         modifier = Modifier
             .fillMaxWidth()

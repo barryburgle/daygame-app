@@ -20,7 +20,6 @@ import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.ui.utilities.RecordingsView
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
-import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.timeline.Timeline
 
 @Composable
@@ -37,7 +36,6 @@ fun SessionBody(
     recordingsFolder: String = "",
     recordingsEnabled: Boolean = false
 ) {
-    LittleBodyText("Session stats:")
     Row(
         modifier = Modifier
             .fillMaxWidth()

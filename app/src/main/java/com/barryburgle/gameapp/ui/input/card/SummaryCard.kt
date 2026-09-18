@@ -303,8 +303,9 @@ fun SummaryCard(
                                     }
                                     if (isChallengeValid) {
                                         CardSection {
+                                            LittleBodyText("Your ongoing \"${lastChallenge.challenge.name}\" challenge:")
+                                            Spacer(modifier = Modifier.height(10.dp))
                                             ChallengeBody(
-                                                "Your ongoing \"${lastChallenge.challenge.name}\" challenge:",
                                                 lastChallenge,
                                                 40.sp,
                                                 10.sp
