@@ -934,6 +934,15 @@ class InputViewModel(
             }
 
             is GameEvent.TapRecordingStart -> {
+                if (state.value.triggerPullOClockWithRecordingsEnable) {
+                    val time = LocalDateTime.now().plusMinutes(event.interval.toLong())
+                    notificationScheduler.schedule(
+                        AndroidNotificationScheduler.PULL_REMINDER_REQUEST_CODE,
+                        time,
+                        "It's time!",
+                        "This is the gentle reminder you asked for" // TODO: tapping the notification should open phone dial or IG (settable by user)
+                    )
+                }
                 if (ActivityCompat.checkSelfPermission(
                         context,
                         Manifest.permission.RECORD_AUDIO

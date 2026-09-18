@@ -66,7 +66,9 @@ fun LiveSessionBody(
         pullOClockReminderInterval = pullOClockReminderInterval,
         recordingState = recordingState,
         showRecordingButtons = recordingsEnabled,
-        onTapRecordingStart = { onEvent(GameEvent.TapRecordingStart(abstractSession.id!!)) },
+        onTapRecordingStart = {
+            onEvent(GameEvent.TapRecordingStart(abstractSession.id!!, pullOClockReminderInterval))
+        },
         onTapRecordingStop = { onEvent(GameEvent.TapRecordingStop) },
         onTapRecordingDiscard = { onEvent(GameEvent.TapRecordingDiscard(it)) },
     )
