@@ -44,7 +44,7 @@ import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.service.set.SetService
-import com.barryburgle.gameapp.ui.CombineFiftheen
+import com.barryburgle.gameapp.ui.CombineSeventeen
 import com.barryburgle.gameapp.ui.CombineFive
 import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.CombineNineteen
@@ -209,6 +209,8 @@ class InputViewModel(
     private val _audioRecordingQuality = settingDao.getAudioRecordingQuality()
     private val _triggerPullOClockWithRecordingsEnable =
         settingDao.getTriggerPullOClockWithRecordingsEnabled()
+    private val _stopRecordingOnNewEntryEnable =
+        settingDao.getStopRecordingOnNewEntryEnabled()
     private val _sessionsByWeek = aggregatedSessionsDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _sessionsByMonth = aggregatedSessionsDao.groupStatsByMonth()
@@ -359,7 +361,7 @@ class InputViewModel(
             lastBackup = lastBackup.toInt()
         )
     }
-    val _dialogSettings = CombineSixteen(
+    val _dialogSettings = CombineSeventeen(
         _notificationTime,
         _generateiDate,
         _pinPointInteractions,
@@ -375,8 +377,9 @@ class InputViewModel(
         _writeHerReminderInterval,
         _pullOClockReminderInterval,
         _audioRecordingQuality,
-        _triggerPullOClockWithRecordingsEnable
-    ) { notificationTime, generateiDate, pinPointInteractions, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled, writeHerAfterReminderEnabled, writeHerReminderInterval, pullOClockReminderInterval, audioRecordingQuality, triggerPullOClockWithRecordingsEnable ->
+        _triggerPullOClockWithRecordingsEnable,
+        _stopRecordingOnNewEntryEnable
+    ) { notificationTime, generateiDate, pinPointInteractions, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled, writeHerAfterReminderEnabled, writeHerReminderInterval, pullOClockReminderInterval, audioRecordingQuality, triggerPullOClockWithRecordingsEnable, stopRecordingOnNewEntryEnable ->
         DialogSettingsState(
             notificationTime = notificationTime,
             generateiDate = generateiDate.toBoolean(),
@@ -394,6 +397,7 @@ class InputViewModel(
             pullOClockReminderInterval = pullOClockReminderInterval.toInt(),
             audioRecordingQuality = audioRecordingQuality,
             triggerPullOClockWithRecordingsEnable = triggerPullOClockWithRecordingsEnable.toBoolean(),
+            stopRecordingOnNewEntryEnable = stopRecordingOnNewEntryEnable.toBoolean(),
         )
     }
     val _shareSettings = CombineSeven(
@@ -534,7 +538,10 @@ class InputViewModel(
             datesByMonth = datesByMonth,
             recordingsEnabled = recordingsSettings.recordingsEnabled,
             recordingsFolder = recordingsSettings.recordingsFolder,
-            recordingState = recordingState.copy(triggerPullOClockWithRecordingsEnable = dialogSettings.triggerPullOClockWithRecordingsEnable),
+            recordingState = recordingState.copy(
+                triggerPullOClockWithRecordingsEnable = dialogSettings.triggerPullOClockWithRecordingsEnable,
+                stopRecordingOnNewEntryEnable = dialogSettings.stopRecordingOnNewEntryEnable
+            ),
             recordings = recordings
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())
@@ -799,6 +806,10 @@ class InputViewModel(
             }
 
             is GameEvent.SetSetsLive -> {
+                if (RecordingService.state.value.state.isRecording() && state.value.recordingState.stopRecordingOnNewEntryEnable) {
+                    stopRecording()
+                    Toast.makeText(context, "Recording saved", Toast.LENGTH_SHORT).show()
+                }
                 viewModelScope.launch {
                     var abstractSession = event.abstractSession
                     if (event.sets > abstractSession.sets && state.value.pinPointInteractions) {
@@ -834,6 +845,10 @@ class InputViewModel(
             }
 
             is GameEvent.SetConvosLive -> {
+                if (RecordingService.state.value.state.isRecording() && state.value.recordingState.stopRecordingOnNewEntryEnable) {
+                    stopRecording()
+                    Toast.makeText(context, "Recording saved", Toast.LENGTH_SHORT).show()
+                }
                 viewModelScope.launch {
                     var abstractSession = event.abstractSession
                     if (event.isIncreasing) {
@@ -880,6 +895,10 @@ class InputViewModel(
             }
 
             is GameEvent.SetContactsLive -> {
+                if (RecordingService.state.value.state.isRecording() && state.value.recordingState.stopRecordingOnNewEntryEnable) {
+                    stopRecording()
+                    Toast.makeText(context, "Recording saved", Toast.LENGTH_SHORT).show()
+                }
                 viewModelScope.launch {
                     var abstractSession = event.abstractSession
                     if (event.isIncreasing) {
