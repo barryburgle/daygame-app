@@ -85,6 +85,7 @@ interface SettingDao {
         const val AUDIO_RECORDING_QUALITY_ID: String =
             "audio_recording_quality"
         const val TRIGGER_PULL_O_CLOCK_WITH_RECORDINGS_ENABLED_ID: String = "trigger_pull_o_clock_with_recordings_enabled"
+        const val STOP_RECORDING_ON_NEW_ENTRY_ENABLED_ID: String = "stop_recording_on_new_entry_enabled"
         const val DEFAULT_LEADS_EXPORT_FILE_NAME: String = "leads_export"
         const val DEFAULT_LEADS_IMPORT_FILE_NAME: String = "leads_export_yyyy_mm_dd_hh_mm.csv"
         const val DEFAULT_DATES_EXPORT_FILE_NAME: String = "dates_export"
@@ -123,6 +124,7 @@ interface SettingDao {
         const val DEFAULT_PULL_O_CLOCK_INTERVAL: String = "7"
         const val DEFAULT_AUDIO_RECORDING_QUALITY: String = "medium"
         const val DEFAULT_TRIGGER_PULL_O_CLOCK_WITH_RECORDINGS_ENABLED: String = "false"
+        const val DEFAULT_STOP_RECORDING_ON_NEW_ENTRY_ENABLED: String = "false"
         const val DEFAULT_SHOWN_NATIONALITIES: String = "6"
         const val DEFAULT_ARCHIVE_BACKUP_FOLDER_FLAG: String = "true"
         const val DEFAULT_IS_CLEANING_FLAG: String = "false"
@@ -271,6 +273,9 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_TRIGGER_PULL_O_CLOCK_WITH_RECORDINGS_ENABLED}' ELSE value END FROM setting WHERE id = '${TRIGGER_PULL_O_CLOCK_WITH_RECORDINGS_ENABLED_ID}'")
     fun getTriggerPullOClockWithRecordingsEnabled(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_STOP_RECORDING_ON_NEW_ENTRY_ENABLED}' ELSE value END FROM setting WHERE id = '${STOP_RECORDING_ON_NEW_ENTRY_ENABLED_ID}'")
+    fun getStopRecordingOnNewEntryEnabled(): Flow<String>
 
     @Query(QUERY_SHOWN_NATIONALITIES)
     fun getShownNationalities(): Flow<String>

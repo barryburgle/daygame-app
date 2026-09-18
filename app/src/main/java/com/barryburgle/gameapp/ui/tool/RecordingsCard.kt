@@ -202,6 +202,14 @@ fun RecordingsCard(
             ) {
                 onEvent(ToolEvent.SwitchTriggerPullOClockWithRecordings)
             }
+            Spacer(modifier = Modifier.height(8.dp))
+            SwitchSetting(
+                "Stop recording on new set/conversation/contact/lead entry",
+                state.stopRecordingOnNewEntryEnable,
+                description = "Tapping any \"+\" Live Session card button will not only increase sets, conversations or contacts or allow you to insert a lead, but also stop the ongoing (if any) recording and save it"
+            ) {
+                onEvent(ToolEvent.SwitchStopRecordingOnNewEntryEnable)
+            }
         }
     }
 }

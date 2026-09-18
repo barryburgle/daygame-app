@@ -14,7 +14,6 @@ import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.ui.CombineThirteen
-import com.barryburgle.gameapp.ui.CombineTwelve
 import com.barryburgle.gameapp.ui.CombineTwenty
 import com.barryburgle.gameapp.ui.CombineTwentyone
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
@@ -122,7 +121,7 @@ class ToolViewModel(
         )
     }
 
-    val _liveSessionSettingState: Flow<LiveSessionSettingState> = CombineTwelve(
+    val _liveSessionSettingState: Flow<LiveSessionSettingState> = CombineThirteen(
         settingDao.getPinPointInteractions(),
         settingDao.getGenerateiDate(),
         settingDao.getFollowCount(),
@@ -131,11 +130,12 @@ class ToolViewModel(
         settingDao.getPullOClockReminderInterval(),
         settingDao.getAudioRecordingQuality(),
         settingDao.getTriggerPullOClockWithRecordingsEnabled(),
+        settingDao.getStopRecordingOnNewEntryEnabled(),
         settingDao.getLiveSessionNotificationEnabled(),
         settingDao.getLiveSessionSittingReminderEnabled(),
         settingDao.getLiveSessionSittingReminderInterval(),
         settingDao.getLiveSessionShareEnabled()
-    ) { pinPointInteractions, generateiDate, followCount, writeHerAfterReminderEnabled, writeHerReminderInterval, pullOClockReminderInterval, audioRecordingQuality, triggerPullOClockWithRecordingsEnable, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
+    ) { pinPointInteractions, generateiDate, followCount, writeHerAfterReminderEnabled, writeHerReminderInterval, pullOClockReminderInterval, audioRecordingQuality, triggerPullOClockWithRecordingsEnable, stopRecordingOnNewEntryEnable, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
         LiveSessionSettingState(
             pinPointInteractions = pinPointInteractions,
             generateiDate = generateiDate,
@@ -145,6 +145,7 @@ class ToolViewModel(
             pullOClockReminderInterval = pullOClockReminderInterval,
             audioRecordingQuality = audioRecordingQuality,
             triggerPullOClockWithRecordingsEnable = triggerPullOClockWithRecordingsEnable,
+            stopRecordingOnNewEntryEnable = stopRecordingOnNewEntryEnable,
             liveSessionNotificationEnabled = liveSessionNotificationEnabled,
             liveSessionSittingReminderEnabled = liveSessionSittingReminderEnabled,
             liveSessionSittingReminderInterval = liveSessionSittingReminderInterval,
@@ -235,6 +236,7 @@ class ToolViewModel(
                 pullOClockReminderInterval = liveSessionSettingState.pullOClockReminderInterval.toInt(),
                 audioRecordingQuality = liveSessionSettingState.audioRecordingQuality,
                 triggerPullOClockWithRecordingsEnable = liveSessionSettingState.triggerPullOClockWithRecordingsEnable.toBoolean(),
+                stopRecordingOnNewEntryEnable = liveSessionSettingState.stopRecordingOnNewEntryEnable.toBoolean(),
                 shownNationalities = generalSettingState.shownNationalities.toInt(),
                 simplePlusOneReport = generalSettingState.simplePlusOneReport.toBoolean(),
                 neverShareLeadInfo = generalSettingState.neverShareLeadInfo.toBoolean(),
@@ -1147,6 +1149,18 @@ class ToolViewModel(
                     )
                 }
             }
+
+            is ToolEvent.SwitchStopRecordingOnNewEntryEnable -> {
+                val enabled = state.value.stopRecordingOnNewEntryEnable
+                viewModelScope.launch {
+                    settingDao.insert(
+                        Setting(
+                            SettingDao.STOP_RECORDING_ON_NEW_ENTRY_ENABLED_ID,
+                            enabled.not().toString()
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -1209,6 +1223,7 @@ data class LiveSessionSettingState(
     val pullOClockReminderInterval: String,
     val audioRecordingQuality: String,
     val triggerPullOClockWithRecordingsEnable: String,
+    val stopRecordingOnNewEntryEnable: String,
     val liveSessionNotificationEnabled: String,
     val liveSessionSittingReminderEnabled: String,
     val liveSessionSittingReminderInterval: String,
