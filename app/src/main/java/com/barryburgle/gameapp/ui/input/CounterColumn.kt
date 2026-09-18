@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
@@ -22,6 +23,7 @@ fun CounterColumn(
     count: String,
     label: String,
     @DrawableRes iconRes: Int? = null,
+    plusButtonSecondImageVector: ImageVector? = null,
     onIncrement: () -> Unit,
     onDecrement: () -> Unit
 ) {
@@ -45,6 +47,7 @@ fun CounterColumn(
         IconShadowButton(
             onClick = onIncrement,
             imageVector = Icons.Default.Add,
+            secondaryImageVector = plusButtonSecondImageVector,
             contentDescription = "More"
         )
     }

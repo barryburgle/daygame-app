@@ -88,10 +88,13 @@ fun LiveSessionInputButtons(
             .height(IntrinsicSize.Max),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
+        val plusButtonSecondImageVector =
+            if (recordingState.stopRecordingOnNewEntryEnable && recordingState.state == RecordingStateEnum.RECORDING) Icons.Default.Stop else null
         CounterColumn(
             count = setsCount.toString(),
             label = if (setsCount != 1) "Sets" else "Set",
             iconRes = R.drawable.set_action,
+            plusButtonSecondImageVector = plusButtonSecondImageVector,
             onIncrement = {
                 onSetsChange(setsCount + 1)
                 shareEvent(
@@ -109,6 +112,7 @@ fun LiveSessionInputButtons(
             count = convosCount.toString(),
             label = if (convosCount != 1) "Conversations" else "Conversation",
             iconRes = R.drawable.conversation_action,
+            plusButtonSecondImageVector = plusButtonSecondImageVector,
             onIncrement = {
                 onConvosChange(convosCount + 1, true)
                 shareEvent(
@@ -126,6 +130,7 @@ fun LiveSessionInputButtons(
             count = contactsCount.toString(),
             label = if (contactsCount != 1) "Contacts" else "Contact",
             iconRes = R.drawable.contact_action,
+            plusButtonSecondImageVector = plusButtonSecondImageVector,
             onIncrement = {
                 onContactsChange(contactsCount + 1, true)
                 shareEvent(
