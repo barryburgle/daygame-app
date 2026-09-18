@@ -207,6 +207,8 @@ class InputViewModel(
     private val _writeHerReminderInterval = settingDao.getWriteHerReminderInterval()
     private val _pullOClockReminderInterval = settingDao.getPullOClockReminderInterval()
     private val _audioRecordingQuality = settingDao.getAudioRecordingQuality()
+    private val _triggerPullOClockWithRecordingsEnable =
+        settingDao.getTriggerPullOClockWithRecordingsEnabled()
     private val _sessionsByWeek = aggregatedSessionsDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _sessionsByMonth = aggregatedSessionsDao.groupStatsByMonth()
@@ -357,7 +359,7 @@ class InputViewModel(
             lastBackup = lastBackup.toInt()
         )
     }
-    val _dialogSettings = CombineFiftheen(
+    val _dialogSettings = CombineSixteen(
         _notificationTime,
         _generateiDate,
         _pinPointInteractions,
@@ -372,8 +374,9 @@ class InputViewModel(
         _writeHerAfterReminderEnabled,
         _writeHerReminderInterval,
         _pullOClockReminderInterval,
-        _audioRecordingQuality
-    ) { notificationTime, generateiDate, pinPointInteractions, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled, writeHerAfterReminderEnabled, writeHerReminderInterval, pullOClockReminderInterval, audioRecordingQuality ->
+        _audioRecordingQuality,
+        _triggerPullOClockWithRecordingsEnable
+    ) { notificationTime, generateiDate, pinPointInteractions, followCount, suggestLeadsNationality, incrementChallengeGoal, defaultChallengeGoal, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled, writeHerAfterReminderEnabled, writeHerReminderInterval, pullOClockReminderInterval, audioRecordingQuality, triggerPullOClockWithRecordingsEnable ->
         DialogSettingsState(
             notificationTime = notificationTime,
             generateiDate = generateiDate.toBoolean(),
@@ -389,7 +392,8 @@ class InputViewModel(
             writeHerAfterReminderEnabled = writeHerAfterReminderEnabled.toBoolean(),
             writeHerReminderInterval = writeHerReminderInterval.toInt(),
             pullOClockReminderInterval = pullOClockReminderInterval.toInt(),
-            audioRecordingQuality = audioRecordingQuality
+            audioRecordingQuality = audioRecordingQuality,
+            triggerPullOClockWithRecordingsEnable = triggerPullOClockWithRecordingsEnable.toBoolean(),
         )
     }
     val _shareSettings = CombineSeven(
@@ -530,7 +534,7 @@ class InputViewModel(
             datesByMonth = datesByMonth,
             recordingsEnabled = recordingsSettings.recordingsEnabled,
             recordingsFolder = recordingsSettings.recordingsFolder,
-            recordingState = recordingState,
+            recordingState = recordingState.copy(triggerPullOClockWithRecordingsEnable = dialogSettings.triggerPullOClockWithRecordingsEnable),
             recordings = recordings
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())

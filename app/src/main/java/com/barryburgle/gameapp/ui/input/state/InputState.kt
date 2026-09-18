@@ -124,6 +124,7 @@ data class InputState(
     override var writeHerReminderInterval: Int = 60,
     override var pullOClockReminderInterval: Int = 7,
     override var audioRecordingQuality: String = AudioRecordingQualityEnum.getDefault().description,
+    override var triggerPullOClockWithRecordingsEnable: Boolean = false,
     val mostPopularLeadsNationalities: List<CategoryHistogram> = emptyList(),
     val sessionsByWeek: List<AggregatedSessions> = emptyList(),
     val sessionsByMonth: List<AggregatedSessions> = emptyList(),

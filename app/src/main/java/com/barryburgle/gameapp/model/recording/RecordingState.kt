@@ -15,7 +15,8 @@ data class RecordingState(
     val state: RecordingStateEnum = RecordingStateEnum.IDLE,
     // the file this state is about - the one being recorded, or the one being played. The enum
     // already says which of the two, so a single field covers both and cannot hold a contradiction
-    val activeFileName: String? = null
+    val activeFileName: String? = null,
+    val triggerPullOClockWithRecordingsEnable: Boolean = false
 )
 
 // deliberately kept out of RecordingState: this ticks a few times a second, and RecordingState is

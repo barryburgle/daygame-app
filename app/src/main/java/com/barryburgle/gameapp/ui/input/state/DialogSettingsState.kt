@@ -18,5 +18,6 @@ data class DialogSettingsState(
     var writeHerAfterReminderEnabled: Boolean = true,
     var writeHerReminderInterval: Int = 60,
     var pullOClockReminderInterval: Int = 7,
-    var audioRecordingQuality: String = AudioRecordingQualityEnum.getDefault().description
+    var audioRecordingQuality: String = AudioRecordingQualityEnum.getDefault().description,
+    var triggerPullOClockWithRecordingsEnable: Boolean = false
 )
