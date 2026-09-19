@@ -1,24 +1,15 @@
 package com.barryburgle.gameapp.ui.input.dialog
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -28,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -37,33 +27,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
-import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
-import com.barryburgle.gameapp.model.enums.ContactTypeEnum
-import com.barryburgle.gameapp.model.enums.CountryEnum
-import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.service.EntityService
 import com.barryburgle.gameapp.ui.input.CounterColumn
 import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.output.LeadCard
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogTimeFormSection
-import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,8 +62,7 @@ fun SessionDialog(
     var latestEndHour = state.endHour
     var setsCountStart = if (state.isAddingSession) 0 else state.editAbstractSession?.sets
     var convosCountStart = if (state.isAddingSession) 0 else state.editAbstractSession?.convos
-    var contactsCountStart =
-        if (state.isAddingSession) 0 else state.editAbstractSession?.contacts
+    var contactsCountStart = if (state.isAddingSession) 0 else state.editAbstractSession?.contacts
     var setsCount by remember {
         mutableStateOf(if (setsCountStart == null) 0 else setsCountStart)
     }
@@ -123,8 +103,7 @@ fun SessionDialog(
                                 modifier = Modifier.width(DialogConstant.TIME_COLUMN_WIDTH)
                             ) {
                                 DialogFormSectionDescription(
-                                    "Set session's:",
-                                    DialogConstant.DESCRIPTION_FONT_SIZE
+                                    "Set session's:", DialogConstant.DESCRIPTION_FONT_SIZE
                                 )
                             }
                             Spacer(modifier = Modifier.width(10.dp))
@@ -132,8 +111,7 @@ fun SessionDialog(
                                 modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH - DialogConstant.ADD_LEAD_COLUMN_WIDTH)
                             ) {
                                 DialogFormSectionDescription(
-                                    "Add leads:",
-                                    DialogConstant.DESCRIPTION_FONT_SIZE
+                                    "Add leads:", DialogConstant.DESCRIPTION_FONT_SIZE
                                 )
                             }
                             Column(
@@ -162,11 +140,7 @@ fun SessionDialog(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     DialogTimeFormSection(
-                        state,
-                        onEvent,
-                        latestDateValue,
-                        latestStartHour,
-                        latestEndHour
+                        state, onEvent, latestDateValue, latestStartHour, latestEndHour
                     )
                     Column(
                         modifier = Modifier.width(DialogConstant.LEAD_COLUMN_WIDTH),
@@ -183,7 +157,7 @@ fun SessionDialog(
                                         GameEvent.ShowLeadDialog(false, true)
                                     )
                                 }) {
-                                    leadName(
+                                    LeadCard(
                                         lead = lead,
                                         backgroundColor = MaterialTheme.colorScheme.primaryContainer,
                                         outputShow = false,
@@ -216,18 +190,13 @@ fun SessionDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    CounterColumn(
-                        count = setsCount.toString(),
-                        label = "Sets",
-                        onIncrement = {
-                            setsCount++
-                            onEvent(GameEvent.SetSets(setsCount.toString()))
-                        },
-                        onDecrement = {
-                            setsCount--
-                            onEvent(GameEvent.SetSets(setsCount.toString()))
-                        }
-                    )
+                    CounterColumn(count = setsCount.toString(), label = "Sets", onIncrement = {
+                        setsCount++
+                        onEvent(GameEvent.SetSets(setsCount.toString()))
+                    }, onDecrement = {
+                        setsCount--
+                        onEvent(GameEvent.SetSets(setsCount.toString()))
+                    })
                     CounterColumn(
                         count = convosCount.toString(),
                         label = "Conversations",
@@ -241,8 +210,7 @@ fun SessionDialog(
                         onDecrement = {
                             convosCount--
                             onEvent(GameEvent.SetConvos(convosCount.toString()))
-                        }
-                    )
+                        })
                     CounterColumn(
                         count = contactsCount.toString(),
                         label = "Contacts",
@@ -257,8 +225,7 @@ fun SessionDialog(
                         onDecrement = {
                             contactsCount--
                             onEvent(GameEvent.SetContacts(contactsCount.toString()))
-                        }
-                    )
+                        })
                 }
                 Spacer(modifier = Modifier.height(7.dp))
                 val stickingPoints = state.stickingPoints
@@ -273,12 +240,9 @@ fun SessionDialog(
                             )
                         )
                         Toast.makeText(
-                            localContext,
-                            "Sticking points copied",
-                            Toast.LENGTH_SHORT
+                            localContext, "Sticking points copied", Toast.LENGTH_SHORT
                         ).show()
-                    }
-                ) {
+                    }) {
                     onEvent(GameEvent.SetStickingPoints(it))
                 }
             }
@@ -286,14 +250,11 @@ fun SessionDialog(
         confirmButton = {
             ConfirmButton {
                 if (EntityService.getParsedHour(
-                        state.date,
-                        state.startHour
+                        state.date, state.startHour
                     ) > EntityService.getParsedHour(state.date, state.endHour)
                 ) {
                     Toast.makeText(
-                        localContext,
-                        "Please choose valid hours",
-                        Toast.LENGTH_SHORT
+                        localContext, "Please choose valid hours", Toast.LENGTH_SHORT
                     ).show()
                 } else {
                     onEvent(GameEvent.SaveAbstractSession)
@@ -301,11 +262,8 @@ fun SessionDialog(
                     onEvent(GameEvent.HideDialog)
                     onEvent(GameEvent.SwitchJustSaved)
                     Toast.makeText(
-                        localContext,
-                        "Session saved",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
+                        localContext, "Session saved", Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         },
@@ -314,130 +272,5 @@ fun SessionDialog(
                 onEvent(GameEvent.SetIsInOverlayToFalse)
                 onEvent(GameEvent.HideDialog)
             }
-        }
-    )
-}
-
-@Composable
-fun leadName(
-    lead: Lead,
-    backgroundColor: Color,
-    alertColor: Color? = null,
-    outputShow: Boolean,
-    cardShow: Boolean,
-    onClick: (() -> Unit)? = null
-) {
-    var displayName = lead.name
-    if (displayName.isNotBlank()) {
-        if (displayName.length >= 7) {
-            displayName = displayName.substring(0, 5) + "... "
-        }
-        Column(
-            modifier = Modifier
-                .shadow(
-                    elevation = 10.dp,
-                    shape = MaterialTheme.shapes.large
-                ),
-        ) {
-            Column(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(20.dp))
-                    .then(
-                        if (onClick != null) {
-                            Modifier.clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = androidx.compose.material3.ripple(),
-                                onClick = onClick
-                            )
-                        } else {
-                            Modifier
-                        }
-                    )
-                    .background(
-                        color = backgroundColor, shape = RoundedCornerShape(20.dp)
-                    )
-                    .width(80.dp)
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                var textColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
-                if (outputShow && alertColor != null) {
-                    textColor = MaterialTheme.colorScheme.onPrimary
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .height(8.dp)
-                            .background(alertColor, shape = RoundedCornerShape(4.dp))
-                    ) {}
-                    Spacer(Modifier.height(3.dp))
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    // TODO: create MediumBodyText with variable injectable color
-                    Text(
-                        text = displayName,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = textColor
-                    )
-                }
-                if (outputShow || cardShow) {
-                    // TODO: create MediumBodyText with variable injectable color
-                    val leadAgeDesc = if (lead.age != 0L) "${lead.age} " else ""
-                    Text(
-                        text = "${leadAgeDesc}${
-                            CountryEnum.getFlagByAlpha3(
-                                lead.nationality
-                            )
-                        }",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = textColor
-                    )
-                    Box(
-                        modifier = Modifier
-                            .size(30.dp)
-                            .padding(2.dp)
-                    ) {
-                        val iconRes = if (lead.contact == ContactTypeEnum.NUMBER.getField()) {
-                            R.drawable.whatsapp_w
-                        } else {
-                            R.drawable.instagram_w
-                        }
-                        Image(
-                            painter = painterResource(iconRes),
-                            contentDescription = "Contact Icon",
-                            modifier = Modifier.fillMaxSize(),
-                            alignment = Alignment.Center,
-                            contentScale = ContentScale.Fit,
-                            colorFilter = ColorFilter.tint(textColor)
-                        )
-
-                        if ((!lead.contactLookupKey.isNullOrBlank() && lead.contact == ContactTypeEnum.NUMBER.getField()) || (!lead.instagramUrl.isNullOrBlank() && lead.contact == ContactTypeEnum.SOCIAL.getField())) {
-                            Box(
-                                modifier = Modifier
-                                    .size(12.dp)
-                                    .align(Alignment.TopEnd)
-                                    .background(
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        shape = CircleShape
-                                    )
-                                    .border(1.dp, backgroundColor, CircleShape)
-                            )
-                        }
-                    }
-                    if (!cardShow) {
-                        if (lead.insertTime.isNotBlank()) {
-                            LittleBodyText(
-                                "${lead.insertTime.substring(8, 10)}/${
-                                    lead.insertTime.substring(5, 7)
-                                }"
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
+        })
 }

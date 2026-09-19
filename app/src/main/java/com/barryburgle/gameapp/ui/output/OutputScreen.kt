@@ -51,7 +51,6 @@ import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.OutputLeadDialog
-import com.barryburgle.gameapp.ui.input.dialog.leadName
 import com.barryburgle.gameapp.ui.output.section.MonthSection
 import com.barryburgle.gameapp.ui.output.section.SessionSection
 import com.barryburgle.gameapp.ui.output.section.WeekSection
@@ -293,7 +292,7 @@ fun OutputScreen(
                                         7.dp
                                     )
                                 ) {
-                                    leadName(
+                                    LeadCard(
                                         lead = lead,
                                         backgroundColor = MaterialTheme.colorScheme.surface,
                                         alertColor = getLeadAlertColor(lead),

@@ -73,12 +73,12 @@ import com.barryburgle.gameapp.ui.input.card.body.LiveSessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SetBody
 import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
-import com.barryburgle.gameapp.ui.input.dialog.leadName
 import com.barryburgle.gameapp.ui.input.dialog.shareEvent
 import com.barryburgle.gameapp.ui.input.liveSessionPulsingColor
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.input.dialog.MapDialog
+import com.barryburgle.gameapp.ui.output.LeadCard
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
@@ -848,7 +848,7 @@ private fun LeadsRow(
                         7.dp
                     )
                 ) {
-                    leadName(
+                    LeadCard(
                         lead = lead,
                         backgroundColor = MaterialTheme.colorScheme.background,
                         outputShow = false,
