@@ -49,13 +49,9 @@ fun LeadCard(
         if (shortCut) {
             height = 40.dp
         }
-        var fillMaxWidth = 1f
-        if (shortCut) {
-            fillMaxWidth = 0.75f
-        }
         Row(
             modifier = Modifier
-                .fillMaxWidth(fillMaxWidth)
+                .fillMaxWidth()
                 .height(height)
                 .shadow(
                     elevation = 10.dp,
