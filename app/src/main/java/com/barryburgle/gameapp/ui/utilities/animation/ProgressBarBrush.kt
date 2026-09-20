@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 
 @Composable
-fun ProgressBarBrush(color: Color): Brush {
+fun HorizontalProgressBarBrush(color: Color): Brush {
     val transition = rememberInfiniteTransition(label = "timelineShimmer")
     val xOffset by transition.animateFloat(
         initialValue = 0f, targetValue = 4000f, animationSpec = infiniteRepeatable(
@@ -31,6 +31,28 @@ fun ProgressBarBrush(color: Color): Brush {
         colors = shimmerTimeColors,
         start = Offset(xOffset - 1000f, 0f),
         end = Offset(xOffset, 0f),
+        tileMode = TileMode.Clamp
+    )
+}
+
+@Composable
+fun VerticalProgressBarBrush(color: Color): Brush {
+    val transition = rememberInfiniteTransition(label = "verticalTimelineShimmer")
+    val yOffset by transition.animateFloat(
+        initialValue = 0f, targetValue = 4000f, animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 4000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ), label = "yOffset"
+    )
+    val shimmerTimeColors = listOf(
+        color.copy(alpha = 0.9f),
+        color.copy(alpha = 0.05f),
+        color.copy(alpha = 0.9f),
+    )
+    return Brush.linearGradient(
+        colors = shimmerTimeColors,
+        start = Offset(x = 0f, y = yOffset - 1000f),
+        end = Offset(x = 0f, y = yOffset),
         tileMode = TileMode.Clamp
     )
 }

@@ -55,7 +55,7 @@ import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
-import com.barryburgle.gameapp.ui.utilities.animation.ProgressBarBrush
+import com.barryburgle.gameapp.ui.utilities.animation.HorizontalProgressBarBrush
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
@@ -80,7 +80,7 @@ fun Timeline(
     val onPrimaryColor = MaterialTheme.colorScheme.onPrimary
     val tertiaryColor = MaterialTheme.colorScheme.tertiary
     val primaryContainerColor = MaterialTheme.colorScheme.primaryContainer
-    val lineBrush = ProgressBarBrush(MaterialTheme.colorScheme.onTertiary)
+    val lineBrush = HorizontalProgressBarBrush(MaterialTheme.colorScheme.onTertiary)
     val startTime = FormatService.parseTime(abstractSession.startHour)
     var selectedPinPoint by remember { mutableStateOf<PinPoint?>(null) }
     var popupPositionX by remember { mutableStateOf(0f) }
