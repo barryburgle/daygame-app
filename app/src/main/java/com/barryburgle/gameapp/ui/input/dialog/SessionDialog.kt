@@ -12,15 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -147,38 +142,19 @@ fun SessionDialog(
                         verticalArrangement = Arrangement.Top
                     ) {
                         for (lead in state.leads) {
-                            Row(
-                                verticalAlignment = Alignment.Top,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Box(modifier = Modifier.clickable {
-                                    onEvent(GameEvent.EditLead(lead, true))
-                                    onEvent(
-                                        GameEvent.ShowLeadDialog(false, true)
-                                    )
-                                }) {
-                                    LeadCard(
-                                        lead = lead,
-                                        backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                                        outputShow = false,
-                                        cardShow = false
-                                    )
-                                }
-                                CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
-                                    IconButton(onClick = {
-                                        onEvent(
-                                            GameEvent.DeleteLead(
-                                                lead
-                                            )
-                                        )
-                                    }) {
-                                        Icon(
-                                            imageVector = Icons.Default.Delete,
-                                            contentDescription = "Delete Lead",
-                                            tint = MaterialTheme.colorScheme.onErrorContainer
-                                        )
-                                    }
-                                }
+                            Box(modifier = Modifier.clickable {
+                                Toast.makeText(
+                                    localContext,
+                                    "Please edit the lead from session card",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }) {
+                                LeadCard(
+                                    lead = lead,
+                                    onEditClick = {}, // Dropping any edit lead support from session dialog -> The user should be able to edit the lead by the LeadCard edit button
+                                    onLinkClick = {},
+                                    shortCut = true
+                                )
                             }
                             Spacer(
                                 modifier = Modifier.height(5.dp)
