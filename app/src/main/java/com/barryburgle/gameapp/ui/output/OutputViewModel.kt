@@ -224,7 +224,7 @@ class OutputViewModel(
 
             is OutputEvent.DeleteLead -> {
                 viewModelScope.launch {
-                    leadDao.delete(event.lead)
+                    leadDao.deleteById(event.leadId)
                 }
                 _state.update {
                     it.copy(

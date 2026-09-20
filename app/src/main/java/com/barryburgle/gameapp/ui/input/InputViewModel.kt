@@ -637,12 +637,12 @@ class InputViewModel(
             is GameEvent.DeleteLead -> {
                 if (_state.value.isUpdatingLead) {
                     viewModelScope.launch {
-                        leadDao.delete(event.lead)
+                        leadDao.deleteById(event.leadId)
                     }
                 } else {
                     _state.update {
                         it.copy(
-                            leads = it.leads.filter { lead -> lead.name != event.lead.name }
+                            leads = it.leads.filter { lead -> lead.id != event.leadId }
                         )
                     }
                 }

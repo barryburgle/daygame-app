@@ -17,7 +17,7 @@ sealed interface OutputEvent : GenericEvent {
     data class SetLeadInstagramUrl(val instagramUrl: String) : OutputEvent
     data class SetLeadAge(val age: String) : OutputEvent
     data class SaveLead(val lead: Lead) : OutputEvent
-    data class DeleteLead(val lead: Lead) : OutputEvent
+    data class DeleteLead(val leadId: Long) : OutputEvent
     object SetIsInOverlayToTrue : OutputEvent
     object SetIsInOverlayToFalse : OutputEvent
 }

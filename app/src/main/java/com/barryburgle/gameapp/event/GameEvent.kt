@@ -85,7 +85,7 @@ sealed interface GameEvent : GenericEvent {
 
     data class SortSessions(val sessionSortType: SessionSortType) : GameEvent
     data class DeleteSession(val abstractSession: AbstractSession) : GameEvent
-    data class DeleteLead(val lead: Lead) : GameEvent
+    data class DeleteLead(val leadId: Long) : GameEvent
     data class EditSession(val abstractSession: AbstractSession) : GameEvent
     data class SetLeadSessionId(val leadSessionId: Long) : GameEvent
     data class EditLead(val lead: Lead, val isUpdatingLead: Boolean) : GameEvent

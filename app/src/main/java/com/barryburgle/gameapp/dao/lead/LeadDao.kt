@@ -25,8 +25,8 @@ interface LeadDao {
     @Insert(onConflict = REPLACE)
     suspend fun insert(lead: Lead): Long
 
-    @Delete
-    suspend fun delete(lead: Lead)
+    @Query("DELETE FROM lead WHERE id = :id")
+    suspend fun deleteById(id: Long)
 
     @Query("DELETE FROM lead")
     suspend fun deleteAll()

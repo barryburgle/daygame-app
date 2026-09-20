@@ -97,7 +97,7 @@ fun InputLeadDialog(
         onSetLeadAge = { onEvent(GameEvent.SetLeadAge(it)) },
         onSaveLead = { onEvent(GameEvent.SaveLead(it)) },
         onSetLead = { onEvent(GameEvent.SetLead(it)) },
-        onDeleteLead = { onEvent(GameEvent.DeleteLead(it)) },
+        onDeleteLead = { onEvent(GameEvent.DeleteLead(state.leadId)) },
         onDismiss = {
             if (state.leadSessionId != null) {
                 onEvent(GameEvent.RollbackContactPinPointForLeadInsertDismissal(state.leadSessionId))
@@ -155,7 +155,7 @@ fun OutputLeadDialog(
         onSetLeadAge = { onEvent(OutputEvent.SetLeadAge(it)) },
         onSaveLead = { onEvent(OutputEvent.SaveLead(it)) },
         onSetLead = { onEvent(OutputEvent.SaveLead(it)) },
-        onDeleteLead = { onEvent(OutputEvent.DeleteLead(it)) },
+        onDeleteLead = { onEvent(OutputEvent.DeleteLead(state.leadId)) },
         onDismiss = {
             onEvent(OutputEvent.SetIsInOverlayToFalse)
             onEvent(OutputEvent.HideLeadDialog)
@@ -199,7 +199,7 @@ fun LeadDialogContent(
     onSetLeadAge: (String) -> Unit,
     onSaveLead: (Lead) -> Unit,
     onSetLead: (Lead) -> Unit,
-    onDeleteLead: (Lead) -> Unit,
+    onDeleteLead: (Long) -> Unit,
     onDismiss: () -> Unit,
     onScheduleReminder: ((interval: Int, leadDesc: String, notificationLink: String) -> Unit)? = null,
     onPostConfirm: () -> Unit,
@@ -221,6 +221,21 @@ fun LeadDialogContent(
         Modifier
             .height(60.dp)
             .fillMaxWidth()
+    }
+    var showDeleteLeadDialog by remember { mutableStateOf(false) }
+    if (showDeleteLeadDialog) {
+        DeleteConfirmationDialog(
+            "lead ${leadName}",
+            "Do you want to delete the lead \"${leadName}\"?",
+            onConfirmRequest = {
+                onDeleteLead(leadId)
+                showDeleteLeadDialog = false
+                onDismiss()
+            },
+            onDismissRequest = {
+                showDeleteLeadDialog = false
+            },
+        )
     }
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -253,15 +268,10 @@ fun LeadDialogContent(
                         Spacer(modifier = Modifier.width(10.dp))
                         IconShadowButton(
                             onClick = {
-                                lead.id = leadId
-                                lead.name = leadName
-                                lead.contact = leadContact
-                                lead.nationality = leadNationality
-                                lead.age = leadAge
-                                onDeleteLead(lead)
-                                Toast.makeText(context, "Lead deleted", Toast.LENGTH_SHORT).show()
+                                showDeleteLeadDialog = true
                             },
                             imageVector = Icons.Default.Delete,
+                            iconColor = MaterialTheme.colorScheme.onErrorContainer,
                             contentDescription = "Delete Lead"
                         )
                     }
