@@ -1,12 +1,10 @@
 package com.barryburgle.gameapp.ui.input.card
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,7 +45,6 @@ import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,9 +54,9 @@ import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
-import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -72,13 +69,13 @@ import com.barryburgle.gameapp.ui.input.card.body.DateBody
 import com.barryburgle.gameapp.ui.input.card.body.LiveSessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SetBody
-import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
+import com.barryburgle.gameapp.ui.input.dialog.MapDialog
 import com.barryburgle.gameapp.ui.input.dialog.shareEvent
+import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.liveSessionPulsingColor
+import com.barryburgle.gameapp.ui.output.LeadCard
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
-import com.barryburgle.gameapp.ui.input.dialog.MapDialog
-import com.barryburgle.gameapp.ui.output.LeadCard
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
@@ -109,7 +106,6 @@ fun EventCard(
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
     val localContext = context.applicationContext
-    val uriHandler = LocalUriHandler.current
     var liveSessionTime: Long = 0
     var liveSessionLeads: Int = 0
     var showCancelLiveSessionConfirmDialog by remember { mutableStateOf(false) }
@@ -651,8 +647,6 @@ fun EventCard(
                                             LeadsRow(
                                                 semiOpaqueBackground,
                                                 leads,
-                                                localContext,
-                                                uriHandler,
                                                 onEvent
                                             )
                                         }
@@ -663,6 +657,8 @@ fun EventCard(
                                             sortableGameEvent.classType
                                         ) || isLiveSession
                                     ) {
+                                        // TODO: we should move this button on the right end side of the pinpoints timeline bar, but this means
+                                        // that we then need to introduce a showMapDialog flag on state and switch it through GameEvent
                                         IconShadowButton(
                                             onClick = {
                                                 showMapDialog = true
@@ -789,14 +785,12 @@ private fun eventHeader(headerParts: List<String>) {
 private fun LeadsRow(
     semiOpaqueBackground: Color,
     leads: List<Lead>,
-    localContext: Context,
-    uriHandler: UriHandler,
     onEvent: (GameEvent) -> Unit
 ) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
+            .height(160.dp)
             .drawWithContent {
                 drawContent()
                 drawRect(
@@ -811,8 +805,11 @@ private fun LeadsRow(
         }
         for (lead in leads) {
             item {
-                Row(
-                    modifier = Modifier.combinedClickable(onClick = {
+                val localContext = LocalContext.current.applicationContext
+                val uriHandler = LocalUriHandler.current
+                LeadCard(
+                    lead = lead,
+                    onEditClick = {
                         onEvent(GameEvent.SetIsInOverlayToTrue)
                         onEvent(
                             GameEvent.EditLead(
@@ -824,7 +821,8 @@ private fun LeadsRow(
                                 false, false
                             )
                         )
-                    }, onLongClick = {
+                    },
+                    onLinkClick = {
                         if (lead.contact == ContactTypeEnum.NUMBER.getField() && lead.contactLookupKey != null) {
                             try {
                                 val uri = Uri.withAppendedPath(
@@ -834,7 +832,9 @@ private fun LeadsRow(
                                 uriHandler.openUri(uri.toString())
                             } catch (e: Exception) {
                                 Toast.makeText(
-                                    localContext, "Could not open contact", Toast.LENGTH_SHORT
+                                    localContext,
+                                    "Could not open contact",
+                                    Toast.LENGTH_SHORT
                                 ).show()
                             }
                         } else if (lead.contact == ContactTypeEnum.SOCIAL.getField() && lead.instagramUrl != null && lead.instagramUrl!!.isNotBlank()) {
@@ -844,20 +844,10 @@ private fun LeadsRow(
                                 localContext, "No contact found", Toast.LENGTH_SHORT
                             ).show()
                         }
-                    }), horizontalArrangement = Arrangement.spacedBy(
-                        7.dp
-                    )
-                ) {
-                    LeadCard(
-                        lead = lead,
-                        backgroundColor = MaterialTheme.colorScheme.background,
-                        outputShow = false,
-                        cardShow = true
-                    )
-                }
+                    })
             }
             item {
-                Spacer(modifier = Modifier.width(5.dp))
+                Spacer(modifier = Modifier.width(10.dp))
             }
         }
         item {
