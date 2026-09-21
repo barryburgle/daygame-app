@@ -1,27 +1,29 @@
 package com.barryburgle.gameapp.ui.input.dialog
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -37,13 +39,11 @@ import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
-import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogTimeFormSection
-import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @Composable
@@ -58,7 +58,7 @@ fun SetDialog(
     var latestDateValue = state.date
     var latestStartHour = state.startHour
     var latestEndHour = state.endHour
-    var locationTextFieldExpanded by remember { mutableStateOf(false) }
+    val pagerState = rememberPagerState(pageCount = { 2 })
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier.shadow(elevation = 10.dp),
@@ -146,60 +146,83 @@ fun SetDialog(
                         latestStartHour,
                         latestEndHour
                     )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Column {
-                        // TODO: insert here a button that allows to choose from a list of sessions to which the set belongs to  [v1.10.0]
-                        IconShadowButton(
-                            onClick = {
-                                locationTextFieldExpanded = !locationTextFieldExpanded
-                            },
-                            imageVector = Icons.Default.PinDrop,
-                            contentDescription = "Location",
-                            title = "Location",
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(35.dp)
-                        )
-                    }
                 }
-                BasicAnimatedVisibility(
-                    visibilityFlag = locationTextFieldExpanded,
-                ) {
-                    Spacer(modifier = Modifier.height(7.dp))
-                    OutlinedTextField(
-                        value = state.location,
-                        onValueChange = { onEvent(GameEvent.SetLocation(it)) },
-                        placeholder = { LittleBodyText("Location") },
-                        shape = MaterialTheme.shapes.large,
-                        modifier = Modifier.height(80.dp)
-                    )
-                    Spacer(modifier = Modifier.height(7.dp))
-                }
-                BasicAnimatedVisibility(
-                    visibilityFlag = !locationTextFieldExpanded,
-                ) {
-                    Spacer(modifier = Modifier.height(7.dp))
-                    val stickingPoints = state.stickingPoints
-                    DialogTextComponent(
-                        value = state.stickingPoints,
-                        placeholder = "sticking points",
-                        singleLine = false,
-                        onCopyClick = {
-                            clipboardManager.setText(
-                                AnnotatedString(
-                                    stickingPoints
-                                )
-                            )
-                            Toast.makeText(
-                                localContext,
-                                "Sticking points copied",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxWidth()
+                    ) { page ->
+                        when (page) {
+                            0 -> {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(7.dp)
+                                ) {
+                                    val location = state.location
+                                    DialogTextComponent(
+                                        value = location,
+                                        placeholder = "location",
+                                        singleLine = true,
+                                        onCopyClick = {
+                                            clipboardManager.setText(AnnotatedString(location))
+                                            Toast.makeText(
+                                                localContext,
+                                                "Location copied",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    ) {
+                                        onEvent(GameEvent.SetLocation(it))
+                                    }
+                                }
+                            }
+
+                            1 -> {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(7.dp)
+                                ) {
+                                    val stickingPoints = state.stickingPoints
+                                    DialogTextComponent(
+                                        value = stickingPoints,
+                                        placeholder = "sticking points",
+                                        singleLine = false,
+                                        onCopyClick = {
+                                            clipboardManager.setText(AnnotatedString(stickingPoints))
+                                            Toast.makeText(
+                                                localContext,
+                                                "Sticking points copied",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    ) {
+                                        onEvent(GameEvent.SetStickingPoints(it))
+                                    }
+                                }
+                            }
                         }
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        onEvent(GameEvent.SetStickingPoints(it))
+                        repeat(2) { dotIndex ->
+                            val isSelected = pagerState.currentPage == dotIndex
+                            Box(
+                                modifier = Modifier
+                                    .size(if (isSelected) 7.dp else 6.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        if (isSelected) MaterialTheme.colorScheme.primary
+                                        else MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                            alpha = 0.35f
+                                        )
+                                    )
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.height(7.dp))
                 }
