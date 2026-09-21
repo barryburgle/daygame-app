@@ -157,7 +157,10 @@ fun InputScreen(
                         .background(Color.Black.copy(alpha = 0.01f)) // Almost invisible
                 )
             }
-            Column(horizontalAlignment = Alignment.End) {
+            Column(
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier.offset(x = -20.dp)
+            ) {
                 Column(
                     modifier = Modifier
                         .height(400.dp)
