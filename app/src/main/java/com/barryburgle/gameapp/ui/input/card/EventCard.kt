@@ -767,35 +767,8 @@ private fun eventHeader(headerParts: List<String>) {
         val validParts = headerParts.filter { !it.isNullOrEmpty() }
 
         validParts.forEachIndexed { index, part ->
-            var isVisible by remember { mutableStateOf(false) }
-
-            LaunchedEffect(part) {
-                delay(index * 80L)
-                isVisible = true
-            }
-
-            val transition =
-                updateTransition(targetState = isVisible, label = "HeaderItemTransition")
-
-            val scale by transition.animateFloat(
-                transitionSpec = {
-                    spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessLow
-                    )
-                },
-                label = "scale"
-            ) { visible ->
-                if (visible) 1f else 0f
-            }
-
             Column(
                 modifier = Modifier
-                    .graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
-                        transformOrigin = TransformOrigin(0f, 0.5f)
-                    }
                     .background(
                         MaterialTheme.colorScheme.onPrimary.copy(0.1f),
                         shape = RoundedCornerShape(15.dp)
