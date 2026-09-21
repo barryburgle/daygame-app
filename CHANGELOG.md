@@ -13,7 +13,8 @@
 - Now all the exports are validated against app database after every single export 🚧
 - Pinpoints timeline on Live Session card and in session report ──●─
 - Last 3 periods plotted as line chart on Summary card 📌
-- Now you can tap & edit leads from the Dashboard tab 🪪
+- Lead contact button on lead card 🔗
+- Now you can edit leads from the Dashboard tab 🪪
 
 **Bugfixes**
 - Live session card counter performance issues
@@ -25,7 +26,7 @@
 - Importing backups is fault resistant: if some files are not found in the backup folder the others will anyway be imported
 - Cooler dropdown menus
 - Themes colors refined
-- Minor UI improvements & optimizations
+- Minor UI improvements, animations & optimizations
 
 # Version 1.13.0 (2026-07-05)
 **Features**
