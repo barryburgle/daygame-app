@@ -3,7 +3,6 @@ package com.barryburgle.gameapp.ui.input
 import android.net.Uri
 import android.provider.ContactsContract
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,12 +18,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -49,6 +47,7 @@ import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.stat.CategoryHistogram
 import com.barryburgle.gameapp.service.PhoneBookService
 import com.barryburgle.gameapp.ui.input.card.DeleteConfirmationDialog
+import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
@@ -249,13 +248,13 @@ fun LeadDialogContent(
                         .height(60.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    OutlinedTextField(
+                    DialogTextComponent(
                         value = leadName,
-                        onValueChange = { onSetLeadName(it) },
-                        placeholder = { LittleBodyText("Insert lead name") },
-                        shape = MaterialTheme.shapes.large,
-                        modifier = textModifier
-                    )
+                        placeholder = "lead name",
+                        singleLine = true
+                    ) {
+                        onSetLeadName(it)
+                    }
                     if (isUpdatingLead) {
                         Spacer(modifier = Modifier.width(10.dp))
                         IconShadowButton(
@@ -281,30 +280,22 @@ fun LeadDialogContent(
                         }
                     }
                     Box {
-                        OutlinedTextField(
-                            value = if (isFocused) countrySearch else {
-                                if (countrySearch.isEmpty()) CountryEnum.getFlagByAlpha3(
-                                    leadNationality
-                                ) + " " + CountryEnum.getCountryNameByAlpha3(
-                                    leadNationality
-                                ) else countrySearch
-                            },
-                            onValueChange = {
-                                onSetLeadCountrySearch(it)
-                            },
-                            placeholder = { LittleBodyText("Search country") },
-                            shape = MaterialTheme.shapes.large,
-                            modifier = Modifier
-                                .height(60.dp)
-                                .width(200.dp)
-                                .onFocusChanged { focusState ->
-                                    isFocused = focusState.isFocused
-                                    if (!isFocused) {
-                                        onSetLeadCountrySearch("")
-                                        expanded = false
-                                    }
+                        Column(modifier = Modifier.width(200.dp)) {
+                            DialogTextComponent(
+                                value = if (isFocused) countrySearch else {
+                                    if (countrySearch.isEmpty()) CountryEnum.getFlagByAlpha3(
+                                        leadNationality
+                                    ) + " " + CountryEnum.getCountryNameByAlpha3(
+                                        leadNationality
+                                    ) else countrySearch
+                                },
+                                placeholder = "lead country",
+                                singleLine = true,
+                                onValueChange = {
+                                    onSetLeadCountrySearch(it)
                                 }
-                        )
+                            )
+                        }
                         val countriesList = CountryEnum.getInsertCountries(
                             mostPopularLeadsNationalities,
                             suggestLeadsNationality,
@@ -368,7 +359,8 @@ fun LeadDialogContent(
                             onSetLeadCountrySearch("")
                             expanded = true
                         },
-                        imageVector = Icons.Default.FilterList,
+                        imageVector = Icons.Default.Flag,
+                        secondaryImageVector = Icons.Default.FormatListBulleted,
                         contentDescription = "Select country"
                     )
                 }
