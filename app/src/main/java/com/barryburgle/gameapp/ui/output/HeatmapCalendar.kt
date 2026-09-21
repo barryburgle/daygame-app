@@ -1,6 +1,9 @@
 package com.barryburgle.gameapp.ui.output
 
 import android.widget.Toast
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,6 +40,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -46,9 +51,10 @@ import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.output.dialog.CustomSummaryDialog
 import com.barryburgle.gameapp.ui.output.state.OutputState
-import kotlinx.coroutines.Dispatchers
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
@@ -107,14 +113,17 @@ fun HeatmapCalendar(
             .chunked(7)
     }
     val listState = rememberLazyListState()
-    val scope = rememberCoroutineScope()
+    var isInitialScrollDone by remember { mutableStateOf(false) }
+
     LaunchedEffect(weeks) {
-        scope.launch {
-            if (weeks.isNotEmpty()) {
-                listState.scrollToItem(weeks.size - 1)
-            }
+        if (weeks.isNotEmpty()) {
+            listState.scrollToItem(weeks.size - 1)
         }
+        isInitialScrollDone = true
     }
+
+    val firstVisibleItemIndex = listState.firstVisibleItemIndex
+
     Row(modifier = modifier.padding(vertical = 8.dp)) {
         LazyRow(
             state = listState,
@@ -127,6 +136,8 @@ fun HeatmapCalendar(
                 )
             }
             itemsIndexed(weeks) { index, week ->
+                val relativeWeekIndex = (index - firstVisibleItemIndex).coerceAtLeast(0)
+
                 Column(horizontalAlignment = Alignment.Start) {
                     Box(
                         modifier = Modifier
@@ -157,10 +168,11 @@ fun HeatmapCalendar(
                         modifier = Modifier.wrapContentWidth(),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        week.forEach { date ->
+                        week.forEachIndexed { dayInWeekIndex, date ->
                             val entry = entryMap[date]
                             val count = entry?.count ?: 0.0f
                             val desc = entry?.desc ?: ""
+                            val cellAnimationIndex = relativeWeekIndex * 7 + dayInWeekIndex
 
                             val isInRange =
                                 customSummaryStartDate != null && customSummaryEndDate != null &&
@@ -177,6 +189,8 @@ fun HeatmapCalendar(
                                 cellColor = cellColor,
                                 emptyColor = emptyColor.copy(alpha = 0.1f),
                                 isSelected = selectedDate == date || isInRange,
+                                cellAnimationIndex = cellAnimationIndex,
+                                isInitialScrollDone = isInitialScrollDone,
                                 onClick = {
                                     if (isCustomSummaryMode) {
                                         if (customSummaryStartDate == null || customSummaryEndDate != null) {
@@ -217,10 +231,45 @@ private fun ContributionCellWithTooltip(
     cellColor: Color,
     emptyColor: Color,
     isSelected: Boolean,
+    cellAnimationIndex: Int,
+    isInitialScrollDone: Boolean,
     onClick: () -> Unit
 ) {
-    val tooltipState = rememberTooltipState(isPersistent = false)
+    val tooltipState = rememberTooltipState(isPersistent = true)
     val scope = rememberCoroutineScope()
+    var tooltipJob by remember { mutableStateOf<Job?>(null) }
+    val scale = remember { Animatable(0f) }
+    val clickScale = remember { Animatable(1f) }
+    val tooltipScale = remember { Animatable(0f) }
+
+    LaunchedEffect(isInitialScrollDone) {
+        if (isInitialScrollDone) {
+            delay(cellAnimationIndex * 12L)
+            scale.animateTo(
+                targetValue = 1f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
+        }
+    }
+
+    LaunchedEffect(tooltipState.isVisible) {
+        if (tooltipState.isVisible) {
+            tooltipScale.snapTo(0f)
+            tooltipScale.animateTo(
+                targetValue = 1f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
+        } else {
+            tooltipScale.snapTo(0f)
+        }
+    }
+
     val baseColor = when {
         count == 0.0f -> emptyColor
         else -> {
@@ -235,11 +284,17 @@ private fun ContributionCellWithTooltip(
     TooltipBox(
         positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
         tooltip = {
-            PlainTooltip(containerColor = MaterialTheme.colorScheme.primaryContainer) {
-                Text(
-                    color = textColor,
-                    text = date.dayOfWeek.name.lowercase()
-                        .replaceFirstChar { it.uppercase() }.take(3) + ". " + FormatService.getDate(
+            PlainTooltip(
+                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
+                modifier = Modifier.graphicsLayer {
+                    scaleX = tooltipScale.value
+                    scaleY = tooltipScale.value
+                    transformOrigin = TransformOrigin(0.5f, 1f)
+                }
+            ) {
+                LittleBodyText(
+                    date.dayOfWeek.name.lowercase()
+                        .replaceFirstChar { it.uppercase() } + " " + FormatService.getDate(
                         date.toString() + "T00:00Z"
                     ) + desc
                 )
@@ -250,6 +305,11 @@ private fun ContributionCellWithTooltip(
         Box(
             modifier = Modifier
                 .size(16.dp)
+                .graphicsLayer {
+                    val combinedScale = scale.value * clickScale.value
+                    scaleX = combinedScale
+                    scaleY = combinedScale
+                }
                 .then(
                     if (isSelected) Modifier.border(1.5.dp, textColor, RoundedCornerShape(2.dp))
                     else Modifier
@@ -257,7 +317,23 @@ private fun ContributionCellWithTooltip(
                 .background(baseColor, RoundedCornerShape(2.dp))
                 .clickable {
                     onClick()
-                    scope.launch { tooltipState.show() }
+                    tooltipJob?.cancel()
+                    tooltipJob = scope.launch {
+                        val showJob = launch { tooltipState.show() }
+                        delay(8000L)
+                        tooltipState.dismiss()
+                        showJob.cancel()
+                    }
+                    scope.launch {
+                        clickScale.snapTo(1.3f)
+                        clickScale.animateTo(
+                            targetValue = 1f,
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioHighBouncy,
+                                stiffness = Spring.StiffnessMedium
+                            )
+                        )
+                    }
                 }
         )
     }
