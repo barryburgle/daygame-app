@@ -19,6 +19,7 @@ import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.ui.utilities.RecordingsView
+import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.timeline.Timeline
 
@@ -42,27 +43,33 @@ fun SessionBody(
             .fillMaxHeight(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        DescribedQuantifier(
-            quantity = "${abstractSession.sets}",
-            quantityFontSize = countFontSize,
-            description = "Sets",
-            descriptionFontSize = descriptionFontSize,
-            drawableIcon = R.drawable.set_action
-        )
-        DescribedQuantifier(
-            quantity = "${abstractSession.convos}",
-            quantityFontSize = countFontSize,
-            description = "Conversations",
-            descriptionFontSize = descriptionFontSize,
-            drawableIcon = R.drawable.conversation_action
-        )
-        DescribedQuantifier(
-            quantity = "${abstractSession.contacts}",
-            quantityFontSize = countFontSize,
-            description = "Contacts",
-            descriptionFontSize = descriptionFontSize,
-            drawableIcon = R.drawable.contact_action
-        )
+        AnimatedStaggeredItem(index = 0) {
+            DescribedQuantifier(
+                quantity = "${abstractSession.sets}",
+                quantityFontSize = countFontSize,
+                description = "Sets",
+                descriptionFontSize = descriptionFontSize,
+                drawableIcon = R.drawable.set_action
+            )
+        }
+        AnimatedStaggeredItem(index = 1) {
+            DescribedQuantifier(
+                quantity = "${abstractSession.convos}",
+                quantityFontSize = countFontSize,
+                description = "Conversations",
+                descriptionFontSize = descriptionFontSize,
+                drawableIcon = R.drawable.conversation_action
+            )
+        }
+        AnimatedStaggeredItem(index = 2) {
+            DescribedQuantifier(
+                quantity = "${abstractSession.contacts}",
+                quantityFontSize = countFontSize,
+                description = "Contacts",
+                descriptionFontSize = descriptionFontSize,
+                drawableIcon = R.drawable.contact_action
+            )
+        }
     }
     Spacer(modifier = Modifier.height(12.dp))
     Row(
@@ -71,54 +78,65 @@ fun SessionBody(
             .fillMaxHeight(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        DescribedQuantifier(
-            quantity = "${FormatService.getPerc(abstractSession.convoRatio)}",
-            quantityFontSize = perfFontSize,
-            description = "Conversation\nRatio",
-            descriptionFontSize = descriptionFontSize
-        )
-        DescribedQuantifier(
-            quantity = "${FormatService.getPerc(abstractSession.contactRatio)}",
-            quantityFontSize = perfFontSize,
-            description = "Contact\nRatio",
-            descriptionFontSize = descriptionFontSize
-        )
-        DescribedQuantifier(
-            quantity = "${abstractSession.index}",
-            quantityFontSize = perfFontSize,
-            description = "Index",
-            descriptionFontSize = descriptionFontSize
-        )
-        DescribedQuantifier(
-            quantity = "${abstractSession.approachTime}",
-            quantityFontSize = perfFontSize,
-            description = "Minutes\nper set",
-            descriptionFontSize = descriptionFontSize
-        )
+        AnimatedStaggeredItem(index = 3) {
+            DescribedQuantifier(
+                quantity = "${FormatService.getPerc(abstractSession.convoRatio)}",
+                quantityFontSize = perfFontSize,
+                description = "Conversation\nRatio",
+                descriptionFontSize = descriptionFontSize
+            )
+        }
+        AnimatedStaggeredItem(index = 4) {
+            DescribedQuantifier(
+                quantity = "${FormatService.getPerc(abstractSession.contactRatio)}",
+                quantityFontSize = perfFontSize,
+                description = "Contact\nRatio",
+                descriptionFontSize = descriptionFontSize
+            )
+        }
+        AnimatedStaggeredItem(index = 5) {
+            DescribedQuantifier(
+                quantity = "${abstractSession.index}",
+                quantityFontSize = perfFontSize,
+                description = "Index",
+                descriptionFontSize = descriptionFontSize
+            )
+        }
+        AnimatedStaggeredItem(index = 6) {
+            DescribedQuantifier(
+                quantity = "${abstractSession.approachTime}",
+                quantityFontSize = perfFontSize,
+                description = "Minutes\nper set",
+                descriptionFontSize = descriptionFontSize
+            )
+        }
     }
     if (pinPoints.isNotEmpty()) {
         Spacer(modifier = Modifier.height(12.dp))
-        Timeline(
-            abstractSession,
-            pinPoints,
-            abstractSession.sessionTime,
-            leads,
-            onEvent,
-            modifier = Modifier.fillMaxWidth()
-        )
+        AnimatedStaggeredItem(index = 7) {
+            Timeline(
+                abstractSession,
+                pinPoints,
+                abstractSession.sessionTime,
+                leads,
+                onEvent,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
-    // if audio recordings exist, show them
     val sessionRecordings = RecordingService.recordingsOf(abstractSession.id, recordings)
     if (sessionRecordings.isNotEmpty()) {
         Spacer(modifier = Modifier.height(12.dp))
-        RecordingsView(
-            recordingState = recordingState,
-            recordings = sessionRecordings,
-            recordingsFolder = recordingsFolder,
-            recordingsEnabled = recordingsEnabled,
-            onTapPlaybackPlay = { onEvent(GameEvent.TapPlaybackPlay(it)) },
-            onTapPlaybackPause = { onEvent(GameEvent.TapPlaybackPause) },
-            onSetPlaybackPosition = { onEvent(GameEvent.SetPlaybackPosition(it)) }
-        )
+        AnimatedStaggeredItem(index = 8) {
+            RecordingsView(
+                recordingState = recordingState,
+                recordings = sessionRecordings,
+                recordingsFolder = recordingsFolder,
+                recordingsEnabled = recordingsEnabled,
+                onTapPlaybackPlay = { onEvent(GameEvent.TapPlaybackPlay(it)) },
+                onTapPlaybackPause = { onEvent(GameEvent.TapPlaybackPause) },
+                onSetPlaybackPosition = { onEvent(GameEvent.SetPlaybackPosition(it)) }
+            )
+        }
     }
 }

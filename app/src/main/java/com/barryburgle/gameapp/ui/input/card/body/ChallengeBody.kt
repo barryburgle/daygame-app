@@ -18,6 +18,7 @@ import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.enums.ChallengeMedalEnum
 import com.barryburgle.gameapp.model.enums.ChallengeTypeEnum
 import com.barryburgle.gameapp.service.challenge.ChallengeMedalService
+import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.AchievedChallengeProgressBar
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedIcon
@@ -36,38 +37,50 @@ fun ChallengeBody(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val description = ChallengeTypeEnum.getDescription(achievedChallenge.challenge.type)
-        DescribedQuantifier(
-            quantity = "${achievedChallenge.challenge.goal}",
-            quantityFontSize = countFontSize,
-            description = description,
-            descriptionFontSize = descriptionFontSize,
-            drawableIcon = ChallengeTypeEnum.getIcon(achievedChallenge.challenge.type)
-        )
-        var achievedToPrint = achievedChallenge.achieved.toString()
-        if (ChallengeTypeEnum.isTypeAchievedInteger(achievedChallenge.challenge.type)) {
-            achievedToPrint = achievedChallenge.achieved.toInt().toString()
+        AnimatedStaggeredItem(index = 0) {
+            val description = ChallengeTypeEnum.getDescription(achievedChallenge.challenge.type)
+            DescribedQuantifier(
+                quantity = "${achievedChallenge.challenge.goal}",
+                quantityFontSize = countFontSize,
+                description = description,
+                descriptionFontSize = descriptionFontSize,
+                drawableIcon = ChallengeTypeEnum.getIcon(achievedChallenge.challenge.type)
+            )
         }
-        var achievedDescription =
-            description + " " + ChallengeTypeEnum.getValue(achievedChallenge.challenge.type)
-                .getSuccessVerb()
-        DescribedQuantifier(
-            quantity = achievedToPrint,
-            quantityFontSize = countFontSize,
-            description = achievedDescription,
-            descriptionFontSize = descriptionFontSize,
-            drawableIcon = ChallengeTypeEnum.getIcon(achievedChallenge.challenge.type)
-        )
-        val challengeEnumValue = ChallengeMedalService.getMedal(achievedChallenge)
-        DescribedIcon(
-            challengeEnumValue.getDescription(),
-            challengeEnumValue.getDescription(),
-            10.sp,
-            challengeEnumValue.getIcon(),
-            isBoolean = false,
-            defaultColor = if (ChallengeMedalEnum.ONGOING.equals(challengeEnumValue)) MaterialTheme.colorScheme.secondaryContainer else challengeEnumValue.getColor()
-        )
-        TweetLinkButton(achievedChallenge.challenge.tweetUrl)
+
+        AnimatedStaggeredItem(index = 1) {
+            var achievedToPrint = achievedChallenge.achieved.toString()
+            if (ChallengeTypeEnum.isTypeAchievedInteger(achievedChallenge.challenge.type)) {
+                achievedToPrint = achievedChallenge.achieved.toInt().toString()
+            }
+            val description = ChallengeTypeEnum.getDescription(achievedChallenge.challenge.type)
+            var achievedDescription =
+                description + " " + ChallengeTypeEnum.getValue(achievedChallenge.challenge.type)
+                    .getSuccessVerb()
+            DescribedQuantifier(
+                quantity = achievedToPrint,
+                quantityFontSize = countFontSize,
+                description = achievedDescription,
+                descriptionFontSize = descriptionFontSize,
+                drawableIcon = ChallengeTypeEnum.getIcon(achievedChallenge.challenge.type)
+            )
+        }
+
+        AnimatedStaggeredItem(index = 2) {
+            val challengeEnumValue = ChallengeMedalService.getMedal(achievedChallenge)
+            DescribedIcon(
+                challengeEnumValue.getDescription(),
+                challengeEnumValue.getDescription(),
+                10.sp,
+                challengeEnumValue.getIcon(),
+                isBoolean = false,
+                defaultColor = if (ChallengeMedalEnum.ONGOING.equals(challengeEnumValue)) MaterialTheme.colorScheme.secondaryContainer else challengeEnumValue.getColor()
+            )
+        }
+
+        AnimatedStaggeredItem(index = 3) {
+            TweetLinkButton(achievedChallenge.challenge.tweetUrl)
+        }
     }
     Spacer(modifier = Modifier.height(12.dp))
     Row(

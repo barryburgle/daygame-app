@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.set.SingleSet
+import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedIcon
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
@@ -30,34 +31,42 @@ fun SetBody(
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        DescribedIcon(
-            SetSortType.CONVERSATION.getField(),
-            SetSortType.NO_CONVERSATION.getField(),
-            descriptionFontSize,
-            R.drawable.chat_w,
-            set.conversation
-        )
-        DescribedIcon(
-            SetSortType.CONTACT.getField(),
-            SetSortType.NO_CONTACT.getField(),
-            descriptionFontSize,
-            R.drawable.contact_w,
-            set.contact
-        )
-        DescribedIcon(
-            SetSortType.INSTANT_DATE.getField(),
-            SetSortType.NO_INSTANT_DATE.getField(),
-            descriptionFontSize,
-            R.drawable.idate_w,
-            set.instantDate
-        )
-        DescribedIcon(
-            SetSortType.RECORDED.getField(),
-            SetSortType.NOT_RECORDED.getField(),
-            descriptionFontSize,
-            R.drawable.microphone_w,
-            set.recorded
-        )
+        AnimatedStaggeredItem(index = 0) {
+            DescribedIcon(
+                SetSortType.CONVERSATION.getField(),
+                SetSortType.NO_CONVERSATION.getField(),
+                descriptionFontSize,
+                R.drawable.chat_w,
+                set.conversation
+            )
+        }
+        AnimatedStaggeredItem(index = 1) {
+            DescribedIcon(
+                SetSortType.CONTACT.getField(),
+                SetSortType.NO_CONTACT.getField(),
+                descriptionFontSize,
+                R.drawable.contact_w,
+                set.contact
+            )
+        }
+        AnimatedStaggeredItem(index = 2) {
+            DescribedIcon(
+                SetSortType.INSTANT_DATE.getField(),
+                SetSortType.NO_INSTANT_DATE.getField(),
+                descriptionFontSize,
+                R.drawable.idate_w,
+                set.instantDate
+            )
+        }
+        AnimatedStaggeredItem(index = 3) {
+            DescribedIcon(
+                SetSortType.RECORDED.getField(),
+                SetSortType.NOT_RECORDED.getField(),
+                descriptionFontSize,
+                R.drawable.microphone_w,
+                set.recorded
+            )
+        }
     }
     Spacer(modifier = Modifier.height(12.dp))
     Row(
@@ -66,12 +75,16 @@ fun SetBody(
             .fillMaxHeight(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        DescribedQuantifier(
-            quantity = "${set.location}",
-            quantityFontSize = perfFontSize,
-            description = "Location",
-            descriptionFontSize = descriptionFontSize
-        )
-        TweetLinkButton(set.tweetUrl)
+        AnimatedStaggeredItem(index = 4) {
+            DescribedQuantifier(
+                quantity = "${set.location}",
+                quantityFontSize = perfFontSize,
+                description = "Location",
+                descriptionFontSize = descriptionFontSize
+            )
+        }
+        AnimatedStaggeredItem(index = 5) {
+            TweetLinkButton(set.tweetUrl)
+        }
     }
 }

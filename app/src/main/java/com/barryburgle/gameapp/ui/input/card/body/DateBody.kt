@@ -15,6 +15,7 @@ import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.DateTypeEnum
+import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.button.TweetLinkButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedIcon
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
@@ -31,41 +32,51 @@ fun DateBody(
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        DescribedIcon(
-            DateSortType.PULL.getField(),
-            DateSortType.NOT_PULL.getField(),
-            descriptionFontSize,
-            R.drawable.pull_w,
-            date.pull
-        )
-        DescribedIcon(
-            DateSortType.BOUNCE.getField(),
-            DateSortType.NOT_BOUNCE.getField(),
-            descriptionFontSize,
-            R.drawable.bounce_w,
-            date.bounce
-        )
-        DescribedIcon(
-            DateSortType.KISS.getField(),
-            DateSortType.NOT_KISS.getField(),
-            descriptionFontSize,
-            R.drawable.kiss_w,
-            date.kiss
-        )
-        DescribedIcon(
-            DateSortType.LAY.getField(),
-            DateSortType.NOT_LAY.getField(),
-            descriptionFontSize,
-            R.drawable.bed_w,
-            date.lay
-        )
-        DescribedIcon(
-            DateSortType.RECORD.getField(),
-            DateSortType.NOT_RECORD.getField(),
-            descriptionFontSize,
-            R.drawable.microphone_w,
-            date.recorded
-        )
+        AnimatedStaggeredItem(index = 0) {
+            DescribedIcon(
+                DateSortType.PULL.getField(),
+                DateSortType.NOT_PULL.getField(),
+                descriptionFontSize,
+                R.drawable.pull_w,
+                date.pull
+            )
+        }
+        AnimatedStaggeredItem(index = 1) {
+            DescribedIcon(
+                DateSortType.BOUNCE.getField(),
+                DateSortType.NOT_BOUNCE.getField(),
+                descriptionFontSize,
+                R.drawable.bounce_w,
+                date.bounce
+            )
+        }
+        AnimatedStaggeredItem(index = 2) {
+            DescribedIcon(
+                DateSortType.KISS.getField(),
+                DateSortType.NOT_KISS.getField(),
+                descriptionFontSize,
+                R.drawable.kiss_w,
+                date.kiss
+            )
+        }
+        AnimatedStaggeredItem(index = 3) {
+            DescribedIcon(
+                DateSortType.LAY.getField(),
+                DateSortType.NOT_LAY.getField(),
+                descriptionFontSize,
+                R.drawable.bed_w,
+                date.lay
+            )
+        }
+        AnimatedStaggeredItem(index = 4) {
+            DescribedIcon(
+                DateSortType.RECORD.getField(),
+                DateSortType.NOT_RECORD.getField(),
+                descriptionFontSize,
+                R.drawable.microphone_w,
+                date.recorded
+            )
+        }
     }
     Spacer(modifier = Modifier.height(12.dp))
     Row(
@@ -74,24 +85,32 @@ fun DateBody(
             .fillMaxHeight(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        DescribedQuantifier(
-            quantity = "${date.location}",
-            quantityFontSize = perfFontSize,
-            description = "Location",
-            descriptionFontSize = descriptionFontSize
-        )
-        DescribedQuantifier(
-            quantity = "${date.cost} €",
-            quantityFontSize = perfFontSize,
-            description = "Cost",
-            descriptionFontSize = descriptionFontSize
-        )
-        DescribedQuantifier(
-            quantity = DateTypeEnum.getDateNumber(date.dateNumber, false),
-            quantityFontSize = perfFontSize,
-            description = "Date",
-            descriptionFontSize = descriptionFontSize
-        )
-        TweetLinkButton(date.tweetUrl)
+        AnimatedStaggeredItem(index = 5) {
+            DescribedQuantifier(
+                quantity = "${date.location}",
+                quantityFontSize = perfFontSize,
+                description = "Location",
+                descriptionFontSize = descriptionFontSize
+            )
+        }
+        AnimatedStaggeredItem(index = 6) {
+            DescribedQuantifier(
+                quantity = "${date.cost} €",
+                quantityFontSize = perfFontSize,
+                description = "Cost",
+                descriptionFontSize = descriptionFontSize
+            )
+        }
+        AnimatedStaggeredItem(index = 7) {
+            DescribedQuantifier(
+                quantity = DateTypeEnum.getDateNumber(date.dateNumber, false),
+                quantityFontSize = perfFontSize,
+                description = "Date",
+                descriptionFontSize = descriptionFontSize
+            )
+        }
+        AnimatedStaggeredItem(index = 8) {
+            TweetLinkButton(date.tweetUrl)
+        }
     }
 }
