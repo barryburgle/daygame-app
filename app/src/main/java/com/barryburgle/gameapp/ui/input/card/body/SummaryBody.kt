@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
+import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
@@ -32,27 +33,33 @@ fun SummaryBody(
                 .fillMaxHeight(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            DescribedQuantifier(
-                quantity = "${sets}",
-                quantityFontSize = countFontSize,
-                description = "Sets",
-                descriptionFontSize = descriptionFontSize,
-                drawableIcon = R.drawable.set_action
-            )
-            DescribedQuantifier(
-                quantity = "${contacts}",
-                quantityFontSize = countFontSize,
-                description = "Contacts",
-                descriptionFontSize = descriptionFontSize,
-                drawableIcon = R.drawable.contact_action
-            )
-            DescribedQuantifier(
-                quantity = "${dates}",
-                quantityFontSize = countFontSize,
-                description = "Dates",
-                descriptionFontSize = descriptionFontSize,
-                drawableIcon = R.drawable.favorite
-            )
+            AnimatedStaggeredItem(index = 0) {
+                DescribedQuantifier(
+                    quantity = "${sets}",
+                    quantityFontSize = countFontSize,
+                    description = "Sets",
+                    descriptionFontSize = descriptionFontSize,
+                    drawableIcon = R.drawable.set_action
+                )
+            }
+            AnimatedStaggeredItem(index = 1) {
+                DescribedQuantifier(
+                    quantity = "${contacts}",
+                    quantityFontSize = countFontSize,
+                    description = "Contacts",
+                    descriptionFontSize = descriptionFontSize,
+                    drawableIcon = R.drawable.contact_action
+                )
+            }
+            AnimatedStaggeredItem(index = 2) {
+                DescribedQuantifier(
+                    quantity = "${dates}",
+                    quantityFontSize = countFontSize,
+                    description = "Dates",
+                    descriptionFontSize = descriptionFontSize,
+                    drawableIcon = R.drawable.favorite
+                )
+            }
         }
     }
 }
