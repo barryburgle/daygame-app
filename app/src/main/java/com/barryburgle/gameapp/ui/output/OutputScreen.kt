@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -66,8 +65,6 @@ import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 import java.time.LocalDate
-import java.time.OffsetDateTime
-import java.time.temporal.ChronoUnit
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -256,56 +253,40 @@ fun OutputScreen(
                         }
                         for (lead in state.allLeads) {
                             item {
-                                Row(
-                                    modifier = Modifier.combinedClickable(
-                                        onClick = {
-                                            onEvent(OutputEvent.SetIsInOverlayToTrue)
-                                            onEvent(OutputEvent.EditLead(lead, true))
-                                        },
-                                        onLongClick = {
-                                            if (lead.contact == ContactTypeEnum.NUMBER.getField() && lead.contactLookupKey != null) {
-                                                try {
-                                                    val uri = Uri.withAppendedPath(
-                                                        ContactsContract.Contacts.CONTENT_LOOKUP_URI,
-                                                        lead.contactLookupKey
-                                                    )
-                                                    uriHandler.openUri(uri.toString())
-                                                } catch (e: Exception) {
-                                                    Toast.makeText(
-                                                        localContext,
-                                                        "Could not open contact",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-                                            } else if (lead.contact == ContactTypeEnum.SOCIAL.getField() && lead.instagramUrl != null && lead.instagramUrl!!.isNotBlank()) {
-                                                uriHandler.openUri(lead.instagramUrl!!)
-                                            } else {
+                                LeadCard(
+                                    lead = lead,
+                                    onEditClick = {
+                                        onEvent(OutputEvent.SetIsInOverlayToTrue)
+                                        onEvent(OutputEvent.EditLead(lead, true))
+                                    },
+                                    onLinkClick = {
+                                        if (lead.contact == ContactTypeEnum.NUMBER.getField() && lead.contactLookupKey != null) {
+                                            try {
+                                                val uri = Uri.withAppendedPath(
+                                                    ContactsContract.Contacts.CONTENT_LOOKUP_URI,
+                                                    lead.contactLookupKey
+                                                )
+                                                uriHandler.openUri(uri.toString())
+                                            } catch (e: Exception) {
                                                 Toast.makeText(
                                                     localContext,
-                                                    "No contact found",
+                                                    "Could not open contact",
                                                     Toast.LENGTH_SHORT
-                                                )
-                                                    .show()
+                                                ).show()
                                             }
-                                        }),
-                                    horizontalArrangement = Arrangement.spacedBy(
-                                        7.dp
-                                    )
-                                ) {
-                                    LeadCard(
-                                        lead = lead,
-                                        backgroundColor = MaterialTheme.colorScheme.surface,
-                                        alertColor = getLeadAlertColor(lead),
-                                        outputShow = true,
-                                        cardShow = false
-                                    )
-                                }
+                                        } else if (lead.contact == ContactTypeEnum.SOCIAL.getField() && lead.instagramUrl != null && lead.instagramUrl!!.isNotBlank()) {
+                                            uriHandler.openUri(lead.instagramUrl!!)
+                                        } else {
+                                            Toast.makeText(
+                                                localContext,
+                                                "No contact found",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                                .show()
+                                        }
+                                    })
+                                Spacer(modifier = Modifier.width(8.dp))
                             }
-                        }
-                        item {
-                            Spacer(
-                                modifier = Modifier.width(spaceFromLeft - 7.dp)
-                            )
                         }
                     }
                 }
