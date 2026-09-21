@@ -8,18 +8,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material.icons.filled.FiberManualRecord
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Timelapse
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,21 +26,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
+import com.barryburgle.gameapp.model.enums.DaygameDiceEnum
 import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.recording.RecordingStateEnum
 import com.barryburgle.gameapp.ui.input.CounterColumn
 import com.barryburgle.gameapp.ui.input.card.DeleteConfirmationDialog
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
 fun LiveSessionInputButtons(
@@ -86,7 +87,8 @@ fun LiveSessionInputButtons(
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Max),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         val plusButtonSecondImageVector =
             if (recordingState.stopRecordingOnNewEntryEnable && recordingState.state == RecordingStateEnum.RECORDING) Icons.Default.Stop else null
@@ -144,46 +146,35 @@ fun LiveSessionInputButtons(
             },
             onDecrement = { onContactsChange(contactsCount - 1, false) }
         )
-        Column(
-            modifier = Modifier
-                .fillMaxHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        Row(
+            modifier = Modifier.fillMaxHeight(),
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "Pull",
-                fontSize = 10.sp,
-                lineHeight = 10.sp,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = "O'Clock",
-                fontSize = 10.sp,
-                lineHeight = 10.sp,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(5.dp))
             Column(
                 modifier = Modifier
-                    .let {
-                        if (showRecordingButtons) it.fillMaxHeight(0.8f) else it.fillMaxHeight(
-                            0.35f
-                        )
-                    }
-                    .background(
-                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
-                        shape = RoundedCornerShape(30.dp)
-                    )
-                    .padding(5.dp)
+                    .fillMaxHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxHeight(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = if (showRecordingButtons) Arrangement.SpaceBetween else Arrangement.Center
+                        .let {
+                            if (showRecordingButtons) it.fillMaxHeight() else it.fillMaxHeight(
+                                0.35f
+                            )
+                        }
+                        .background(
+                            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+                            shape = RoundedCornerShape(30.dp)
+                        )
+                        .padding(5.dp)
                 ) {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        modifier = Modifier
+                            .fillMaxHeight(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = if (showRecordingButtons) Arrangement.SpaceBetween else Arrangement.Center
                     ) {
                         IconShadowButton(
                             onClick =
@@ -203,11 +194,21 @@ fun LiveSessionInputButtons(
                             imageVector = Icons.Default.Timelapse,
                             contentDescription = "Pull O'Clock"
                         )
-                    }
-                    if (showRecordingButtons) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
+                        IconShadowButton(
+                            onClick =
+                                {
+                                    val extracted = DaygameDiceEnum.random()
+                                    Toast.makeText(
+                                        localContext,
+                                        "${extracted.value} - ${extracted.description}",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                        .show()
+                                },
+                            imageVector = Icons.Default.Casino,
+                            contentDescription = "Daygame Dice"
+                        )
+                        if (showRecordingButtons) {
                             IconShadowButton(
                                 onClick = {
                                     if (recordingState.state == RecordingStateEnum.RECORDING) {
@@ -245,20 +246,28 @@ fun LiveSessionInputButtons(
                     }
                 }
             }
-            if (showRecordingButtons) {
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    text = "Record",
-                    fontSize = 10.sp,
-                    lineHeight = 10.sp,
-                    textAlign = TextAlign.Center
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                LittleBodyText(
+                    text = "Pull O'Clock",
+                    modifier = Modifier
+                        .vertical()
+                        .rotate(-90f)
                 )
-                if (recordingState.triggerPullOClockWithRecordingsEnable) {
-                    Text(
-                        text = "& Pull",
-                        fontSize = 10.sp,
-                        lineHeight = 10.sp,
-                        textAlign = TextAlign.Center
+                if (showRecordingButtons) {
+                    var recordDesc = "Record"
+                    if (recordingState.triggerPullOClockWithRecordingsEnable) {
+                        recordDesc += " & Pull"
+                    }
+                    LittleBodyText(
+                        text = recordDesc,
+                        modifier = Modifier
+                            .vertical()
+                            .rotate(-90f)
                     )
                 }
             }
@@ -302,5 +311,15 @@ fun shareEvent(
         )
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         localContext.startActivity(shareIntent)
+    }
+}
+
+fun Modifier.vertical() = layout { measurable, constraints ->
+    val placeable = measurable.measure(constraints)
+    layout(placeable.height, placeable.width) {
+        placeable.place(
+            x = -(placeable.width / 2 - placeable.height / 2),
+            y = -(placeable.height / 2 - placeable.width / 2)
+        )
     }
 }

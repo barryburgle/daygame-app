@@ -4,6 +4,7 @@
 - "Write her after" notification reminds you to write her after settable amount of minutes 🔔
 - "Custom Summary" allows you to get an all-stats comprehensive start-to-end custom-dates summary of your Game from History grid 🏆
 - "Pull O'Clock": press the timer button (or start a recording) on Live Session card before starting the set and get a notification to remind to close/pull after customizable amount of in-set minutes ⏱️
+- The "Daygame Dice" is all you need: challenge yourself on a Live Session 🎲
 - Pinpoints week vs. day-time chart: know when most of the interaction happen at a glance 👀
 - Pinpoints on map can now be filtered by type: show where the juiciest interactions happened 📍
 - Tap on the sitting reminder notification to open the timer for some rest 🕐
