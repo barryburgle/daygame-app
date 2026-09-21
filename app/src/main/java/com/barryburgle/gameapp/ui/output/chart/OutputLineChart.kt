@@ -20,6 +20,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.ui.theme.Shapes
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
+import com.github.mikephil.charting.animation.ChartAnimator
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
@@ -28,14 +30,55 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider
+import com.github.mikephil.charting.renderer.LineChartRenderer
 import com.github.mikephil.charting.renderer.XAxisRenderer
 import com.github.mikephil.charting.utils.MPPointF
 import com.github.mikephil.charting.utils.Utils
+import com.github.mikephil.charting.utils.ViewPortHandler
 
 data class LabeledBarEntry(
     val entry: BarEntry,
     val label: String
 )
+
+class FluidLineChartRenderer(
+    chart: LineDataProvider,
+    animator: ChartAnimator,
+    viewPortHandler: ViewPortHandler
+) : LineChartRenderer(chart, animator, viewPortHandler) {
+
+    private inline fun withClipping(c: Canvas, drawBlock: () -> Unit) {
+        val saveCount = c.save()
+        val canvasWidth = c.width.toFloat()
+        val canvasHeight = c.height.toFloat()
+
+        val contentLeft = mViewPortHandler.contentLeft()
+        val clipRight = contentLeft + ((canvasWidth - contentLeft) * mAnimator.phaseX)
+
+        c.clipRect(0f, 0f, clipRight, canvasHeight)
+
+        val originalPhaseX = mAnimator.phaseX
+        mAnimator.phaseX = 1f
+
+        drawBlock()
+
+        mAnimator.phaseX = originalPhaseX
+        c.restoreToCount(saveCount)
+    }
+
+    override fun drawData(c: Canvas) {
+        withClipping(c) { super.drawData(c) }
+    }
+
+    override fun drawValues(c: Canvas) {
+        withClipping(c) { super.drawValues(c) }
+    }
+
+    override fun drawExtras(c: Canvas) {
+        withClipping(c) { super.drawExtras(c) }
+    }
+}
 
 @Composable
 fun OutputLineChart(
@@ -111,6 +154,7 @@ fun OutputLineChart(
                                 legendActive,
                                 isScrollable
                             )
+                        barChart.renderer = FluidLineChartRenderer(barChart, barChart.animator, barChart.viewPortHandler)
                         if (showLabels) {
                             val xAxisLabels = labeledEntries.map { it.label }
                             if (xAxisLabels.isNotEmpty()) {
@@ -212,7 +256,7 @@ fun OutputLineChart(
                             barChart.setVisibleXRangeMaximum(12f)
                             barChart.moveViewToX(normalizedBarEntryList.size.toFloat())
                         }
-                        barChart.invalidate()
+                        barChart.animateX(900, Easing.EaseInCubic)
                         barChart
                     })
             }
@@ -246,7 +290,8 @@ fun styleLineChart(
         legend.isEnabled = legendActive
         legend.textColor = onSurfacecolor
         legend.textSize = inChartTextSize
-        extraBottomOffset = 30f // Increased offset to accommodate multiline labels without getting clipped
+        extraRightOffset = 20f
+        extraBottomOffset = 30f
     }
     return lineChart
 }
