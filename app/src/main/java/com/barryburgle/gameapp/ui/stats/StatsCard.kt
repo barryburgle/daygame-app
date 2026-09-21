@@ -4,6 +4,7 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +12,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
@@ -22,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -32,6 +38,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -78,6 +85,10 @@ fun StatsCard(
     val descriptionFontSize = 10.sp
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val localContext = LocalContext.current.applicationContext
+
+    val pageCount = if (fourthQuantifierQuantity != null && fifthQuantifierQuantity != null) 2 else 1
+    val pagerState = rememberPagerState(pageCount = { pageCount })
+
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
@@ -95,8 +106,7 @@ fun StatsCard(
             )
         ) {
             Column(
-                modifier = Modifier
-                    .padding(16.dp),
+                modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Column(
@@ -123,14 +133,13 @@ fun StatsCard(
                             LargeTitleText(title)
                         }
                         Row(
-                            modifier = Modifier
-                                .width(60.dp),
+                            modifier = Modifier.width(60.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             IconShadowButton(
                                 onClick = {
-                                    var histogramData = exportStats(
+                                    val histogramData = exportStats(
                                         title,
                                         description,
                                         firstQuantifierQuantity,
@@ -156,9 +165,7 @@ fun StatsCard(
                                     )
                                     if (copyReportOnClipboard) {
                                         clipboardManager.setText(
-                                            AnnotatedString(
-                                                histogramData
-                                            )
+                                            AnnotatedString(histogramData)
                                         )
                                         Toast.makeText(
                                             localContext,
@@ -189,81 +196,124 @@ fun StatsCard(
                     LittleBodyText(description)
                 }
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
+                        modifier = Modifier.fillMaxHeight()
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceAround
-                        ) {
-                            DescribedQuantifier(
-                                quantity = firstQuantifierQuantity,
-                                drawableIcon = if (firstQuantifierIcon != null) firstQuantifierIcon else null,
-                                quantityFontSize = countFontSize,
-                                description = firstQuantifierDescription,
-                                descriptionFontSize = descriptionFontSize
-                            )
-                            DescribedQuantifier(
-                                quantity = secondQuantifierQuantity,
-                                drawableIcon = if (secondQuantifierIcon != null) secondQuantifierIcon else null,
-                                color = if (secondQuantifierColor != null) secondQuantifierColor else null,
-                                quantityFontSize = countFontSize,
-                                description = secondQuantifierDescription,
-                                descriptionFontSize = descriptionFontSize
-                            )
-                            DescribedQuantifier(
-                                quantity = thirdQuantifierQuantity,
-                                drawableIcon = if (thirdQuantifierIcon != null) thirdQuantifierIcon else null,
-                                color = if (thirdQuantifierColor != null) thirdQuantifierColor else null,
-                                quantityFontSize = countFontSize,
-                                description = thirdQuantifierDescription,
-                                descriptionFontSize = descriptionFontSize
-                            )
-                            if (fourthQuantifierQuantity != null && fourthQuantifierDescription != null && fifthQuantifierQuantity == null) {
-                                DescribedQuantifier(
-                                    quantity = fourthQuantifierQuantity,
-                                    drawableIcon = if (fourthQuantifierIcon != null) fourthQuantifierIcon else null,
-                                    color = if (fourthQuantifierColor != null) fourthQuantifierColor else null,
-                                    quantityFontSize = countFontSize,
-                                    description = fourthQuantifierDescription,
-                                    descriptionFontSize = descriptionFontSize
-                                )
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxWidth()
+                        ) { page ->
+                            when (page) {
+                                0 -> {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceAround
+                                    ) {
+                                        AnimatedStaggeredItem(index = 0) {
+                                            DescribedQuantifier(
+                                                quantity = firstQuantifierQuantity,
+                                                drawableIcon = if (firstQuantifierIcon != null) firstQuantifierIcon else null,
+                                                quantityFontSize = countFontSize,
+                                                description = firstQuantifierDescription,
+                                                descriptionFontSize = descriptionFontSize
+                                            )
+                                        }
+                                        AnimatedStaggeredItem(index = 1) {
+                                            DescribedQuantifier(
+                                                quantity = secondQuantifierQuantity,
+                                                drawableIcon = if (secondQuantifierIcon != null) secondQuantifierIcon else null,
+                                                color = if (secondQuantifierColor != null) secondQuantifierColor else null,
+                                                quantityFontSize = countFontSize,
+                                                description = secondQuantifierDescription,
+                                                descriptionFontSize = descriptionFontSize
+                                            )
+                                        }
+                                        AnimatedStaggeredItem(index = 2) {
+                                            DescribedQuantifier(
+                                                quantity = thirdQuantifierQuantity,
+                                                drawableIcon = if (thirdQuantifierIcon != null) thirdQuantifierIcon else null,
+                                                color = if (thirdQuantifierColor != null) thirdQuantifierColor else null,
+                                                quantityFontSize = countFontSize,
+                                                description = thirdQuantifierDescription,
+                                                descriptionFontSize = descriptionFontSize
+                                            )
+                                        }
+                                        if (fourthQuantifierQuantity != null && fourthQuantifierDescription != null && fifthQuantifierQuantity == null) {
+                                            AnimatedStaggeredItem(index = 3) {
+                                                DescribedQuantifier(
+                                                    quantity = fourthQuantifierQuantity,
+                                                    drawableIcon = if (fourthQuantifierIcon != null) fourthQuantifierIcon else null,
+                                                    color = if (fourthQuantifierColor != null) fourthQuantifierColor else null,
+                                                    quantityFontSize = countFontSize,
+                                                    description = fourthQuantifierDescription,
+                                                    descriptionFontSize = descriptionFontSize
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                                1 -> {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceEvenly
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(0.7f),
+                                            horizontalArrangement = Arrangement.SpaceAround,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            if (fourthQuantifierQuantity != null && fourthQuantifierDescription != null) {
+                                                AnimatedStaggeredItem(index = 0) {
+                                                    DescribedQuantifier(
+                                                        quantity = fourthQuantifierQuantity,
+                                                        drawableIcon = if (fourthQuantifierIcon != null) fourthQuantifierIcon else null,
+                                                        color = if (fourthQuantifierColor != null) fourthQuantifierColor else null,
+                                                        quantityFontSize = countFontSize,
+                                                        description = fourthQuantifierDescription,
+                                                        descriptionFontSize = descriptionFontSize
+                                                    )
+                                                }
+                                            }
+                                            AnimatedStaggeredItem(index = 1) {
+                                                if (fifthQuantifierQuantity != null && fifthQuantifierDescription != null) {
+                                                    DescribedQuantifier(
+                                                        quantity = fifthQuantifierQuantity,
+                                                        quantityFontSize = countFontSize,
+                                                        description = fifthQuantifierDescription,
+                                                        descriptionFontSize = descriptionFontSize
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
-                        if (fourthQuantifierQuantity != null && fifthQuantifierQuantity != null) {
-                            Spacer(modifier = Modifier.height(12.dp))
+                        if (pageCount > 1) {
+                            Spacer(modifier = Modifier.height(6.dp))
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.7f),
-                                    horizontalArrangement = Arrangement.SpaceAround,
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    if (fourthQuantifierQuantity != null && fourthQuantifierDescription != null) {
-                                        DescribedQuantifier(
-                                            quantity = fourthQuantifierQuantity,
-                                            drawableIcon = if (fourthQuantifierIcon != null) fourthQuantifierIcon else null,
-                                            color = if (fourthQuantifierColor != null) fourthQuantifierColor else null,
-                                            quantityFontSize = countFontSize,
-                                            description = fourthQuantifierDescription,
-                                            descriptionFontSize = descriptionFontSize
-                                        )
-                                    }
-                                    if (fifthQuantifierQuantity != null && fifthQuantifierDescription != null) {
-                                        DescribedQuantifier(
-                                            quantity = fifthQuantifierQuantity,
-                                            quantityFontSize = countFontSize,
-                                            description = fifthQuantifierDescription,
-                                            descriptionFontSize = descriptionFontSize
+                                    repeat(pageCount) { dotIndex ->
+                                        val isSelected = pagerState.currentPage == dotIndex
+                                        Box(
+                                            modifier = Modifier
+                                                .size(if (isSelected) 7.dp else 6.dp)
+                                                .clip(CircleShape)
+                                                .background(
+                                                    if (isSelected) MaterialTheme.colorScheme.primary
+                                                    else MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                                        alpha = 0.35f
+                                                    )
+                                                )
                                         )
                                     }
                                 }
@@ -271,8 +321,7 @@ fun StatsCard(
                         }
                         Spacer(modifier = Modifier.height(12.dp))
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             DescribedQuantifier(
