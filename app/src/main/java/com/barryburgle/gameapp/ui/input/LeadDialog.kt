@@ -82,7 +82,6 @@ fun InputLeadDialog(
         countrySearch = state.countrySearch,
         mostPopularLeadsNationalities = state.mostPopularLeadsNationalities,
         suggestLeadsNationality = state.suggestLeadsNationality,
-        shownNationalities = state.shownNationalities,
         saveLeadToLiveSession = state.saveLeadToLiveSession,
         writeHerAfterReminderEnabled = state.writeHerAfterReminderEnabled,
         writeHerReminderInterval = state.writeHerReminderInterval,
@@ -139,7 +138,6 @@ fun OutputLeadDialog(
         countrySearch = state.countrySearch,
         mostPopularLeadsNationalities = state.mostPopularLeadsNationalities,
         suggestLeadsNationality = state.suggestLeadsNationality,
-        shownNationalities = state.shownNationalities,
         saveLeadToLiveSession = false,
         writeHerAfterReminderEnabled = false,
         writeHerReminderInterval = 60,
@@ -182,7 +180,6 @@ fun LeadDialogContent(
     countrySearch: String,
     mostPopularLeadsNationalities: List<CategoryHistogram>,
     suggestLeadsNationality: Boolean,
-    shownNationalities: Int,
     saveLeadToLiveSession: Boolean,
     writeHerAfterReminderEnabled: Boolean,
     writeHerReminderInterval: Int,
@@ -313,6 +310,7 @@ fun LeadDialogContent(
                             suggestLeadsNationality,
                             countrySearch
                         )
+                        var count = 0
                         Dropdown(
                             modifier = Modifier
                                 .width(200.dp)
@@ -329,7 +327,7 @@ fun LeadDialogContent(
                                 focusManager.clearFocus()
                             }
                         ) { country ->
-                            val count = countriesList.indexOf(country) + 1
+                            count += 1
                             Column(modifier = Modifier.fillMaxWidth()) {
                                 Row(
                                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -342,7 +340,7 @@ fun LeadDialogContent(
                                         LargeTitleText(
                                             country.flag
                                         )
-                                        if (count <= shownNationalities && suggestLeadsNationality) {
+                                        if (count <= mostPopularLeadsNationalities.size && suggestLeadsNationality) {
                                             Icon(
                                                 imageVector = Icons.Default.Star,
                                                 contentDescription = "Suggested country",
@@ -360,14 +358,6 @@ fun LeadDialogContent(
                                     SmallTitleText(
                                         country.countryName
                                     )
-                                }
-                                if (count == shownNationalities && suggestLeadsNationality) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(0.5.dp)
-                                            .background(color = MaterialTheme.colorScheme.inversePrimary)
-                                    ) {}
                                 }
                             }
                         }
