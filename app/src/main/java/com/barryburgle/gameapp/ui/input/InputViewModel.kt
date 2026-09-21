@@ -667,7 +667,6 @@ class InputViewModel(
                 _state.update {
                     it.copy(
                         isAddingLead = false,
-                        isModifyingLead = false,
                         isUpdatingLead = false
                     )
                 }
@@ -1125,7 +1124,7 @@ class InputViewModel(
                 _state.update {
                     it.copy(
                         isAddingLead = event.addLead,
-                        isModifyingLead = event.modifyLead
+                        saveLeadToLiveSession = event.saveLeadToLiveSession
                     )
                 }
             }

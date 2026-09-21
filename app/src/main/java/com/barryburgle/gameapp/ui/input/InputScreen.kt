@@ -349,9 +349,6 @@ fun InputScreen(
         if (state.isAddingLead) {
             InputLeadDialog(state = state, onEvent = onEvent, "Add a lead")
         }
-        if (state.isModifyingLead) {
-            InputLeadDialog(state = state, onEvent = onEvent, "Modify the lead")
-        }
         if (state.isUpdatingLead) {
             InputLeadDialog(state = state, onEvent = onEvent, "Update the lead")
         }

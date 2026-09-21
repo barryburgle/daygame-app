@@ -368,7 +368,7 @@ fun EventCard(
                                         onEvent(GameEvent.SwitchSaveLeadToLiveSession)
                                         onEvent(GameEvent.SetLeadSessionId(liveSession.id!!))
                                         onEvent(GameEvent.SwitchJustSaved)
-                                        onEvent(GameEvent.ShowLeadDialog(true, false))
+                                        onEvent(GameEvent.ShowLeadDialog(true, true))
                                         shareEvent(
                                             liveSessionShareEnabled,
                                             copyReportOnClipboard,

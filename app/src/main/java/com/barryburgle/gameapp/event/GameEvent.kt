@@ -24,7 +24,7 @@ sealed interface GameEvent : GenericEvent {
     ) :
         GameEvent
 
-    class ShowLeadDialog(val addLead: Boolean, val modifyLead: Boolean) : GameEvent
+    class ShowLeadDialog(val addLead: Boolean, val saveLeadToLiveSession: Boolean) : GameEvent
     object HideDialog : GameEvent
     object HideLeadDialog : GameEvent
     data class ScheduleLiveSessionSittingReminder(val interval: Int) : GameEvent

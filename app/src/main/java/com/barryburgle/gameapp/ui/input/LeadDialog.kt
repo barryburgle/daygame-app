@@ -50,6 +50,7 @@ import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.stat.CategoryHistogram
 import com.barryburgle.gameapp.service.PhoneBookService
+import com.barryburgle.gameapp.ui.input.card.DeleteConfirmationDialog
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
@@ -71,7 +72,6 @@ fun InputLeadDialog(
 ) {
     LeadDialogContent(
         isUpdatingLead = state.isUpdatingLead,
-        isModifyingLead = state.isModifyingLead,
         leadId = state.leadId,
         leadInsertTime = state.leadInsertTime,
         leadSessionId = state.leadSessionId,
@@ -129,7 +129,6 @@ fun OutputLeadDialog(
 ) {
     LeadDialogContent(
         isUpdatingLead = state.isUpdatingLead,
-        isModifyingLead = false,
         leadId = state.leadId,
         leadInsertTime = state.leadInsertTime,
         leadSessionId = state.leadSessionId,
@@ -173,7 +172,6 @@ fun OutputLeadDialog(
 @Composable
 fun LeadDialogContent(
     isUpdatingLead: Boolean,
-    isModifyingLead: Boolean,
     leadId: Long,
     leadInsertTime: String,
     leadSessionId: Long?,
@@ -257,7 +255,6 @@ fun LeadDialogContent(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     OutlinedTextField(
-                        readOnly = isModifyingLead,
                         value = leadName,
                         onValueChange = { onSetLeadName(it) },
                         placeholder = { LittleBodyText("Insert lead name") },
@@ -290,7 +287,6 @@ fun LeadDialogContent(
                     }
                     Box {
                         OutlinedTextField(
-                            readOnly = isModifyingLead,
                             value = if (isFocused) countrySearch else {
                                 if (countrySearch.isEmpty()) CountryEnum.getFlagByAlpha3(
                                     leadNationality
@@ -472,22 +468,19 @@ fun LeadDialogContent(
         },
         confirmButton = {
             ConfirmButton {
-                if (isUpdatingLead || saveLeadToLiveSession) {
+                if (isUpdatingLead) {
                     lead.id = leadId
                     lead.insertTime = leadInsertTime
+                }
+                if (isUpdatingLead || saveLeadToLiveSession) {
                     lead.sessionId = leadSessionId
                 }
-                if (!isModifyingLead) {
-                    lead.name = leadName
-                }
+                lead.name = leadName
                 lead.contact = leadContact
                 lead.nationality = leadNationality
                 lead.age = leadAge
                 lead.contactLookupKey = leadContactLookupKey
                 lead.instagramUrl = leadInstagramUrl
-                if (isModifyingLead) {
-                    onDeleteLead(lead)
-                }
                 if (isUpdatingLead || saveLeadToLiveSession) {
                     onSaveLead(lead)
                 } else {

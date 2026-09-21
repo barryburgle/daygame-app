@@ -49,7 +49,6 @@ data class InputState(
     val isAddingSet: Boolean = false,
     val isUpdatingSet: Boolean = false,
     val isAddingLead: Boolean = false,
-    val isModifyingLead: Boolean = false,
     val isUpdatingLead: Boolean = false,
     val isAddingChallenge: Boolean = false,
     val isUpdatingChallenge: Boolean = false,
