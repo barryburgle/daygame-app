@@ -54,8 +54,8 @@ fun IconShadowButton(
         scaleAnim.animateTo(
             targetValue = 1f,
             animationSpec = spring(
-                dampingRatio = 0.45f,
-                stiffness = Spring.StiffnessVeryLow
+                dampingRatio = Spring.DampingRatioLowBouncy,
+                stiffness = Spring.StiffnessLow
             )
         )
     }
