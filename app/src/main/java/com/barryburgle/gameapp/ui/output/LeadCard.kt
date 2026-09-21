@@ -1,6 +1,10 @@
 package com.barryburgle.gameapp.ui.output
 
+import android.net.Uri
+import android.provider.ContactsContract
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,16 +13,24 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
@@ -37,10 +49,7 @@ import java.time.temporal.ChronoUnit
 
 @Composable
 fun LeadCard(
-    lead: Lead,
-    onEditClick: () -> Unit,
-    onLinkClick: () -> Unit,
-    shortCut: Boolean = false
+    lead: Lead, onEditClick: () -> Unit, onLinkClick: () -> Unit, shortCut: Boolean = false
 ) {
     val cardColor = MaterialTheme.colorScheme.surface
     var displayName = lead.name
@@ -54,8 +63,7 @@ fun LeadCard(
                 .fillMaxWidth()
                 .height(height)
                 .shadow(
-                    elevation = 10.dp,
-                    shape = MaterialTheme.shapes.large
+                    elevation = 10.dp, shape = MaterialTheme.shapes.large
                 )
         ) {
             Row(
@@ -76,11 +84,9 @@ fun LeadCard(
                         .background(
                             brush = VerticalProgressBarBrush(
                                 getLeadAlertColor(
-                                    daysDifference,
-                                    lead
+                                    daysDifference, lead
                                 )
-                            ),
-                            shape = RoundedCornerShape(4.dp)
+                            ), shape = RoundedCornerShape(4.dp)
                         )
                 ) {}
                 Spacer(modifier = Modifier.width(8.dp))
@@ -117,21 +123,72 @@ fun LeadCard(
                         IconShadowButton(
                             onClick = {
                                 onEditClick()
-                            },
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit"
+                            }, imageVector = Icons.Default.Edit, contentDescription = "Edit"
                         )
-                        val isWhatsApp = lead.contact == ContactTypeEnum.NUMBER.getField()
+                        val isNumber = lead.contact == ContactTypeEnum.NUMBER.getField()
                         val iconRes =
-                            if (isWhatsApp) R.drawable.whatsapp_w else R.drawable.instagram_w
+                            if (isNumber) R.drawable.whatsapp_w else R.drawable.instagram_w
+                        val desc = if (isNumber) "Whatsapp" else "Instagram"
+                        var isLinkValid = false
+                        if ((isNumber && lead.contactLookupKey != null) || (!isNumber && lead.instagramUrl != null && lead.instagramUrl!!.isNotBlank())) {
+                            isLinkValid = true
+                        }
                         Spacer(modifier = Modifier.height(5.dp))
-                        IconShadowButton(
-                            onClick = {
-                                onLinkClick()
-                            },
-                            drawableIcon = iconRes,
-                            contentDescription = if (isWhatsApp) "WhatsApp" else "Instagram"
-                        )
+                        val localContext = LocalContext.current
+                        if (isLinkValid) {
+                            val uriHandler = LocalUriHandler.current
+                            var uri: String? = null
+                            IconShadowButton(
+                                onClick = {
+                                    try {
+                                        if (isNumber) {
+                                            uri = Uri.withAppendedPath(
+                                                ContactsContract.Contacts.CONTENT_LOOKUP_URI,
+                                                lead.contactLookupKey
+                                            ).toString()
+                                        } else {
+                                            uri = lead.instagramUrl!!
+                                        }
+                                        uriHandler.openUri(uri)
+                                    } catch (e: Exception) {
+                                        Toast.makeText(
+                                            localContext,
+                                            "Could not open ${desc} link",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }, drawableIcon = iconRes, contentDescription = "Contact link"
+                            )
+                        } else {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(CircleShape)
+                                    .clickable(onClick = {
+                                        Toast.makeText(
+                                            localContext,
+                                            "No ${desc} contact linked",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    })
+                                    .background(
+                                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f),
+                                        CircleShape
+                                    )
+                                    .size(48.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(iconRes),
+                                    contentDescription = "Contact link",
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier
+                                        .height(20.dp)
+                                        .scale(1.2f)
+                                )
+                            }
+                        }
                     }
                 }
             }

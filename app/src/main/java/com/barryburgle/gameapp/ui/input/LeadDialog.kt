@@ -25,7 +25,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,7 +39,6 @@ import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
@@ -401,7 +399,6 @@ fun LeadDialogContent(
                             horizontalArrangement = Arrangement.SpaceAround,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(text = "", textAlign = TextAlign.Center)
                             ToggleIcon(
                                 "",
                                 ContactTypeEnum.NUMBER.getField().equals(leadContact),
@@ -414,11 +411,22 @@ fun LeadDialogContent(
                                 )
                                 if (contactInfo != null) {
                                     Toast.makeText(
-                                        context, "Contact found", Toast.LENGTH_SHORT
+                                        context,
+                                        "Whatsapp contact found and linked from phonebook",
+                                        Toast.LENGTH_LONG
                                     ).show()
                                     onSetLeadContactLookupKey(contactInfo.second)
                                 }
                             }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            LittleBodyText("Tap on the Whatsapp icon to find and link the contact by name in phonebook. No phone number is stored in this app")
+                        }
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceAround,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
                             ToggleIcon(
                                 "",
                                 ContactTypeEnum.SOCIAL.getField().equals(leadContact),
@@ -431,19 +439,16 @@ fun LeadDialogContent(
                                     if (instagramUrl.startsWith("https://www.instagram.com/")) {
                                         onSetLeadInstagramUrl(instagramUrl)
                                         Toast.makeText(
-                                            localContext, "Copied profile url", Toast.LENGTH_SHORT
+                                            localContext,
+                                            "Instagram URL copied and linked from clipboard",
+                                            Toast.LENGTH_LONG
                                         ).show()
                                     }
                                 }
                                 onSetLeadContact(ContactTypeEnum.SOCIAL.getField())
                             }
-                        }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            LittleBodyText("Whatsapp will trigger a name-based phonebook contact search.\nInstagram copies profile url from clipboard.")
+                            Spacer(modifier = Modifier.width(8.dp))
+                            LittleBodyText("Tap on the Instagram icon to copy the profile url from your clipboard. The app will store the profile url")
                         }
                     }
                     Column(
