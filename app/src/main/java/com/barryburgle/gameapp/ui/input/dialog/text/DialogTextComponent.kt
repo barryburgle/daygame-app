@@ -1,10 +1,13 @@
 package com.barryburgle.gameapp.ui.input.dialog.text
 
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +39,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
@@ -52,6 +58,18 @@ fun DialogTextComponent(
     onCopyClick: (() -> Unit)? = null,
     onValueChange: (String) -> Unit,
 ) {
+    val scaleAnim = remember { Animatable(0f) }
+
+    LaunchedEffect(Unit) {
+        scaleAnim.animateTo(
+            targetValue = 1f,
+            animationSpec = spring(
+                dampingRatio = 0.48f,
+                stiffness = Spring.StiffnessVeryLow
+            )
+        )
+    }
+
     val validContent = !value.isBlank()
     val onPrimaryColor: Color = MaterialTheme.colorScheme.onPrimary
     val backgroundColor: Color = MaterialTheme.colorScheme.onBackground
@@ -74,6 +92,11 @@ fun DialogTextComponent(
     }
     Box(
         modifier = Modifier
+            .graphicsLayer {
+                scaleX = scaleAnim.value
+                scaleY = scaleAnim.value
+                transformOrigin = TransformOrigin(0f, 0.5f)
+            }
             .height(IntrinsicSize.Min)
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.large)
