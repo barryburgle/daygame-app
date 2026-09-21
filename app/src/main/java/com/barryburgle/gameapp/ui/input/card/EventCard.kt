@@ -4,6 +4,10 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
 import android.widget.Toast
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,6 +35,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +46,8 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -80,6 +87,7 @@ import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -756,25 +764,52 @@ private fun eventHeader(headerParts: List<String>) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        headerParts.forEach {
-            if (it != null && it.isNotEmpty()) {
-                Column(
-                    modifier = Modifier
-                        .background(
-                            MaterialTheme.colorScheme.onPrimary.copy(0.1f),
-                            shape = RoundedCornerShape(15.dp)
-                        )
-                ) {
-                    Row(
-                        modifier = Modifier.padding(
-                            start = 12.dp,
-                            top = 7.dp,
-                            end = 12.dp,
-                            bottom = 7.dp
-                        )
-                    ) {
-                        LittleBodyText(it)
+        val validParts = headerParts.filter { !it.isNullOrEmpty() }
+
+        validParts.forEachIndexed { index, part ->
+            var isVisible by remember { mutableStateOf(false) }
+
+            LaunchedEffect(part) {
+                delay(index * 80L)
+                isVisible = true
+            }
+
+            val transition =
+                updateTransition(targetState = isVisible, label = "HeaderItemTransition")
+
+            val scale by transition.animateFloat(
+                transitionSpec = {
+                    spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                },
+                label = "scale"
+            ) { visible ->
+                if (visible) 1f else 0f
+            }
+
+            Column(
+                modifier = Modifier
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                        transformOrigin = TransformOrigin(0f, 0.5f)
                     }
+                    .background(
+                        MaterialTheme.colorScheme.onPrimary.copy(0.1f),
+                        shape = RoundedCornerShape(15.dp)
+                    )
+            ) {
+                Row(
+                    modifier = Modifier.padding(
+                        start = 12.dp,
+                        top = 7.dp,
+                        end = 12.dp,
+                        bottom = 7.dp
+                    )
+                ) {
+                    LittleBodyText(part)
                 }
             }
         }
