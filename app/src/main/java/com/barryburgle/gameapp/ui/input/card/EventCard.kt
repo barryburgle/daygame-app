@@ -4,10 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
 import android.widget.Toast
-import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,19 +36,23 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathOperation
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -87,7 +92,6 @@ import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
-import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -122,6 +126,110 @@ fun EventCard(
     var showDeleteDateConfirmDialog by remember { mutableStateOf(false) }
     var showDeleteChallengeConfirmDialog by remember { mutableStateOf(false) }
     var showMapDialog by remember { mutableStateOf(false) }
+
+    val cardShape = MaterialTheme.shapes.large
+    val isRecording = recordingState.state.isRecording()
+
+    val infiniteTransition = rememberInfiniteTransition(label = "recordingHalo")
+    val haloAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.2f,
+        targetValue = 0.95f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1600),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "haloAlpha"
+    )
+
+    val cardModifier = modifier.then(
+        if (isRecording) {
+            Modifier
+                .shadow(
+                    elevation = (24 * haloAlpha).dp,
+                    shape = cardShape,
+                    spotColor = Color.Red.copy(alpha = haloAlpha),
+                    ambientColor = Color.Red.copy(alpha = haloAlpha)
+                )
+                .clip(cardShape)
+                .drawWithContent {
+                    drawContent()
+
+                    val haloWidthPx = 18.dp.toPx()
+                    val cornerRadiusPx = 16.dp.toPx()
+
+                    val outerPath = Path().apply {
+                        addRoundRect(
+                            RoundRect(
+                                rect = Rect(0f, 0f, size.width, size.height),
+                                cornerRadius = CornerRadius(cornerRadiusPx)
+                            )
+                        )
+                    }
+
+                    val innerPath = Path().apply {
+                        addRoundRect(
+                            RoundRect(
+                                rect = Rect(
+                                    haloWidthPx,
+                                    haloWidthPx,
+                                    size.width - haloWidthPx,
+                                    size.height - haloWidthPx
+                                ),
+                                cornerRadius = CornerRadius(
+                                    (cornerRadiusPx - haloWidthPx).coerceAtLeast(
+                                        0f
+                                    )
+                                )
+                            )
+                        )
+                    }
+
+                    val haloBorderMask = Path().apply {
+                        op(outerPath, innerPath, PathOperation.Difference)
+                    }
+
+                    clipPath(haloBorderMask) {
+                        val solidRed = Color.Red.copy(alpha = 0.65f * haloAlpha)
+                        val fadeRed = Color.Red.copy(alpha = 0.25f * haloAlpha)
+                        val transparentRed = Color.Red.copy(alpha = 0f)
+
+                        drawRect(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(solidRed, fadeRed, transparentRed),
+                                startY = 0f,
+                                endY = haloWidthPx
+                            )
+                        )
+
+                        drawRect(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(transparentRed, fadeRed, solidRed),
+                                startY = size.height - haloWidthPx,
+                                endY = size.height
+                            )
+                        )
+
+                        drawRect(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(solidRed, fadeRed, transparentRed),
+                                startX = 0f,
+                                endX = haloWidthPx
+                            )
+                        )
+
+                        drawRect(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(transparentRed, fadeRed, solidRed),
+                                startX = size.width - haloWidthPx,
+                                endX = size.width
+                            )
+                        )
+                    }
+                }
+        } else {
+            Modifier
+        }
+    )
 
     if (showCancelLiveSessionConfirmDialog) {
         DeleteConfirmationDialog(
@@ -220,9 +328,9 @@ fun EventCard(
     }
 
     Card(
-        modifier = modifier, colors = CardDefaults.cardColors(
+        modifier = cardModifier, colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
-        ), shape = MaterialTheme.shapes.large
+        ), shape = cardShape
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
