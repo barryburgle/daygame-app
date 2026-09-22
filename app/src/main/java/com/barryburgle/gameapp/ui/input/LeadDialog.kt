@@ -291,6 +291,7 @@ fun LeadDialogContent(
                                 },
                                 placeholder = "lead country",
                                 singleLine = true,
+                                disableDelete = true,
                                 onValueChange = {
                                     onSetLeadCountrySearch(it)
                                 }
