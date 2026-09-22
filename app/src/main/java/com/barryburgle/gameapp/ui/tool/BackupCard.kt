@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -14,7 +13,6 @@ import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -26,6 +24,7 @@ import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
+import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
@@ -106,20 +105,13 @@ fun BackupCard(
                         RowTitle(
                             "Backup folder:", "", textFieldColumnWidth
                         )
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(textFieldHeight),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                        DialogTextComponent(
+                            value = state.backupFolder,
+                            placeholder = "backup folder",
+                            singleLine = true,
+                            disableDelete = true
                         ) {
-                            OutlinedTextField(
-                                value = state.backupFolder,
-                                onValueChange = { onEvent(ToolEvent.SetBackupFolder(it)) },
-                                placeholder = { LittleBodyText(text = "Insert here the backup folder") },
-                                shape = MaterialTheme.shapes.large,
-                                modifier = Modifier.height(textFieldHeight)
-                            )
+                            onEvent(ToolEvent.SetBackupFolder(it))
                         }
                         LittleBodyText("The backup folder will be created and managed directly under the export folder: /storage/emulated/0/${state.exportFolder}/${state.backupFolder}")
                         CountSetting(

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -18,7 +17,6 @@ import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
@@ -40,6 +38,7 @@ import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.service.csv.SetCsvService
 import com.barryburgle.gameapp.service.csv.SettingCsvService
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
+import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.FilenameComposable
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
@@ -75,8 +74,7 @@ fun DataExchangeCard(
             containerColor = MaterialTheme.colorScheme.surface
         ), shape = MaterialTheme.shapes.large
     ) {
-        val textFieldHeight = 55.dp
-        val textFieldColumnWidth = 230.dp
+        val textFieldColumnWidth = 265.dp
         val localContext = LocalContext.current.applicationContext
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -138,8 +136,7 @@ fun DataExchangeCard(
                         )
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(textFieldHeight),
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -147,24 +144,22 @@ fun DataExchangeCard(
                                 modifier = Modifier.width(textFieldColumnWidth),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                OutlinedTextField(
+                                DialogTextComponent(
                                     value = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                         state.exportFolder
                                     } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
                                         state.importFolder
                                     } else "",
-                                    onValueChange = {
-                                        if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
-                                            onEvent(ToolEvent.SetExportFolder(it))
-                                        } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
-                                            onEvent(ToolEvent.SetImportFolder(it))
-                                        }
-                                    },
-                                    placeholder = { LittleBodyText("Insert here the ${cardTitle.lowercase()} folder") },
-                                    shape = MaterialTheme.shapes.large,
-                                    modifier = Modifier.height(textFieldHeight),
-                                    singleLine = true
-                                )
+                                    placeholder = "${cardTitle.lowercase()} folder",
+                                    singleLine = true,
+                                    disableDelete = true
+                                ) {
+                                    if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                        onEvent(ToolEvent.SetExportFolder(it))
+                                    } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                        onEvent(ToolEvent.SetImportFolder(it))
+                                    }
+                                }
                             }
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
@@ -214,7 +209,6 @@ fun DataExchangeCard(
                             icon,
                             "session",
                             textFieldColumnWidth,
-                            textFieldHeight,
                             localContext,
                             if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                 state.exportSessionsFileName
@@ -261,7 +255,6 @@ fun DataExchangeCard(
                             icon,
                             "lead",
                             textFieldColumnWidth,
-                            textFieldHeight,
                             localContext,
                             if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                 state.exportLeadsFileName
@@ -308,7 +301,6 @@ fun DataExchangeCard(
                             icon,
                             "date",
                             textFieldColumnWidth,
-                            textFieldHeight,
                             localContext,
                             if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                 state.exportDatesFileName
@@ -356,7 +348,6 @@ fun DataExchangeCard(
                             icon,
                             "set",
                             textFieldColumnWidth,
-                            textFieldHeight,
                             localContext,
                             if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                 state.exportSetsFileName
@@ -404,14 +395,12 @@ fun DataExchangeCard(
                             icon,
                             "challenge",
                             textFieldColumnWidth,
-                            textFieldHeight,
                             localContext,
                             if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                 state.exportChallengesFileName
                             } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
                                 state.importChallengesFileName
-                            } else "",
-                            buttonFunction = {
+                            } else "", buttonFunction = {
                                 importExportButtonFunction(
                                     cardTitle,
                                     challengeCsvService,
@@ -452,7 +441,6 @@ fun DataExchangeCard(
                             icon,
                             "pinpoint",
                             textFieldColumnWidth,
-                            textFieldHeight,
                             localContext,
                             if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                 state.exportPinPointsFileName
@@ -500,7 +488,6 @@ fun DataExchangeCard(
                             icon,
                             "setting",
                             textFieldColumnWidth,
-                            textFieldHeight,
                             localContext,
                             if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                 state.exportSettingsFileName

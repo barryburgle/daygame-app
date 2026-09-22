@@ -5,25 +5,18 @@ import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
@@ -34,11 +27,11 @@ import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.recording.RecordingStateEnum
 import com.barryburgle.gameapp.service.recording.RecordingService
+import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
-import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.setting.SliderSetting
 import com.barryburgle.gameapp.ui.utilities.setting.SwitchSetting
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -139,48 +132,25 @@ fun RecordingsCard(
             RowTitle(
                 "Recordings folder:", "", textFieldColumnWidth
             )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(textFieldHeight),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            DialogTextComponent(
+                value = typedFolder,
+                placeholder = "recordings folder",
+                singleLine = true,
+                disableDelete = true,
+                firstCustomActionIcon = Icons.Default.Replay,
+                firstCustomAction = {
+                    if (RecordingService.state.value.state != RecordingStateEnum.IDLE) {
+                        Toast.makeText(
+                            localContext,
+                            "Stop the recording first",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else if (hasChange) {
+                        showConfirmation = true
+                    }
+                }
             ) {
-                Column(
-                    modifier = Modifier.width(230.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    OutlinedTextField(
-                        value = typedFolder,
-                        onValueChange = { typedFolder = it },
-                        placeholder = { LittleBodyText("Recordings folder") },
-                        shape = MaterialTheme.shapes.large,
-                        modifier = Modifier.height(textFieldHeight),
-                        singleLine = true
-                    )
-                }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    IconShadowButton(
-                        onClick = {
-                            if (RecordingService.state.value.state != RecordingStateEnum.IDLE) {
-                                Toast.makeText(
-                                    localContext,
-                                    "Stop the recording first",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else if (hasChange) {
-                                showConfirmation = true
-                            }
-                        },
-                        imageVector = Icons.Default.Replay,
-                        contentDescription = if (hasChange) "Apply and sync recordings folder" else "unavailable",
-                        iconColor = if (hasChange) MaterialTheme.colorScheme.inversePrimary
-                        else MaterialTheme.colorScheme.inversePrimary.copy(alpha = 0.38f)
-                    )
-                }
+                typedFolder = it
             }
             Spacer(modifier = Modifier.height(5.dp))
             LittleBodyText("The recordings folder will be created and managed directly under the folder: /storage/emulated/0/${state.recordingsFolder}")
