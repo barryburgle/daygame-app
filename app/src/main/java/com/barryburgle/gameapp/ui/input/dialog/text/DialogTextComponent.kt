@@ -37,11 +37,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.ui.input.card.DeleteConfirmationDialog
@@ -55,7 +58,12 @@ fun DialogTextComponent(
     placeholder: String,
     emptyValue: String = "",
     singleLine: Boolean = true,
+    disableDelete: Boolean = false,
     onCopyClick: (() -> Unit)? = null,
+    firstCustomActionIcon: ImageVector? = null,
+    firstCustomAction: (() -> Unit)? = null,
+    secondCustomActionIcon: ImageVector? = null,
+    secondCustomAction: (() -> Unit)? = null,
     onValueChange: (String) -> Unit,
 ) {
     val scaleAnim = remember { Animatable(0f) }
@@ -74,8 +82,6 @@ fun DialogTextComponent(
     val onPrimaryColor: Color = MaterialTheme.colorScheme.onPrimary
     val backgroundColor: Color = MaterialTheme.colorScheme.onBackground
     val containerColor = onPrimaryColor.copy(alpha = 0.07f)
-    val opaqueContainerColor =
-        lerp(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f), onPrimaryColor, 0.07f)
     var showDeleteTextDialog by remember { mutableStateOf(false) }
     if (showDeleteTextDialog) {
         DeleteConfirmationDialog(
@@ -90,6 +96,11 @@ fun DialogTextComponent(
             },
         )
     }
+    val showDelete = validContent && !disableDelete
+    val showCopy = onCopyClick != null && !singleLine
+    val showFirstCustom = firstCustomActionIcon != null && firstCustomAction != null
+    val showSecondCustom = secondCustomActionIcon != null && secondCustomAction != null
+    val hasActions = showDelete || showCopy || showFirstCustom || showSecondCustom
     Box(
         modifier = Modifier
             .graphicsLayer {
@@ -125,42 +136,68 @@ fun DialogTextComponent(
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .then(
-                    if (validContent) {
-                        Modifier.drawWithContent {
-                            drawContent()
-                            drawRect(
-                                brush = Brush.horizontalGradient(
-                                    0.85f to Color.Transparent,
-                                    1.0f to opaqueContainerColor
+                    if (hasActions) {
+                        Modifier
+                            .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+                            .drawWithContent {
+                                drawContent()
+                                drawRect(
+                                    brush = Brush.horizontalGradient(
+                                        0.6f to Color.Black,
+                                        0.85f to Color.Transparent
+                                    ),
+                                    blendMode = BlendMode.DstIn
                                 )
-                            )
-                        }
+                            }
                     } else Modifier
                 )
         )
-        if (validContent) {
+        if (hasActions) {
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .padding(end = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                    .padding(end = 6.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalAlignment = Alignment.End
             ) {
-                LittleIconButton(
-                    onClick = {
-                        showDeleteTextDialog = true
-                    },
-                    imageVector = Icons.Default.Delete,
-                    height = 15.dp,
-                    color = backgroundColor
-                )
-                if (onCopyClick != null && !singleLine) {
+                if (showDelete) {
                     LittleIconButton(
-                        onClick = onCopyClick,
+                        onClick = {
+                            showDeleteTextDialog = true
+                        },
+                        imageVector = Icons.Default.Delete,
+                        height = 15.dp,
+                        color = backgroundColor
+                    )
+                }
+                if (showCopy) {
+                    LittleIconButton(
+                        onClick = onCopyClick!!,
                         imageVector = Icons.Default.ContentCopy,
                         height = 15.dp,
                         color = backgroundColor
                     )
+                }
+                if (showFirstCustom) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(1.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        LittleIconButton(
+                            onClick = firstCustomAction!!,
+                            imageVector = firstCustomActionIcon!!,
+                            height = 15.dp,
+                            color = backgroundColor
+                        )
+                        if (showSecondCustom) {
+                            LittleIconButton(
+                                onClick = secondCustomAction!!,
+                                imageVector = secondCustomActionIcon!!,
+                                height = 15.dp,
+                                color = backgroundColor
+                            )
+                        }
+                    }
                 }
             }
         }
