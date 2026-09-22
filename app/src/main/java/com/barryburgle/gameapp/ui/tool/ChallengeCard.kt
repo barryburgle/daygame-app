@@ -1,8 +1,11 @@
 package com.barryburgle.gameapp.ui.tool
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
@@ -29,6 +32,7 @@ fun ChallengeCard(
             onEvent = onEvent as (GenericEvent) -> Unit,
             saveEvent = ToolEvent::SetIncrementChallengeGoal
         )
+        Spacer(modifier = Modifier.height(5.dp))
         CountSetting(
             text = "Start a new challenge with goal set to ${state.defaultChallengeGoal}",
             count = state.defaultChallengeGoal,
