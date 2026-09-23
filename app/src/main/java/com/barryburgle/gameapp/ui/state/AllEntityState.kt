@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.ui.state
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -13,6 +14,7 @@ open class AllEntityState(
     open var allLeads: List<Lead> = emptyList(),
     open var allDates: List<Date> = emptyList(),
     open var allSets: List<SingleSet> = emptyList(),
+    open var allPings: List<Ping> = emptyList(),
     open var allChallenges: List<AchievedChallenge> = emptyList(),
     open var allPinPoints: List<PinPoint> = emptyList(),
     open var allSettings: List<Setting> = emptyList()

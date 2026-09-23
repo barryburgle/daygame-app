@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.ui.output.state
 
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.stat.AggregatedDates
@@ -14,6 +15,7 @@ data class OutputState(
     override var allLeads: List<Lead> = emptyList(),
     override var allDates: List<Date> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
+    override var allPings: List<Ping> = emptyList(),
     val sessionsByWeek: List<AggregatedSessions> = emptyList(),
     val sessionsByMonth: List<AggregatedSessions> = emptyList(),
     val datesByWeek: List<AggregatedDates> = emptyList(),
@@ -39,7 +41,9 @@ data class OutputState(
     val mostPopularLeadsNationalities: List<CategoryHistogram> = emptyList(),
     val suggestLeadsNationality: Boolean = true,
     val shownNationalities: Int = 6,
-    val isInOverlay: Boolean = false
+    val isInOverlay: Boolean = false,
+    val showPingDialog: Boolean = false,
+    val showAddPingDialog: Boolean = false,
 ) : AllEntityState(
     allSessions,
     allLeads,
