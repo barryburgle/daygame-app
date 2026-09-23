@@ -35,6 +35,7 @@ import com.barryburgle.gameapp.model.stat.CategoryHistogram
 import com.barryburgle.gameapp.model.stat.Histogram
 import com.barryburgle.gameapp.ui.stats.state.StatsState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
+import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -48,7 +49,7 @@ fun InfoDialog(
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val localContext = LocalContext.current.applicationContext
     val semiOpaqueBackground = MaterialTheme.colorScheme.surfaceVariant
-    val perfFontSize = 15.sp
+    val perfFontSize = 50.sp
     val descriptionFontSize = 10.sp
     if (state.completeHistogram.isNotEmpty()) {
         val descriptionFrequencyPairs = getHistogramDataPoints(state.completeHistogram)
@@ -127,69 +128,66 @@ fun InfoDialog(
                 }
             },
             text = {
-                Column(
+                Scaffold(
+                    topBar = {
+                        Row(
+                            modifier = getBlurBarModifier(
+                                listOf(
+                                    semiOpaqueBackground,
+                                    semiOpaqueBackground.copy(0.5f),
+                                    semiOpaqueBackground.copy(0.01f),
+                                )
+                            )
+                        ) {}
+                    },
+                    bottomBar = {
+                        Row(
+                            modifier = getBlurBarModifier(
+                                listOf(
+                                    semiOpaqueBackground.copy(0.01f),
+                                    semiOpaqueBackground.copy(0.5f),
+                                    semiOpaqueBackground,
+                                )
+                            )
+                        ) {}
+                    },
                     modifier = Modifier
-                        .padding(horizontal = 5.dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Scaffold(
-                        topBar = {
-                            Row(
-                                modifier = getBlurBarModifier(
-                                    listOf(
-                                        semiOpaqueBackground,
-                                        semiOpaqueBackground.copy(0.5f),
-                                        semiOpaqueBackground.copy(0.01f),
-                                    )
-                                )
-                            ) {}
-                        },
-                        bottomBar = {
-                            Row(
-                                modifier = getBlurBarModifier(
-                                    listOf(
-                                        semiOpaqueBackground.copy(0.01f),
-                                        semiOpaqueBackground.copy(0.5f),
-                                        semiOpaqueBackground,
-                                    )
-                                )
-                            ) {}
-                        },
+                        .height(300.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .fillMaxWidth()
+                ) { _ ->
+                    LazyColumn(
                         modifier = Modifier
                             .height(300.dp)
                             .background(MaterialTheme.colorScheme.surfaceVariant)
                             .fillMaxWidth()
-                    ) { _ ->
-                        LazyColumn(
-                            modifier = Modifier
-                                .height(300.dp)
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                                .fillMaxWidth()
-                        ) {
-                            item {
-                                Spacer(modifier = Modifier.height(10.dp))
-                            }
-                            items(descriptionFrequencyPairs.size) { index ->
-                                val pair = descriptionFrequencyPairs[index]
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 4.dp)
-                                        .background(
-                                            color = MaterialTheme.colorScheme.primary,
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .padding(8.dp),
-                                    horizontalArrangement = Arrangement.SpaceAround,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
+                    ) {
+                        item {
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
+                        items(descriptionFrequencyPairs.size) { index ->
+                            val pair = descriptionFrequencyPairs[index]
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp)
+                                    .background(
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        shape = RoundedCornerShape(10.dp)
+                                    )
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.SpaceAround,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                AnimatedStaggeredItem(index = 0) {
                                     DescribedQuantifier(
                                         quantity = pair.first,
                                         quantityFontSize = perfFontSize,
                                         description = state.infoDialogTitle,
                                         descriptionFontSize = descriptionFontSize
                                     )
+                                }
+                                AnimatedStaggeredItem(index = 1) {
                                     DescribedQuantifier(
                                         quantity = pair.second,
                                         quantityFontSize = perfFontSize,
@@ -198,9 +196,9 @@ fun InfoDialog(
                                     )
                                 }
                             }
-                            item {
-                                Spacer(modifier = Modifier.height(10.dp))
-                            }
+                        }
+                        item {
+                            Spacer(modifier = Modifier.height(10.dp))
                         }
                     }
                 }
