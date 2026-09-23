@@ -3,6 +3,7 @@ accompanistFlowlayout = "0.36.0"
 activityCompose = "1.13.0"
 agp = "9.1.0"
 appcompat = "1.7.1"
+coil = "2.6.0"
 composeMarkdown = "0.5.7"
 constraintlayout = "2.2.1"
 coreKtx = "1.18.0"
@@ -32,6 +33,7 @@ uiTooling = "1.11.4"
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanistFlowlayout" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 compose-markdown = { group = "com.github.jeziellago", name = "compose-markdown", version.ref = "composeMarkdown" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit2" }
