@@ -5,13 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.date.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
+import com.barryburgle.gameapp.dao.ping.PingDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
 import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.manager.SessionManager
-import com.barryburgle.gameapp.ui.CombineSixteen
+import com.barryburgle.gameapp.ui.CombineSeventeen
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,13 +27,15 @@ class OutputViewModel(
     private val settingDao: SettingDao,
     private val leadDao: LeadDao,
     private val dateDao: DateDao,
-    private val setDao: SetDao
+    private val setDao: SetDao,
+    private val pingDao: PingDao,
 ) : ViewModel() {
     private val _state = MutableStateFlow(OutputState())
     private val _allSessions = abstractSessionDao.getAll()
     private val _allLeads = leadDao.getAll()
     private val _allDates = dateDao.getAll()
     private val _allSet = setDao.getAll()
+    private val _allPing = pingDao.getAll()
     private val _sessionsByWeek = aggregatedSessionsDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _sessionsByMonth = aggregatedSessionsDao.groupStatsByMonth()
@@ -49,12 +52,13 @@ class OutputViewModel(
     private val _shownNationalities = settingDao.getShownNationalities()
     private val _mostPopularLeadsNationalities = leadDao.getNationalityHistogram()
 
-    val state = CombineSixteen(
+    val state = CombineSeventeen(
         _state,
         _allSessions,
         _allLeads,
         _allDates,
         _allSet,
+        _allPing,
         _sessionsByWeek,
         _sessionsByMonth,
         _datesByWeek,
@@ -66,12 +70,13 @@ class OutputViewModel(
         _suggestLeadsNationality,
         _shownNationalities,
         _mostPopularLeadsNationalities
-    ) { state, allSessions, allLeads, allDates, allSets, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast, lastSessionsShown, lastWeeksShown, lastMonthsShown, suggestLeadsNationality, shownNationalities, mostPopularLeadsNationalities ->
+    ) { state, allSessions, allLeads, allDates, allSets, allPings, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast, lastSessionsShown, lastWeeksShown, lastMonthsShown, suggestLeadsNationality, shownNationalities, mostPopularLeadsNationalities ->
         state.copy(
             allSessions = SessionManager.normalizeSessionsIds(allSessions),
             allLeads = allLeads,
             allDates = allDates,
             allSets = allSets,
+            allPings = allPings,
             sessionsByWeek = sessionsByWeek,
             sessionsByMonth = sessionsByMonth,
             datesByWeek = datesByWeek,
@@ -237,6 +242,66 @@ class OutputViewModel(
                         leadAge = 0,
                         leadContactLookupKey = null,
                         leadInstagramUrl = null
+                    )
+                }
+            }
+
+            is OutputEvent.ShowPingDialog -> {
+                _state.update {
+                    it.copy(
+                        showPingDialog = true
+                    )
+                }
+            }
+
+            is OutputEvent.HidePingDialog -> {
+                _state.update {
+                    it.copy(
+                        showPingDialog = false
+                    )
+                }
+            }
+
+            is OutputEvent.ShowPingEditDialog -> {
+                _state.update {
+                    it.copy(
+                        showAddPingDialog = true
+                    )
+                }
+            }
+
+            is OutputEvent.HidePingEditDialog -> {
+                _state.update {
+                    it.copy(
+                        showAddPingDialog = false,
+                        showEditPingDialog = false
+                    )
+                }
+            }
+
+            is OutputEvent.SavePing -> {
+                viewModelScope.launch {
+                    pingDao.insert(event.ping)
+                }
+            }
+
+            is OutputEvent.EditPing -> {
+                _state.update {
+                    it.copy(
+                        editPing = event.ping,
+                        showEditPingDialog = true
+                    )
+                }
+            }
+
+            is OutputEvent.DeletePing -> {
+                viewModelScope.launch {
+                    pingDao
+                        .deleteById(event.pingId)
+                }
+                _state.update {
+                    it.copy(
+                        showAddPingDialog = false
                     )
                 }
             }

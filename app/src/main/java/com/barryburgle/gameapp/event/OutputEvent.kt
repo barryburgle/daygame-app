@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.event
 
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.ping.Ping
 
 sealed interface OutputEvent : GenericEvent {
     object SwitchShowLeadLegend : OutputEvent
@@ -20,4 +21,11 @@ sealed interface OutputEvent : GenericEvent {
     data class DeleteLead(val leadId: Long) : OutputEvent
     object SetIsInOverlayToTrue : OutputEvent
     object SetIsInOverlayToFalse : OutputEvent
+    object ShowPingDialog : OutputEvent
+    object HidePingDialog : OutputEvent
+    object ShowPingEditDialog : OutputEvent
+    object HidePingEditDialog : OutputEvent
+    data class SavePing(val ping: Ping) : OutputEvent
+    data class EditPing(val ping: Ping) : OutputEvent
+    data class DeletePing(val pingId: Long) : OutputEvent
 }
