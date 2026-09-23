@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.LocalPostOffice
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -197,24 +199,24 @@ fun OutputScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            sectionTitleAndDescription(
-                                "Leads", "Remember about your last fruitful meetings:"
+                            sectionTitleAndDescriptionExpandable(
+                                "Leads",
+                                "Remember about your last fruitful meetings:",
+                                onEvent,
+                                state
                             )
-                            Row(
-                                modifier = Modifier.width(75.dp),
-                                horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                LittleBodyText("Legend")
-                                IconButton(onClick = {
-                                    onEvent(OutputEvent.SwitchShowLeadLegend)
-                                }) {
-                                    Icon(
-                                        imageVector = if (state.showLeadsLegend) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
-                                        contentDescription = "Leads legend",
-                                        tint = MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier
-                                            .height(50.dp)
+                            Column(horizontalAlignment = Alignment.End) {
+                                Row(
+                                    modifier = Modifier.width(150.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    IconShadowButton(
+                                        onClick = {
+                                            onEvent(OutputEvent.ShowPingDialog)
+                                        },
+                                        imageVector = Icons.Default.LocalPostOffice,
+                                        contentDescription = "Ping"
                                     )
                                 }
                             }
@@ -444,6 +446,31 @@ fun OutputScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun sectionTitleAndDescriptionExpandable(
+    title: String, description: String, onEvent: (OutputEvent) -> Unit, state: OutputState
+) {
+    Column(modifier = Modifier.fillMaxWidth(0.8f)) {
+        MediumTitleText(title, true)
+        Spacer(modifier = Modifier.height(5.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(
+                onClick = { onEvent(OutputEvent.SwitchShowLeadLegend) },
+                modifier = Modifier.size(24.dp)
+            ) {
+                Icon(
+                    imageVector = if (state.showLeadsLegend) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                    contentDescription = "Leads legend",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.height(50.dp)
+                )
+            }
+            LittleBodyText(description, italic = true)
+        }
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }
 
