@@ -21,4 +21,7 @@ interface PingDao {
 
     @Query("DELETE FROM ping WHERE id = :id")
     suspend fun deleteById(id: Long)
+
+    @Query("DELETE FROM ping")
+    suspend fun deleteAll()
 }

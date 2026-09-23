@@ -6,6 +6,7 @@ import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.enums.ThemeEnum
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -40,6 +41,7 @@ data class ToolsState(
     override var allSets: List<SingleSet> = emptyList(),
     override var allChallenges: List<AchievedChallenge> = emptyList(),
     override var allPinPoints: List<PinPoint> = emptyList(),
+    override var allPings: List<Ping> = emptyList(),
     override var allSettings: List<Setting> = emptyList(),
     val lastSessionAverageQuantity: Int = 4,
     val lastSessionsShown: Int = 14,
@@ -68,6 +70,7 @@ data class ToolsState(
     var deleteSets: Boolean = false,
     var deleteChallenges: Boolean = false,
     var deletePinPoints: Boolean = false,
+    var deletePings: Boolean = false,
     var deleteSettings: Boolean = false,
     var isCleaning: Boolean = false,
     var themeSysFollow: Boolean = false,

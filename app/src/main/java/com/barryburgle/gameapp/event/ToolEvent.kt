@@ -77,6 +77,7 @@ sealed interface ToolEvent : GenericEvent {
     object DeleteAllSets : ToolEvent
     object DeleteAllChallenges : ToolEvent
     object DeleteAllPinPoints : ToolEvent
+    object DeleteAllPings : ToolEvent
     object DeleteAllSettings : ToolEvent
 
     object SwitchLiveSessionNotification : ToolEvent

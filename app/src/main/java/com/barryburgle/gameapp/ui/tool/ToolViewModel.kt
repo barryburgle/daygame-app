@@ -1007,6 +1007,10 @@ class ToolViewModel(
                 viewModelScope.launch { pinPointDao.deleteAll() }
             }
 
+            is ToolEvent.DeleteAllPings -> {
+                viewModelScope.launch { pingDao.deleteAll() }
+            }
+
             is ToolEvent.DeleteAllSettings -> {
                 viewModelScope.launch { settingDao.deleteAll() }
             }

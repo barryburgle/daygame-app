@@ -18,10 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.model.ping.Ping
+import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
 import com.barryburgle.gameapp.ui.output.card.PingCard
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.FlowDialog
-import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @Composable
@@ -62,10 +62,12 @@ fun PingDialog(
             Column(
                 modifier = Modifier
                     .padding(contentPadding)
+                    .height(50.dp)
                     .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                LittleBodyText("Add some pings, they will come handy!", italic = true)
+                WavyPlaceholder("Add some pings, they will come handy!")
             }
         } else {
             LazyColumn(
