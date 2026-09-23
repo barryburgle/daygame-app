@@ -55,7 +55,7 @@ fun ImageShadowButton(
             if (dotCondition!!) {
                 Box(
                     modifier = Modifier
-                        .size(12.dp)
+                        .size(16.dp)
                         .align(Alignment.TopEnd)
                         .background(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
