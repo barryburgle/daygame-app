@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.barryburgle.gameapp.dao.challenge.ChallengeDao
 import com.barryburgle.gameapp.dao.date.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
+import com.barryburgle.gameapp.dao.ping.PingDao
 import com.barryburgle.gameapp.dao.pinpoint.PinPointDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
@@ -18,21 +20,33 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.setting.Setting
 
 @Database(
-    entities = [AbstractSession::class, Setting::class, Lead::class, Date::class, SingleSet::class, Challenge::class, PinPoint::class],
-    version = 8
+    entities = [
+        AbstractSession::class,
+        Setting::class,
+        Lead::class,
+        Date::class,
+        SingleSet::class,
+        Challenge::class,
+        PinPoint::class,
+        Ping::class
+    ],
+    version = 9
 )
+@TypeConverters(Converters::class)
 abstract class GameAppDatabase : RoomDatabase() {
     abstract val abstractSessionDao: AbstractSessionDao
     abstract val aggregatedSessionsDao: AggregatedSessionsDao
     abstract val aggregatedDatesDao: AggregatedDatesDao
     abstract val settingDao: SettingDao
     abstract val leadDao: LeadDao
+    abstract val pingDao: PingDao
     abstract val dateDao: DateDao
     abstract val setDao: SetDao
     abstract val challengeDao: ChallengeDao
@@ -103,16 +117,29 @@ abstract class GameAppDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_8_9: Migration = object : Migration(8, 9) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `ping` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `body` TEXT NULL, `link` TEXT NULL, `pic` TEXT NULL, `audio` TEXT NULL, `lead_ids` TEXT NOT NULL)"
+                )
+            }
+        }
+
         fun getInstance(context: Context): GameAppDatabase? {
             if (INSTANCE == null) {
                 synchronized(GameAppDatabase::class) {
                     INSTANCE = Room.databaseBuilder(
                         context.applicationContext,
                         GameAppDatabase::class.java, DATABASE_NAME
-                    ).addMigrations(MIGRATION_1_2).addMigrations(MIGRATION_2_3)
-                        .addMigrations(MIGRATION_3_4).addMigrations(MIGRATION_4_5)
-                        .addMigrations(MIGRATION_5_6).addMigrations(MIGRATION_6_7)
-                        .addMigrations(MIGRATION_7_8).build()
+                    ).addMigrations(MIGRATION_1_2)
+                        .addMigrations(MIGRATION_2_3)
+                        .addMigrations(MIGRATION_3_4)
+                        .addMigrations(MIGRATION_4_5)
+                        .addMigrations(MIGRATION_5_6)
+                        .addMigrations(MIGRATION_6_7)
+                        .addMigrations(MIGRATION_7_8)
+                        .addMigrations(MIGRATION_8_9)
+                        .build()
                 }
             }
             return INSTANCE
