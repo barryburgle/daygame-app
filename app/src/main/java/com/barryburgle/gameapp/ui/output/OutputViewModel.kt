@@ -280,6 +280,7 @@ class OutputViewModel(
             }
 
             is OutputEvent.SavePing -> {
+                // TODO: do a pings backup on any save of the pings
                 viewModelScope.launch {
                     pingDao.insert(event.ping)
                 }
