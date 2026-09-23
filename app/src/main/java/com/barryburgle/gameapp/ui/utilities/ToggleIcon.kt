@@ -30,7 +30,7 @@ import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 
 @Composable
 fun ToggleIcon(
-    description: String,
+    description: String? = null,
     flag: Boolean,
     @DrawableRes icon: Int,
     dotCondition: Boolean? = false,
@@ -85,7 +85,9 @@ fun ToggleIcon(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(5.dp))
-        LittleBodyText(description.replaceFirstChar { it.uppercase() })
+        if (description != null) {
+            Spacer(modifier = Modifier.height(5.dp))
+            LittleBodyText(description.replaceFirstChar { it.uppercase() })
+        }
     }
 }
