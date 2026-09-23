@@ -393,6 +393,30 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SetExportPingsFileName -> {
+                _state.update {
+                    it.copy(
+                        exportPingsFileName = event.exportPingsFileName
+                    )
+                }
+                val exportPingsFileName = _state.value.exportPingsFileName
+                val setting =
+                    Setting(SettingDao.EXPORT_PINGS_FILE_NAME_ID, exportPingsFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetImportPingsFileName -> {
+                _state.update {
+                    it.copy(
+                        importPingsFileName = event.importPingsFileName
+                    )
+                }
+                val importPingsFileName = _state.value.importPingsFileName
+                val setting =
+                    Setting(SettingDao.IMPORT_PINGS_FILE_NAME_ID, importPingsFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetExportSettingsFileName -> {
                 _state.update {
                     it.copy(
