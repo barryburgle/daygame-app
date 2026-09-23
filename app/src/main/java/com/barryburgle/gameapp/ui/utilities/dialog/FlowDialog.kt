@@ -40,7 +40,7 @@ fun FlowDialog(
     ) {
         Card(
             modifier = modifier
-                .fillMaxWidth(0.9f)
+                .fillMaxWidth(0.8f)
                 .shadow(elevation = 10.dp, shape = RoundedCornerShape(28.dp)),
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(containerColor = semiOpaqueBackground)
