@@ -556,6 +556,16 @@ class ToolViewModel(
                 viewModelScope.launch { pinPointDao.batchInsert(allPinPoints) }
             }
 
+            is ToolEvent.SetAllPings -> {
+                _state.update {
+                    it.copy(
+                        allPings = event.allPings
+                    )
+                }
+                val allPings = _state.value.allPings
+                viewModelScope.launch { pingDao.batchInsert(allPings) }
+            }
+
             is ToolEvent.SetAllSettings -> {
                 _state.update {
                     it.copy(
@@ -815,6 +825,14 @@ class ToolViewModel(
                 _state.update {
                     it.copy(
                         deletePinPoints = _state.value.deletePinPoints.not()
+                    )
+                }
+            }
+
+            is ToolEvent.SwitchDeletePings -> {
+                _state.update {
+                    it.copy(
+                        deletePings = _state.value.deletePings.not()
                     )
                 }
             }

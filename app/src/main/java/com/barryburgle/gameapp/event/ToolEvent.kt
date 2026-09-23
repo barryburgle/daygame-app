@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.event
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -36,6 +37,7 @@ sealed interface ToolEvent : GenericEvent {
     data class SetAllSets(val allSets: List<SingleSet>) : ToolEvent
     data class SetAllChallenges(val allChallenges: List<AchievedChallenge>) : ToolEvent
     data class SetAllPinPoints(val allPinPoints: List<PinPoint>) : ToolEvent
+    data class SetAllPings(val allPings: List<Ping>) : ToolEvent
     data class SetAllSettings(val allSettings: List<Setting>) : ToolEvent // TODO: complete
     data class SetLastSessionAverageQuantity(val lastSessionAverageQuantity: String) : ToolEvent
     data class SetLastSessionsShown(val lastSessionsShown: String) : ToolEvent
@@ -60,6 +62,7 @@ sealed interface ToolEvent : GenericEvent {
     object SwitchDeleteSets : ToolEvent
     object SwitchDeleteChallenges : ToolEvent
     object SwitchDeletePinPoints : ToolEvent
+    object SwitchDeletePings : ToolEvent
     object SwitchDeleteSettings : ToolEvent
     object SwitchIsCleaning : ToolEvent
     object SwitchThemeSysFollow : ToolEvent
