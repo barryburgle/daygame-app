@@ -39,6 +39,7 @@ import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 
 
+// TODO: do all the lead sent tracking part
 @Composable
 fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
     val context = LocalContext.current
@@ -64,6 +65,8 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
                 onEvent(OutputEvent.EditPing(ping))
             }) {
         if (!ping.pic.isNullOrBlank()) {
+            // TODO: support video linking and playback on the card background
+            // TODO: support ig link -> cached thumbnail in card background (saved in a cache folder)
             AsyncImage(
                 model = ping.pic,
                 contentDescription = "Ping Pic",
@@ -131,6 +134,7 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
                             )
                         }
                         if (!ping.link.isNullOrBlank()) {
+                            // TODO: link should be clickable & open default browser
                             Spacer(modifier = Modifier.height(2.dp))
                             LittleBodyText(
                                 text = ping.link!!,
@@ -145,6 +149,8 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(6.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // TODO: on each one of the copy/share button we should open a dialog with the list of leads ordered by last contact (if any)
+                // or acquisition date and on their side a checkbox to select the ones we are sending that ping, to keep track
                 IconShadowButton(
                     onClick = {
                         val clipData = if (!ping.pic.isNullOrBlank()) {
