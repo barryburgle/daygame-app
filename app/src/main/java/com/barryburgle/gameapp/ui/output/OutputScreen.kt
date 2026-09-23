@@ -52,6 +52,8 @@ import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.OutputLeadDialog
+import com.barryburgle.gameapp.ui.output.dialog.PingDialog
+import com.barryburgle.gameapp.ui.output.dialog.PingEditDialog
 import com.barryburgle.gameapp.ui.output.section.MonthSection
 import com.barryburgle.gameapp.ui.output.section.SessionSection
 import com.barryburgle.gameapp.ui.output.section.WeekSection
@@ -88,6 +90,15 @@ fun OutputScreen(
         animationSpec = tween(durationMillis = 350),
         label = "blurBackground"
     )
+    if (state.showPingDialog) {
+        PingDialog(state.allPings, onEvent)
+    }
+    if (state.showAddPingDialog) {
+        PingEditDialog("Add a new", onEvent)
+    }
+    if (state.showEditPingDialog && state.editPing != null) {
+        PingEditDialog("Edit the ${state.editPing!!.title}", onEvent, state.editPing)
+    }
     Scaffold(
         topBar = {
             BlurStatusBar()

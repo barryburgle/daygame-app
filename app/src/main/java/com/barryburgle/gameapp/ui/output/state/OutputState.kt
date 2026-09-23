@@ -44,6 +44,8 @@ data class OutputState(
     val isInOverlay: Boolean = false,
     val showPingDialog: Boolean = false,
     val showAddPingDialog: Boolean = false,
+    val showEditPingDialog: Boolean = false,
+    val editPing: Ping? = null
 ) : AllEntityState(
     allSessions,
     allLeads,
