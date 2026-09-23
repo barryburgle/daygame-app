@@ -234,7 +234,23 @@ fun LeadDialogContent(
         modifier = modifier.shadow(elevation = 10.dp),
         onDismissRequest = onDismiss,
         title = {
-            LargeTitleText(description)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                LargeTitleText(description)
+                if (isUpdatingLead) {
+                    IconShadowButton(
+                        onClick = {
+                            showDeleteLeadDialog = true
+                        },
+                        imageVector = Icons.Default.Delete,
+                        iconColor = MaterialTheme.colorScheme.onErrorContainer,
+                        contentDescription = "Delete Lead"
+                    )
+                }
+            }
         },
         text = {
             Column(
@@ -254,17 +270,6 @@ fun LeadDialogContent(
                         singleLine = true
                     ) {
                         onSetLeadName(it)
-                    }
-                    if (isUpdatingLead) {
-                        Spacer(modifier = Modifier.width(10.dp))
-                        IconShadowButton(
-                            onClick = {
-                                showDeleteLeadDialog = true
-                            },
-                            imageVector = Icons.Default.Delete,
-                            iconColor = MaterialTheme.colorScheme.onErrorContainer,
-                            contentDescription = "Delete Lead"
-                        )
                     }
                 }
                 Row(
