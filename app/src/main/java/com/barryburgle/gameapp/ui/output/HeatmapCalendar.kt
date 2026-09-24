@@ -113,16 +113,14 @@ fun HeatmapCalendar(
             .chunked(7)
     }
     val listState = rememberLazyListState()
-    var isInitialScrollDone by remember { mutableStateOf(false) }
 
     LaunchedEffect(weeks) {
         if (weeks.isNotEmpty()) {
             listState.scrollToItem(weeks.size - 1)
         }
-        isInitialScrollDone = true
     }
 
-    val firstVisibleItemIndex = listState.firstVisibleItemIndex
+    val totalWeeks = weeks.size
 
     Row(modifier = modifier.padding(vertical = 8.dp)) {
         LazyRow(
@@ -136,7 +134,7 @@ fun HeatmapCalendar(
                 )
             }
             itemsIndexed(weeks) { index, week ->
-                val relativeWeekIndex = (index - firstVisibleItemIndex).coerceAtLeast(0)
+                val weekOffsetFromRight = (totalWeeks - 1 - index)
 
                 Column(horizontalAlignment = Alignment.Start) {
                     Box(
@@ -172,7 +170,9 @@ fun HeatmapCalendar(
                             val entry = entryMap[date]
                             val count = entry?.count ?: 0.0f
                             val desc = entry?.desc ?: ""
-                            val cellAnimationIndex = relativeWeekIndex * 7 + dayInWeekIndex
+
+                            // Sequenced right-to-left across weeks and bottom-to-top across days
+                            val cellAnimationIndex = weekOffsetFromRight * 7 + (6 - dayInWeekIndex)
 
                             val isInRange =
                                 customSummaryStartDate != null && customSummaryEndDate != null &&
@@ -190,7 +190,6 @@ fun HeatmapCalendar(
                                 emptyColor = emptyColor.copy(alpha = 0.1f),
                                 isSelected = selectedDate == date || isInRange,
                                 cellAnimationIndex = cellAnimationIndex,
-                                isInitialScrollDone = isInitialScrollDone,
                                 onClick = {
                                     if (isCustomSummaryMode) {
                                         if (customSummaryStartDate == null || customSummaryEndDate != null) {
@@ -232,7 +231,6 @@ private fun ContributionCellWithTooltip(
     emptyColor: Color,
     isSelected: Boolean,
     cellAnimationIndex: Int,
-    isInitialScrollDone: Boolean,
     onClick: () -> Unit
 ) {
     val tooltipState = rememberTooltipState(isPersistent = true)
@@ -242,17 +240,17 @@ private fun ContributionCellWithTooltip(
     val clickScale = remember { Animatable(1f) }
     val tooltipScale = remember { Animatable(0f) }
 
-    LaunchedEffect(isInitialScrollDone) {
-        if (isInitialScrollDone) {
-            delay(cellAnimationIndex * 12L)
-            scale.animateTo(
-                targetValue = 1f,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow
-                )
+    LaunchedEffect(Unit) {
+        // Caps delay for smooth off-screen lazy scrolling while staging initial load ripple
+        val delayMillis = (cellAnimationIndex * 12L).coerceAtMost(450L)
+        delay(delayMillis)
+        scale.animateTo(
+            targetValue = 1f,
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessLow
             )
-        }
+        )
     }
 
     LaunchedEffect(tooltipState.isVisible) {
