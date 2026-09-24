@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
@@ -42,6 +44,8 @@ import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 // TODO: do all the lead sent tracking part
 @Composable
 fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
+    val fadingColor = MaterialTheme.colorScheme.onPrimary
+    val textColor = MaterialTheme.colorScheme.surfaceVariant
     val context = LocalContext.current
     val systemClipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val fullTextToShare = buildString {
@@ -58,9 +62,9 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 2.dp)
+            .padding(6.dp)
             .clip(cardShape)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(textColor)
             .clickable {
                 onEvent(OutputEvent.EditPing(ping))
             }) {
@@ -89,57 +93,95 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .fillMaxWidth()
-                .height(40.dp)
+                .height(60.dp)
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.25f),
+                            fadingColor.copy(alpha = 0.98f),
+                            fadingColor.copy(alpha = 0.8f),
+                            fadingColor.copy(alpha = 0.65f),
+                            fadingColor.copy(alpha = 0.5f),
+                            fadingColor.copy(alpha = 0.25f),
                             Color.Transparent
                         )
                     )
                 )
-        )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Spacer(modifier = Modifier.width(10.dp))
+                    PillShapedTranslucent {
+                        MediumTitleText(
+                            text = ping.title, color = textColor
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(2.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    WavyPlaceholder("Touch to edit", color = textColor)
+                }
+            }
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(if (ping.pic.isNullOrBlank()) MaterialTheme.colorScheme.surface else Color.Transparent)
-                .padding(12.dp),
+                .background(if (ping.pic.isNullOrBlank()) MaterialTheme.colorScheme.surface else Color.Transparent),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(end = 8.dp),
+                    .padding(start = 12.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Column {
-                    MediumTitleText(
-                        text = ping.title, color = MaterialTheme.colorScheme.onPrimary
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    WavyPlaceholder("Touch to edit")
-                }
                 if (!ping.body.isNullOrBlank() || !ping.link.isNullOrBlank()) {
-                    Spacer(modifier = Modifier.height(12.dp))
                     Column {
                         if (!ping.body.isNullOrBlank()) {
                             LittleBodyText(
                                 text = "\"" + ping.body + "\"",
-                                color = MaterialTheme.colorScheme.onPrimary
+                                color = textColor
                             )
                         }
                         if (!ping.link.isNullOrBlank()) {
-                            // TODO: link should be clickable & open default browser
                             Spacer(modifier = Modifier.height(2.dp))
                             LittleBodyText(
                                 text = ping.link!!,
                                 italic = true,
-                                color = MaterialTheme.colorScheme.onPrimary
+                                color = textColor,
+                                modifier = Modifier.clickable {
+                                    try {
+                                        var url = ping.link!!
+                                        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                                            url = "https://$url"
+                                        }
+                                        val browserIntent =
+                                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                        context.startActivity(browserIntent)
+                                    } catch (e: Exception) {
+                                        Toast.makeText(
+                                            context,
+                                            "Cannot open link",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
                             )
                         }
                     }
@@ -153,13 +195,10 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
                 // or acquisition date and on their side a checkbox to select the ones we are sending that ping, to keep track
                 IconShadowButton(
                     onClick = {
-                        val clipData = if (!ping.pic.isNullOrBlank()) {
-                            val imageUri = Uri.parse(ping.pic)
-                            ClipData(
-                                ping.title,
-                                arrayOf("image/*", "text/plain", "text/html"),
-                                ClipData.Item(imageUri)
-                            ).apply {
+                        val imageUri = ping.pic?.takeIf { it.isNotBlank() }?.let { Uri.parse(it) }
+
+                        val clipData = if (imageUri != null) {
+                            ClipData.newUri(context.contentResolver, ping.title, imageUri).apply {
                                 if (fullTextToShare.isNotBlank()) {
                                     addItem(ClipData.Item(fullTextToShare))
                                 }
@@ -200,6 +239,26 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
                     contentDescription = "Send button (opens share menu)"
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun PillShapedTranslucent(
+    content: @Composable () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .background(
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(10.dp)
+            )
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(start = 10.dp, end = 10.dp)
+        ) {
+            content()
         }
     }
 }
