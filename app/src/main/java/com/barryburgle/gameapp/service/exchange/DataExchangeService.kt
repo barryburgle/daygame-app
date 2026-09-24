@@ -40,6 +40,34 @@ class DataExchangeService {
         val pingCsvService: PingCsvService = PingCsvService()
         val settingCsvService: SettingCsvService = SettingCsvService()
 
+        suspend fun backupPingsAndLeads(
+            state: ExportState
+        ) {
+            withContext(Dispatchers.IO) {
+                val exportFolder = state.exportFolder + "/" + state.backupFolder
+                backupAndClean(
+                    leadCsvService,
+                    state.allLeads,
+                    exportFolder,
+                    leadCsvService.getBackupFileName(),
+                    true,
+                    state.lastBackup,
+                    incrementalBackup = true,
+                    clean = true
+                )
+                backupAndClean(
+                    pingCsvService,
+                    state.allPings,
+                    exportFolder,
+                    pingCsvService.getBackupFileName(),
+                    true,
+                    state.lastBackup,
+                    incrementalBackup = true,
+                    clean = true
+                )
+            }
+        }
+
         suspend fun backup(
             state: ExportState
         ) {
