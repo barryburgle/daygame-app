@@ -17,11 +17,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -64,7 +67,7 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
             .fillMaxWidth()
             .padding(6.dp)
             .clip(cardShape)
-            .background(textColor)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable {
                 onEvent(OutputEvent.EditPing(ping))
             }) {
@@ -125,15 +128,7 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
                             text = ping.title, color = textColor
                         )
                     }
-                }
-                Spacer(modifier = Modifier.height(2.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
+                    Spacer(modifier = Modifier.width(10.dp))
                     WavyPlaceholder("Touch to edit", color = textColor)
                 }
             }
@@ -142,48 +137,62 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 10.dp, horizontal = 10.dp)
-                .background(if (ping.pic.isNullOrBlank()) MaterialTheme.colorScheme.surface else Color.Transparent),
+                .background(Color.Transparent),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 2.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                    .fillMaxHeight()
+                    .padding(start = 2.dp)
+                    .background(Color.Red),
+                verticalArrangement = Arrangement.Top
             ) {
                 if (!ping.body.isNullOrBlank() || !ping.link.isNullOrBlank()) {
                     Column {
                         if (!ping.body.isNullOrBlank()) {
                             LittleBodyText(
                                 text = "\"" + ping.body + "\"",
-                                color = textColor
+                                color = fadingColor
                             )
                         }
                         if (!ping.link.isNullOrBlank()) {
                             Spacer(modifier = Modifier.height(2.dp))
-                            LittleBodyText(
-                                text = ping.link!!,
-                                italic = true,
-                                color = textColor,
-                                modifier = Modifier.clickable {
-                                    try {
-                                        var url = ping.link!!
-                                        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-                                            url = "https://$url"
+                            Row(
+                                modifier = Modifier
+                                    .background(Color.Transparent, RoundedCornerShape(10.dp))
+                                    .clickable {
+                                        try {
+                                            var url = ping.link!!
+                                            if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                                                url = "https://$url"
+                                            }
+                                            val browserIntent =
+                                                Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                            context.startActivity(browserIntent)
+                                        } catch (e: Exception) {
+                                            Toast.makeText(
+                                                context,
+                                                "Cannot open link",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
-                                        val browserIntent =
-                                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                        context.startActivity(browserIntent)
-                                    } catch (e: Exception) {
-                                        Toast.makeText(
-                                            context,
-                                            "Cannot open link",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
                                     }
-                                }
-                            )
+                                    .padding(vertical = 8.dp, horizontal = 4.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Link,
+                                    contentDescription = "Link icon",
+                                    tint = textColor,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                LittleBodyText(
+                                    text = ping.link!!,
+                                    italic = true,
+                                    color = textColor
+                                )
+                            }
                         }
                     }
                 }
