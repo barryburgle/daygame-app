@@ -8,6 +8,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
@@ -15,10 +16,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -86,18 +89,21 @@ fun Navigation(
         )
     )
 
+    val navBarShape = RoundedCornerShape(30.dp)
+
     Scaffold(
         bottomBar = {
-            androidx.compose.material3.Surface(
+            Surface(
                 modifier = Modifier
                     .padding(start = 34.dp, end = 34.dp, bottom = 18.dp)
                     .navigationBarsPadding(),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(30.dp),
-                color = MaterialTheme.colorScheme.secondary,
+                shape = navBarShape,
+                color = MaterialTheme.colorScheme.primary,
                 tonalElevation = 8.dp,
                 shadowElevation = 12.dp
             ) {
                 NavigationBar(
+                    modifier = Modifier.clip(navBarShape),
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
                     items.forEach { item ->
