@@ -130,6 +130,7 @@ class MainActivity : ComponentActivity() {
                         it.setDao,
                         it.challengeDao,
                         it.pinPointDao,
+                        it.pingDao,
                         it.settingDao
                     )
                 } as T

@@ -5,16 +5,26 @@ import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.challenge.ChallengeDao
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
+import com.barryburgle.gameapp.dao.ping.PingDao
 import com.barryburgle.gameapp.dao.pinpoint.PinPointDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
+import com.barryburgle.gameapp.model.challenge.AchievedChallenge
+import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
+import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.ping.Ping
+import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
+import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.service.recording.RecordingService
+import com.barryburgle.gameapp.ui.CombineEight
+import com.barryburgle.gameapp.ui.CombineFiftheen
+import com.barryburgle.gameapp.ui.CombineFourteen
 import com.barryburgle.gameapp.ui.CombineThirteen
-import com.barryburgle.gameapp.ui.CombineTwenty
 import com.barryburgle.gameapp.ui.CombineTwentyone
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.Dispatchers
@@ -33,21 +43,36 @@ class ToolViewModel(
     private val setDao: SetDao,
     private val challengeDao: ChallengeDao,
     private val pinPointDao: PinPointDao,
+    private val pingDao: PingDao,
     private val settingDao: SettingDao
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(ToolsState())
-    private val _allSessions = abstractSessionDao.getAll()
-    private val _allLeads = leadDao.getAll()
-    private val _allDates = dateDao.getAll()
-    private val _allSets = setDao.getAll()
-    private val _allChallenges = challengeDao.getAll()
-    private val _allPinPoints = pinPointDao.getAll()
-    private val _allSettings = settingDao.getAll()
-    val _importExportSettingState: Flow<ImportExportSettingState> = CombineTwenty(
+
+    val _allEntitiesState: Flow<AllEntitiesState> = CombineEight(
+        abstractSessionDao.getAll(),
+        leadDao.getAll(),
+        dateDao.getAll(),
+        setDao.getAll(),
+        challengeDao.getAll(),
+        pinPointDao.getAll(),
+        pingDao.getAll(),
+        settingDao.getAll()
+    ) { allSessions, allLeads, allDates, allSets, allChallenges, allPinPoints, allPings, allSettings ->
+        AllEntitiesState(
+            allSessions = allSessions,
+            allLeads = allLeads,
+            allDates = allDates,
+            allSets = allSets,
+            allChallenges = allChallenges,
+            allPinPoints = allPinPoints,
+            allPings = allPings,
+            allSettings = allSettings
+        )
+    }
+    val _importExportSettingState: Flow<ImportExportSettingState> = CombineTwentyone(
         settingDao.getExportFolder(),
         settingDao.getImportFolder(),
-        settingDao.getBackupFolder(),
         settingDao.getExportHeaderFlag(),
         settingDao.getImportHeaderFlag(),
         settingDao.getBackupActiveFlag(),
@@ -63,13 +88,14 @@ class ToolViewModel(
         settingDao.getImportChallengesFilename(),
         settingDao.getExportPinPointsFilename(),
         settingDao.getImportPinPointsFilename(),
+        settingDao.getExportPingsFilename(),
+        settingDao.getImportPingsFilename(),
         settingDao.getExportSettingsFilename(),
         settingDao.getImportSettingsFilename()
-    ) { exportFolder, importFolder, backupFolder, exportHeader, importHeader, backupActive, exportSessions, importSessions, exportLeads, importLeads, exportDates, importDates, exportSets, importSets, exportChallenges, importChallenges, exportPinPoints, importPinPoints, exportSettings, importSettings ->
+    ) { exportFolder, importFolder, exportHeader, importHeader, backupActive, exportSessions, importSessions, exportLeads, importLeads, exportDates, importDates, exportSets, importSets, exportChallenges, importChallenges, exportPinPoints, importPinPoints, exportPings, importPings, exportSettings, importSettings ->
         ImportExportSettingState(
             exportFolder = exportFolder,
             importFolder = importFolder,
-            backupFolder = backupFolder,
             exportHeader = exportHeader,
             importHeader = importHeader,
             backupActive = backupActive,
@@ -85,11 +111,14 @@ class ToolViewModel(
             importChallengesFilename = importChallenges,
             exportPinPointsFilename = exportPinPoints,
             importPinPointsFilename = importPinPoints,
+            exportPingsFilename = exportPings,
+            importPingsFilename = importPings,
             exportSettingsFilename = exportSettings,
             importSettingsFilename = importSettings,
         )
     }
-    val _generalSettingState: Flow<GeneralSettingState> = CombineThirteen(
+    val _generalSettingState: Flow<GeneralSettingState> = CombineFourteen(
+        settingDao.getBackupFolder(),
         settingDao.getNotificationTime(),
         settingDao.getSuggestLeadsNationality(),
         settingDao.getShownNationalities(),
@@ -103,8 +132,9 @@ class ToolViewModel(
         settingDao.getShowCurrentChallengeSummary(),
         settingDao.getArchiveBackupFolder(),
         settingDao.getIsCleaning()
-    ) { notificationTime, suggestLeadsNationality, shownNationalities, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary, archiveBackupFolder, isCleaning ->
+    ) { backupFolder, notificationTime, suggestLeadsNationality, shownNationalities, themeSysFollow, themeId, simplePlusOneReport, neverShareLead, copyReportOnClipboard, showCurrentWeekSummary, showCurrentMonthSummary, showCurrentChallengeSummary, archiveBackupFolder, isCleaning ->
         GeneralSettingState(
+            backupFolder = backupFolder,
             notificationTime = notificationTime,
             suggestLeadsNationality = suggestLeadsNationality,
             shownNationalities = shownNationalities,
@@ -163,15 +193,9 @@ class ToolViewModel(
     private val _recordingsFolder = settingDao.getRecordingsFolder()
     private val _recordingsEnabled = settingDao.getRecordingsEnabled()
     val state =
-        CombineTwentyone(
+        CombineFiftheen(
             _state,
-            _allSessions,
-            _allLeads,
-            _allDates,
-            _allSets,
-            _allChallenges,
-            _allPinPoints,
-            _allSettings,
+            _allEntitiesState,
             _importExportSettingState,
             _generalSettingState,
             _liveSessionSettingState,
@@ -185,7 +209,7 @@ class ToolViewModel(
             _lastMonthsShown,
             _recordingsFolder,
             _recordingsEnabled
-        ) { state, allSessions, allLeads, allDates, allSets, allChallenges, allPinPoints, allSettings, importExportSettingState, generalSettingState, liveSessionSettingState, averageLast, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown, recordingsFolder, recordingsEnabled ->
+        ) { state, allEntitiesState, importExportSettingState, generalSettingState, liveSessionSettingState, averageLast, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown, recordingsFolder, recordingsEnabled ->
             state.copy(
                 exportSessionsFileName = importExportSettingState.exportSessionsFilename,
                 importSessionsFileName = importExportSettingState.importSessionsFilename,
@@ -199,6 +223,8 @@ class ToolViewModel(
                 importChallengesFileName = importExportSettingState.importChallengesFilename,
                 exportPinPointsFileName = importExportSettingState.exportPinPointsFilename,
                 importPinPointsFileName = importExportSettingState.importPinPointsFilename,
+                exportPingsFileName = importExportSettingState.exportPingsFilename,
+                importPingsFileName = importExportSettingState.importPingsFilename,
                 exportSettingsFileName = importExportSettingState.exportSettingsFilename,
                 importSettingsFileName = importExportSettingState.importSettingsFilename,
                 archiveBackupFolder = generalSettingState.archiveBackupFolder.toBoolean(),
@@ -207,15 +233,16 @@ class ToolViewModel(
                 theme = generalSettingState.themeId,
                 exportFolder = importExportSettingState.exportFolder,
                 importFolder = importExportSettingState.importFolder,
-                backupFolder = importExportSettingState.backupFolder,
+                backupFolder = generalSettingState.backupFolder,
                 notificationTime = generalSettingState.notificationTime,
-                allSessions = allSessions,
-                allLeads = allLeads,
-                allDates = allDates,
-                allSets = allSets,
-                allChallenges = allChallenges,
-                allPinPoints = allPinPoints,
-                allSettings = allSettings,
+                allSessions = allEntitiesState.allSessions,
+                allLeads = allEntitiesState.allLeads,
+                allDates = allEntitiesState.allDates,
+                allSets = allEntitiesState.allSets,
+                allChallenges = allEntitiesState.allChallenges,
+                allPinPoints = allEntitiesState.allPinPoints,
+                allPings = allEntitiesState.allPings,
+                allSettings = allEntitiesState.allSettings,
                 lastSessionAverageQuantity = averageLast,
                 exportHeader = importExportSettingState.exportHeader.toBoolean(),
                 importHeader = importExportSettingState.importHeader.toBoolean(),
@@ -1224,7 +1251,6 @@ class ToolViewModel(
 data class ImportExportSettingState(
     val exportFolder: String,
     val importFolder: String,
-    val backupFolder: String,
     val exportHeader: String,
     val importHeader: String,
     val backupActive: String,
@@ -1240,11 +1266,14 @@ data class ImportExportSettingState(
     val importChallengesFilename: String,
     val exportPinPointsFilename: String,
     val importPinPointsFilename: String,
+    val exportPingsFilename: String,
+    val importPingsFilename: String,
     val exportSettingsFilename: String,
     val importSettingsFilename: String
 )
 
 data class GeneralSettingState(
+    val backupFolder: String,
     val notificationTime: String,
     val suggestLeadsNationality: String,
     val shownNationalities: String,
@@ -1274,4 +1303,15 @@ data class LiveSessionSettingState(
     val liveSessionSittingReminderEnabled: String,
     val liveSessionSittingReminderInterval: String,
     val liveSessionShareEnabled: String
+)
+
+data class AllEntitiesState(
+    val allSessions: List<AbstractSession>,
+    val allLeads: List<Lead>,
+    val allDates: List<Date>,
+    val allSets: List<SingleSet>,
+    val allChallenges: List<AchievedChallenge>,
+    val allPinPoints: List<PinPoint>,
+    val allPings: List<Ping>,
+    val allSettings: List<Setting>
 )
