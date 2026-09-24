@@ -34,6 +34,7 @@ import com.barryburgle.gameapp.service.csv.ChallengeCsvService
 import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.PinPointCsvService
+import com.barryburgle.gameapp.service.csv.PingCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.service.csv.SetCsvService
 import com.barryburgle.gameapp.service.csv.SettingCsvService
@@ -59,6 +60,7 @@ fun DataExchangeCard(
     setCsvService: SetCsvService,
     challengeCsvService: ChallengeCsvService,
     pinPointCsvService: PinPointCsvService,
+    pingCsvService: PingCsvService,
     settingCsvService: SettingCsvService,
     csvFindService: CSVFindService,
     onEvent: (ToolEvent) -> Unit
@@ -480,6 +482,53 @@ fun DataExchangeCard(
                                     onEvent(ToolEvent.SetExportPinPointsFileName(it))
                                 } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
                                     onEvent(ToolEvent.SetImportPinPointsFileName(it))
+                                }
+                            }
+                        )
+                        FilenameComposable(
+                            cardTitle = cardTitle,
+                            icon,
+                            "ping",
+                            textFieldColumnWidth,
+                            localContext,
+                            if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                state.exportPingsFileName
+                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                state.importPingsFileName
+                            } else "",
+                            buttonFunction = {
+                                importExportButtonFunction(
+                                    cardTitle,
+                                    pingCsvService,
+                                    state.importFolder,
+                                    state.exportFolder,
+                                    state.importPingsFileName,
+                                    state.exportPingsFileName,
+                                    state.importHeader,
+                                    state.exportHeader,
+                                    state.allPings,
+                                    onEvent,
+                                    localContext,
+                                    ToolEvent::SetAllPings
+                                )
+                            },
+                            reloadFunction = {
+                                if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(
+                                        ToolEvent.SetImportPingsFileName(
+                                            csvFindService.getLastFilenameInFolder(
+                                                state.importFolder,
+                                                "ping"
+                                            )
+                                        )
+                                    )
+                                }
+                            },
+                            filenameOnEvent = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetExportPingsFileName(it))
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetImportPingsFileName(it))
                                 }
                             }
                         )
