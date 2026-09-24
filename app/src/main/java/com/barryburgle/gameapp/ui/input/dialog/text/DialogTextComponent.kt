@@ -207,7 +207,7 @@ fun DialogTextComponent(
 }
 
 @Composable
-fun WavyPlaceholder(text: String) {
+fun WavyPlaceholder(text: String, color: Color = MaterialTheme.colorScheme.onPrimary) {
     val infiniteTransition = rememberInfiniteTransition(label = "WavyPlaceholderTransition")
     val progress by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -225,8 +225,8 @@ fun WavyPlaceholder(text: String) {
             val colorProgress = (progress * 3.5f - charOffset)
             val colorValue = ((sin(colorProgress * 2f * Math.PI.toFloat()) + 1f) / 2f)
             val animatedColor = lerp(
-                MaterialTheme.colorScheme.onPrimary,
-                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.3f),
+                color,
+                color.copy(alpha = 0.3f),
                 colorValue
             )
             Text(
