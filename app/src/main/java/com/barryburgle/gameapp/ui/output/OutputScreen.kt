@@ -228,7 +228,8 @@ fun OutputScreen(
                                             onEvent(OutputEvent.ShowPingDialog)
                                         },
                                         imageVector = Icons.Default.LocalPostOffice,
-                                        contentDescription = "Ping"
+                                        contentDescription = "Ping",
+                                        glowing = true
                                     )
                                 }
                             }
