@@ -27,6 +27,7 @@ import com.barryburgle.gameapp.service.csv.ChallengeCsvService
 import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.PinPointCsvService
+import com.barryburgle.gameapp.service.csv.PingCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.service.csv.SetCsvService
 import com.barryburgle.gameapp.service.csv.SettingCsvService
@@ -52,6 +53,7 @@ fun ToolsScreen(
     val setCsvService = SetCsvService()
     val challengeCsvService = ChallengeCsvService()
     val pinPointCsvService = PinPointCsvService()
+    val pingCsvService = PingCsvService()
     val settingCsvService = SettingCsvService()
     val csvFindService = CSVFindService()
     if (state.isCleaning) {
@@ -63,7 +65,7 @@ fun ToolsScreen(
         },
     ) { padding ->
         val dataExchangeCardModifier = Modifier
-            .height(880.dp)
+            .height(970.dp)
             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
             .shadow(
                 elevation = 5.dp, shape = MaterialTheme.shapes.large
@@ -99,6 +101,8 @@ fun ToolsScreen(
                 if (state.allChallenges.isEmpty()) "" else "${state.allChallenges.size} challenges, "
             val pinpointCountDesc =
                 if (state.allPinPoints.isEmpty()) "" else "${state.allPinPoints.size} pin points, "
+            val pingCountDesc =
+                if (state.allPings.isEmpty()) "" else "${state.allPings.size} pings, "
             val settingsCountDesc =
                 if (state.allSettings.isEmpty()) "." else "${state.allSettings.size} settings."
             item {
@@ -106,7 +110,7 @@ fun ToolsScreen(
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     DataExchangeCard(
                         cardTitle = "Export",
-                        cardSubtitle = "Holding ${sessionsCountDesc}${leadsCountDesc}${setsCountDesc}${datesCountDesc}${challengesCountDesc}${pinpointCountDesc}${settingsCountDesc}",
+                        cardSubtitle = "Holding ${sessionsCountDesc}${leadsCountDesc}${setsCountDesc}${datesCountDesc}${challengesCountDesc}${pinpointCountDesc}${pingCountDesc}${settingsCountDesc}",
                         state = state,
                         onEvent = onEvent,
                         modifier = dataExchangeCardModifier,
@@ -116,6 +120,7 @@ fun ToolsScreen(
                         setCsvService = setCsvService,
                         challengeCsvService = challengeCsvService,
                         pinPointCsvService = pinPointCsvService,
+                        pingCsvService = pingCsvService,
                         settingCsvService = settingCsvService,
                         csvFindService = csvFindService
                     )
@@ -136,6 +141,7 @@ fun ToolsScreen(
                         setCsvService = setCsvService,
                         challengeCsvService = challengeCsvService,
                         pinPointCsvService = pinPointCsvService,
+                        pingCsvService = pingCsvService,
                         settingCsvService = settingCsvService,
                         csvFindService = csvFindService
                     )
