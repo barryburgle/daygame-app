@@ -63,6 +63,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
@@ -158,8 +159,7 @@ fun InputScreen(
                 )
             }
             Column(
-                horizontalAlignment = Alignment.End,
-                modifier = Modifier.offset(x = -20.dp)
+                horizontalAlignment = Alignment.End, modifier = Modifier.offset(x = -20.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -259,20 +259,18 @@ fun InputScreen(
                                 localContext, "Live session started", Toast.LENGTH_SHORT
                             ).show()
                             if (state.liveSessionNotificationEnabled) {
-                                val intent =
-                                    Intent(
-                                        context,
-                                        PersistentNotificationService::class.java
-                                    ).apply {
-                                        putExtra(
-                                            PersistentNotificationService.LIVE_SESSIONS_START_HOUR,
-                                            liveSessionStartHour
-                                        )
-                                        putExtra(
-                                            PersistentNotificationService.IS_FOLLOW_COUNT_ACTIVE,
-                                            state.followCount
-                                        )
-                                    }
+                                val intent = Intent(
+                                    context, PersistentNotificationService::class.java
+                                ).apply {
+                                    putExtra(
+                                        PersistentNotificationService.LIVE_SESSIONS_START_HOUR,
+                                        liveSessionStartHour
+                                    )
+                                    putExtra(
+                                        PersistentNotificationService.IS_FOLLOW_COUNT_ACTIVE,
+                                        state.followCount
+                                    )
+                                }
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     context.startForegroundService(intent)
                                 } else {
@@ -287,16 +285,15 @@ fun InputScreen(
                                 )
                             }
                             if (state.liveSessionShareEnabled) {
-                                val liveSessionReport =
-                                    "\uD83D\uDD34 Live Session started at ${
-                                        FormatService.getTime(
-                                            dateTime
-                                        )
-                                    } on ${
-                                        FormatService.getDate(
-                                            dateTime
-                                        )
-                                    }"
+                                val liveSessionReport = "\uD83D\uDD34 Live Session started at ${
+                                    FormatService.getTime(
+                                        dateTime
+                                    )
+                                } on ${
+                                    FormatService.getDate(
+                                        dateTime
+                                    )
+                                }"
                                 if (state.copyReportOnClipboard) {
                                     clipboardManager.setText(
                                         AnnotatedString(
@@ -304,22 +301,18 @@ fun InputScreen(
                                         )
                                     )
                                     Toast.makeText(
-                                        localContext,
-                                        "Live Session copied",
-                                        Toast.LENGTH_SHORT
+                                        localContext, "Live Session copied", Toast.LENGTH_SHORT
                                     ).show()
                                 }
                                 val sendIntent: Intent = Intent().apply {
                                     action = Intent.ACTION_SEND
                                     putExtra(
-                                        Intent.EXTRA_TEXT,
-                                        liveSessionReport
+                                        Intent.EXTRA_TEXT, liveSessionReport
                                     )
                                     type = "text/plain"
                                 }
                                 val shareIntent = Intent.createChooser(
-                                    sendIntent,
-                                    "Share summary"
+                                    sendIntent, "Share summary"
                                 )
                                 shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 localContext.startActivity(shareIntent)
@@ -335,6 +328,7 @@ fun InputScreen(
                     boxModifier = Modifier
                         .offset(y = -spaceFromNavBar - 18.dp)
                         .scale(1.3f)
+                        .clip(CircleShape)
                         .rotate(rotationAngle),
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add an event",
@@ -382,13 +376,13 @@ fun InputScreen(
         InsertInvite(state, blurBackground)
         Box(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
-                state = listState, modifier = Modifier
+                state = listState,
+                modifier = Modifier
                     .fillMaxSize()
                     .blur(blurBackground),
                 verticalArrangement = Arrangement.spacedBy(spaceFromLeft),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                    top = spaceFromLeft - 12.dp,
-                    bottom = padding.calculateBottomPadding() + 5.dp
+                    top = spaceFromLeft - 12.dp, bottom = padding.calculateBottomPadding() + 5.dp
                 )
             ) {
                 item {
@@ -524,12 +518,9 @@ fun BoxScope.EventFastScroller(
                     .background(
                         MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp)
                     )
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
-            ) {
+                    .padding(horizontal = 12.dp, vertical = 6.dp)) {
                 LittleBodyText(
-                    FormatService.getDate(date),
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    FormatService.getDate(date), modifier = Modifier.fillMaxWidth()
                 )
             }
         }
