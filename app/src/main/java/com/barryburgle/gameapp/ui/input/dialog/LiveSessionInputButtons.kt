@@ -161,7 +161,7 @@ fun LiveSessionInputButtons(
                     modifier = Modifier
                         .let {
                             if (showRecordingButtons) it.fillMaxHeight() else it.fillMaxHeight(
-                                0.35f
+                                0.7f
                             )
                         }
                         .background(
