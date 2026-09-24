@@ -222,6 +222,7 @@ fun OutputScreen(
                                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
+                                    // TODO: show a number on top right of this icon that says how many pings you have ready for use
                                     IconShadowButton(
                                         onClick = {
                                             onEvent(OutputEvent.ShowPingDialog)
