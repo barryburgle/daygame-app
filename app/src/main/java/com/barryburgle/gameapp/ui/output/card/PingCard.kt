@@ -141,6 +141,7 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(vertical = 10.dp, horizontal = 10.dp)
                 .background(if (ping.pic.isNullOrBlank()) MaterialTheme.colorScheme.surface else Color.Transparent),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -148,7 +149,7 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 12.dp),
+                    .padding(start = 2.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 if (!ping.body.isNullOrBlank() || !ping.link.isNullOrBlank()) {
