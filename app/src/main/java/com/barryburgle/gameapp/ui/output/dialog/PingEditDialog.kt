@@ -192,6 +192,7 @@ fun PingEditDialog(
                     if (ping != null) {
                         pingToSave.id = ping.id
                     }
+                    // TODO: do backup of pis: call DataExchangeService.backupPingsAndLeads
                     onEvent(
                         OutputEvent.SavePing(pingToSave)
                     )
