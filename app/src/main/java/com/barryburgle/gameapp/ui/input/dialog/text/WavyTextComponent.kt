@@ -10,6 +10,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
@@ -36,22 +39,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.ui.input.card.DeleteConfirmationDialog
 import com.barryburgle.gameapp.ui.utilities.button.LittleIconButton
 import kotlin.math.sin
 
-// TODO: give to oneline text scrolling possibility
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WavyTextComponent(
@@ -79,9 +79,11 @@ fun WavyTextComponent(
         )
     }
 
+    val scrollState = rememberScrollState()
+
     val validContent = !value.isBlank()
     val onPrimaryColor: Color = MaterialTheme.colorScheme.onPrimary
-    val backgroundColor: Color = MaterialTheme.colorScheme.onBackground
+    val onBackgroundColor: Color = MaterialTheme.colorScheme.onBackground
     val containerColor = onPrimaryColor.copy(alpha = 0.07f)
     var showDeleteTextDialog by remember { mutableStateOf(false) }
     if (showDeleteTextDialog) {
@@ -102,6 +104,9 @@ fun WavyTextComponent(
     val showFirstCustom = firstCustomActionIcon != null && firstCustomAction != null
     val showSecondCustom = secondCustomActionIcon != null && secondCustomAction != null
     val hasActions = showDelete || showCopy || showFirstCustom || showSecondCustom
+
+    val endPaddingForActions = if (hasActions) 100.dp else 0.dp
+
     Box(
         modifier = Modifier
             .graphicsLayer {
@@ -123,6 +128,11 @@ fun WavyTextComponent(
                 }
             },
             singleLine = singleLine,
+            keyboardOptions = if (singleLine) {
+                KeyboardOptions(imeAction = ImeAction.Done)
+            } else {
+                KeyboardOptions.Default
+            },
             shape = MaterialTheme.shapes.large,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
@@ -136,67 +146,73 @@ fun WavyTextComponent(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
+                .padding(end = endPaddingForActions)
                 .then(
-                    if (hasActions) {
+                    if (singleLine) {
+                        Modifier.horizontalScroll(scrollState)
+                    } else {
                         Modifier
-                            .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
-                            .drawWithContent {
-                                drawContent()
-                                drawRect(
-                                    brush = Brush.horizontalGradient(
-                                        0.6f to Color.Black,
-                                        0.85f to Color.Transparent
-                                    ),
-                                    blendMode = BlendMode.DstIn
-                                )
-                            }
-                    } else Modifier
+                    }
                 )
         )
         if (hasActions) {
-            Column(
+            Box(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .padding(end = 6.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalAlignment = Alignment.End
-            ) {
-                if (showDelete) {
-                    LittleIconButton(
-                        onClick = {
-                            showDeleteTextDialog = true
-                        },
-                        imageVector = Icons.Default.Delete,
-                        height = 15.dp,
-                        color = backgroundColor
-                    )
-                }
-                if (showCopy) {
-                    LittleIconButton(
-                        onClick = onCopyClick!!,
-                        imageVector = Icons.Default.ContentCopy,
-                        height = 15.dp,
-                        color = backgroundColor
-                    )
-                }
-                if (showFirstCustom) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(1.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        LittleIconButton(
-                            onClick = firstCustomAction!!,
-                            imageVector = firstCustomActionIcon!!,
-                            height = 15.dp,
-                            color = backgroundColor
-                        )
-                        if (showSecondCustom) {
-                            LittleIconButton(
-                                onClick = secondCustomAction!!,
-                                imageVector = secondCustomActionIcon!!,
-                                height = 15.dp,
-                                color = backgroundColor
+                    .fillMaxHeight()
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                                MaterialTheme.colorScheme.surface.copy(alpha = 0.98f)
                             )
+                        )
+                    )
+                    .padding(start = 16.dp, end = 6.dp),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalAlignment = Alignment.End
+                ) {
+                    if (showDelete) {
+                        LittleIconButton(
+                            onClick = {
+                                showDeleteTextDialog = true
+                            },
+                            imageVector = Icons.Default.Delete,
+                            height = 15.dp,
+                            color = onBackgroundColor
+                        )
+                    }
+                    if (showCopy) {
+                        LittleIconButton(
+                            onClick = onCopyClick!!,
+                            imageVector = Icons.Default.ContentCopy,
+                            height = 15.dp,
+                            color = onBackgroundColor
+                        )
+                    }
+                    if (showFirstCustom) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(1.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            LittleIconButton(
+                                onClick = firstCustomAction!!,
+                                imageVector = firstCustomActionIcon!!,
+                                height = 15.dp,
+                                color = onBackgroundColor
+                            )
+                            if (showSecondCustom) {
+                                LittleIconButton(
+                                    onClick = secondCustomAction!!,
+                                    imageVector = secondCustomActionIcon!!,
+                                    height = 15.dp,
+                                    color = onBackgroundColor
+                                )
+                            }
                         }
                     }
                 }
