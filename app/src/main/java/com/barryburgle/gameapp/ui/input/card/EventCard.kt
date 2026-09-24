@@ -83,7 +83,7 @@ import com.barryburgle.gameapp.ui.input.card.body.SessionBody
 import com.barryburgle.gameapp.ui.input.card.body.SetBody
 import com.barryburgle.gameapp.ui.input.dialog.MapDialog
 import com.barryburgle.gameapp.ui.input.dialog.shareEvent
-import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
+import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.input.liveSessionPulsingColor
 import com.barryburgle.gameapp.ui.output.LeadCard
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
@@ -804,7 +804,7 @@ fun EventCard(
                             }
                             CardSection {
                                 if (isLiveSession) {
-                                    DialogTextComponent(
+                                    WavyTextComponent(
                                         value = (sortableGameEvent.event as AbstractSession).stickingPoints,
                                         placeholder = "sticking points",
                                         singleLine = false,

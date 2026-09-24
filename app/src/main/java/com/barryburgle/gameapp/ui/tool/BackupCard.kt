@@ -24,7 +24,7 @@ import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
-import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
+import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
@@ -105,7 +105,7 @@ fun BackupCard(
                         RowTitle(
                             "Backup folder:", "", textFieldColumnWidth
                         )
-                        DialogTextComponent(
+                        WavyTextComponent(
                             value = state.backupFolder,
                             placeholder = "backup folder",
                             singleLine = true,

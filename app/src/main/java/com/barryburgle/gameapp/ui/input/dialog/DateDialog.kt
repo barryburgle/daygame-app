@@ -44,7 +44,7 @@ import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.enums.DateTypeEnum
 import com.barryburgle.gameapp.service.EntityService
 import com.barryburgle.gameapp.ui.input.CounterColumn
-import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
+import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
@@ -356,7 +356,7 @@ fun DateDialog(
                                     verticalArrangement = Arrangement.Top,
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    DialogTextComponent(
+                                    WavyTextComponent(
                                         value = state.location,
                                         placeholder = "location",
                                         singleLine = true,
@@ -375,7 +375,7 @@ fun DateDialog(
                                         onEvent(GameEvent.SetLocation(it))
                                     }
                                     Spacer(modifier = Modifier.height(5.dp))
-                                    DialogTextComponent(
+                                    WavyTextComponent(
                                         value = state.stickingPoints,
                                         placeholder = "sticking points",
                                         singleLine = false,

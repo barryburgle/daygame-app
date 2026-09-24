@@ -32,7 +32,7 @@ import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.ui.input.card.DeleteConfirmationDialog
-import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
+import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
@@ -111,12 +111,12 @@ fun PingEditDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DialogTextComponent(
+                WavyTextComponent(
                     value = title, placeholder = "ping title"
                 ) {
                     title = it
                 }
-                DialogTextComponent(
+                WavyTextComponent(
                     value = body, placeholder = "ping text", singleLine = false, onCopyClick = {
                         clipboardManager.setText(AnnotatedString(body))
                         Toast.makeText(localContext, "Ping text copied", Toast.LENGTH_SHORT).show()

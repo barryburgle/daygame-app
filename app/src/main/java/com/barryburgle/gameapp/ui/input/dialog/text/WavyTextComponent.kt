@@ -51,11 +51,10 @@ import com.barryburgle.gameapp.ui.input.card.DeleteConfirmationDialog
 import com.barryburgle.gameapp.ui.utilities.button.LittleIconButton
 import kotlin.math.sin
 
-// TODO: rename with more generic name
 // TODO: give to oneline text scrolling possibility
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DialogTextComponent(
+fun WavyTextComponent(
     value: String,
     placeholder: String,
     emptyValue: String = "",

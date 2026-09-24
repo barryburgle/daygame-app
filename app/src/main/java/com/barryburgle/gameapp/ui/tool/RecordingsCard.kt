@@ -27,7 +27,7 @@ import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.recording.RecordingStateEnum
 import com.barryburgle.gameapp.service.recording.RecordingService
-import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
+import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
@@ -132,7 +132,7 @@ fun RecordingsCard(
             RowTitle(
                 "Recordings folder:", "", textFieldColumnWidth
             )
-            DialogTextComponent(
+            WavyTextComponent(
                 value = typedFolder,
                 placeholder = "recordings folder",
                 singleLine = true,

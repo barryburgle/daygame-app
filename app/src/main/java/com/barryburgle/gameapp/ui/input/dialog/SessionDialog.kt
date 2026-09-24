@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.service.EntityService
 import com.barryburgle.gameapp.ui.input.CounterColumn
-import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
+import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.output.LeadCard
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
@@ -205,7 +205,7 @@ fun SessionDialog(
                 }
                 Spacer(modifier = Modifier.height(7.dp))
                 val stickingPoints = state.stickingPoints
-                DialogTextComponent(
+                WavyTextComponent(
                     value = state.stickingPoints,
                     placeholder = "sticking points",
                     singleLine = false,

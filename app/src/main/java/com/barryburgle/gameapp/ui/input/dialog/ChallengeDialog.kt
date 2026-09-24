@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.enums.ChallengeTypeEnum
 import com.barryburgle.gameapp.ui.input.CounterColumn
-import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
+import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
@@ -70,7 +70,7 @@ fun ChallengeDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DialogTextComponent(
+                WavyTextComponent(
                     value = state.challengeName,
                     placeholder = "challenge name",
                     singleLine = true
@@ -78,7 +78,7 @@ fun ChallengeDialog(
                     onEvent(GameEvent.SetChallengeName(it))
                 }
                 Spacer(modifier = Modifier.height(7.dp))
-                DialogTextComponent(
+                WavyTextComponent(
                     value = state.challengeDescription,
                     placeholder = "challenge description",
                     singleLine = true

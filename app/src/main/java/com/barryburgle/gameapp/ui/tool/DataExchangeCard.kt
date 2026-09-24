@@ -39,7 +39,7 @@ import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.service.csv.SetCsvService
 import com.barryburgle.gameapp.service.csv.SettingCsvService
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
-import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
+import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.FilenameComposable
 import com.barryburgle.gameapp.ui.tool.utils.RowTitle
@@ -146,7 +146,7 @@ fun DataExchangeCard(
                                 modifier = Modifier.width(textFieldColumnWidth),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                DialogTextComponent(
+                                WavyTextComponent(
                                     value = if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
                                         state.exportFolder
                                     } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {

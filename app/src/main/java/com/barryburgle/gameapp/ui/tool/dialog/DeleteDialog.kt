@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.service.csv.CSVFindService
-import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
+import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.Switch
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
@@ -119,7 +119,7 @@ fun DeleteDialog(
                         )
                     }
                 }
-                DialogTextComponent(
+                WavyTextComponent(
                     value = state.deleteConfirmationPrompt,
                     placeholder = "\"delete\" to confirm",
                     singleLine = true,

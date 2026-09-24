@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
-import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
+import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 
 @Composable
 fun FilenameComposable(
@@ -43,7 +43,7 @@ fun FilenameComposable(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            DialogTextComponent(
+            WavyTextComponent(
                 value = filenamePlaceholder,
                 placeholder = "${cardTitle.lowercase()} ${tableTitle} file name",
                 singleLine = true,

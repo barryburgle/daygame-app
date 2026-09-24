@@ -47,7 +47,7 @@ import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.stat.CategoryHistogram
 import com.barryburgle.gameapp.service.PhoneBookService
 import com.barryburgle.gameapp.ui.input.card.DeleteConfirmationDialog
-import com.barryburgle.gameapp.ui.input.dialog.text.DialogTextComponent
+import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
@@ -264,7 +264,7 @@ fun LeadDialogContent(
                         .height(60.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    DialogTextComponent(
+                    WavyTextComponent(
                         value = leadName,
                         placeholder = "lead name",
                         singleLine = true
@@ -286,7 +286,7 @@ fun LeadDialogContent(
                     }
                     Box {
                         Column(modifier = Modifier.width(200.dp)) {
-                            DialogTextComponent(
+                            WavyTextComponent(
                                 value = if (isFocused) countrySearch else {
                                     if (countrySearch.isEmpty()) CountryEnum.getFlagByAlpha3(
                                         leadNationality
