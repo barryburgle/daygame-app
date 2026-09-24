@@ -128,7 +128,6 @@ fun SessionBody(
     if (sessionRecordings.isNotEmpty()) {
         Spacer(modifier = Modifier.height(12.dp))
         AnimatedStaggeredItem(index = 8) {
-            // TODO: delete audio recording from normal Session card does not work. Fix it
             RecordingsView(
                 recordingState = recordingState,
                 recordings = sessionRecordings,
@@ -136,6 +135,7 @@ fun SessionBody(
                 recordingsEnabled = recordingsEnabled,
                 onTapPlaybackPlay = { onEvent(GameEvent.TapPlaybackPlay(it)) },
                 onTapPlaybackPause = { onEvent(GameEvent.TapPlaybackPause) },
+                onTapRecordingDelete = { onEvent(GameEvent.TapRecordingDelete(it)) },
                 onSetPlaybackPosition = { onEvent(GameEvent.SetPlaybackPosition(it)) }
             )
         }
