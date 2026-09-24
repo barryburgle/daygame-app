@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -43,7 +41,6 @@ import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 
-
 // TODO: do all the lead sent tracking part
 @Composable
 fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
@@ -53,7 +50,7 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
     val systemClipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val fullTextToShare = buildString {
         if (!ping.body.isNullOrBlank()) {
-            append("\n").append(ping.body)
+            append(ping.body)
         }
         if (!ping.link.isNullOrBlank()) {
             append("\n").append(ping.link)
@@ -70,7 +67,8 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
             .background(MaterialTheme.colorScheme.surface)
             .clickable {
                 onEvent(OutputEvent.EditPing(ping))
-            }) {
+            }
+    ) {
         if (!ping.pic.isNullOrBlank()) {
             // TODO: support video linking and playback on the card background
             // TODO: support ig link -> cached thumbnail in card background (saved in a cache folder)
@@ -92,64 +90,43 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
                     }
                 )
         )
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            fadingColor.copy(alpha = 0.98f),
-                            fadingColor.copy(alpha = 0.8f),
-                            fadingColor.copy(alpha = 0.65f),
-                            fadingColor.copy(alpha = 0.5f),
-                            fadingColor.copy(alpha = 0.25f),
-                            Color.Transparent
-                        )
-                    )
-                )
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Spacer(modifier = Modifier.width(10.dp))
-                    PillShapedTranslucent {
-                        MediumTitleText(
-                            text = ping.title, color = textColor
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    WavyPlaceholder("Touch to edit", color = textColor)
-                }
-            }
-        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp, horizontal = 10.dp)
-                .background(Color.Transparent),
+                .padding(10.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(start = 2.dp)
-                    .background(Color.Red),
-                verticalArrangement = Arrangement.Top
+                    .weight(1f)
+                    .padding(end = 8.dp)
             ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(54.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 4.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        PillShapedTranslucent {
+                            MediumTitleText(
+                                text = ping.title, color = textColor
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(10.dp))
+                        WavyPlaceholder("Touch to edit", color = textColor)
+                    }
+                }
                 if (!ping.body.isNullOrBlank() || !ping.link.isNullOrBlank()) {
-                    Column {
+                    Column(
+                        modifier = Modifier.padding(start = 2.dp)
+                    ) {
                         if (!ping.body.isNullOrBlank()) {
                             LittleBodyText(
                                 text = "\"" + ping.body + "\"",
@@ -178,7 +155,8 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
                                             ).show()
                                         }
                                     }
-                                    .padding(vertical = 8.dp, horizontal = 4.dp)
+                                    .padding(vertical = 4.dp, horizontal = 2.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Link,
@@ -198,6 +176,7 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
                 }
             }
             Column(
+                modifier = Modifier.padding(top = 4.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -205,14 +184,16 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
                 // or acquisition date and on their side a checkbox to select the ones we are sending that ping, to keep track
                 IconShadowButton(
                     onClick = {
-                        val imageUri = ping.pic?.takeIf { it.isNotBlank() }?.let { Uri.parse(it) }
+                        val imageUri =
+                            ping.pic?.takeIf { it.isNotBlank() }?.let { Uri.parse(it) }
 
                         val clipData = if (imageUri != null) {
-                            ClipData.newUri(context.contentResolver, ping.title, imageUri).apply {
-                                if (fullTextToShare.isNotBlank()) {
-                                    addItem(ClipData.Item(fullTextToShare))
+                            ClipData.newUri(context.contentResolver, ping.title, imageUri)
+                                .apply {
+                                    if (fullTextToShare.isNotBlank()) {
+                                        addItem(ClipData.Item(fullTextToShare))
+                                    }
                                 }
-                            }
                         } else {
                             ClipData.newPlainText(ping.title, fullTextToShare)
                         }
