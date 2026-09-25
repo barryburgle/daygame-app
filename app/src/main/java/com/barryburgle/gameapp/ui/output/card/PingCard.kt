@@ -200,19 +200,20 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
                 )
                 IconShadowButton(
                     onClick = {
+                        val shareableText = ping.getShareableText()
                         val sendIntent = Intent().apply {
                             if (!ping.pic.isNullOrBlank()) {
                                 val imageUri = Uri.parse(ping.pic)
                                 action = Intent.ACTION_SEND
                                 putExtra(Intent.EXTRA_STREAM, imageUri)
-                                if (fullTextToShare.isNotBlank()) {
-                                    putExtra(Intent.EXTRA_TEXT, fullTextToShare)
+                                if (shareableText.isNotBlank()) {
+                                    putExtra(Intent.EXTRA_TEXT, shareableText)
                                 }
                                 type = "image/*"
                                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                             } else {
                                 action = Intent.ACTION_SEND
-                                putExtra(Intent.EXTRA_TEXT, fullTextToShare)
+                                putExtra(Intent.EXTRA_TEXT, shareableText)
                                 type = "text/plain"
                             }
                         }
