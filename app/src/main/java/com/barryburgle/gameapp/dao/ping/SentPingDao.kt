@@ -21,4 +21,7 @@ interface SentPingDao {
 
     @Query("DELETE FROM sent_ping")
     suspend fun deleteAll()
+
+    @Query("DELETE FROM sent_ping WHERE ping_id = :pingId AND lead_id = :leadId")
+    suspend fun deleteByPingAndLead(pingId: Long, leadId: Long)
 }
