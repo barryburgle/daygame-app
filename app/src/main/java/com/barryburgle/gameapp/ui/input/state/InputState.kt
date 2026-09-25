@@ -151,7 +151,6 @@ data class InputState(
     exportSetsFileName,
     exportChallengesFileName,
     exportPinPointsFileName,
-    "",// Not passing a valid exportPingsFileName because it is not used from InputScreen features for any pings export
     "",// Not passing a valid exportSettingsFileName because it is not used from InputScreen features for any settings export
     exportFolder,
     backupFolder,
