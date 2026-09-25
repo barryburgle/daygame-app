@@ -55,7 +55,7 @@ import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 
 
 @Composable
-fun PingDialog(
+fun FlightControlDialog(
     pings: List<Ping> = emptyList(),
     leads: List<Lead> = emptyList(),
     sentPings: List<SentPing> = emptyList(),
@@ -69,8 +69,8 @@ fun PingDialog(
     val uriHandler = LocalUriHandler.current
     FlowDialog(
         modifier = Modifier.fillMaxHeight(0.8f),
-        onDismissRequest = { onEvent(OutputEvent.HidePingDialog) },
-        onConfirm = { onEvent(OutputEvent.HidePingDialog) },
+        onDismissRequest = { onEvent(OutputEvent.HideFlightControlDialog) },
+        onConfirm = { onEvent(OutputEvent.HideFlightControlDialog) },
         title = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,

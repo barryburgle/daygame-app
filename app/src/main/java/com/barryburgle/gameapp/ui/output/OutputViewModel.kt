@@ -254,18 +254,18 @@ class OutputViewModel(
                 }
             }
 
-            is OutputEvent.ShowPingDialog -> {
+            is OutputEvent.ShowFlightControlDialog -> {
                 _state.update {
                     it.copy(
-                        showPingDialog = true
+                        showFlightControlDialog = true
                     )
                 }
             }
 
-            is OutputEvent.HidePingDialog -> {
+            is OutputEvent.HideFlightControlDialog -> {
                 _state.update {
                     it.copy(
-                        showPingDialog = false
+                        showFlightControlDialog = false
                     )
                 }
             }

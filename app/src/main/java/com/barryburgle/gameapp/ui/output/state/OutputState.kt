@@ -44,7 +44,7 @@ data class OutputState(
     val suggestLeadsNationality: Boolean = true,
     val shownNationalities: Int = 6,
     val isInOverlay: Boolean = false,
-    val showPingDialog: Boolean = false,
+    val showFlightControlDialog: Boolean = false,
     val showAddPingDialog: Boolean = false,
     val showEditPingDialog: Boolean = false,
     val editPing: Ping? = null

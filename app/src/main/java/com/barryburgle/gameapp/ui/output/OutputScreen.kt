@@ -52,7 +52,7 @@ import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.OutputLeadDialog
-import com.barryburgle.gameapp.ui.output.dialog.PingDialog
+import com.barryburgle.gameapp.ui.output.dialog.FlightControlDialog
 import com.barryburgle.gameapp.ui.output.dialog.PingEditDialog
 import com.barryburgle.gameapp.ui.output.section.MonthSection
 import com.barryburgle.gameapp.ui.output.section.SessionSection
@@ -90,8 +90,8 @@ fun OutputScreen(
         animationSpec = tween(durationMillis = 350),
         label = "blurBackground"
     )
-    if (state.showPingDialog) {
-        PingDialog(state.allPings, state.allLeads, state.allSentPings, onEvent)
+    if (state.showFlightControlDialog) {
+        FlightControlDialog(state.allPings, state.allLeads, state.allSentPings, onEvent)
     }
     if (state.showAddPingDialog) {
         PingEditDialog("Add a new", onEvent)
@@ -225,7 +225,7 @@ fun OutputScreen(
                                     // TODO: show a number on top right of this icon that says how many pings you have ready for use
                                     IconShadowButton(
                                         onClick = {
-                                            onEvent(OutputEvent.ShowPingDialog)
+                                            onEvent(OutputEvent.ShowFlightControlDialog)
                                         },
                                         imageVector = Icons.Default.Radar,
                                         contentDescription = "Ping",

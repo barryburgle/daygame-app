@@ -21,8 +21,8 @@ sealed interface OutputEvent : GenericEvent {
     data class DeleteLead(val leadId: Long) : OutputEvent
     object SetIsInOverlayToTrue : OutputEvent
     object SetIsInOverlayToFalse : OutputEvent
-    object ShowPingDialog : OutputEvent
-    object HidePingDialog : OutputEvent
+    object ShowFlightControlDialog : OutputEvent
+    object HideFlightControlDialog : OutputEvent
     object ShowPingEditDialog : OutputEvent
     object HidePingEditDialog : OutputEvent
     data class SavePing(val ping: Ping) : OutputEvent
