@@ -7,6 +7,7 @@ import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.enums.ThemeEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.ping.Ping
+import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -28,6 +29,8 @@ data class ToolsState(
     var importPinPointsFileName: String = "",
     var exportPingsFileName: String = "",
     var importPingsFileName: String = "",
+    var exportSentPingsFileName: String = "",
+    var importSentPingsFileName: String = "",
     override var exportSettingsFileName: String = "",
     var importSettingsFileName: String = "",
     override var exportFolder: String = "",
@@ -42,6 +45,7 @@ data class ToolsState(
     override var allChallenges: List<AchievedChallenge> = emptyList(),
     override var allPinPoints: List<PinPoint> = emptyList(),
     override var allPings: List<Ping> = emptyList(),
+    override var allSentPings: List<SentPing> = emptyList(),
     override var allSettings: List<Setting> = emptyList(),
     val lastSessionAverageQuantity: Int = 4,
     val lastSessionsShown: Int = 14,
