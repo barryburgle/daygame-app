@@ -28,6 +28,7 @@ import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.PinPointCsvService
 import com.barryburgle.gameapp.service.csv.PingCsvService
+import com.barryburgle.gameapp.service.csv.SentPingCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.service.csv.SetCsvService
 import com.barryburgle.gameapp.service.csv.SettingCsvService
@@ -54,6 +55,7 @@ fun ToolsScreen(
     val challengeCsvService = ChallengeCsvService()
     val pinPointCsvService = PinPointCsvService()
     val pingCsvService = PingCsvService()
+    val sentPingCsvService = SentPingCsvService()
     val settingCsvService = SettingCsvService()
     val csvFindService = CSVFindService()
     if (state.isCleaning) {
@@ -65,7 +67,7 @@ fun ToolsScreen(
         },
     ) { padding ->
         val dataExchangeCardModifier = Modifier
-            .height(970.dp)
+            .height(1050.dp)
             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
             .shadow(
                 elevation = 5.dp, shape = MaterialTheme.shapes.large
@@ -121,6 +123,7 @@ fun ToolsScreen(
                         challengeCsvService = challengeCsvService,
                         pinPointCsvService = pinPointCsvService,
                         pingCsvService = pingCsvService,
+                        sentPingCsvService = sentPingCsvService,
                         settingCsvService = settingCsvService,
                         csvFindService = csvFindService
                     )
@@ -142,6 +145,7 @@ fun ToolsScreen(
                         challengeCsvService = challengeCsvService,
                         pinPointCsvService = pinPointCsvService,
                         pingCsvService = pingCsvService,
+                        sentPingCsvService = sentPingCsvService,
                         settingCsvService = settingCsvService,
                         csvFindService = csvFindService
                     )
