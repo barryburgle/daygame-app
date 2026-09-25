@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -27,11 +28,10 @@ fun <T> DottedHorizontalPager(
     pageSpacing: Dp = 4.dp,
     dotsSpacing: Dp = 6.dp,
     dotsTopPadding: Dp = 8.dp,
+    pagerState: PagerState = rememberPagerState(pageCount = { items.size }),
     pageContent: @Composable (item: T, page: Int) -> Unit
 ) {
     if (items.isEmpty()) return
-
-    val pagerState = rememberPagerState(pageCount = { items.size })
 
     Column(
         modifier = modifier,
