@@ -16,6 +16,7 @@ import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.ui.CombineEighteen
 import com.barryburgle.gameapp.ui.output.state.OutputState
+import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -315,11 +316,12 @@ class OutputViewModel(
             }
 
             is OutputEvent.WriteSentPing -> {
+                val dateTime = passInitialValue(true, null, "")
                 if (event.sent == true) {
                     val sentPing = SentPing(
                         leadId = event.leadId,
                         pingId = event.pingId,
-                        insertTime = OffsetDateTime.now().toString(),
+                        sentHour = dateTime,
                         reaction = null
                     )
                     viewModelScope.launch {
