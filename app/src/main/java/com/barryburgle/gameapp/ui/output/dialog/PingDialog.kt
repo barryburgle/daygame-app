@@ -43,6 +43,7 @@ import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
 import com.barryburgle.gameapp.ui.output.card.PingCard
+import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.FlowDialog
 import com.barryburgle.gameapp.ui.utilities.selection.DottedHorizontalPager
@@ -78,8 +79,8 @@ fun PingDialog(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    LargeTitleText("Pings", true)
                     LargeTitleText("Flight control", true)
+                    WavyPlaceholder("Create, send and track pings")
                 }
                 Column(
                     horizontalAlignment = Alignment.End,
@@ -118,7 +119,9 @@ fun PingDialog(
                     pageSpacing = 4.dp,
                     pagerState = pagerState
                 ) { ping, page ->
-                    PingCard(ping, onEvent)
+                    AnimatedStaggeredItem(index = page - 1) {
+                        PingCard(ping, onEvent)
+                    }
                 }
                 Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
                     WavyPlaceholder(
@@ -139,105 +142,107 @@ fun PingDialog(
                             key = { index -> leads[index].id }
                         ) { index ->
                             val lead = leads[index]
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 4.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                val selectedPing = pings.get(pagerState.currentPage)
-                                val selectedPingId = selectedPing?.id
-                                var foundSentPing: SentPing? = null
-                                if (selectedPingId != null) {
-                                    foundSentPing = getSentPingForLead(
-                                        lead.id,
-                                        selectedPingId,
-                                        sentPingsByLeadMap
-                                    )
-                                }
-                                // TODO: make this way of describing lead with flag-name-leadDesc centralized
-                                // (search for teh following line around)
-                                val leadAgeDesc = if (lead.age != 0L) " ${lead.age}" else ""
-                                Column(modifier = Modifier.fillMaxWidth(0.7f)) {
-                                    MediumTitleText(
-                                        text = CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + leadAgeDesc
-                                    )
-                                    if (foundSentPing != null) {
-                                        LittleBodyText(
-                                            text = "Sent on ${
-                                                FormatService.getDate(
-                                                    foundSentPing.sentHour
-                                                )
-                                            } at ${
-                                                FormatService.getTime(
-                                                    foundSentPing.sentHour
-                                                )
-                                            }"
-                                        )
-                                    } else {
-                                        LittleBodyText(text = "Never sent this ping")
-                                    }
-                                }
-                                val isNumber = lead.contact == ContactTypeEnum.NUMBER.getField()
-                                val iconRes =
-                                    if (isNumber) R.drawable.whatsapp_w else R.drawable.instagram_w
-                                Icon(
-                                    painter = painterResource(iconRes),
-                                    contentDescription = "Contact link",
-                                    tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+                            AnimatedStaggeredItem(index = index) {
+                                Row(
                                     modifier = Modifier
-                                        .height(20.dp)
-                                        .scale(1.2f)
-                                )
-                                if (selectedPingId != null) {
-                                    Checkbox(
-                                        checked = foundSentPing != null,
-                                        onCheckedChange = { newlyChecked ->
-                                            onEvent(
-                                                OutputEvent.WriteSentPing(
-                                                    lead.id,
-                                                    selectedPingId,
-                                                    newlyChecked
-                                                )
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    val selectedPing = pings.get(pagerState.currentPage)
+                                    val selectedPingId = selectedPing?.id
+                                    var foundSentPing: SentPing? = null
+                                    if (selectedPingId != null) {
+                                        foundSentPing = getSentPingForLead(
+                                            lead.id,
+                                            selectedPingId,
+                                            sentPingsByLeadMap
+                                        )
+                                    }
+                                    // TODO: make this way of describing lead with flag-name-leadDesc centralized
+                                    // (search for teh following line around)
+                                    val leadAgeDesc = if (lead.age != 0L) " ${lead.age}" else ""
+                                    Column(modifier = Modifier.fillMaxWidth(0.7f)) {
+                                        MediumTitleText(
+                                            text = CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + leadAgeDesc
+                                        )
+                                        if (foundSentPing != null) {
+                                            LittleBodyText(
+                                                text = "Sent on ${
+                                                    FormatService.getDate(
+                                                        foundSentPing.sentHour
+                                                    )
+                                                } at ${
+                                                    FormatService.getTime(
+                                                        foundSentPing.sentHour
+                                                    )
+                                                }"
                                             )
-                                            if (newlyChecked) {
-                                                systemClipboard.setPrimaryClip(
-                                                    selectedPing.getClipData(
-                                                        context
+                                        } else {
+                                            LittleBodyText(text = "Never sent this ping")
+                                        }
+                                    }
+                                    val isNumber = lead.contact == ContactTypeEnum.NUMBER.getField()
+                                    val iconRes =
+                                        if (isNumber) R.drawable.whatsapp_w else R.drawable.instagram_w
+                                    Icon(
+                                        painter = painterResource(iconRes),
+                                        contentDescription = "Contact link",
+                                        tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+                                        modifier = Modifier
+                                            .height(20.dp)
+                                            .scale(1.2f)
+                                    )
+                                    if (selectedPingId != null) {
+                                        Checkbox(
+                                            checked = foundSentPing != null,
+                                            onCheckedChange = { newlyChecked ->
+                                                onEvent(
+                                                    OutputEvent.WriteSentPing(
+                                                        lead.id,
+                                                        selectedPingId,
+                                                        newlyChecked
                                                     )
                                                 )
-                                                Toast.makeText(
-                                                    context,
-                                                    "Ping copied to clipboard",
-                                                    Toast.LENGTH_SHORT
-                                                )
-                                                    .show()
-                                                if (lead.contact == ContactTypeEnum.NUMBER.getField() && lead.contactLookupKey != null) {
-                                                    try {
-                                                        val uri = Uri.withAppendedPath(
-                                                            ContactsContract.Contacts.CONTENT_LOOKUP_URI,
-                                                            lead.contactLookupKey
+                                                if (newlyChecked) {
+                                                    systemClipboard.setPrimaryClip(
+                                                        selectedPing.getClipData(
+                                                            context
                                                         )
-                                                        uriHandler.openUri(uri.toString())
-                                                    } catch (e: Exception) {
+                                                    )
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Ping copied to clipboard",
+                                                        Toast.LENGTH_SHORT
+                                                    )
+                                                        .show()
+                                                    if (lead.contact == ContactTypeEnum.NUMBER.getField() && lead.contactLookupKey != null) {
+                                                        try {
+                                                            val uri = Uri.withAppendedPath(
+                                                                ContactsContract.Contacts.CONTENT_LOOKUP_URI,
+                                                                lead.contactLookupKey
+                                                            )
+                                                            uriHandler.openUri(uri.toString())
+                                                        } catch (e: Exception) {
+                                                            Toast.makeText(
+                                                                context,
+                                                                "Could not open contact",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                        }
+                                                    } else if (lead.contact == ContactTypeEnum.SOCIAL.getField() && lead.instagramUrl != null && lead.instagramUrl!!.isNotBlank()) {
+                                                        uriHandler.openUri(lead.instagramUrl!!)
+                                                    } else {
                                                         Toast.makeText(
                                                             context,
-                                                            "Could not open contact",
+                                                            "No contact found",
                                                             Toast.LENGTH_SHORT
                                                         ).show()
                                                     }
-                                                } else if (lead.contact == ContactTypeEnum.SOCIAL.getField() && lead.instagramUrl != null && lead.instagramUrl!!.isNotBlank()) {
-                                                    uriHandler.openUri(lead.instagramUrl!!)
-                                                } else {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "No contact found",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
                                                 }
-                                            }
-                                        })
+                                            })
+                                    }
                                 }
                             }
                         }
