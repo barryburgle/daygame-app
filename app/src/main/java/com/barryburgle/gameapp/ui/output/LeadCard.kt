@@ -84,7 +84,7 @@ fun LeadCard(
                         .background(
                             brush = VerticalProgressBarBrush(
                                 getLeadAlertColor(
-                                    daysDifference, lead
+                                    lead
                                 )
                             ), shape = RoundedCornerShape(4.dp)
                         )
@@ -197,7 +197,8 @@ fun LeadCard(
 }
 
 @Composable
-fun getLeadAlertColor(daysDifference: Long, lead: Lead): Color {
+fun getLeadAlertColor(lead: Lead): Color {
+    val daysDifference = getDaysFromNow(lead)
     // TODO: color and leadName date should not come from insert time but from session date
     if (lead.insertTime.isEmpty()) {
         return AlertHigh
