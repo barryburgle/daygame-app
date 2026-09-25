@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "edb4b734bf447f470aa0e1991607572a",
+    "identityHash": "6eee0e9482e3004a430cc6a3b64860a1",
     "entities": [
       {
         "tableName": "abstract_session",
@@ -621,7 +621,7 @@
       },
       {
         "tableName": "sent_ping",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ping_id` INTEGER NOT NULL, `lead_id` INTEGER NOT NULL, `insert_time` TEXT NOT NULL, `reaction` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ping_id` INTEGER NOT NULL, `lead_id` INTEGER NOT NULL, `sent_hour` TEXT NOT NULL, `reaction` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -642,8 +642,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "insertTime",
-            "columnName": "insert_time",
+            "fieldPath": "sentHour",
+            "columnName": "sent_hour",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -663,7 +663,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'edb4b734bf447f470aa0e1991607572a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6eee0e9482e3004a430cc6a3b64860a1')"
     ]
   }
 }
