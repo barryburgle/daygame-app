@@ -28,7 +28,6 @@ class PingCsvService : AbstractCsvService<Ping>() {
         pingList.add(ping.title)
         pingList.add(ping.body.orEmpty())
         pingList.add(ping.pic.orEmpty())
-        pingList.add(ping.leadIds.joinToString(LIST_DELIMITER))
         //pingList.add(ping.link.orEmpty())
         //pingList.add(ping.audio.orEmpty()) // Not yet supported
         return pingList.toTypedArray()
@@ -40,7 +39,6 @@ class PingCsvService : AbstractCsvService<Ping>() {
         pingListFieldList.add("title")
         pingListFieldList.add("body")
         pingListFieldList.add("link")
-        pingListFieldList.add("lead_ids")
         //pingListFieldList.add("pic")
         //pingListFieldList.add("audio") // Not yet supported
         return pingListFieldList.toTypedArray()
@@ -58,7 +56,6 @@ class PingCsvService : AbstractCsvService<Ping>() {
             title = fields[1],
             body = fields.getOrNull(2)?.takeIf { it.isNotBlank() },
             pic = fields.getOrNull(4)?.takeIf { it.isNotBlank() },
-            leadIds = leadIds
             //link = fields.getOrNull(3)?.takeIf { it.isNotBlank() },
             //audio = fields.getOrNull(5)?.takeIf { it.isNotBlank() }, // Not yet supported
         )

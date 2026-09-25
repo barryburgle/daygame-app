@@ -12,9 +12,8 @@ open class Ping(
     @ColumnInfo(name = "link") var link: String? = null,
     @ColumnInfo(name = "pic") var pic: String? = null,
     @ColumnInfo(name = "audio") var audio: String? = null, // TODO: implement audio acquisition in highest quality
-    @ColumnInfo(name = "lead_ids") var leadIds: List<Long> = emptyList()
 ) {
-    constructor() : this(0, "", null, null, null, null, emptyList())
+    constructor() : this(0, "", null, null, null, null)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -25,8 +24,7 @@ open class Ping(
                 body == other.body &&
                 link == other.link &&
                 pic == other.pic &&
-                audio == other.audio &&
-                leadIds == other.leadIds
+                audio == other.audio
     }
 
     override fun hashCode(): Int {
@@ -36,7 +34,6 @@ open class Ping(
         result = 31 * result + (link?.hashCode() ?: 0)
         result = 31 * result + (pic?.hashCode() ?: 0)
         result = 31 * result + (audio?.hashCode() ?: 0)
-        result = 31 * result + leadIds.hashCode()
         return result
     }
 }
