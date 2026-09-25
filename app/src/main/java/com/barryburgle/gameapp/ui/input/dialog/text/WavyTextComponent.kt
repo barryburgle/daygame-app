@@ -14,6 +14,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -222,7 +223,11 @@ fun WavyTextComponent(
 }
 
 @Composable
-fun WavyPlaceholder(text: String, color: Color = MaterialTheme.colorScheme.onPrimary) {
+fun WavyPlaceholder(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.onPrimary
+) {
     val infiniteTransition = rememberInfiniteTransition(label = "WavyPlaceholderTransition")
     val progress by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -234,7 +239,7 @@ fun WavyPlaceholder(text: String, color: Color = MaterialTheme.colorScheme.onPri
         label = "WavyPlaceholderProgress"
     )
 
-    Row {
+    FlowRow(modifier = modifier) {
         text.forEachIndexed { index, char ->
             val charOffset = index * 0.08f
             val colorProgress = (progress * 3.5f - charOffset)
