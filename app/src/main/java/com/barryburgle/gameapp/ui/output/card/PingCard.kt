@@ -48,14 +48,6 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
     val textColor = MaterialTheme.colorScheme.surfaceVariant
     val context = LocalContext.current
     val systemClipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val fullTextToShare = buildString {
-        if (!ping.body.isNullOrBlank()) {
-            append(ping.body)
-        }
-        if (!ping.link.isNullOrBlank()) {
-            append("\n").append(ping.link)
-        }
-    }
 
     val cardShape = RoundedCornerShape(16.dp)
 
@@ -199,21 +191,7 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
                 // or acquisition date and on their side a checkbox to select the ones we are sending that ping, to keep track
                 IconShadowButton(
                     onClick = {
-                        val imageUri =
-                            ping.pic?.takeIf { it.isNotBlank() }?.let { Uri.parse(it) }
-
-                        val clipData = if (imageUri != null) {
-                            ClipData.newUri(context.contentResolver, ping.title, imageUri)
-                                .apply {
-                                    if (fullTextToShare.isNotBlank()) {
-                                        addItem(ClipData.Item(fullTextToShare))
-                                    }
-                                }
-                        } else {
-                            ClipData.newPlainText(ping.title, fullTextToShare)
-                        }
-
-                        systemClipboard.setPrimaryClip(clipData)
+                        systemClipboard.setPrimaryClip(ping.getClipData(context))
                         Toast.makeText(context, "Ping copied to clipboard", Toast.LENGTH_SHORT)
                             .show()
                     },

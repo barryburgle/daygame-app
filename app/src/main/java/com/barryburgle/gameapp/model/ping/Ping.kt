@@ -1,5 +1,8 @@
 package com.barryburgle.gameapp.model.ping
 
+import android.content.ClipData
+import android.content.Context
+import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -35,5 +38,31 @@ open class Ping(
         result = 31 * result + (pic?.hashCode() ?: 0)
         result = 31 * result + (audio?.hashCode() ?: 0)
         return result
+    }
+
+    fun getShareableText() = buildString {
+        if (!body.isNullOrBlank()) {
+            append(body)
+        }
+        if (!link.isNullOrBlank()) {
+            append("\n").append(link)
+        }
+    }
+
+    fun getClipData(context: Context): ClipData {
+        val shareableText = getShareableText()
+        val imageUri =
+            pic?.takeIf { it.isNotBlank() }?.let { Uri.parse(it) }
+        val clipData = if (imageUri != null) {
+            ClipData.newUri(context.contentResolver, title, imageUri)
+                .apply {
+                    if (shareableText.isNotBlank()) {
+                        addItem(ClipData.Item(shareableText))
+                    }
+                }
+        } else {
+            ClipData.newPlainText(title, shareableText)
+        }
+        return clipData
     }
 }
