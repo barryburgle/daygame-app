@@ -24,7 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.LocalPostOffice
+import androidx.compose.material.icons.filled.Radar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -227,7 +227,7 @@ fun OutputScreen(
                                         onClick = {
                                             onEvent(OutputEvent.ShowPingDialog)
                                         },
-                                        imageVector = Icons.Default.LocalPostOffice,
+                                        imageVector = Icons.Default.Radar,
                                         contentDescription = "Ping",
                                         glowing = true
                                     )
