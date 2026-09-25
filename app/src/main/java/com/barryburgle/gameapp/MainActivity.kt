@@ -217,7 +217,11 @@ class MainActivity : ComponentActivity() {
 
     private fun handlePermissionsFlow() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 requestNotificationPermissionLauncher.launch(POST_NOTIFICATIONS)
                 return
             }
@@ -239,7 +243,11 @@ class MainActivity : ComponentActivity() {
             }
         } else {
             val legacyStoragePermissions = mutableListOf<String>()
-            if (ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 legacyStoragePermissions.add(READ_EXTERNAL_STORAGE)
                 legacyStoragePermissions.add(WRITE_EXTERNAL_STORAGE)
             }
@@ -252,7 +260,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun checkAndRequestContactsPermission() {
-        if (ContextCompat.checkSelfPermission(this, READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                READ_CONTACTS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             requestContactPermissionLauncher.launch(READ_CONTACTS)
         } else {
             checkAndRequestLocationPermission()
@@ -260,8 +272,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun checkAndRequestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(
+                this,
+                ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(
+                this,
+                ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             requestLocationPermissionLauncher.launch(
                 arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)
@@ -307,17 +325,25 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         val fineGranted = permissions.getOrDefault(ACCESS_FINE_LOCATION, false) ||
-                ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                ContextCompat.checkSelfPermission(
+                    this,
+                    ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
         val coarseGranted = permissions.getOrDefault(ACCESS_COARSE_LOCATION, false) ||
-                ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                ContextCompat.checkSelfPermission(
+                    this,
+                    ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
 
         when {
             fineGranted -> {
                 Toast.makeText(this, "Precise location enabled", Toast.LENGTH_SHORT).show()
             }
+
             coarseGranted -> {
                 Toast.makeText(this, "Approximate location enabled", Toast.LENGTH_SHORT).show()
             }
+
             else -> {
                 Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
             }
