@@ -63,7 +63,7 @@ fun LeadCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                val daysDifference = getDaysFromNow(lead)
+                val daysDifference = getLeadDaysFromNow(lead)
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
@@ -123,7 +123,7 @@ fun LeadCard(
 
 @Composable
 fun getLeadAlertColor(lead: Lead): Color {
-    val daysDifference = getDaysFromNow(lead)
+    val daysDifference = getLeadDaysFromNow(lead)
     // TODO: color and leadName date should not come from insert time but from session date
     if (lead.insertTime.isEmpty()) {
         return AlertHigh
@@ -138,12 +138,18 @@ fun getLeadAlertColor(lead: Lead): Color {
 }
 
 @Composable
-private fun getDaysFromNow(lead: Lead): Long {
-    val now = OffsetDateTime.now()
+private fun getLeadDaysFromNow(lead: Lead): Long {
     if (lead.insertTime.isEmpty()) {
         return 0L
     }
-    val leadInsertTime = FormatService.parseDate(lead.insertTime.substring(0, 16) + "Z")
-    val daysDifference = ChronoUnit.DAYS.between(leadInsertTime, now)
+    return getDaysFromNow(lead.insertTime)
+}
+
+@Composable
+fun getDaysFromNow(
+    date: String
+): Long {
+    val formattedTime = FormatService.parseDate(date.substring(0, 16) + "Z")
+    val daysDifference = ChronoUnit.DAYS.between(formattedTime, OffsetDateTime.now())
     return daysDifference
 }
