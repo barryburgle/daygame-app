@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,7 +45,6 @@ import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 // TODO: do all the lead sent tracking part
 @Composable
 fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
-    val fadingColor = MaterialTheme.colorScheme.onPrimary
     val textColor = MaterialTheme.colorScheme.surfaceVariant
     val context = LocalContext.current
     val systemClipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -107,30 +107,45 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
                         .fillMaxWidth()
                         .height(54.dp)
                 ) {
-                    Row(
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 4.dp, vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
+                            .height(IntrinsicSize.Min)
                     ) {
-                        PillShapedTranslucent {
-                            MediumTitleText(
-                                text = ping.title, color = textColor
-                            )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            PillShapedTranslucent {
+                                MediumTitleText(
+                                    text = ping.title, color = textColor
+                                )
+                            }
                         }
-                        Spacer(modifier = Modifier.width(10.dp))
-                        WavyPlaceholder("Touch to edit", color = textColor)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 14.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Spacer(modifier = Modifier.height(2.dp))
+                            WavyPlaceholder("Touch to edit", color = textColor)
+                        }
                     }
                 }
                 if (!ping.body.isNullOrBlank() || !ping.link.isNullOrBlank()) {
                     Column(
-                        modifier = Modifier.padding(start = 2.dp)
+                        modifier = Modifier
+                            .padding(start = 2.dp),
+                        verticalArrangement = Arrangement.Top
                     ) {
                         if (!ping.body.isNullOrBlank()) {
                             LittleBodyText(
                                 text = "\"" + ping.body + "\"",
-                                color = fadingColor
+                                color = textColor
                             )
                         }
                         if (!ping.link.isNullOrBlank()) {
