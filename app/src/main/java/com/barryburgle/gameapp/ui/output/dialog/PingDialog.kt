@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -62,6 +63,7 @@ fun PingDialog(
 ) {
     val sentPingsByLeadMap: Map<Long, List<SentPing>> = sentPings.groupBy { it.leadId }
     val pagerState = rememberPagerState(pageCount = { pings.size })
+    val listState = rememberLazyListState()
     val context = LocalContext.current
     val systemClipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val uriHandler = LocalUriHandler.current
@@ -134,6 +136,7 @@ fun PingDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     LazyColumn(
+                        state = listState,
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                         contentPadding = PaddingValues(top = 24.dp) // Extra padding so top item isn't permanently obscured
@@ -143,7 +146,9 @@ fun PingDialog(
                             key = { index -> leads[index].id }
                         ) { index ->
                             val lead = leads[index]
-                            AnimatedStaggeredItem(index = index) {
+                            val relativeIndex =
+                                (index - listState.firstVisibleItemIndex).coerceAtLeast(0)
+                            AnimatedStaggeredItem(index = relativeIndex) {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
