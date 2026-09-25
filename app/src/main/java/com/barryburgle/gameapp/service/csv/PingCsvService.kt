@@ -45,12 +45,6 @@ class PingCsvService : AbstractCsvService<Ping>() {
     }
 
     override fun mapImportRow(fields: Array<String>): Ping {
-        val leadIds = if (fields.size > 6 && fields[6].isNotBlank()) {
-            fields[6].split(LIST_DELIMITER).mapNotNull { it.trim().toLongOrNull() }
-        } else {
-            emptyList()
-        }
-
         return Ping(
             id = fields[0].toLong(),
             title = fields[1],
