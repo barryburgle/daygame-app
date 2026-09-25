@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "6e5e642b185e5ffa6f895961fd61834d",
+    "identityHash": "edb4b734bf447f470aa0e1991607572a",
     "entities": [
       {
         "tableName": "abstract_session",
@@ -621,7 +621,7 @@
       },
       {
         "tableName": "sent_ping",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ping_id` INTEGER NOT NULL, `lead_id` INTEGER NOT NULL, `insert_time` TEXT NOT NULL, `reaction` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ping_id` INTEGER NOT NULL, `lead_id` INTEGER NOT NULL, `insert_time` TEXT NOT NULL, `reaction` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -650,8 +650,7 @@
           {
             "fieldPath": "reaction",
             "columnName": "reaction",
-            "affinity": "TEXT",
-            "notNull": true
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -664,7 +663,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6e5e642b185e5ffa6f895961fd61834d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'edb4b734bf447f470aa0e1991607572a')"
     ]
   }
 }

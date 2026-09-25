@@ -127,7 +127,7 @@ abstract class GameAppDatabase : RoomDatabase() {
                     "CREATE TABLE IF NOT EXISTS `ping` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `body` TEXT NULL, `link` TEXT NULL, `pic` TEXT NULL, `audio` TEXT NULL)"
                 )
                 database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `sent_ping` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ping_id` INTEGER NOT NULL, `lead_id` INTEGER NOT NULL, `insert_time` TEXT NOT NULL)"
+                    "CREATE TABLE IF NOT EXISTS `sent_ping` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ping_id` INTEGER NOT NULL, `lead_id` INTEGER NOT NULL, `insert_time` TEXT NOT NULL, `reaction` TEXT NULL)"
                 )
             }
         }

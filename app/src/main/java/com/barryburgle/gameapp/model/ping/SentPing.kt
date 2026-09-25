@@ -10,7 +10,7 @@ open class SentPing(
     @ColumnInfo(name = "ping_id") var pingId: Long,
     @ColumnInfo(name = "lead_id") var leadId: Long,
     @ColumnInfo(name = "insert_time") var insertTime: String,
-    @ColumnInfo(name = "reaction") var reaction: String // This column should contain value for an enum meaning ["no_response", "ok_response", "warm_response"]
+    @ColumnInfo(name = "reaction") var reaction: String? // This column should contain value for an enum meaning ["no_response", "ok_response", "warm_response"]
 ) {
     constructor() : this(0, 0, 0, "", "")
 
