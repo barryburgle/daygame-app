@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Checkbox
@@ -43,7 +45,9 @@ import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
 import com.barryburgle.gameapp.ui.output.card.PingCard
+import com.barryburgle.gameapp.ui.output.getLeadAlertColor
 import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
+import com.barryburgle.gameapp.ui.utilities.animation.VerticalProgressBarBrush
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.FlowDialog
 import com.barryburgle.gameapp.ui.utilities.selection.DottedHorizontalPager
@@ -146,11 +150,16 @@ fun PingDialog(
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
+                                        .height(64.dp)
+                                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                                        .background(
+                                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                            shape = RoundedCornerShape(10.dp)
+                                        ),
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    val selectedPing = pings.get(pagerState.currentPage)
+                                    val selectedPing = pings.getOrNull(pagerState.currentPage)
                                     val selectedPingId = selectedPing?.id
                                     var foundSentPing: SentPing? = null
                                     if (selectedPingId != null) {
@@ -160,10 +169,29 @@ fun PingDialog(
                                             sentPingsByLeadMap
                                         )
                                     }
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .width(8.dp)
+                                            .background(
+                                                brush = VerticalProgressBarBrush(
+                                                    getLeadAlertColor(lead)
+                                                ),
+                                                shape = RoundedCornerShape(
+                                                    topStart = 10.dp,
+                                                    bottomStart = 10.dp
+                                                )
+                                            )
+                                    )
                                     // TODO: make this way of describing lead with flag-name-leadDesc centralized
                                     // (search for teh following line around)
                                     val leadAgeDesc = if (lead.age != 0L) " ${lead.age}" else ""
-                                    Column(modifier = Modifier.fillMaxWidth(0.7f)) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth(0.65f)
+                                            .padding(vertical = 4.dp),
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
                                         MediumTitleText(
                                             text = CountryEnum.getFlagByAlpha3(lead.nationality) + " " + lead.name + leadAgeDesc
                                         )
@@ -194,7 +222,7 @@ fun PingDialog(
                                             .height(20.dp)
                                             .scale(1.2f)
                                     )
-                                    if (selectedPingId != null) {
+                                    if (selectedPingId != null && selectedPing != null) {
                                         Checkbox(
                                             checked = foundSentPing != null,
                                             onCheckedChange = { newlyChecked ->
