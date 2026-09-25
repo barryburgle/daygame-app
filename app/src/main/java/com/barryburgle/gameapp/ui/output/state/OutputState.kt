@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.ui.output.state
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.ping.Ping
+import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.stat.AggregatedDates
@@ -16,6 +17,7 @@ data class OutputState(
     override var allDates: List<Date> = emptyList(),
     override var allSets: List<SingleSet> = emptyList(),
     override var allPings: List<Ping> = emptyList(),
+    override var allSentPings: List<SentPing> = emptyList(),
     val sessionsByWeek: List<AggregatedSessions> = emptyList(),
     val sessionsByMonth: List<AggregatedSessions> = emptyList(),
     val datesByWeek: List<AggregatedDates> = emptyList(),

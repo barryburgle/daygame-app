@@ -94,7 +94,8 @@ class MainActivity : ComponentActivity() {
                         it.leadDao,
                         it.dateDao,
                         it.setDao,
-                        it.pingDao
+                        it.pingDao,
+                        it.sentPingDao
                     )
                 } as T
             }
