@@ -118,7 +118,7 @@ fun InfoDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(
-                                color = MaterialTheme.colorScheme.primary,
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                                 shape = RoundedCornerShape(10.dp)
                             )
                             .padding(8.dp),
