@@ -12,6 +12,7 @@ import com.barryburgle.gameapp.dao.date.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.ping.PingDao
+import com.barryburgle.gameapp.dao.ping.SentPingDao
 import com.barryburgle.gameapp.dao.pinpoint.PinPointDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
@@ -21,6 +22,7 @@ import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.ping.Ping
+import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -35,7 +37,8 @@ import com.barryburgle.gameapp.model.setting.Setting
         SingleSet::class,
         Challenge::class,
         PinPoint::class,
-        Ping::class
+        Ping::class,
+        SentPing::class
     ],
     version = 9
 )
@@ -47,6 +50,7 @@ abstract class GameAppDatabase : RoomDatabase() {
     abstract val settingDao: SettingDao
     abstract val leadDao: LeadDao
     abstract val pingDao: PingDao
+    abstract val sentPingDao: SentPingDao
     abstract val dateDao: DateDao
     abstract val setDao: SetDao
     abstract val challengeDao: ChallengeDao
@@ -120,7 +124,10 @@ abstract class GameAppDatabase : RoomDatabase() {
         val MIGRATION_8_9: Migration = object : Migration(8, 9) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `ping` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `body` TEXT NULL, `link` TEXT NULL, `pic` TEXT NULL, `audio` TEXT NULL, `lead_ids` TEXT NOT NULL)"
+                    "CREATE TABLE IF NOT EXISTS `ping` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `body` TEXT NULL, `link` TEXT NULL, `pic` TEXT NULL, `audio` TEXT NULL)"
+                )
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `sent_ping` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ping_id` INTEGER NOT NULL, `lead_id` INTEGER NOT NULL, `insert_time` TEXT NOT NULL)"
                 )
             }
         }
