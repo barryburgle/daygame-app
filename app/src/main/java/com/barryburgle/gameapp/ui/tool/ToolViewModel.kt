@@ -24,6 +24,7 @@ import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.ui.CombineEight
 import com.barryburgle.gameapp.ui.CombineFiftheen
 import com.barryburgle.gameapp.ui.CombineFourteen
+import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.CombineTwentyone
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
@@ -44,12 +45,13 @@ class ToolViewModel(
     private val challengeDao: ChallengeDao,
     private val pinPointDao: PinPointDao,
     private val pingDao: PingDao,
+    private val sentPingDao: SentPingDao,
     private val settingDao: SettingDao
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(ToolsState())
 
-    val _allEntitiesState: Flow<AllEntitiesState> = CombineEight(
+    val _allEntitiesState: Flow<AllEntitiesState> = CombineNine(
         abstractSessionDao.getAll(),
         leadDao.getAll(),
         dateDao.getAll(),
@@ -57,8 +59,9 @@ class ToolViewModel(
         challengeDao.getAll(),
         pinPointDao.getAll(),
         pingDao.getAll(),
+        sentPingDao.getAll(),
         settingDao.getAll()
-    ) { allSessions, allLeads, allDates, allSets, allChallenges, allPinPoints, allPings, allSettings ->
+    ) { allSessions, allLeads, allDates, allSets, allChallenges, allPinPoints, allPings, allSentPings, allSettings ->
         AllEntitiesState(
             allSessions = allSessions,
             allLeads = allLeads,
@@ -67,6 +70,7 @@ class ToolViewModel(
             allChallenges = allChallenges,
             allPinPoints = allPinPoints,
             allPings = allPings,
+            allSentPings = allSentPings,
             allSettings = allSettings
         )
     }
