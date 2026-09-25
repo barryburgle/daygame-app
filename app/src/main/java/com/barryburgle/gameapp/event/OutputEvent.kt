@@ -28,4 +28,5 @@ sealed interface OutputEvent : GenericEvent {
     data class SavePing(val ping: Ping) : OutputEvent
     data class EditPing(val ping: Ping) : OutputEvent
     data class DeletePing(val pingId: Long) : OutputEvent
+    data class WriteSentPing(val leadId: Long, val pingId: Long, val sent: Boolean) : OutputEvent
 }

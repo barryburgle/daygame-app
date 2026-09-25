@@ -13,6 +13,7 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.manager.SessionManager
+import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.ui.CombineEighteen
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
 
 class OutputViewModel(
     private val abstractSessionDao: AbstractSessionDao,
@@ -309,6 +311,26 @@ class OutputViewModel(
                     it.copy(
                         showAddPingDialog = false
                     )
+                }
+            }
+
+            is OutputEvent.WriteSentPing -> {
+                if (event.sent == true) {
+                    val sentPing = SentPing(
+                        leadId = event.leadId,
+                        pingId = event.pingId,
+                        insertTime = OffsetDateTime.now().toString(),
+                        reaction = null
+                    )
+                    viewModelScope.launch {
+                        sentPingDao
+                            .insert(sentPing)
+                    }
+                } else {
+                    viewModelScope.launch {
+                        sentPingDao
+                            .deleteByPingAndLead(event.pingId, event.leadId)
+                    }
                 }
             }
         }
