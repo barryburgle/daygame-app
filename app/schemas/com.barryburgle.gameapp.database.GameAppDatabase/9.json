@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "3084d2439092878237683ec7fc895451",
+    "identityHash": "6e5e642b185e5ffa6f895961fd61834d",
     "entities": [
       {
         "tableName": "abstract_session",
@@ -577,7 +577,7 @@
       },
       {
         "tableName": "ping",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `body` TEXT, `link` TEXT, `pic` TEXT, `audio` TEXT, `lead_ids` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `body` TEXT, `link` TEXT, `pic` TEXT, `audio` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -610,10 +610,46 @@
             "fieldPath": "audio",
             "columnName": "audio",
             "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "sent_ping",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ping_id` INTEGER NOT NULL, `lead_id` INTEGER NOT NULL, `insert_time` TEXT NOT NULL, `reaction` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
-            "fieldPath": "leadIds",
-            "columnName": "lead_ids",
+            "fieldPath": "pingId",
+            "columnName": "ping_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "leadId",
+            "columnName": "lead_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "insertTime",
+            "columnName": "insert_time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reaction",
+            "columnName": "reaction",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -628,7 +664,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3084d2439092878237683ec7fc895451')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6e5e642b185e5ffa6f895961fd61834d')"
     ]
   }
 }
