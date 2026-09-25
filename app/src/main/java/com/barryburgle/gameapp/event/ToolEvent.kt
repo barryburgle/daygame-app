@@ -4,6 +4,7 @@ import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.ping.Ping
+import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -24,6 +25,8 @@ sealed interface ToolEvent : GenericEvent {
     data class SetImportPinPointsFileName(val importPinPointsFileName: String) : ToolEvent
     data class SetExportPingsFileName(val exportPingsFileName: String) : ToolEvent
     data class SetImportPingsFileName(val importPingsFileName: String) : ToolEvent
+    data class SetExportSentPingsFileName(val exportSentPingsFileName: String) : ToolEvent
+    data class SetImportSentPingsFileName(val importSentPingsFileName: String) : ToolEvent
     data class SetExportSettingsFileName(val exportSettingsFileName: String) : ToolEvent
     data class SetImportSettingsFileName(val importSettingsFileName: String) : ToolEvent
     data class SetExportFolder(val exportFolder: String) : ToolEvent
@@ -38,6 +41,7 @@ sealed interface ToolEvent : GenericEvent {
     data class SetAllChallenges(val allChallenges: List<AchievedChallenge>) : ToolEvent
     data class SetAllPinPoints(val allPinPoints: List<PinPoint>) : ToolEvent
     data class SetAllPings(val allPings: List<Ping>) : ToolEvent
+    data class SetAllSentPings(val allSentPings: List<SentPing>) : ToolEvent
     data class SetAllSettings(val allSettings: List<Setting>) : ToolEvent // TODO: complete
     data class SetLastSessionAverageQuantity(val lastSessionAverageQuantity: String) : ToolEvent
     data class SetLastSessionsShown(val lastSessionsShown: String) : ToolEvent

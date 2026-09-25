@@ -432,6 +432,18 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SetExportSentPingsFileName -> {
+                _state.update {
+                    it.copy(
+                        exportSentPingsFileName = event.exportSentPingsFileName
+                    )
+                }
+                val exportSentPingsFileName = _state.value.exportSentPingsFileName
+                val setting =
+                    Setting(SettingDao.EXPORT_SENT_PINGS_FILE_NAME_ID, exportSentPingsFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetImportPingsFileName -> {
                 _state.update {
                     it.copy(
@@ -453,6 +465,18 @@ class ToolViewModel(
                 val exportSettingsFileName = _state.value.exportSettingsFileName
                 val setting =
                     Setting(SettingDao.EXPORT_SETTINGS_FILE_NAME_ID, exportSettingsFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetImportSentPingsFileName -> {
+                _state.update {
+                    it.copy(
+                        importSentPingsFileName = event.importSentPingsFileName
+                    )
+                }
+                val importSentPingsFileName = _state.value.importSentPingsFileName
+                val setting =
+                    Setting(SettingDao.IMPORT_SENT_PINGS_FILE_NAME_ID, importSentPingsFileName)
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
@@ -591,6 +615,16 @@ class ToolViewModel(
                 }
                 val allPings = _state.value.allPings
                 viewModelScope.launch { pingDao.batchInsert(allPings) }
+            }
+
+            is ToolEvent.SetAllSentPings -> {
+                _state.update {
+                    it.copy(
+                        allSentPings = event.allSentPings
+                    )
+                }
+                val allSentPings = _state.value.allSentPings
+                viewModelScope.launch { sentPingDao.batchInsert(allSentPings) }
             }
 
             is ToolEvent.SetAllSettings -> {
