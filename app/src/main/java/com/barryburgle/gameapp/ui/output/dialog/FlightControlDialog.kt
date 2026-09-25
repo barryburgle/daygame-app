@@ -42,6 +42,7 @@ import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
 import com.barryburgle.gameapp.ui.output.card.PingCard
+import com.barryburgle.gameapp.ui.output.getDaysFromNow
 import com.barryburgle.gameapp.ui.output.getLeadAlertColor
 import com.barryburgle.gameapp.ui.output.icon.LeadContactButtonIcon
 import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
@@ -61,7 +62,8 @@ fun FlightControlDialog(
     sentPings: List<SentPing> = emptyList(),
     onEvent: (OutputEvent) -> Unit
 ) {
-    val sentPingsByLeadMap: Map<Long, List<SentPing>> = sentPings.groupBy { it.leadId }
+    val pingsByIdMap: Map<Long, Ping> = pings.associateBy { it.id }
+    val sentPingsByLeadIdMap: Map<Long, List<SentPing>> = sentPings.groupBy { it.leadId }
     val pagerState = rememberPagerState(pageCount = { pings.size })
     val listState = rememberLazyListState()
     val context = LocalContext.current
@@ -168,7 +170,7 @@ fun FlightControlDialog(
                                         foundSentPing = getSentPingForLead(
                                             lead.id,
                                             selectedPingId,
-                                            sentPingsByLeadMap
+                                            sentPingsByLeadIdMap
                                         )
                                     }
                                     Box(
@@ -210,7 +212,21 @@ fun FlightControlDialog(
                                                 }"
                                             )
                                         } else {
-                                            LittleBodyText(text = "Never sent this ping")
+                                            val latestSentPing =
+                                                sentPingsByLeadIdMap[lead.id]?.maxByOrNull { it.sentHour }
+                                            val latestSentPingTitle =
+                                                latestSentPing?.let { pingsByIdMap[it.pingId]?.title }
+                                            if (latestSentPingTitle != null) {
+                                                val daysAgo =
+                                                    getDaysFromNow(latestSentPing.sentHour)
+                                                val daysText =
+                                                    if (daysAgo <= 1L) "1 day" else "$daysAgo days"
+                                                LittleBodyText(
+                                                    text = "Sent ${latestSentPingTitle} ping $daysText ago"
+                                                )
+                                            } else {
+                                                LittleBodyText(text = "Never sent this ping")
+                                            }
                                         }
                                     }
                                     LeadContactButtonIcon(lead)
@@ -296,8 +312,8 @@ fun FlightControlDialog(
 fun getSentPingForLead(
     leadId: Long,
     pingId: Long,
-    sentPingsByLeadMap: Map<Long, List<SentPing>>
+    sentPingsByLeadIdMap: Map<Long, List<SentPing>>
 ): SentPing? {
-    val leadPings: List<SentPing> = sentPingsByLeadMap[leadId] ?: return null
+    val leadPings: List<SentPing> = sentPingsByLeadIdMap[leadId] ?: return null
     return leadPings.find { it.pingId == pingId }
 }
