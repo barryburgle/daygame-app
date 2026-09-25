@@ -1,6 +1,7 @@
 # Version 1.14.0 (2026-08-dd)
 **Features**
 - Record in-app your sets during a Live Session and play them back later 🎤
+- "Flight control": never forget to ping a lead, send the same ping twice, or let leads fall off ever again 📡 
 - "Write her after" notification reminds you to write her after settable amount of minutes 🔔
 - "Custom Summary" allows you to get an all-stats comprehensive start-to-end custom-dates summary of your Game from History grid 🏆
 - "Pull O'Clock": press the timer button (or start a recording) on Live Session card before starting the set and get a notification to remind to close/pull after customizable amount of in-set minutes ⏱️

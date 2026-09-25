@@ -79,6 +79,7 @@ fun PingDialog(
                     verticalArrangement = Arrangement.Center
                 ) {
                     LargeTitleText("Pings", true)
+                    LargeTitleText("Flight control", true)
                 }
                 Column(
                     horizontalAlignment = Alignment.End,
