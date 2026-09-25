@@ -23,19 +23,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
@@ -46,6 +42,7 @@ import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
 import com.barryburgle.gameapp.ui.output.card.PingCard
 import com.barryburgle.gameapp.ui.output.getLeadAlertColor
+import com.barryburgle.gameapp.ui.output.icon.LeadContactButtonIcon
 import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.animation.VerticalProgressBarBrush
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
@@ -211,17 +208,7 @@ fun PingDialog(
                                             LittleBodyText(text = "Never sent this ping")
                                         }
                                     }
-                                    val isNumber = lead.contact == ContactTypeEnum.NUMBER.getField()
-                                    val iconRes =
-                                        if (isNumber) R.drawable.whatsapp_w else R.drawable.instagram_w
-                                    Icon(
-                                        painter = painterResource(iconRes),
-                                        contentDescription = "Contact link",
-                                        tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
-                                        modifier = Modifier
-                                            .height(20.dp)
-                                            .scale(1.2f)
-                                    )
+                                    LeadContactButtonIcon(lead)
                                     if (selectedPingId != null && selectedPing != null) {
                                         Checkbox(
                                             checked = foundSentPing != null,
