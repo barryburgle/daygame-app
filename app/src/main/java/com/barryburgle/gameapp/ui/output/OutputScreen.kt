@@ -91,7 +91,7 @@ fun OutputScreen(
         label = "blurBackground"
     )
     if (state.showPingDialog) {
-        PingDialog(state.allPings, onEvent)
+        PingDialog(state.allPings, state.allLeads, state.allSentPings, onEvent)
     }
     if (state.showAddPingDialog) {
         PingEditDialog("Add a new", onEvent)
