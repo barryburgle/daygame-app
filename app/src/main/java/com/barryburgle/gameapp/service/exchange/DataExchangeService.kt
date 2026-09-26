@@ -18,6 +18,7 @@ import com.barryburgle.gameapp.service.csv.DateCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.PinPointCsvService
 import com.barryburgle.gameapp.service.csv.PingCsvService
+import com.barryburgle.gameapp.service.csv.SentPingCsvService
 import com.barryburgle.gameapp.service.csv.SessionCsvService
 import com.barryburgle.gameapp.service.csv.SetCsvService
 import com.barryburgle.gameapp.service.csv.SettingCsvService
@@ -38,6 +39,7 @@ class DataExchangeService {
         val challengeCsvService: ChallengeCsvService = ChallengeCsvService()
         val pinPointCsvService: PinPointCsvService = PinPointCsvService()
         val pingCsvService: PingCsvService = PingCsvService()
+        val sentPingCsvService: SentPingCsvService = SentPingCsvService()
         val settingCsvService: SettingCsvService = SettingCsvService()
 
         suspend fun backupPingsAndLeads(
@@ -87,6 +89,8 @@ class DataExchangeService {
                     pinPointCsvService.getBackupFileName(),
                     state.allPings,
                     pingCsvService.getBackupFileName(),
+                    state.allSentPings,
+                    sentPingCsvService.getBackupFileName(),
                     state.allSettings,
                     settingCsvService.getBackupFileName(),
                     state.exportFolder + "/" + state.backupFolder,
@@ -156,6 +160,8 @@ class DataExchangeService {
             exportPinPointsFileName: String,
             allPings: List<Ping>,
             exportPingsFileName: String,
+            allSentPings: List<SentPing>,
+            exportSentPingsFileName: String,
             allSettings: List<Setting>,
             exportSettingsFileName: String,
             exportFolder: String,
@@ -227,6 +233,16 @@ class DataExchangeService {
                 allPings,
                 exportFolder,
                 exportPingsFileName,
+                exportHeader,
+                lastBackup,
+                true,
+                true
+            )
+            backupAndClean(
+                sentPingCsvService,
+                allSentPings,
+                exportFolder,
+                exportSentPingsFileName,
                 exportHeader,
                 lastBackup,
                 true,
