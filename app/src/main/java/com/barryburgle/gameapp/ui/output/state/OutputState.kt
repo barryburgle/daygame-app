@@ -47,7 +47,10 @@ data class OutputState(
     val showFlightControlDialog: Boolean = false,
     val showAddPingDialog: Boolean = false,
     val showEditPingDialog: Boolean = false,
-    val editPing: Ping? = null
+    val editPing: Ping? = null,
+    val lastBackup: Int = 0,
+    val exportFolder: String = "",
+    val backupFolder: String = "",
 ) : AllEntityState(
     allSessions,
     allLeads,

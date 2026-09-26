@@ -14,7 +14,7 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.model.ping.SentPing
-import com.barryburgle.gameapp.ui.CombineEighteen
+import com.barryburgle.gameapp.ui.CombineTwentyone
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.OffsetDateTime
 
 class OutputViewModel(
     private val abstractSessionDao: AbstractSessionDao,
@@ -57,8 +56,11 @@ class OutputViewModel(
     private val _suggestLeadsNationality = settingDao.getSuggestLeadsNationality()
     private val _shownNationalities = settingDao.getShownNationalities()
     private val _mostPopularLeadsNationalities = leadDao.getNationalityHistogram()
+    private val _lastBackup = settingDao.getBackupNumber()
+    private val _exportFolder = settingDao.getExportFolder()
+    private val _backupFolder = settingDao.getBackupFolder()
 
-    val state = CombineEighteen(
+    val state = CombineTwentyone(
         _state,
         _allSessions,
         _allLeads,
@@ -76,8 +78,11 @@ class OutputViewModel(
         _lastMonthsShown,
         _suggestLeadsNationality,
         _shownNationalities,
-        _mostPopularLeadsNationalities
-    ) { state, allSessions, allLeads, allDates, allSets, allPings, allSentPings, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast, lastSessionsShown, lastWeeksShown, lastMonthsShown, suggestLeadsNationality, shownNationalities, mostPopularLeadsNationalities ->
+        _mostPopularLeadsNationalities,
+        _lastBackup,
+        _exportFolder,
+        _backupFolder
+    ) { state, allSessions, allLeads, allDates, allSets, allPings, allSentPings, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast, lastSessionsShown, lastWeeksShown, lastMonthsShown, suggestLeadsNationality, shownNationalities, mostPopularLeadsNationalities, lastBackup, exportFolder, backupFolder ->
         state.copy(
             allSessions = SessionManager.normalizeSessionsIds(allSessions),
             allLeads = allLeads,
@@ -95,7 +100,10 @@ class OutputViewModel(
             lastMonthsShown = lastMonthsShown,
             suggestLeadsNationality = suggestLeadsNationality.toBoolean(),
             shownNationalities = shownNationalities.toInt(),
-            mostPopularLeadsNationalities = mostPopularLeadsNationalities
+            mostPopularLeadsNationalities = mostPopularLeadsNationalities,
+            lastBackup = lastBackup.toInt(),
+            exportFolder = exportFolder,
+            backupFolder = backupFolder
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), OutputState())
 

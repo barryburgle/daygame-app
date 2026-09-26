@@ -91,7 +91,15 @@ fun OutputScreen(
         label = "blurBackground"
     )
     if (state.showFlightControlDialog) {
-        FlightControlDialog(state.allPings, state.allLeads, state.allSentPings, onEvent)
+        FlightControlDialog(
+            state.allPings,
+            state.allLeads,
+            state.allSentPings,
+            state.lastBackup,
+            state.exportFolder,
+            state.backupFolder,
+            onEvent
+        )
     }
     if (state.showAddPingDialog) {
         PingEditDialog("Add a new", onEvent)
