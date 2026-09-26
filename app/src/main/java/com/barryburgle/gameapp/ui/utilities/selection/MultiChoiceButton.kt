@@ -38,6 +38,7 @@ fun MultiChoiceButton(
         MultiChoiceSegmentedButtonRow(
             modifier = modifier
                 .height(35.dp)
+                .fillMaxWidth(0.5f)
                 .shadow(
                     elevation = 15.dp,
                     shape = RoundedCornerShape(20.dp),
@@ -56,6 +57,7 @@ fun MultiChoiceButton(
                         selectedOptionsToDisplay[index] = !selectedOptionsToDisplay[index]
                         onCheckedChange(index)
                     },
+                    icon = {},
                     label = {
                         Icon(
                             imageVector = eventType.getIcon()!!,
@@ -64,10 +66,10 @@ fun MultiChoiceButton(
                     },
                     colors = SegmentedButtonDefaults.colors(
                         activeContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        inactiveContentColor = MaterialTheme.colorScheme.onPrimary,
+                        inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                         activeContainerColor = MaterialTheme.colorScheme.primary,
                         inactiveContainerColor = MaterialTheme.colorScheme.surfaceVariant
-                    ),
+                    )
                 )
             }
         }
