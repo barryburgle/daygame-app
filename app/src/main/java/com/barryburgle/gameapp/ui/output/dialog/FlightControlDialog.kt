@@ -222,9 +222,9 @@ fun FlightControlDialog(
                                                 val daysAgo =
                                                     getDaysFromNow(latestSentPing.sentHour)
                                                 val daysText =
-                                                    if (daysAgo <= 1L) "1 day" else "$daysAgo days"
+                                                    if (daysAgo == 0L) "today" else if (daysAgo == 1L) "yesterday" else "$daysAgo days ago"
                                                 LittleBodyText(
-                                                    text = "Sent ${latestSentPingTitle} ping $daysText ago"
+                                                    text = "Sent ${latestSentPingTitle} ping $daysText"
                                                 )
                                             } else {
                                                 LittleBodyText(text = "Never sent this ping")
