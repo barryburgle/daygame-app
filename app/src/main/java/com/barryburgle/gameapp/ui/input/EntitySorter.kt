@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
-import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.enums.ChallengeSortType
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
@@ -20,8 +19,8 @@ import com.barryburgle.gameapp.model.enums.GameEventSortType
 import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.tool.ScrollableSelector
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
-import com.barryburgle.gameapp.ui.utilities.selection.GenericSortingButton
 import com.barryburgle.gameapp.ui.utilities.selection.ScrollableSorter
 
 @Composable
@@ -36,7 +35,7 @@ fun EntitySorter(
         visibilityFlag = visibilityFlag
     ) {
         ScrollableSorter(
-            spaceFromLeft
+            spaceFromLeft = spaceFromLeft
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Default.Sort,
@@ -45,78 +44,53 @@ fun EntitySorter(
                 modifier = Modifier.height(25.dp)
             )
             Spacer(modifier = Modifier.width(spaceFromLeft))
-            if (EventTypeEnum.SESSION.equals(eventType)) {
-                SessionSortType.values().forEach { sortType ->
-                    state.sessionSortType?.let {
-                        GenericSortingButton(
-                            it,
-                            sortType,
-                            onEvent as (GenericEvent) -> Unit,
-                            GameEvent.SortSessions(
-                                sortType
-                            )
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
+
+            when (eventType) {
+                EventTypeEnum.SESSION -> {
+                    ScrollableSelector(
+                        values = SessionSortType.entries,
+                        selected = state.sessionSortType
+                    ) { sortType ->
+                        onEvent(GameEvent.SortSessions(sortType))
                     }
                 }
-            } else if (EventTypeEnum.SET.equals(eventType)) {
-                SetSortType.values().forEach { sortType ->
-                    state.setSortType?.let {
-                        GenericSortingButton(
-                            it,
-                            sortType,
-                            onEvent as (GenericEvent) -> Unit,
-                            GameEvent.SortSets(
-                                sortType
-                            )
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
+
+                EventTypeEnum.SET -> {
+                    ScrollableSelector(
+                        values = SetSortType.entries,
+                        selected = state.setSortType
+                    ) { sortType ->
+                        onEvent(GameEvent.SortSets(sortType))
                     }
                 }
-            } else if (EventTypeEnum.DATE.equals(eventType)) {
-                DateSortType.values().forEach { sortType ->
-                    state.dateSortType?.let {
-                        GenericSortingButton(
-                            it,
-                            sortType,
-                            onEvent as (GenericEvent) -> Unit,
-                            GameEvent.SortDates(
-                                sortType
-                            )
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
+
+                EventTypeEnum.DATE -> {
+                    ScrollableSelector(
+                        values = DateSortType.entries,
+                        selected = state.dateSortType
+                    ) { sortType ->
+                        onEvent(GameEvent.SortDates(sortType))
                     }
                 }
-            } else if (EventTypeEnum.CHALLENGE.equals(eventType)) {
-                ChallengeSortType.values().forEach { sortType ->
-                    state.challengeSortType?.let {
-                        GenericSortingButton(
-                            it,
-                            sortType,
-                            onEvent as (GenericEvent) -> Unit,
-                            GameEvent.SortChallenges(
-                                sortType
-                            )
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
+
+                EventTypeEnum.CHALLENGE -> {
+                    ScrollableSelector(
+                        values = ChallengeSortType.entries,
+                        selected = state.challengeSortType
+                    ) { sortType ->
+                        onEvent(GameEvent.SortChallenges(sortType))
                     }
                 }
-            } else if (EventTypeEnum.ALL.equals(eventType)) {
-                GameEventSortType.values().forEach { sortType ->
-                    state.gameEventSortType?.let {
-                        GenericSortingButton(
-                            it,
-                            sortType,
-                            onEvent as (GenericEvent) -> Unit,
-                            GameEvent.SortGameEvents(
-                                sortType
-                            )
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
+
+                EventTypeEnum.ALL -> {
+                    ScrollableSelector(
+                        values = GameEventSortType.entries,
+                        selected = state.gameEventSortType
+                    ) { sortType ->
+                        onEvent(GameEvent.SortGameEvents(sortType))
                     }
                 }
             }
         }
     }
 }
-
