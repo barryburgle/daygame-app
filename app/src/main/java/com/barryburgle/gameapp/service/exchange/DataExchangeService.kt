@@ -7,6 +7,7 @@ import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.ping.Ping
+import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
@@ -324,6 +325,7 @@ class DataExchangeService {
             importChallengesFileName: String,
             importPinPointsFileName: String,
             importPingsFileName: String,
+            importSentPingsFileName: String,
             importSettingsFileName: String,
             importFolder: String,
             importHeader: Boolean,
@@ -392,6 +394,16 @@ class DataExchangeService {
                 },
                 { ToolEvent.SetAllPings(it) }
             )
+            var sentPingsImported = safeImport(
+                {
+                    sentPingCsvService.importRows(
+                        importFolder,
+                        importSentPingsFileName,
+                        importHeader
+                    )
+                },
+                { ToolEvent.SetAllSentPings(it) }
+            )
             var settingsImported = safeImport(
                 {
                     settingCsvService.importRows(
@@ -402,7 +414,7 @@ class DataExchangeService {
                 },
                 { ToolEvent.SetAllSettings(it) }
             )
-            return sessionsImported && leadsImported && datesImported && setsImported && challengesImported && pinPointsImported && pingsImported && settingsImported
+            return sessionsImported && leadsImported && datesImported && setsImported && challengesImported && pinPointsImported && pingsImported && sentPingsImported && settingsImported
         }
 
         fun exportAll(
@@ -486,6 +498,11 @@ class DataExchangeService {
                         state.importFolder + "/" + state.backupFolder,
                         "ping"
                     )
+                val importSentPingsFileName =
+                    if (!fromBackupFolder) state.importSentPingsFileName else csvFindService.getLastFilenameInFolder(
+                        state.importFolder + "/" + state.backupFolder,
+                        "sent_ping"
+                    )
                 val importSettingsFileName =
                     if (!fromBackupFolder) state.importSettingsFileName else csvFindService.getLastFilenameInFolder(
                         state.importFolder + "/" + state.backupFolder,
@@ -501,6 +518,7 @@ class DataExchangeService {
                     importChallengesFileName,
                     importPinPointsFileName,
                     importPingsFileName,
+                    importSentPingsFileName,
                     importSettingsFileName,
                     importFolder,
                     true,
