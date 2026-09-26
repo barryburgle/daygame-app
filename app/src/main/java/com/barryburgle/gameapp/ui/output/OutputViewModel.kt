@@ -14,7 +14,8 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.model.ping.SentPing
-import com.barryburgle.gameapp.ui.CombineTwentyone
+import com.barryburgle.gameapp.ui.CombineFour
+import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,8 +60,24 @@ class OutputViewModel(
     private val _lastBackup = settingDao.getBackupNumber()
     private val _exportFolder = settingDao.getExportFolder()
     private val _backupFolder = settingDao.getBackupFolder()
+    private val _backupActive = settingDao.getBackupActiveFlag()
 
-    val state = CombineTwentyone(
+    val _backupSettings = CombineFour(
+        _lastBackup,
+        _exportFolder,
+        _backupFolder,
+        _backupActive
+    ) { lastBackup, exportFolder, backupFolder, backupActive ->
+        BackupSettingsState(
+            lastBackup = lastBackup.toInt(),
+            exportFolder = exportFolder,
+            backupFolder = backupFolder,
+            backupActive = backupActive.toBoolean()
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), BackupSettingsState())
+
+
+    val state = CombineNineteen(
         _state,
         _allSessions,
         _allLeads,
@@ -79,10 +96,8 @@ class OutputViewModel(
         _suggestLeadsNationality,
         _shownNationalities,
         _mostPopularLeadsNationalities,
-        _lastBackup,
-        _exportFolder,
-        _backupFolder
-    ) { state, allSessions, allLeads, allDates, allSets, allPings, allSentPings, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast, lastSessionsShown, lastWeeksShown, lastMonthsShown, suggestLeadsNationality, shownNationalities, mostPopularLeadsNationalities, lastBackup, exportFolder, backupFolder ->
+        _backupSettings
+    ) { state, allSessions, allLeads, allDates, allSets, allPings, allSentPings, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast, lastSessionsShown, lastWeeksShown, lastMonthsShown, suggestLeadsNationality, shownNationalities, mostPopularLeadsNationalities, backupSettings ->
         state.copy(
             allSessions = SessionManager.normalizeSessionsIds(allSessions),
             allLeads = allLeads,
@@ -101,9 +116,10 @@ class OutputViewModel(
             suggestLeadsNationality = suggestLeadsNationality.toBoolean(),
             shownNationalities = shownNationalities.toInt(),
             mostPopularLeadsNationalities = mostPopularLeadsNationalities,
-            lastBackup = lastBackup.toInt(),
-            exportFolder = exportFolder,
-            backupFolder = backupFolder
+            lastBackup = backupSettings.lastBackup,
+            exportFolder = backupSettings.exportFolder,
+            backupFolder = backupSettings.backupFolder,
+            backupActive = backupSettings.backupActive
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), OutputState())
 
@@ -355,3 +371,10 @@ class OutputViewModel(
         }
     }
 }
+
+data class BackupSettingsState(
+    var backupFolder: String = "",
+    var exportFolder: String = "",
+    var backupActive: Boolean = true,
+    var lastBackup: Int = 3,
+)

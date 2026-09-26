@@ -51,6 +51,8 @@ data class OutputState(
     val lastBackup: Int = 0,
     val exportFolder: String = "",
     val backupFolder: String = "",
+    var backupActive: Boolean = false,
+    var justSavedPingsOrSentPings: Boolean = false,
 ) : AllEntityState(
     allSessions,
     allLeads,
