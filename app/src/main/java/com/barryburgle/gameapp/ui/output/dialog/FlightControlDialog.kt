@@ -41,7 +41,6 @@ import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.service.FormatService
-import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
 import com.barryburgle.gameapp.ui.output.card.PingCard
 import com.barryburgle.gameapp.ui.output.getDaysFromNow
@@ -55,7 +54,6 @@ import com.barryburgle.gameapp.ui.utilities.selection.DottedHorizontalPager
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -63,9 +61,6 @@ fun FlightControlDialog(
     allPings: List<Ping> = emptyList(),
     allLeads: List<Lead> = emptyList(),
     allSentPings: List<SentPing> = emptyList(),
-    lastBackup: Int,
-    exportFolder: String,
-    backupFolder: String,
     onEvent: (OutputEvent) -> Unit
 ) {
     val pingsByIdMap: Map<Long, Ping> = allPings.associateBy { it.id }
@@ -248,15 +243,7 @@ fun FlightControlDialog(
                                                         newlyChecked
                                                     )
                                                 )
-                                                coroutineScope.launch {
-                                                    DataExchangeService.backupPingsAndSentPings(
-                                                        allPings,
-                                                        allSentPings,
-                                                        lastBackup,
-                                                        exportFolder,
-                                                        backupFolder
-                                                    )
-                                                }
+                                                onEvent(OutputEvent.SwitchJustSavedPingsOrSentPings)
                                                 if (newlyChecked) {
                                                     systemClipboard.setPrimaryClip(
                                                         selectedPing.getClipData(

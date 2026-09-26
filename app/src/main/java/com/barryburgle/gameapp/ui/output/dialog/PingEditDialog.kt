@@ -54,6 +54,7 @@ fun PingEditDialog(
             "Do you want to delete this ping?",
             onConfirmRequest = {
                 onEvent(OutputEvent.DeletePing(ping!!.id))
+                onEvent(OutputEvent.SwitchJustSavedPingsOrSentPings)
                 onEvent(OutputEvent.HidePingEditDialog)
                 showDeletePingDialog = false
             },
@@ -192,10 +193,10 @@ fun PingEditDialog(
                     if (ping != null) {
                         pingToSave.id = ping.id
                     }
-                    // TODO: do backup of pis: call DataExchangeService.backupPingsAndLeads
                     onEvent(
                         OutputEvent.SavePing(pingToSave)
                     )
+                    onEvent(OutputEvent.SwitchJustSavedPingsOrSentPings)
                     onEvent(OutputEvent.HidePingEditDialog)
                     Toast.makeText(localContext, "Ping saved", Toast.LENGTH_SHORT).show()
                 }

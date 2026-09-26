@@ -30,6 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +52,7 @@ import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.OutputLeadDialog
 import com.barryburgle.gameapp.ui.output.dialog.FlightControlDialog
 import com.barryburgle.gameapp.ui.output.dialog.PingEditDialog
@@ -90,14 +92,23 @@ fun OutputScreen(
         animationSpec = tween(durationMillis = 350),
         label = "blurBackground"
     )
+    LaunchedEffect(key1 = state.justSavedPingsOrSentPings, key2 = state.backupActive) {
+        if (state.justSavedPingsOrSentPings && state.backupActive) {
+            DataExchangeService.backupPingsAndSentPings(
+                state.allPings,
+                state.allSentPings,
+                state.lastBackup,
+                state.exportFolder,
+                state.backupFolder
+            )
+            onEvent(OutputEvent.SwitchJustSavedPingsOrSentPings)
+        }
+    }
     if (state.showFlightControlDialog) {
         FlightControlDialog(
             state.allPings,
             state.allLeads,
             state.allSentPings,
-            state.lastBackup,
-            state.exportFolder,
-            state.backupFolder,
             onEvent
         )
     }
