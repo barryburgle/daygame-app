@@ -68,6 +68,7 @@ import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.BlurStatusBar
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.selection.ScrollableSorter
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 import java.time.LocalDate
@@ -183,11 +184,12 @@ fun OutputScreen(
                             }
                         }
                     }
-                    Row {
+                    ScrollableSorter(spaceFromLeft = spaceFromLeft) {
                         ScrollableSelector(
-                            spaceFromLeft, HeatmapEntityEnum.values(), heatmapEntitySelected
+                            values = HeatmapEntityEnum.entries,
+                            selected = heatmapEntitySelected
                         ) { newValue ->
-                            heatmapEntitySelected = newValue as HeatmapEntityEnum
+                            heatmapEntitySelected = newValue
                         }
                     }
                     val leadsMap = state.allLeads.associateBy { it.id }

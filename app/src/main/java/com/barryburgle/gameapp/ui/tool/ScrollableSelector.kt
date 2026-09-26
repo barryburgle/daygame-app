@@ -4,29 +4,24 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.model.enums.FieldEnum
-import com.barryburgle.gameapp.model.enums.HeatmapEntityEnum
 import com.barryburgle.gameapp.ui.utilities.selection.GenericSelectingButton
-import com.barryburgle.gameapp.ui.utilities.selection.ScrollableSorter
 
 @Composable
-fun ScrollableSelector(
-    spaceFromLeft: Dp,
-    values: Array<HeatmapEntityEnum>,
-    selected: FieldEnum,
-    onClick: (FieldEnum) -> Unit
+fun <T : FieldEnum> ScrollableSelector(
+    values: List<T>,
+    selected: T?,
+    onClick: (T) -> Unit
 ) {
-    ScrollableSorter(
-        spaceFromLeft
-    ) {
+    if (selected != null) {
         values.forEach { selectType ->
-            selected.let {
-                GenericSelectingButton(
-                    it, selectType, onClick = { onClick(selectType) })
-                Spacer(modifier = Modifier.width(10.dp))
-            }
+            GenericSelectingButton(
+                currentSelect = selected,
+                selectType = selectType,
+                onClick = { onClick(selectType) }
+            )
+            Spacer(modifier = Modifier.width(10.dp))
         }
     }
 }
