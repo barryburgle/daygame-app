@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -40,6 +41,7 @@ import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
 import com.barryburgle.gameapp.ui.output.card.PingCard
 import com.barryburgle.gameapp.ui.output.getDaysFromNow
@@ -53,22 +55,27 @@ import com.barryburgle.gameapp.ui.utilities.selection.DottedHorizontalPager
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun FlightControlDialog(
-    pings: List<Ping> = emptyList(),
-    leads: List<Lead> = emptyList(),
-    sentPings: List<SentPing> = emptyList(),
+    allPings: List<Ping> = emptyList(),
+    allLeads: List<Lead> = emptyList(),
+    allSentPings: List<SentPing> = emptyList(),
+    lastBackup: Int,
+    exportFolder: String,
+    backupFolder: String,
     onEvent: (OutputEvent) -> Unit
 ) {
-    val pingsByIdMap: Map<Long, Ping> = pings.associateBy { it.id }
-    val sentPingsByLeadIdMap: Map<Long, List<SentPing>> = sentPings.groupBy { it.leadId }
-    val pagerState = rememberPagerState(pageCount = { pings.size })
+    val pingsByIdMap: Map<Long, Ping> = allPings.associateBy { it.id }
+    val sentPingsByLeadIdMap: Map<Long, List<SentPing>> = allSentPings.groupBy { it.leadId }
+    val pagerState = rememberPagerState(pageCount = { allPings.size })
     val listState = rememberLazyListState()
     val context = LocalContext.current
     val systemClipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val uriHandler = LocalUriHandler.current
+    val coroutineScope = rememberCoroutineScope()
     FlowDialog(
         modifier = Modifier.fillMaxHeight(0.8f),
         onDismissRequest = { onEvent(OutputEvent.HideFlightControlDialog) },
@@ -100,7 +107,7 @@ fun FlightControlDialog(
             }
         }
     ) { contentPadding ->
-        if (pings.isEmpty()) {
+        if (allPings.isEmpty()) {
             Column(
                 modifier = Modifier
                     .padding(contentPadding)
@@ -118,7 +125,7 @@ fun FlightControlDialog(
             ) {
                 Spacer(modifier = Modifier.height(75.dp))
                 DottedHorizontalPager(
-                    items = pings,
+                    items = allPings,
                     modifier = Modifier
                         .fillMaxWidth(),
                     pageSpacing = 4.dp,
@@ -144,10 +151,10 @@ fun FlightControlDialog(
                         contentPadding = PaddingValues(top = 24.dp) // Extra padding so top item isn't permanently obscured
                     ) {
                         items(
-                            count = leads.size,
-                            key = { index -> leads[index].id }
+                            count = allLeads.size,
+                            key = { index -> allLeads[index].id }
                         ) { index ->
-                            val lead = leads[index]
+                            val lead = allLeads[index]
                             val relativeIndex =
                                 (index - listState.firstVisibleItemIndex).coerceAtLeast(0)
                             AnimatedStaggeredItem(index = relativeIndex) {
@@ -163,7 +170,7 @@ fun FlightControlDialog(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    val selectedPing = pings.getOrNull(pagerState.currentPage)
+                                    val selectedPing = allPings.getOrNull(pagerState.currentPage)
                                     val selectedPingId = selectedPing?.id
                                     var foundSentPing: SentPing? = null
                                     if (selectedPingId != null) {
@@ -241,6 +248,15 @@ fun FlightControlDialog(
                                                         newlyChecked
                                                     )
                                                 )
+                                                coroutineScope.launch {
+                                                    DataExchangeService.backupPingsAndSentPings(
+                                                        allPings,
+                                                        allSentPings,
+                                                        lastBackup,
+                                                        exportFolder,
+                                                        backupFolder
+                                                    )
+                                                }
                                                 if (newlyChecked) {
                                                     systemClipboard.setPrimaryClip(
                                                         selectedPing.getClipData(
