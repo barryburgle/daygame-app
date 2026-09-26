@@ -62,6 +62,8 @@ class DataExchangeService {
                     incrementalBackup = true,
                     clean = true
                 )
+                // TODO: keeping the last lastBackup sentPings backup seems not to work
+                // All of the past backups are kept: find why and fix in the future
                 backupAndClean(
                     sentPingCsvService,
                     allSentPings,
