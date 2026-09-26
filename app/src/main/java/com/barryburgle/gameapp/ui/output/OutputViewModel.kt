@@ -136,6 +136,15 @@ class OutputViewModel(
                 }
             }
 
+
+            is OutputEvent.SwitchJustSavedPingsOrSentPings -> {
+                _state.update {
+                    it.copy(
+                        justSavedPingsOrSentPings = _state.value.justSavedPingsOrSentPings.not()
+                    )
+                }
+            }
+
             is OutputEvent.EditLead -> {
                 _state.update {
                     it.copy(

@@ -7,6 +7,7 @@ sealed interface OutputEvent : GenericEvent {
     object SwitchShowLeadLegend : OutputEvent
     object SwitchShowIndexFormula : OutputEvent
     object SwitchShowCustomSummaryDialog : OutputEvent
+    object SwitchJustSavedPingsOrSentPings : OutputEvent
 
     data class EditLead(val lead: Lead, val isUpdatingLead: Boolean = true) : OutputEvent
     object HideLeadDialog : OutputEvent
