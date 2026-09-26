@@ -8,13 +8,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.ToolEvent
@@ -23,6 +21,7 @@ import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.Switch
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
+import com.barryburgle.gameapp.ui.utilities.dialog.FlowDialog
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
@@ -36,153 +35,156 @@ fun DeleteDialog(
     modifier: Modifier = Modifier.width(260.dp)
 ) {
     val localContext = LocalContext.current.applicationContext
-    AlertDialog(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = modifier.shadow(elevation = 10.dp),
+
+    FlowDialog(
+        modifier = Modifier.fillMaxWidth(0.8f),
         onDismissRequest = {
             onEvent(ToolEvent.SwitchIsCleaning)
         },
+        onConfirm = {
+            if (state.deleteConfirmationPrompt.isNotBlank() && state.deleteConfirmationPrompt.equals(
+                    "delete"
+                )
+            ) {
+                var deletionMessage = "Cleaned"
+                if (state.archiveBackupFolder) {
+                    csvFindService.archiveBackups(state.exportFolder, state.backupFolder)
+                    deletionMessage = deletionMessage + " and archived backups"
+                }
+                if (state.deleteSessions) {
+                    onEvent(ToolEvent.DeleteAllSessions)
+                }
+                if (state.deleteLeads) {
+                    onEvent(ToolEvent.DeleteAllLeads)
+                }
+                if (state.deleteDates) {
+                    onEvent(ToolEvent.DeleteAllDates)
+                }
+                if (state.deleteSets) {
+                    onEvent(ToolEvent.DeleteAllSets)
+                }
+                if (state.deleteChallenges) {
+                    onEvent(ToolEvent.DeleteAllChallenges)
+                }
+                if (state.deletePinPoints) {
+                    onEvent(ToolEvent.DeleteAllPinPoints)
+                }
+                if (state.deletePings) {
+                    onEvent(ToolEvent.DeleteAllPings)
+                }
+                if (state.deleteSentPings) {
+                    onEvent(ToolEvent.DeleteAllSentPings)
+                }
+                if (state.deleteSettings) {
+                    onEvent(ToolEvent.DeleteAllSettings)
+                }
+                onEvent(ToolEvent.SetDeleteConfirmationPrompt(""))
+                Toast.makeText(localContext, deletionMessage, Toast.LENGTH_SHORT)
+                    .show()
+                onEvent(ToolEvent.SwitchIsCleaning)
+            } else {
+                Toast.makeText(localContext, "Misspelled \"delete\"", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        },
+
         title = {
             LargeTitleText(text = description)
-        },
-        text = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+        }) {
+        Column(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 50.dp, bottom = 70.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(DialogConstant.ADD_LEAD_COLUMN_WIDTH),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                Column(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        LittleBodyText(getDeleteDescription(state))
-                    }
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        deleteTableSwitch(
-                            "sessions",
-                            state.deleteSessions,
-                            onEvent,
-                            ToolEvent.SwitchDeleteSessions
-                        )
-                        deleteTableSwitch(
-                            "leads",
-                            state.deleteLeads,
-                            onEvent,
-                            ToolEvent.SwitchDeleteLeads
-                        )
-                        deleteTableSwitch(
-                            "dates",
-                            state.deleteDates,
-                            onEvent,
-                            ToolEvent.SwitchDeleteDates
-                        )
-                        deleteTableSwitch(
-                            "sets",
-                            state.deleteSets,
-                            onEvent,
-                            ToolEvent.SwitchDeleteSets
-                        )
-                        deleteTableSwitch(
-                            "challenges",
-                            state.deleteChallenges,
-                            onEvent,
-                            ToolEvent.SwitchDeleteChallenges
-                        )
-                        deleteTableSwitch(
-                            "pinpoints",
-                            state.deletePinPoints,
-                            onEvent,
-                            ToolEvent.SwitchDeletePinPoints
-                        )
-                        deleteTableSwitch(
-                            "pings",
-                            state.deletePings,
-                            onEvent,
-                            ToolEvent.SwitchDeletePings
-                        )
-                        deleteTableSwitch(
-                            "settings",
-                            state.deleteSettings,
-                            onEvent,
-                            ToolEvent.SwitchDeleteSettings
-                        )
-                    }
-                }
-                WavyTextComponent(
-                    value = state.deleteConfirmationPrompt,
-                    placeholder = "\"delete\" to confirm",
-                    singleLine = true,
-                    disableDelete = true
-                ) {
-                    onEvent(ToolEvent.SetDeleteConfirmationPrompt(it))
+                    LittleBodyText(getDeleteDescription(state))
                 }
             }
-        },
-        confirmButton = {
-            ConfirmButton {
-                if (state.deleteConfirmationPrompt.isNotBlank() && state.deleteConfirmationPrompt.equals(
-                        "delete"
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    deleteTableSwitch(
+                        "sessions",
+                        state.deleteSessions,
+                        onEvent,
+                        ToolEvent.SwitchDeleteSessions
                     )
-                ) {
-                    var deletionMessage = "Cleaned"
-                    if (state.archiveBackupFolder) {
-                        csvFindService.archiveBackups(state.exportFolder, state.backupFolder)
-                        deletionMessage = deletionMessage + " and archived backups"
-                    }
-                    if (state.deleteSessions) {
-                        onEvent(ToolEvent.DeleteAllSessions)
-                    }
-                    if (state.deleteLeads) {
-                        onEvent(ToolEvent.DeleteAllLeads)
-                    }
-                    if (state.deleteDates) {
-                        onEvent(ToolEvent.DeleteAllDates)
-                    }
-                    if (state.deleteSets) {
-                        onEvent(ToolEvent.DeleteAllSets)
-                    }
-                    if (state.deleteChallenges) {
-                        onEvent(ToolEvent.DeleteAllChallenges)
-                    }
-                    if (state.deletePinPoints) {
-                        onEvent(ToolEvent.DeleteAllPinPoints)
-                    }
-                    if (state.deletePings) {
-                        onEvent(ToolEvent.DeleteAllPings)
-                    }
-                    if (state.deleteSettings) {
-                        onEvent(ToolEvent.DeleteAllSettings)
-                    }
-                    onEvent(ToolEvent.SetDeleteConfirmationPrompt(""))
-                    Toast.makeText(localContext, deletionMessage, Toast.LENGTH_SHORT)
-                        .show()
-                    onEvent(ToolEvent.SwitchIsCleaning)
-                } else {
-                    Toast.makeText(localContext, "Misspelled \"delete\"", Toast.LENGTH_SHORT)
-                        .show()
+                    deleteTableSwitch(
+                        "leads",
+                        state.deleteLeads,
+                        onEvent,
+                        ToolEvent.SwitchDeleteLeads
+                    )
+                    deleteTableSwitch(
+                        "dates",
+                        state.deleteDates,
+                        onEvent,
+                        ToolEvent.SwitchDeleteDates
+                    )
+                    deleteTableSwitch(
+                        "sets",
+                        state.deleteSets,
+                        onEvent,
+                        ToolEvent.SwitchDeleteSets
+                    )
+                    deleteTableSwitch(
+                        "challenges",
+                        state.deleteChallenges,
+                        onEvent,
+                        ToolEvent.SwitchDeleteChallenges
+                    )
+                    deleteTableSwitch(
+                        "pinpoints",
+                        state.deletePinPoints,
+                        onEvent,
+                        ToolEvent.SwitchDeletePinPoints
+                    )
+                    deleteTableSwitch(
+                        "pings",
+                        state.deletePings,
+                        onEvent,
+                        ToolEvent.SwitchDeletePings
+                    )
+                    deleteTableSwitch(
+                        "sent pings",
+                        state.deleteSentPings,
+                        onEvent,
+                        ToolEvent.SwitchDeleteSentPings
+                    )
+                    deleteTableSwitch(
+                        "settings",
+                        state.deleteSettings,
+                        onEvent,
+                        ToolEvent.SwitchDeleteSettings
+                    )
                 }
             }
-        },
-        dismissButton = {
-            DismissButton {
-                onEvent(ToolEvent.SwitchIsCleaning)
+            WavyTextComponent(
+                value = state.deleteConfirmationPrompt,
+                placeholder = "\"delete\" to confirm",
+                singleLine = true,
+                disableDelete = true
+            ) {
+                onEvent(ToolEvent.SetDeleteConfirmationPrompt(it))
             }
-        })
+        }
+    }
 }
 
 private fun getDeleteDescription(state: ToolsState): String {
-    if (!state.deleteSessions && !state.deleteLeads && !state.deleteDates && !state.deleteSets && !state.deleteChallenges && !state.deletePinPoints && !state.deletePings) {
+    if (!state.deleteSessions && !state.deleteLeads && !state.deleteDates && !state.deleteSets && !state.deleteChallenges && !state.deletePinPoints && !state.deletePings && !state.deleteSentPings) {
         return "No tables will be deleted, please select at least one option"
     }
     val deleteSessionsDescription =
@@ -196,8 +198,10 @@ private fun getDeleteDescription(state: ToolsState): String {
         if (state.deletePinPoints) " ${state.allPinPoints.size} pinpoints," else ""
     val deletePingsDescription =
         if (state.deletePings) " ${state.allPings.size} pings," else ""
+    val deleteSentPingsDescription =
+        if (state.deleteSentPings) " ${state.allSentPings.size} sent pings," else ""
     val deleteDescription =
-        "Deleting${deleteSessionsDescription}${deleteLeadsDescription}${deleteDatesDescription}${deleteSetsDescription}${deleteChallengesDescription}${deletePinPointsDescription}${deletePingsDescription}"
+        "Deleting${deleteSessionsDescription}${deleteLeadsDescription}${deleteDatesDescription}${deleteSetsDescription}${deleteChallengesDescription}${deletePinPointsDescription}${deletePingsDescription}${deleteSentPingsDescription}"
     return deleteDescription.dropLast(1)
 }
 

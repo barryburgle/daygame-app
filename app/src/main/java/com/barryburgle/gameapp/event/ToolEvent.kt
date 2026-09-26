@@ -67,6 +67,7 @@ sealed interface ToolEvent : GenericEvent {
     object SwitchDeleteChallenges : ToolEvent
     object SwitchDeletePinPoints : ToolEvent
     object SwitchDeletePings : ToolEvent
+    object SwitchDeleteSentPings : ToolEvent
     object SwitchDeleteSettings : ToolEvent
     object SwitchIsCleaning : ToolEvent
     object SwitchThemeSysFollow : ToolEvent
@@ -87,6 +88,7 @@ sealed interface ToolEvent : GenericEvent {
     object DeleteAllChallenges : ToolEvent
     object DeleteAllPinPoints : ToolEvent
     object DeleteAllPings : ToolEvent
+    object DeleteAllSentPings : ToolEvent
     object DeleteAllSettings : ToolEvent
 
     object SwitchLiveSessionNotification : ToolEvent

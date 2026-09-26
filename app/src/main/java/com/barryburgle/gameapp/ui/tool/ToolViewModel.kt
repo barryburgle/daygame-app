@@ -246,6 +246,7 @@ class ToolViewModel(
                 allChallenges = allEntitiesState.allChallenges,
                 allPinPoints = allEntitiesState.allPinPoints,
                 allPings = allEntitiesState.allPings,
+                allSentPings = allEntitiesState.allSentPings,
                 allSettings = allEntitiesState.allSettings,
                 lastSessionAverageQuantity = averageLast,
                 exportHeader = importExportSettingState.exportHeader.toBoolean(),
@@ -902,6 +903,14 @@ class ToolViewModel(
                 }
             }
 
+            is ToolEvent.SwitchDeleteSentPings -> {
+                _state.update {
+                    it.copy(
+                        deleteSentPings = _state.value.deleteSentPings.not()
+                    )
+                }
+            }
+
             is ToolEvent.SwitchDeleteSettings -> {
                 _state.update {
                     it.copy(
@@ -1116,6 +1125,10 @@ class ToolViewModel(
 
             is ToolEvent.DeleteAllPings -> {
                 viewModelScope.launch { pingDao.deleteAll() }
+            }
+
+            is ToolEvent.DeleteAllSentPings -> {
+                viewModelScope.launch { sentPingDao.deleteAll() }
             }
 
             is ToolEvent.DeleteAllSettings -> {
@@ -1351,5 +1364,6 @@ data class AllEntitiesState(
     val allChallenges: List<AchievedChallenge>,
     val allPinPoints: List<PinPoint>,
     val allPings: List<Ping>,
+    val allSentPings: List<SentPing>,
     val allSettings: List<Setting>
 )

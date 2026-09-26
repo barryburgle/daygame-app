@@ -75,6 +75,7 @@ data class ToolsState(
     var deleteChallenges: Boolean = false,
     var deletePinPoints: Boolean = false,
     var deletePings: Boolean = false,
+    var deleteSentPings: Boolean = false,
     var deleteSettings: Boolean = false,
     var isCleaning: Boolean = false,
     var themeSysFollow: Boolean = false,
