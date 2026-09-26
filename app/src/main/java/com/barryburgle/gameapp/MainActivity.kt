@@ -132,6 +132,7 @@ class MainActivity : ComponentActivity() {
                         it.challengeDao,
                         it.pinPointDao,
                         it.pingDao,
+                        it.sentPingDao,
                         it.settingDao
                     )
                 } as T
