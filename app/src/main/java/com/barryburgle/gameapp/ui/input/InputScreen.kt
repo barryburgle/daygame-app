@@ -3,6 +3,7 @@ package com.barryburgle.gameapp.ui.input
 import android.content.Intent
 import android.os.Build
 import android.widget.Toast
+import com.barryburgle.gameapp.R
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.LinearEasing
@@ -34,7 +35,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -47,11 +47,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -70,14 +67,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
@@ -99,6 +94,8 @@ import com.barryburgle.gameapp.ui.input.dialog.DateDialog
 import com.barryburgle.gameapp.ui.input.dialog.SessionDialog
 import com.barryburgle.gameapp.ui.input.dialog.SetDialog
 import com.barryburgle.gameapp.ui.input.state.InputState
+import com.barryburgle.gameapp.ui.input.dialog.DateMetronomeDialog
+import com.barryburgle.gameapp.ui.input.dialog.DateModelEditDialog
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
@@ -164,11 +161,28 @@ fun InputScreen(
             ) {
                 Column(
                     modifier = Modifier
-                        .height(400.dp)
+                        .height(500.dp)
                         .offset(y = -120.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceAround
                 ) {
+                    AnimatedVisibility(
+                        visible = isExpanded,
+                        enter = floatingButtonEnterTransition(100),
+                        exit = floatingButtonExitTransition(100)
+                    ) {
+                        FloatingInputButton(
+                            description = "Date\nMetronome",
+                            drawableRes = R.drawable.metronome,
+                            animate = false,
+                            animationColor = MaterialTheme.colorScheme.background
+                        ) {
+                            onEvent(GameEvent.SetIsInOverlayToTrue)
+                            onEvent(GameEvent.ShowDateMetronomeDialog)
+                            isExpanded = false
+                            isRotated = false
+                        }
+                    }
                     AnimatedVisibility(
                         visible = isExpanded,
                         enter = floatingButtonEnterTransition(300),
