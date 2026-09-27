@@ -41,7 +41,6 @@ import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 
-// TODO: do all the lead sent tracking part
 @Composable
 fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
     val textColor = MaterialTheme.colorScheme.surfaceVariant
@@ -186,8 +185,6 @@ fun PingCard(ping: Ping, onEvent: (OutputEvent) -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(6.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // TODO: on each one of the copy/share button we should open a dialog with the list of leads ordered by last contact (if any)
-                // or acquisition date and on their side a checkbox to select the ones we are sending that ping, to keep track
                 IconShadowButton(
                     onClick = {
                         systemClipboard.setPrimaryClip(ping.getClipData(context))
