@@ -91,6 +91,7 @@ import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.service.exchange.DataExchangeService
 import com.barryburgle.gameapp.service.notification.PersistentNotificationService
+import com.barryburgle.gameapp.ui.input.button.FloatingInputButton
 import com.barryburgle.gameapp.ui.input.card.EventCard
 import com.barryburgle.gameapp.ui.input.card.SummaryCard
 import com.barryburgle.gameapp.ui.input.dialog.ChallengeDialog
@@ -173,7 +174,7 @@ fun InputScreen(
                         enter = floatingButtonEnterTransition(300),
                         exit = floatingButtonExitTransition(300)
                     ) {
-                        floatingAddButton(
+                        FloatingInputButton(
                             EventTypeEnum.DATE.getIcon()!!, EventTypeEnum.DATE.getField(), false
                         ) {
                             onEvent(GameEvent.SetIsInOverlayToTrue)
@@ -187,7 +188,7 @@ fun InputScreen(
                         enter = floatingButtonEnterTransition(500),
                         exit = floatingButtonExitTransition(500)
                     ) {
-                        floatingAddButton(
+                        FloatingInputButton(
                             EventTypeEnum.SET.getIcon()!!, EventTypeEnum.SET.getField(), false
                         ) {
                             onEvent(GameEvent.SetIsInOverlayToTrue)
@@ -201,7 +202,7 @@ fun InputScreen(
                         enter = floatingButtonEnterTransition(700),
                         exit = floatingButtonExitTransition(700)
                     ) {
-                        floatingAddButton(
+                        FloatingInputButton(
                             EventTypeEnum.SESSION.getIcon()!!,
                             EventTypeEnum.SESSION.getField(),
                             false
@@ -217,7 +218,7 @@ fun InputScreen(
                         enter = floatingButtonEnterTransition(900),
                         exit = floatingButtonExitTransition(900)
                     ) {
-                        floatingAddButton(
+                        FloatingInputButton(
                             EventTypeEnum.CHALLENGE.getIcon()!!,
                             EventTypeEnum.CHALLENGE.getField(),
                             false
@@ -233,7 +234,7 @@ fun InputScreen(
                         enter = floatingButtonEnterTransition(1100),
                         exit = floatingButtonExitTransition(1100)
                     ) {
-                        floatingAddButton(
+                        FloatingInputButton(
                             Icons.Default.Timer, "Live\nSession", true, Color.Red
                         ) {
                             val dateTime = passInitialValue(true, null, "")
@@ -616,47 +617,6 @@ fun getPinPoints(state: InputState, sortableGameEvent: SortableGameEvent): List<
     return emptyList()
 }
 
-@Composable
-fun floatingAddButton(
-    icon: ImageVector,
-    description: String,
-    animate: Boolean,
-    animationColor: Color? = MaterialTheme.colorScheme.background,
-    onClick: () -> Unit
-) {
-    Column(
-        modifier = Modifier.height(80.dp), horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        FloatingActionButton(
-            onClick = {
-                onClick()
-            },
-            modifier = Modifier.size(40.dp),
-            contentColor = MaterialTheme.colorScheme.inversePrimary,
-            containerColor = MaterialTheme.colorScheme.tertiary,
-            shape = CircleShape
-        ) {
-            if (animate) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = description,
-                    tint = liveSessionPulsingColor(animationColor)
-                )
-            } else {
-                Icon(
-                    imageVector = icon, contentDescription = description
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            text = description,
-            style = MaterialTheme.typography.bodySmall,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onPrimary
-        )
-    }
-}
 
 @Composable
 fun gameTopBar(
