@@ -9,15 +9,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.Download
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,7 +33,6 @@ import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.setting.IconButtonSetting
 import com.barryburgle.gameapp.ui.utilities.setting.ImageButtonSetting
-import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
@@ -52,101 +48,62 @@ fun CreditsCard(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val uriHandler = LocalUriHandler.current
-    Card(
-        modifier = modifier, colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ), shape = MaterialTheme.shapes.large
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
+    GenericSettingsCard("Credits", modifier) {
+        Spacer(modifier = Modifier.height(10.dp))
+        versionInfo(
+            state, currentVersion, onEvent, context
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        if (currentVersion != null && isNewerVersion(
+                currentVersion,
+                state.latestAvailable
+            )
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        LargeTitleText("Credits")
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(5.dp),
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Spacer(modifier = Modifier.height(10.dp))
-                            versionInfo(
-                                state, currentVersion, onEvent, context
-                            )
-                            Spacer(modifier = Modifier.height(5.dp))
-                            if (currentVersion != null && isNewerVersion(
-                                    currentVersion,
-                                    state.latestAvailable
-                                )
-                            ) {
-                                IconButtonSetting(
-                                    text = "Update to version ${state.latestAvailable}",
-                                    imageVector = Icons.Default.Download,
-                                    contentDescription = "Update",
-                                    onClick = {
-                                        if (state.backupBeforeUpdate) {
-                                            coroutineScope.launch {
-                                                DataExchangeService.backup(state)
-                                                Toast.makeText(
-                                                    context,
-                                                    "Successfully backed up all tables",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-                                        uriHandler.openUri(state.latestDownloadUrl)
-                                    })
-                            }
-                            Spacer(modifier = Modifier.height(5.dp))
-                            ImageButtonSetting(
-                                text = "Daygame App Github repository",
-                                icon = R.drawable.ic_launcher_round,
-                                contentDescription = "Project repository",
-                                color = Color.Black,
-                                onClick = {
-                                    uriHandler.openUri("https://github.com/barryburgle/daygame-app")
-                                })
-                            Spacer(modifier = Modifier.height(5.dp))
-                            ImageButtonSetting(
-                                text = "Report a bug or request a feature opening a GitHub Issue",
-                                icon = R.drawable.conversation_action,
-                                iconColor = MaterialTheme.colorScheme.inversePrimary,
-                                contentDescription = "Project issues",
-                                onClick = {
-                                    uriHandler.openUri("https://github.com/barryburgle/daygame-app/issues")
-                                })
-                            Spacer(modifier = Modifier.height(5.dp))
-                            ImageButtonSetting(
-                                text = "Barry Burgle's blog",
-                                icon = R.drawable.bb_v3b,
-                                contentDescription = "Barry Blog",
-                                color = Color.Black,
-                                onClick = {
-                                    uriHandler.openUri("https://barryburgle.wordpress.com/")
-                                })
+            IconButtonSetting(
+                text = "Update to version ${state.latestAvailable}",
+                imageVector = Icons.Default.Download,
+                contentDescription = "Update",
+                onClick = {
+                    if (state.backupBeforeUpdate) {
+                        coroutineScope.launch {
+                            DataExchangeService.backup(state)
+                            Toast.makeText(
+                                context,
+                                "Successfully backed up all tables",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
-                }
-            }
+                    uriHandler.openUri(state.latestDownloadUrl)
+                })
         }
+        Spacer(modifier = Modifier.height(5.dp))
+        ImageButtonSetting(
+            text = "Daygame App Github repository",
+            icon = R.drawable.ic_launcher_round,
+            contentDescription = "Project repository",
+            color = Color.Black,
+            onClick = {
+                uriHandler.openUri("https://github.com/barryburgle/daygame-app")
+            })
+        Spacer(modifier = Modifier.height(5.dp))
+        ImageButtonSetting(
+            text = "Report a bug or request a feature opening a GitHub Issue",
+            icon = R.drawable.conversation_action,
+            iconColor = MaterialTheme.colorScheme.inversePrimary,
+            contentDescription = "Project issues",
+            onClick = {
+                uriHandler.openUri("https://github.com/barryburgle/daygame-app/issues")
+            })
+        Spacer(modifier = Modifier.height(5.dp))
+        ImageButtonSetting(
+            text = "Barry Burgle's blog",
+            icon = R.drawable.bb_v3b,
+            contentDescription = "Barry Blog",
+            color = Color.Black,
+            onClick = {
+                uriHandler.openUri("https://barryburgle.wordpress.com/")
+            })
     }
 }
 
