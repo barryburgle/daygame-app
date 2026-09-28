@@ -1935,6 +1935,12 @@ class InputViewModel(
                 }
             }
 
+            is GameEvent.SaveNewDatePhasesOrderToDateModel -> {
+                viewModelScope.launch {
+                    dateModelDao.updateDatePhases(event.dateModelId, event.datePhaseIds)
+                }
+            }
+
             is GameEvent.EditDatePhase -> {
                 _state.update {
                     it.copy(

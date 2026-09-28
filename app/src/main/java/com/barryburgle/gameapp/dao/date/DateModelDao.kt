@@ -37,4 +37,7 @@ interface DateModelDao {
         """
     )
     suspend fun addDatePhaseToModel(dateModelId: Long, datePhaseId: Long)
+
+    @Query("UPDATE date_model SET phases = :phaseIds WHERE id = :dateModelId")
+    suspend fun updateDatePhases(dateModelId: Long, phaseIds: List<Long>)
 }

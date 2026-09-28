@@ -26,17 +26,22 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.date.DateModel
 import com.barryburgle.gameapp.model.date.DatePhase
@@ -58,6 +63,7 @@ fun DateMetronomeDialog(
 ) {
     val pagerState = rememberPagerState(pageCount = { allDateModels.size })
     val listState = rememberLazyListState()
+    val density = LocalDensity.current
 
     val currentSelectedModel by remember(allDateModels, pagerState.currentPage) {
         derivedStateOf {
@@ -71,7 +77,13 @@ fun DateMetronomeDialog(
             allDatePhases.filter { it.id in phaseIds }.reversed()
         }
     }
+    var localPhases by remember { mutableStateOf(emptyList<DatePhase>()) }
+    var draggedItemIndex by remember { mutableStateOf<Int?>(null) }
+    var dragOffsetY by remember { mutableFloatStateOf(0f) }
 
+    LaunchedEffect(currentPhases) {
+        localPhases = currentPhases
+    }
     FlowDialog(modifier = Modifier.fillMaxHeight(0.6f), onDismissRequest = {
         onEvent(GameEvent.HideDateMetronomeDialog)
         onEvent(GameEvent.SetIsInOverlayToFalse)
@@ -188,19 +200,20 @@ fun DateMetronomeDialog(
                         contentPadding = PaddingValues(top = 24.dp)
                     ) {
                         items(
-                            count = currentPhases.size,
-                            key = { index -> currentPhases[index].id }) { index ->
-                            val datePhase = currentPhases[index]
-                            val relativeIndex =
-                                (index - listState.firstVisibleItemIndex).coerceAtLeast(0)
-
-                            var totalDragOffsetY by remember { mutableFloatStateOf(0f) }
-                            val itemHeightPx =
-                                64f * 3f // Approximation for item row threshold calculation
+                            count = localPhases.size,
+                            key = { index -> localPhases[index].id }
+                        ) { index ->
+                            val datePhase = localPhases[index]
+                            val relativeIndex = (index - listState.firstVisibleItemIndex).coerceAtLeast(0)
+                            val isDragged = draggedItemIndex == index
 
                             AnimatedStaggeredItem(index = relativeIndex) {
                                 Row(
                                     modifier = Modifier
+                                        .zIndex(if (isDragged) 1f else 0f)
+                                        .graphicsLayer {
+                                            translationY = if (isDragged) dragOffsetY else 0f
+                                        }
                                         .fillMaxWidth()
                                         .height(64.dp)
                                         .padding(horizontal = 6.dp, vertical = 2.dp)
@@ -215,43 +228,56 @@ fun DateMetronomeDialog(
                                     Box(
                                         modifier = Modifier
                                             .padding(start = 8.dp, end = 4.dp)
-                                            .pointerInput(currentSelectedModel, index) {
+                                            .pointerInput(Unit) {
                                                 detectDragGestures(
-                                                    onDragStart = { totalDragOffsetY = 0f },
-                                                    onDragEnd = { totalDragOffsetY = 0f },
-                                                    onDragCancel = { totalDragOffsetY = 0f },
+                                                    onDragStart = {
+                                                        draggedItemIndex = index
+                                                        dragOffsetY = 0f
+                                                    },
+                                                    onDragEnd = {
+                                                        draggedItemIndex = null
+                                                        dragOffsetY = 0f
+                                                        currentSelectedModel?.let { model ->
+                                                            model.phases = localPhases.reversed().map { it.id }
+                                                            onEvent(
+                                                                GameEvent.SaveNewDatePhasesOrderToDateModel(
+                                                                    dateModelId = model.id,
+                                                                    datePhaseIds = model.phases
+                                                                )
+                                                            )
+                                                        }
+                                                    },
+                                                    onDragCancel = {
+                                                        draggedItemIndex = null
+                                                        dragOffsetY = 0f
+                                                    },
                                                     onDrag = { change, dragAmount ->
                                                         change.consume()
-                                                        totalDragOffsetY += dragAmount.y
+                                                        dragOffsetY += dragAmount.y
 
-                                                        val model = currentSelectedModel
-                                                            ?: return@detectDragGestures
-                                                        val targetIndex = when {
-                                                            totalDragOffsetY > itemHeightPx && index < currentPhases.size - 1 -> index + 1
-                                                            totalDragOffsetY < -itemHeightPx && index > 0 -> index - 1
-                                                            else -> null
+                                                        val currentDragIndex = draggedItemIndex ?: return@detectDragGestures
+                                                        val itemHeightPx = with(density) { 68.dp.toPx() } // row 64dp + 4dp spacing
+
+                                                        // Swap items visually if dragged past threshold
+                                                        if (dragOffsetY > itemHeightPx && currentDragIndex < localPhases.size - 1) {
+                                                            val newList = localPhases.toMutableList()
+                                                            val movedItem = newList.removeAt(currentDragIndex)
+                                                            newList.add(currentDragIndex + 1, movedItem)
+                                                            localPhases = newList
+                                                            draggedItemIndex = currentDragIndex + 1
+                                                            dragOffsetY -= itemHeightPx
+                                                        } else if (dragOffsetY < -itemHeightPx && currentDragIndex > 0) {
+                                                            val newList = localPhases.toMutableList()
+                                                            val movedItem = newList.removeAt(currentDragIndex)
+                                                            newList.add(currentDragIndex - 1, movedItem)
+                                                            localPhases = newList
+                                                            draggedItemIndex = currentDragIndex - 1
+                                                            dragOffsetY += itemHeightPx
                                                         }
-
-                                                        if (targetIndex != null) {
-                                                            val updatedDisplayList =
-                                                                currentPhases.toMutableList()
-                                                            val movedPhase =
-                                                                updatedDisplayList.removeAt(index)
-                                                            updatedDisplayList.add(
-                                                                targetIndex, movedPhase
-                                                            )
-
-                                                            // Re-reverse back to synchronize with DateModel's original order
-                                                            val updatedPhaseIds =
-                                                                updatedDisplayList.reversed()
-                                                                    .map { it.id }
-                                                            model.phases = updatedPhaseIds
-
-                                                            onEvent(GameEvent.EditDateModel(model))
-                                                            totalDragOffsetY = 0f
-                                                        }
-                                                    })
-                                            }, contentAlignment = Alignment.Center
+                                                    }
+                                                )
+                                            },
+                                        contentAlignment = Alignment.Center
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.DragHandle,

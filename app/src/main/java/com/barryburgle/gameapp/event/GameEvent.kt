@@ -31,7 +31,12 @@ sealed interface GameEvent : GenericEvent {
     object HideLeadDialog : GameEvent
     data class ScheduleLiveSessionSittingReminder(val interval: Int) : GameEvent
     data class SchedulePullOClockReminder(val interval: Int) : GameEvent
-    data class ScheduleWriteHerAfterReminder(val interval: Int, val leadDesc: String, val leadLink: String) : GameEvent
+    data class ScheduleWriteHerAfterReminder(
+        val interval: Int,
+        val leadDesc: String,
+        val leadLink: String
+    ) : GameEvent
+
     data class SetDate(val date: String) : GameEvent
     data class SetStartHour(val startHour: String) : GameEvent
     data class SetEndHour(val endHour: String) : GameEvent
@@ -156,17 +161,23 @@ sealed interface GameEvent : GenericEvent {
     data class EditChallenge(val challenge: Challenge) : GameEvent
 
     object SwitchSaveLeadToLiveSession : GameEvent
-    object ShowDateMetronomeDialog: GameEvent
-    object HideDateMetronomeDialog: GameEvent
-    object ShowDateModelDialog: GameEvent
-    object HideDateModelDialog: GameEvent
-    object ShowDatePhaseDialog: GameEvent
-    object HideDatePhaseDialog: GameEvent
+    object ShowDateMetronomeDialog : GameEvent
+    object HideDateMetronomeDialog : GameEvent
+    object ShowDateModelDialog : GameEvent
+    object HideDateModelDialog : GameEvent
+    object ShowDatePhaseDialog : GameEvent
+    object HideDatePhaseDialog : GameEvent
     data class EditDateModel(val dateModel: DateModel?) : GameEvent
     data class DeleteDateModel(
         val dateModelId: Long
     ) : GameEvent
+
     data class SaveDateModel(val dateModel: DateModel) : GameEvent
+    data class SaveNewDatePhasesOrderToDateModel(
+        val dateModelId: Long,
+        val datePhaseIds: List<Long>
+    ) : GameEvent
+
     data class EditDatePhase(val datePhase: DatePhase?, val dateModelId: Long) : GameEvent
     data class SaveDatePhase(val datePhase: DatePhase, val dateModelId: Long?) : GameEvent
     data class DeleteDatePhase(val datePhaseId: Long) : GameEvent
