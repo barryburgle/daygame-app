@@ -1965,6 +1965,31 @@ class InputViewModel(
                     datePhaseDao.deleteById(event.datePhaseId)
                 }
             }
+
+            is GameEvent.ScheduleDateMetronomeNotifications -> {
+                if (event.datePhases.isNotEmpty()) {
+                    var totalProgressiveDuration = 0L
+                    for (index in 0 until event.datePhases.size - 1) {
+                        var time: LocalDateTime? = null
+                        if (index == 0) {
+                            notificationScheduler.schedule(
+                                AndroidNotificationScheduler.DATE_METRONOME_REQUEST_CODE_START + index,
+                                LocalDateTime.now().plusSeconds(2),
+                                event.datePhases.get(index).title,
+                                event.datePhases.get(index).description
+                            )
+                        }
+                        totalProgressiveDuration += event.datePhases.get(index).duration
+                        time = LocalDateTime.now().plusMinutes(totalProgressiveDuration)
+                        notificationScheduler.schedule(
+                            AndroidNotificationScheduler.DATE_METRONOME_REQUEST_CODE_START + index + 1,
+                            time,
+                            event.datePhases.get(index + 1).title,
+                            event.datePhases.get(index + 1).description
+                        )
+                    }
+                }
+            }
         }
     }
 

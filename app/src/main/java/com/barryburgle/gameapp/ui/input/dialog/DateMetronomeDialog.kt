@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.input.dialog
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -40,6 +41,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -65,6 +67,8 @@ fun DateMetronomeDialog(
     val pagerState = rememberPagerState(pageCount = { allDateModels.size })
     val listState = rememberLazyListState()
     val density = LocalDensity.current
+
+    val localContext = LocalContext.current.applicationContext
 
     val currentSelectedModel by remember(allDateModels, pagerState.currentPage) {
         derivedStateOf {
@@ -145,7 +149,14 @@ fun DateMetronomeDialog(
                             firstActionButtonIcon = Icons.Default.PlayArrow,
                             firstActionButtonIconGlowing = true,
                             onFirstActionButtonClick = {
-                                // TODO: schedule notifications for all the phases
+                                onEvent(GameEvent.ScheduleDateMetronomeNotifications(localPhases))
+                                Toast.makeText(
+                                    localContext,
+                                    "Date metronome started. Good luck!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                onEvent(GameEvent.HideDateMetronomeDialog)
+                                onEvent(GameEvent.SetIsInOverlayToFalse)
                             },
                             onShareActionButtonClick = {
                                 // TODO: copy past model desc + phases properly described
@@ -205,7 +216,8 @@ fun DateMetronomeDialog(
                             key = { index -> localPhases[index].id }
                         ) { index ->
                             val datePhase = localPhases[index]
-                            val relativeIndex = (index - listState.firstVisibleItemIndex).coerceAtLeast(0)
+                            val relativeIndex =
+                                (index - listState.firstVisibleItemIndex).coerceAtLeast(0)
                             val isDragged = draggedItemIndex == index
 
                             AnimatedStaggeredItem(index = relativeIndex) {
@@ -238,7 +250,8 @@ fun DateMetronomeDialog(
                                                         draggedItemIndex = null
                                                         dragOffsetY = 0f
                                                         currentSelectedModel?.let { model ->
-                                                            model.phases = localPhases.reversed().map { it.id }
+                                                            model.phases =
+                                                                localPhases.reversed().map { it.id }
                                                             onEvent(
                                                                 GameEvent.SaveNewDatePhasesOrderToDateModel(
                                                                     dateModelId = model.id,
@@ -255,21 +268,33 @@ fun DateMetronomeDialog(
                                                         change.consume()
                                                         dragOffsetY += dragAmount.y
 
-                                                        val currentDragIndex = draggedItemIndex ?: return@detectDragGestures
-                                                        val itemHeightPx = with(density) { 68.dp.toPx() } // row 64dp + 4dp spacing
+                                                        val currentDragIndex = draggedItemIndex
+                                                            ?: return@detectDragGestures
+                                                        val itemHeightPx =
+                                                            with(density) { 68.dp.toPx() } // row 64dp + 4dp spacing
 
                                                         // Swap items visually if dragged past threshold
                                                         if (dragOffsetY > itemHeightPx && currentDragIndex < localPhases.size - 1) {
-                                                            val newList = localPhases.toMutableList()
-                                                            val movedItem = newList.removeAt(currentDragIndex)
-                                                            newList.add(currentDragIndex + 1, movedItem)
+                                                            val newList =
+                                                                localPhases.toMutableList()
+                                                            val movedItem =
+                                                                newList.removeAt(currentDragIndex)
+                                                            newList.add(
+                                                                currentDragIndex + 1,
+                                                                movedItem
+                                                            )
                                                             localPhases = newList
                                                             draggedItemIndex = currentDragIndex + 1
                                                             dragOffsetY -= itemHeightPx
                                                         } else if (dragOffsetY < -itemHeightPx && currentDragIndex > 0) {
-                                                            val newList = localPhases.toMutableList()
-                                                            val movedItem = newList.removeAt(currentDragIndex)
-                                                            newList.add(currentDragIndex - 1, movedItem)
+                                                            val newList =
+                                                                localPhases.toMutableList()
+                                                            val movedItem =
+                                                                newList.removeAt(currentDragIndex)
+                                                            newList.add(
+                                                                currentDragIndex - 1,
+                                                                movedItem
+                                                            )
                                                             localPhases = newList
                                                             draggedItemIndex = currentDragIndex - 1
                                                             dragOffsetY += itemHeightPx

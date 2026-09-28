@@ -16,6 +16,7 @@ class AndroidNotificationScheduler(
         const val SITTING_REMINDER_REQUEST_CODE = 1
         const val WRITE_HER_AFTER_REQUEST_CODE = 2
         const val PULL_REMINDER_REQUEST_CODE = 3
+        const val DATE_METRONOME_REQUEST_CODE_START = 100
         const val REQUEST_CODE: String = "request-code"
         const val RECURRING_NOTIFICATION_INTERVAL: String = "interval"
         const val NOTIFICATION_TITLE: String = "title"
