@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.ui.output.dialog
 
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
 import android.widget.Toast
@@ -23,6 +24,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -42,14 +44,16 @@ import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
-import com.barryburgle.gameapp.ui.output.card.PingCard
 import com.barryburgle.gameapp.ui.output.getDaysFromNow
 import com.barryburgle.gameapp.ui.output.getLeadAlertColor
 import com.barryburgle.gameapp.ui.output.icon.LeadContactButtonIcon
+import com.barryburgle.gameapp.ui.utilities.HorizontallyPagedCard
 import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.animation.VerticalProgressBarBrush
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.FlowDialog
+import com.barryburgle.gameapp.ui.utilities.getClipData
+import com.barryburgle.gameapp.ui.utilities.getShareableText
 import com.barryburgle.gameapp.ui.utilities.selection.DottedHorizontalPager
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
@@ -127,7 +131,54 @@ fun FlightControlDialog(
                     pagerState = pagerState
                 ) { ping, page ->
                     AnimatedStaggeredItem(index = page - 1) {
-                        PingCard(ping, onEvent)
+                        HorizontallyPagedCard(
+                            title = ping.title,
+                            description = ping.body,
+                            clickableLink = ping.link,
+                            backgroundMediaLocalUrl = ping.pic,
+                            firstActionButtonIcon = Icons.Default.ContentCopy,
+                            onFirstActionButtonClick = {
+                                systemClipboard.setPrimaryClip(
+                                    getClipData(
+                                        context,
+                                        ping.title,
+                                        ping.body,
+                                        ping.link,
+                                        ping.pic
+                                    )
+                                )
+                                Toast.makeText(
+                                    context,
+                                    "Ping copied to clipboard",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            },
+                            onShareActionButtonClick = {
+                                val shareableText = getShareableText(ping.body, ping.link)
+                                val sendIntent = Intent().apply {
+                                    if (!ping.pic.isNullOrBlank()) {
+                                        val imageUri = Uri.parse(ping.pic)
+                                        action = Intent.ACTION_SEND
+                                        putExtra(Intent.EXTRA_STREAM, imageUri)
+                                        if (shareableText.isNotBlank()) {
+                                            putExtra(Intent.EXTRA_TEXT, shareableText)
+                                        }
+                                        type = "image/*"
+                                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                    } else {
+                                        action = Intent.ACTION_SEND
+                                        putExtra(Intent.EXTRA_TEXT, shareableText)
+                                        type = "text/plain"
+                                    }
+                                }
+                                val shareIntent = Intent.createChooser(sendIntent, null)
+                                context.startActivity(shareIntent)
+                            },
+                            onTouchToEditClick = {
+                                onEvent(OutputEvent.EditPing(ping))
+                            }
+                        )
                     }
                 }
                 Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
@@ -246,8 +297,12 @@ fun FlightControlDialog(
                                                 onEvent(OutputEvent.SwitchJustSavedPingsOrSentPings)
                                                 if (newlyChecked) {
                                                     systemClipboard.setPrimaryClip(
-                                                        selectedPing.getClipData(
-                                                            context
+                                                        getClipData(
+                                                            context,
+                                                            selectedPing.title,
+                                                            selectedPing.body,
+                                                            selectedPing.link,
+                                                            selectedPing.pic
                                                         )
                                                     )
                                                     Toast.makeText(

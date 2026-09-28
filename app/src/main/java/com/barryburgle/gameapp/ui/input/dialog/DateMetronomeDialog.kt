@@ -133,7 +133,20 @@ fun DateMetronomeDialog(
                     pagerState = pagerState
                 ) { dateModel, page ->
                     AnimatedStaggeredItem(index = page - 1) {
-                        DateModelCard(dateModel, onEvent)
+                        HorizontallyPagedCard(
+                            title = dateModel.title,
+                            description = dateModel.description,
+                            firstActionButtonIcon = Icons.Default.PlayArrow,
+                            firstActionButtonIconGlowing = true,
+                            onFirstActionButtonClick = {
+                                // TODO: schedule notifications for all the phases
+                            },
+                            onShareActionButtonClick = {
+                                // TODO: copy past model desc + phases properly described
+                            },
+                            onTouchToEditClick = {
+                                onEvent(GameEvent.EditDateModel(dateModel))
+                            })
                     }
                 }
                 Row(

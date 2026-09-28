@@ -39,30 +39,4 @@ open class Ping(
         result = 31 * result + (audio?.hashCode() ?: 0)
         return result
     }
-
-    fun getShareableText() = buildString {
-        if (!body.isNullOrBlank()) {
-            append(body)
-        }
-        if (!link.isNullOrBlank()) {
-            append("\n").append(link)
-        }
-    }
-
-    fun getClipData(context: Context): ClipData {
-        val shareableText = getShareableText()
-        val imageUri =
-            pic?.takeIf { it.isNotBlank() }?.let { Uri.parse(it) }
-        val clipData = if (imageUri != null) {
-            ClipData.newUri(context.contentResolver, title, imageUri)
-                .apply {
-                    if (shareableText.isNotBlank()) {
-                        addItem(ClipData.Item(shareableText))
-                    }
-                }
-        } else {
-            ClipData.newPlainText(title, shareableText)
-        }
-        return clipData
-    }
 }
