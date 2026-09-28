@@ -65,9 +65,8 @@ fun HorizontallyPagedCard(
     val cardShape = RoundedCornerShape(16.dp)
     Box(
         modifier = Modifier
-            .shadow(
-                elevation = 10.dp, shape = MaterialTheme.shapes.large
-            )
+            .padding(8.dp)
+            .shadow(elevation = 12.dp, shape = cardShape, clip = false)
     ) {
         Box(
             modifier = Modifier
