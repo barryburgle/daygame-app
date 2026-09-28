@@ -10,6 +10,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.barryburgle.gameapp.dao.challenge.ChallengeDao
 import com.barryburgle.gameapp.dao.date.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.date.DateDao
+import com.barryburgle.gameapp.dao.date.DateModelDao
+import com.barryburgle.gameapp.dao.date.DatePhaseDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.ping.PingDao
 import com.barryburgle.gameapp.dao.ping.SentPingDao
@@ -20,6 +22,8 @@ import com.barryburgle.gameapp.dao.set.SetDao
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.date.DateModel
+import com.barryburgle.gameapp.model.date.DatePhase
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.model.ping.SentPing
@@ -38,7 +42,9 @@ import com.barryburgle.gameapp.model.setting.Setting
         Challenge::class,
         PinPoint::class,
         Ping::class,
-        SentPing::class
+        SentPing::class,
+        DateModel::class,
+        DatePhase::class
     ],
     version = 9
 )
@@ -55,6 +61,8 @@ abstract class GameAppDatabase : RoomDatabase() {
     abstract val setDao: SetDao
     abstract val challengeDao: ChallengeDao
     abstract val pinPointDao: PinPointDao
+    abstract val dateModelDao: DateModelDao
+    abstract val datePhaseDao: DatePhaseDao
 
     companion object {
         private const val DATABASE_NAME = "game_app_db"
@@ -128,6 +136,12 @@ abstract class GameAppDatabase : RoomDatabase() {
                 )
                 database.execSQL(
                     "CREATE TABLE IF NOT EXISTS `sent_ping` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ping_id` INTEGER NOT NULL, `lead_id` INTEGER NOT NULL, `sent_hour` TEXT NOT NULL, `reaction` TEXT NULL)"
+                )
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `date_model` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NULL, `phases` TEXT NOT NULL)"
+                )
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `date_phase` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `duration` INTEGER NOT NULL, `notification_title` TEXT NOT NULL, `notification_desc` TEXT NOT NULL)"
                 )
             }
         }
