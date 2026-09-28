@@ -58,13 +58,13 @@ fun DateMetronomeDialog(
     val pagerState = rememberPagerState(pageCount = { allDateModels.size })
     val listState = rememberLazyListState()
 
-    val currentSelectedModel by remember {
+    val currentSelectedModel by remember(allDateModels, pagerState.currentPage) {
         derivedStateOf {
             allDateModels.getOrNull(pagerState.currentPage)
         }
     }
 
-    val currentPhases by remember {
+    val currentPhases by remember(allDatePhases, currentSelectedModel) {
         derivedStateOf {
             val phaseIds = currentSelectedModel?.phases ?: emptyList()
             allDatePhases.filter { it.id in phaseIds }.reversed()
@@ -136,11 +136,42 @@ fun DateMetronomeDialog(
                         DateModelCard(dateModel, onEvent)
                     }
                 }
-                Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-                    WavyPlaceholder(
-                        "Edit each one of the date phases in your runnable date models. The Metronome will send you a notification when the next date phase should start!",
-                        Modifier.fillMaxWidth()
-                    )
+                Row(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(0.75f),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        WavyPlaceholder(
+                            "Edit each one of the date phases in your runnable date models. The Metronome will send you a notification when the next date phase should start!",
+                            Modifier.fillMaxWidth()
+                        )
+                    }
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        IconShadowButton(
+                            onClick = {
+                                currentSelectedModel?.let { model ->
+                                    onEvent(
+                                        GameEvent.EditDatePhase(
+                                            null,
+                                            model.id
+                                        )
+                                    )
+                                }
+                            },
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Add date phase"
+                        )
+                    }
                 }
                 Box(
                     modifier = Modifier.fillMaxWidth()
@@ -243,7 +274,16 @@ fun DateMetronomeDialog(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         IconShadowButton(
-                                            onClick = { onEvent(GameEvent.EditDatePhase(datePhase)) },
+                                            onClick = {
+                                                currentSelectedModel?.let { model ->
+                                                    onEvent(
+                                                        GameEvent.EditDatePhase(
+                                                            datePhase,
+                                                            model.id
+                                                        )
+                                                    )
+                                                }
+                                            },
                                             imageVector = Icons.Default.Edit,
                                             contentDescription = "Edit phase"
                                         )
