@@ -292,7 +292,7 @@ fun DateMetronomeDialog(
                                             .padding(vertical = 4.dp),
                                         verticalArrangement = Arrangement.Center
                                     ) {
-                                        LittleBodyText(text = "After ${datePhase.duration} minutes")
+                                        WavyPlaceholder(text = "Lasts ${datePhase.duration} minutes")
                                         MediumTitleText(datePhase.title)
                                         LittleBodyText(datePhase.description)
                                     }
