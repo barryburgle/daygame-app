@@ -392,7 +392,6 @@ fun InputScreen(
         }
         if (state.showDateModelDialog) {
             DateModelEditDialog(
-                dialogTitle = if (state.editDateModel != null) "Edit" else "Add",
                 onEvent = onEvent,
                 dateModel = state.editDateModel
             )
