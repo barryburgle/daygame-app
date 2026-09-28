@@ -74,6 +74,8 @@ class MainActivity : ComponentActivity() {
                         it.setDao,
                         it.challengeDao,
                         it.pinPointDao,
+                        it.dateModelDao,
+                        it.datePhaseDao,
                         it.aggregatedSessionsDao,
                         it.aggregatedDatesDao
                     )
