@@ -122,6 +122,9 @@ fun DatePhaseEditDialog(
                         },
                         onDecrement = {
                             duration--
+                            if (duration <= 1) {
+                                duration = 1
+                            }
                         })
                 }
             }
