@@ -17,8 +17,9 @@ interface DatePhaseDao {
     @Insert(onConflict = REPLACE)
     suspend fun insert(datePhase: DatePhase): Long
 
-    @Delete
-    suspend fun delete(datePhase: DatePhase)
+    // TODO: refactor all delete methods and understand if better to delete by object id or by object
+    @Query("DELETE FROM date_phase WHERE id = :id")
+    suspend fun deleteById(id: Long)
 
     @Query("DELETE FROM date_phase")
     suspend fun deleteAll()
