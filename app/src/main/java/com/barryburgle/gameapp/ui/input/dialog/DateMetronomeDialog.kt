@@ -1,5 +1,6 @@
 package com.barryburgle.gameapp.ui.input.dialog
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -21,7 +22,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayArrow
@@ -41,8 +41,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.barryburgle.gameapp.event.GameEvent
@@ -62,11 +65,13 @@ import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 fun DateMetronomeDialog(
     allDateModels: List<DateModel> = emptyList(),
     allDatePhases: List<DatePhase> = emptyList(),
+    copyDateModelToShareToClipboard: Boolean,
     onEvent: (GameEvent) -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { allDateModels.size })
     val listState = rememberLazyListState()
     val density = LocalDensity.current
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
 
     val localContext = LocalContext.current.applicationContext
 
@@ -159,7 +164,37 @@ fun DateMetronomeDialog(
                                 onEvent(GameEvent.SetIsInOverlayToFalse)
                             },
                             onShareActionButtonClick = {
-                                // TODO: copy past model desc + phases properly described
+                                var dateModelToShare =
+                                    "${dateModel.title} date model:\n${dateModel.description}\n\n"
+                                var datePhasesToShare = ""
+                                for ((index, datePhase) in currentPhases.withIndex()) {
+                                    datePhasesToShare += "${index + 1}. [${datePhase.duration}'] ${datePhase.title}: ${datePhase.description}\n"
+                                }
+                                val textToShare = dateModelToShare + datePhasesToShare
+                                if (copyDateModelToShareToClipboard) {
+                                    clipboardManager.setText(
+                                        AnnotatedString(
+                                            textToShare
+                                        )
+                                    )
+                                    Toast.makeText(
+                                        localContext,
+                                        "${dateModel.title} date model copied",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                val sendIntent: Intent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(
+                                        Intent.EXTRA_TEXT, textToShare
+                                    )
+                                    type = "text/plain"
+                                }
+                                val shareIntent = Intent.createChooser(
+                                    sendIntent, "Share ${dateModel.title} date model"
+                                )
+                                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                localContext.startActivity(shareIntent)
                             },
                             onTouchToEditClick = {
                                 onEvent(GameEvent.EditDateModel(dateModel))

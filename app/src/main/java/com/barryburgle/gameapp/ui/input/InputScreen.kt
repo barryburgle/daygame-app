@@ -3,7 +3,6 @@ package com.barryburgle.gameapp.ui.input
 import android.content.Intent
 import android.os.Build
 import android.widget.Toast
-import com.barryburgle.gameapp.R
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.LinearEasing
@@ -75,6 +74,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.R
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
@@ -91,12 +91,12 @@ import com.barryburgle.gameapp.ui.input.card.EventCard
 import com.barryburgle.gameapp.ui.input.card.SummaryCard
 import com.barryburgle.gameapp.ui.input.dialog.ChallengeDialog
 import com.barryburgle.gameapp.ui.input.dialog.DateDialog
-import com.barryburgle.gameapp.ui.input.dialog.SessionDialog
-import com.barryburgle.gameapp.ui.input.dialog.SetDialog
-import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.input.dialog.DateMetronomeDialog
 import com.barryburgle.gameapp.ui.input.dialog.DateModelEditDialog
 import com.barryburgle.gameapp.ui.input.dialog.DatePhaseEditDialog
+import com.barryburgle.gameapp.ui.input.dialog.SessionDialog
+import com.barryburgle.gameapp.ui.input.dialog.SetDialog
+import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
@@ -387,6 +387,7 @@ fun InputScreen(
             DateMetronomeDialog(
                 allDateModels = state.allDateModels,
                 allDatePhases = state.allDatePhases,
+                copyDateModelToShareToClipboard = state.copyReportOnClipboard,
                 onEvent = onEvent
             )
         }
@@ -397,7 +398,7 @@ fun InputScreen(
                 datePhases = state.allDatePhases
             )
         }
-        if (state.showDatePhaseDialog && state.dateModelIdToAddDatePhase!=0L) {
+        if (state.showDatePhaseDialog && state.dateModelIdToAddDatePhase != 0L) {
             DatePhaseEditDialog(
                 dialogTitle = if (state.editDatePhase != null) "Edit" else "Add",
                 onEvent = onEvent,
