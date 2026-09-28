@@ -393,7 +393,8 @@ fun InputScreen(
         if (state.showDateModelDialog) {
             DateModelEditDialog(
                 onEvent = onEvent,
-                dateModel = state.editDateModel
+                dateModel = state.editDateModel,
+                datePhases = state.allDatePhases
             )
         }
         if (state.showDatePhaseDialog && state.dateModelIdToAddDatePhase!=0L) {
