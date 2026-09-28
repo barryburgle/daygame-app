@@ -47,12 +47,11 @@ import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.service.set.SetService
 import com.barryburgle.gameapp.ui.CombineEighteen
-import com.barryburgle.gameapp.ui.CombineSeventeen
 import com.barryburgle.gameapp.ui.CombineFive
 import com.barryburgle.gameapp.ui.CombineNine
 import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.CombineSeven
-import com.barryburgle.gameapp.ui.CombineSixteen
+import com.barryburgle.gameapp.ui.CombineSeventeen
 import com.barryburgle.gameapp.ui.input.dialog.InputDialogConstant
 import com.barryburgle.gameapp.ui.input.state.DialogSettingsState
 import com.barryburgle.gameapp.ui.input.state.ExportSettingsState
@@ -1971,12 +1970,18 @@ class InputViewModel(
                     var totalProgressiveDuration = 0L
                     for (index in 0 until event.datePhases.size - 1) {
                         var time: LocalDateTime? = null
+                        val nextPhaseHint =
+                            if (index + 1 <= event.datePhases.size - 1) "\nNext: " + event.datePhases.get(
+                                index + 1
+                            ).title else ""
                         if (index == 0) {
                             notificationScheduler.schedule(
                                 AndroidNotificationScheduler.DATE_METRONOME_REQUEST_CODE_START + index,
                                 LocalDateTime.now().plusSeconds(2),
                                 event.datePhases.get(index).title,
-                                event.datePhases.get(index).description
+                                "Duration: " + event.datePhases.get(index).duration + "\n" + event.datePhases.get(
+                                    index
+                                ).description + nextPhaseHint
                             )
                         }
                         totalProgressiveDuration += event.datePhases.get(index).duration
@@ -1985,7 +1990,9 @@ class InputViewModel(
                             AndroidNotificationScheduler.DATE_METRONOME_REQUEST_CODE_START + index + 1,
                             time,
                             event.datePhases.get(index + 1).title,
-                            event.datePhases.get(index + 1).description
+                            "Duration: " + event.datePhases.get(index + 1).duration + "\n" + event.datePhases.get(
+                                index + 1
+                            ).description + nextPhaseHint
                         )
                     }
                 }
