@@ -2,6 +2,8 @@ package com.barryburgle.gameapp.event
 
 import com.barryburgle.gameapp.model.challenge.Challenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.date.DateModel
+import com.barryburgle.gameapp.model.date.DatePhase
 import com.barryburgle.gameapp.model.enums.ChallengeSortType
 import com.barryburgle.gameapp.model.enums.DateSortType
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
@@ -160,9 +162,12 @@ sealed interface GameEvent : GenericEvent {
     object HideDateModelDialog: GameEvent
     object ShowDatePhaseDialog: GameEvent
     object HideDatePhaseDialog: GameEvent
-    data class EditDateModel(val dateModel: DateModel) : GameEvent
+    data class EditDateModel(val dateModel: DateModel?) : GameEvent
     data class DeleteDateModel(
         val dateModelId: Long
     ) : GameEvent
     data class SaveDateModel(val dateModel: DateModel) : GameEvent
+    data class EditDatePhase(val datePhase: DatePhase?) : GameEvent
+    data class SaveDatePhase(val datePhase: DatePhase) : GameEvent
+    data class DeleteDatePhase(val datePhaseId: Long) : GameEvent
 }

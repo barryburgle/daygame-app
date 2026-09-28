@@ -12,6 +12,8 @@ import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.challenge.ChallengeDao
 import com.barryburgle.gameapp.dao.date.AggregatedDatesDao
 import com.barryburgle.gameapp.dao.date.DateDao
+import com.barryburgle.gameapp.dao.date.DateModelDao
+import com.barryburgle.gameapp.dao.date.DatePhaseDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.pinpoint.PinPointDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
@@ -90,6 +92,8 @@ class InputViewModel(
     private val setDao: SetDao,
     private val challengeDao: ChallengeDao,
     private val pinPointDao: PinPointDao,
+    private val dateModelDao: DateModelDao,
+    private val datePhaseDao: DatePhaseDao,
     private val aggregatedSessionsDao: AggregatedSessionsDao,
     private val aggregatedDatesDao: AggregatedDatesDao,
 ) : ViewModel() {
@@ -1919,6 +1923,27 @@ class InputViewModel(
             is GameEvent.SaveDateModel -> {
                 viewModelScope.launch {
                     dateModelDao.insert(event.dateModel)
+                }
+            }
+
+            is GameEvent.EditDatePhase -> {
+                _state.update {
+                    it.copy(
+                        editDatePhase = event.datePhase,
+                        showDatePhaseDialog = true
+                    )
+                }
+            }
+
+            is GameEvent.SaveDatePhase -> {
+                viewModelScope.launch {
+                    datePhaseDao.insert(event.datePhase)
+                }
+            }
+
+            is GameEvent.DeleteDatePhase -> {
+                viewModelScope.launch {
+                    datePhaseDao.deleteById(event.datePhaseId)
                 }
             }
         }
