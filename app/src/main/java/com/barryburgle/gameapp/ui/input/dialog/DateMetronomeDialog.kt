@@ -5,6 +5,7 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -210,12 +211,12 @@ fun DateMetronomeDialog(
                             AnimatedStaggeredItem(index = relativeIndex) {
                                 Row(
                                     modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(IntrinsicSize.Max)
                                         .zIndex(if (isDragged) 1f else 0f)
                                         .graphicsLayer {
                                             translationY = if (isDragged) dragOffsetY else 0f
                                         }
-                                        .fillMaxWidth()
-                                        .height(64.dp)
                                         .padding(horizontal = 6.dp, vertical = 2.dp)
                                         .background(
                                             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
@@ -224,7 +225,6 @@ fun DateMetronomeDialog(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    // Drag handle section
                                     Box(
                                         modifier = Modifier
                                             .padding(start = 8.dp, end = 4.dp)
