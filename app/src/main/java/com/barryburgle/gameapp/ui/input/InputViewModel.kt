@@ -1939,14 +1939,18 @@ class InputViewModel(
                 _state.update {
                     it.copy(
                         editDatePhase = event.datePhase,
-                        showDatePhaseDialog = true
+                        showDatePhaseDialog = true,
+                        dateModelIdToAddDatePhase = event.dateModelId
                     )
                 }
             }
 
             is GameEvent.SaveDatePhase -> {
                 viewModelScope.launch {
-                    datePhaseDao.insert(event.datePhase)
+                    val datePhaseId = datePhaseDao.insert(event.datePhase)
+                    if (event.dateModelId != null) {
+                        dateModelDao.addDatePhaseToModel(event.dateModelId, datePhaseId)
+                    }
                 }
             }
 

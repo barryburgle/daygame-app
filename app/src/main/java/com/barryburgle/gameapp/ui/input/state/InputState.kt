@@ -148,6 +148,7 @@ data class InputState(
     val showDateMetronomeDialog: Boolean = false,
     val showDateModelDialog: Boolean = false,
     val showDatePhaseDialog: Boolean = false,
+    val dateModelIdToAddDatePhase: Long = 0L,
     override var allDateModels: List<DateModel> = emptyList(),
     override var allDatePhases: List<DatePhase> = emptyList(),
     var editDateModel: DateModel? = null,
