@@ -172,5 +172,4 @@ data class InputState(
     lastBackup,
     justSaved
 )
-// TODO: pings should be backed up on each pings edit
-// TODO: settings should backed up on each settings edit
+// TODO: settings should backed up on each settings edit only
