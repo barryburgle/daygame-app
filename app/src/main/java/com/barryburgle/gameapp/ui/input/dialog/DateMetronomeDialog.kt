@@ -89,7 +89,7 @@ fun DateMetronomeDialog(
     LaunchedEffect(currentPhases) {
         localPhases = currentPhases
     }
-    FlowDialog(modifier = Modifier.fillMaxHeight(0.6f), onDismissRequest = {
+    FlowDialog(modifier = Modifier.fillMaxHeight(0.75f), onDismissRequest = {
         onEvent(GameEvent.HideDateMetronomeDialog)
         onEvent(GameEvent.SetIsInOverlayToFalse)
     }, onConfirm = {
