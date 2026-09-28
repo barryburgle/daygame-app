@@ -143,6 +143,7 @@ data class InputState(
     var recordingsFolder: String = SettingDao.DEFAULT_RECORDINGS_FOLDER,
     val recordingState: RecordingState = RecordingState(),
     val recordings: List<String> = emptyList(),
+    val showDateMetronomeDialog: Boolean = false,
 ) : ExportState(
     sessionSortType,
     exportSessionsFileName,

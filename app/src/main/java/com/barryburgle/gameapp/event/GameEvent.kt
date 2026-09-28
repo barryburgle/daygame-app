@@ -154,4 +154,6 @@ sealed interface GameEvent : GenericEvent {
     data class EditChallenge(val challenge: Challenge) : GameEvent
 
     object SwitchSaveLeadToLiveSession : GameEvent
+    object ShowDateMetronomeDialog: GameEvent
+    object HideDateMetronomeDialog: GameEvent
 }

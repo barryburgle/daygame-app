@@ -1852,6 +1852,23 @@ class InputViewModel(
                     )
                 }
             }
+
+            is GameEvent.ShowDateMetronomeDialog -> {
+                _state.update {
+                    it.copy(
+                        showDateMetronomeDialog = true
+                    )
+                }
+            }
+
+            is GameEvent.HideDateMetronomeDialog -> {
+                _state.update {
+                    it.copy(
+                        showDateMetronomeDialog = false
+                    )
+                }
+            }
+
         }
     }
 
