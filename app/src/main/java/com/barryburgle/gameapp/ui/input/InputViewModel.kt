@@ -46,6 +46,7 @@ import com.barryburgle.gameapp.service.challenge.ChallengeService
 import com.barryburgle.gameapp.service.date.DateService
 import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.service.set.SetService
+import com.barryburgle.gameapp.ui.CombineEighteen
 import com.barryburgle.gameapp.ui.CombineSeventeen
 import com.barryburgle.gameapp.ui.CombineFive
 import com.barryburgle.gameapp.ui.CombineNine
@@ -176,6 +177,8 @@ class InputViewModel(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _allPinPoints = pinPointDao.getAll()
+    private val _allDateModels = dateModelDao.getAll()
+    private val _allDatePhases = datePhaseDao.getAll()
     private val _allSettings = settingDao.getAll()
     private val _notificationTime = settingDao.getNotificationTime()
     private val _exportSessionsFileName = settingDao.getExportSessionsFilename()
@@ -328,7 +331,7 @@ class InputViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val _mostPopularLeadsNationalities = leadDao.getNationalityHistogram()
     private val _state = MutableStateFlow(InputState())
-    val _exportSettings = CombineSixteen(
+    val _exportSettings = CombineEighteen(
         _allSessions,
         _allLeads,
         _allDates,
@@ -344,8 +347,10 @@ class InputViewModel(
         _exportFolder,
         _backupFolder,
         _backupActive,
-        _lastBackup
-    ) { allSessions, allLeads, allDates, allSets, allChallenges, allPinPoints, allSettings, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportChallengesFileName, exportFolder, backupFolder, backupActive, lastBackup ->
+        _lastBackup,
+        _allDateModels,
+        _allDatePhases
+    ) { allSessions, allLeads, allDates, allSets, allChallenges, allPinPoints, allSettings, exportSessionsFileName, exportLeadsFileName, exportDatesFileName, exportSetsFileName, exportChallengesFileName, exportFolder, backupFolder, backupActive, lastBackup, allDateModels, allDatePhases ->
         ExportSettingsState(
             allSessions = allSessions,
             allLeads = allLeads,
@@ -353,6 +358,8 @@ class InputViewModel(
             allSets = allSets,
             allChallenges = allChallenges,
             allPinPoints = allPinPoints,
+            allDateModels = allDateModels,
+            allDatePhases = allDatePhases,
             allSettings = allSettings,
             exportSessionsFileName = exportSessionsFileName,
             exportLeadsFileName = exportLeadsFileName,
@@ -546,7 +553,9 @@ class InputViewModel(
                 triggerPullOClockWithRecordingsEnable = dialogSettings.triggerPullOClockWithRecordingsEnable,
                 stopRecordingOnNewEntryEnable = dialogSettings.stopRecordingOnNewEntryEnable
             ),
-            recordings = recordings
+            recordings = recordings,
+            allDateModels = exportSettings.allDateModels,
+            allDatePhases = exportSettings.allDatePhases,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InputState())
 
