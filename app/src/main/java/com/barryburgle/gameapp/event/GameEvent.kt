@@ -156,4 +156,13 @@ sealed interface GameEvent : GenericEvent {
     object SwitchSaveLeadToLiveSession : GameEvent
     object ShowDateMetronomeDialog: GameEvent
     object HideDateMetronomeDialog: GameEvent
+    object ShowDateModelDialog: GameEvent
+    object HideDateModelDialog: GameEvent
+    object ShowDatePhaseDialog: GameEvent
+    object HideDatePhaseDialog: GameEvent
+    data class EditDateModel(val dateModel: DateModel) : GameEvent
+    data class DeleteDateModel(
+        val dateModelId: Long
+    ) : GameEvent
+    data class SaveDateModel(val dateModel: DateModel) : GameEvent
 }

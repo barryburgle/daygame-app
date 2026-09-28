@@ -1869,6 +1869,58 @@ class InputViewModel(
                 }
             }
 
+            is GameEvent.ShowDateModelDialog -> {
+                _state.update {
+                    it.copy(
+                        showDateModelDialog = true
+                    )
+                }
+            }
+
+            is GameEvent.HideDateModelDialog -> {
+                _state.update {
+                    it.copy(
+                        showDateModelDialog = false
+                    )
+                }
+            }
+
+            is GameEvent.ShowDatePhaseDialog -> {
+                _state.update {
+                    it.copy(
+                        showDatePhaseDialog = true
+                    )
+                }
+            }
+
+            is GameEvent.HideDatePhaseDialog -> {
+                _state.update {
+                    it.copy(
+                        showDatePhaseDialog = false
+                    )
+                }
+            }
+
+            is GameEvent.EditDateModel -> {
+                _state.update {
+                    it.copy(
+                        editDateModel = event.dateModel,
+                        showDateModelDialog = true
+                    )
+                }
+            }
+
+            is GameEvent.DeleteDateModel -> {
+                viewModelScope.launch {
+                    dateModelDao.deleteById(event.dateModelId)
+                }
+            }
+
+            is GameEvent.SaveDateModel -> {
+                viewModelScope.launch {
+                    dateModelDao.insert(event.dateModel)
+                }
+            }
         }
     }
 

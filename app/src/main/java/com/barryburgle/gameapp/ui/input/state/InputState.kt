@@ -144,6 +144,12 @@ data class InputState(
     val recordingState: RecordingState = RecordingState(),
     val recordings: List<String> = emptyList(),
     val showDateMetronomeDialog: Boolean = false,
+    val showDateModelDialog: Boolean = false,
+    val showDatePhaseDialog: Boolean = false,
+    override var allDateModels: List<DateModel> = emptyList(),
+    override var allDatePhases: List<DatePhase> = emptyList(),
+    var editDateModel: DateModel? = null,
+    var editDatePhase: DatePhase? = null,
 ) : ExportState(
     sessionSortType,
     exportSessionsFileName,
