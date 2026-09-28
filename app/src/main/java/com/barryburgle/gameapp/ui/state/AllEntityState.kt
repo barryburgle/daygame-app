@@ -2,6 +2,8 @@ package com.barryburgle.gameapp.ui.state
 
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.date.DateModel
+import com.barryburgle.gameapp.model.date.DatePhase
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.model.ping.SentPing
@@ -19,5 +21,7 @@ open class AllEntityState(
     open var allPinPoints: List<PinPoint> = emptyList(),
     open var allPings: List<Ping> = emptyList(),
     open var allSentPings: List<SentPing> = emptyList(),
+    open var allDateModels: List<DateModel> = emptyList(),
+    open var allDatePhases: List<DatePhase> = emptyList(),
     open var allSettings: List<Setting> = emptyList()
 )

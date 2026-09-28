@@ -2,6 +2,8 @@ package com.barryburgle.gameapp.ui.state
 
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.date.DateModel
+import com.barryburgle.gameapp.model.date.DatePhase
 import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.enums.FieldEnum
 import com.barryburgle.gameapp.model.lead.Lead
@@ -31,6 +33,8 @@ open class ExportState(
     open var backupActive: Boolean = true,
     open var lastBackup: Int = 3,
     open var justSaved: Boolean = false,
+    override var allDateModels: List<DateModel> = emptyList(),
+    override var allDatePhases: List<DatePhase> = emptyList(),
     open var pinPointInteractions: Boolean = true,
     open var generateiDate: Boolean = true,
     open var liveSessionNotificationEnabled: Boolean = true,
@@ -42,10 +46,17 @@ open class ExportState(
     open var pullOClockReminderInterval: Int = 7,
     open var audioRecordingQuality: String = AudioRecordingQualityEnum.getDefault().description,
     open var triggerPullOClockWithRecordingsEnable: Boolean = false,
-    open var stopRecordingOnNewEntryEnable: Boolean = false
+    open var stopRecordingOnNewEntryEnable: Boolean = false,
 ) : AllEntityState(
     allSessions,
     allLeads,
     allDates,
     allSets,
+    allChallenges,
+    allPinPoints,
+    allPings = emptyList(), // TODO: is passing an empty list a problem here?
+    allSentPings = emptyList(), // TODO: is passing an empty list a problem here?
+    allDateModels = allDateModels,
+    allDatePhases = allDatePhases
+
 )

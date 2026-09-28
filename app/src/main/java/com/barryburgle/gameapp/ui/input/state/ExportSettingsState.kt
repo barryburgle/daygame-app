@@ -2,6 +2,8 @@ package com.barryburgle.gameapp.ui.input.state
 
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.date.DateModel
+import com.barryburgle.gameapp.model.date.DatePhase
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
@@ -16,6 +18,8 @@ data class ExportSettingsState(
     var allSets: List<SingleSet> = emptyList(),
     var allChallenges: List<AchievedChallenge> = emptyList(),
     var allPinPoints: List<PinPoint> = emptyList(),
+    var allDateModels: List<DateModel> = emptyList(),
+    var allDatePhases: List<DatePhase> = emptyList(),
     var allSettings: List<Setting> = emptyList(),
     var exportSessionsFileName: String = "",
     var exportLeadsFileName: String = "",
