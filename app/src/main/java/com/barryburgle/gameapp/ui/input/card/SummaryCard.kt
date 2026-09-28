@@ -209,7 +209,7 @@ fun SummaryCard(
                                             modifier = Modifier.height(25.dp)
                                         )
                                         Spacer(modifier = Modifier.width(5.dp))
-                                        LargeTitleText("Summary")
+                                        LargeTitleText("Summary", true)
                                     }
                                     Row(
                                         modifier = Modifier
