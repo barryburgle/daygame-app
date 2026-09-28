@@ -235,6 +235,8 @@ fun DateModelEditDialog(
                             )
                     )
                 }
+            } else {
+                Spacer(modifier = Modifier.height(60.dp))
             }
         }
     }
