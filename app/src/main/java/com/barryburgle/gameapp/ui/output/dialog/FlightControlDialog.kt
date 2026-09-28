@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -94,8 +95,7 @@ fun FlightControlDialog(
                     WavyPlaceholder("Create, send and track pings")
                 }
                 Column(
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.Center
+                    horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.Center
                 ) {
                     IconShadowButton(
                         onClick = { onEvent(OutputEvent.ShowPingEditDialog) },
@@ -104,8 +104,7 @@ fun FlightControlDialog(
                     )
                 }
             }
-        }
-    ) { contentPadding ->
+        }) { contentPadding ->
         if (allPings.isEmpty()) {
             Column(
                 modifier = Modifier
@@ -119,14 +118,14 @@ fun FlightControlDialog(
             }
         } else {
             Column(
-                modifier = Modifier
-                    .fillMaxHeight()
+                modifier = Modifier.fillMaxHeight()
             ) {
                 Spacer(modifier = Modifier.height(75.dp))
                 DottedHorizontalPager(
                     items = allPings,
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .clipToBounds(),
                     pageSpacing = 4.dp,
                     pagerState = pagerState
                 ) { ping, page ->
@@ -140,19 +139,12 @@ fun FlightControlDialog(
                             onFirstActionButtonClick = {
                                 systemClipboard.setPrimaryClip(
                                     getClipData(
-                                        context,
-                                        ping.title,
-                                        ping.body,
-                                        ping.link,
-                                        ping.pic
+                                        context, ping.title, ping.body, ping.link, ping.pic
                                     )
                                 )
                                 Toast.makeText(
-                                    context,
-                                    "Ping copied to clipboard",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                                    context, "Ping copied to clipboard", Toast.LENGTH_SHORT
+                                ).show()
                             },
                             onShareActionButtonClick = {
                                 val shareableText = getShareableText(ping.body, ping.link)
@@ -177,8 +169,7 @@ fun FlightControlDialog(
                             },
                             onTouchToEditClick = {
                                 onEvent(OutputEvent.EditPing(ping))
-                            }
-                        )
+                            })
                     }
                 }
                 Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
@@ -194,12 +185,10 @@ fun FlightControlDialog(
                         state = listState,
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(4.dp),
-                        contentPadding = PaddingValues(top = 24.dp) // Extra padding so top item isn't permanently obscured
+                        contentPadding = PaddingValues(top = 24.dp)
                     ) {
                         items(
-                            count = allLeads.size,
-                            key = { index -> allLeads[index].id }
-                        ) { index ->
+                            count = allLeads.size, key = { index -> allLeads[index].id }) { index ->
                             val lead = allLeads[index]
                             val relativeIndex =
                                 (index - listState.firstVisibleItemIndex).coerceAtLeast(0)
@@ -221,9 +210,7 @@ fun FlightControlDialog(
                                     var foundSentPing: SentPing? = null
                                     if (selectedPingId != null) {
                                         foundSentPing = getSentPingForLead(
-                                            lead.id,
-                                            selectedPingId,
-                                            sentPingsByLeadIdMap
+                                            lead.id, selectedPingId, sentPingsByLeadIdMap
                                         )
                                     }
                                     Box(
@@ -233,10 +220,8 @@ fun FlightControlDialog(
                                             .background(
                                                 brush = VerticalProgressBarBrush(
                                                     getLeadAlertColor(lead)
-                                                ),
-                                                shape = RoundedCornerShape(
-                                                    topStart = 10.dp,
-                                                    bottomStart = 10.dp
+                                                ), shape = RoundedCornerShape(
+                                                    topStart = 10.dp, bottomStart = 10.dp
                                                 )
                                             )
                                     )
@@ -289,9 +274,7 @@ fun FlightControlDialog(
                                             onCheckedChange = { newlyChecked ->
                                                 onEvent(
                                                     OutputEvent.WriteSentPing(
-                                                        lead.id,
-                                                        selectedPingId,
-                                                        newlyChecked
+                                                        lead.id, selectedPingId, newlyChecked
                                                     )
                                                 )
                                                 onEvent(OutputEvent.SwitchJustSavedPingsOrSentPings)
@@ -309,8 +292,7 @@ fun FlightControlDialog(
                                                         context,
                                                         "Ping copied to clipboard",
                                                         Toast.LENGTH_SHORT
-                                                    )
-                                                        .show()
+                                                    ).show()
                                                     if (lead.contact == ContactTypeEnum.NUMBER.getField() && lead.contactLookupKey != null) {
                                                         try {
                                                             val uri = Uri.withAppendedPath(
@@ -368,9 +350,7 @@ fun FlightControlDialog(
 
 
 fun getSentPingForLead(
-    leadId: Long,
-    pingId: Long,
-    sentPingsByLeadIdMap: Map<Long, List<SentPing>>
+    leadId: Long, pingId: Long, sentPingsByLeadIdMap: Map<Long, List<SentPing>>
 ): SentPing? {
     val leadPings: List<SentPing> = sentPingsByLeadIdMap[leadId] ?: return null
     return leadPings.find { it.pingId == pingId }

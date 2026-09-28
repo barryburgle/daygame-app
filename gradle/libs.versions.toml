@@ -26,6 +26,8 @@ retrofit2 = "3.0.0"
 room = "2.8.4"
 ui = "1.10.6"
 media = "1.7.0"
+media3-exoplayer = "1.3.1"
+media3-ui = "1.3.1"
 uiToolingPreview = "1.11.4"
 uiTooling = "1.11.4"
 
@@ -53,6 +55,8 @@ material-icons-extended = { group = "androidx.compose.material", name = "materia
 material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 material3-window-size-class1 = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "material3" }
 media = { group = "androidx.media", name = "media", version.ref = "media" }
+media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3-exoplayer" }
+media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3-ui" }
 mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }

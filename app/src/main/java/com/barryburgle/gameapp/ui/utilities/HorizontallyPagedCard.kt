@@ -1,10 +1,10 @@
 package com.barryburgle.gameapp.ui.utilities
 
 import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.view.TextureView
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,21 +20,27 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 import coil.compose.AsyncImage
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
@@ -74,14 +80,24 @@ fun HorizontallyPagedCard(
                 }
         ) {
             if (!backgroundMediaLocalUrl.isNullOrBlank()) {
-                // TODO: support video linking and playback on the card background
                 // TODO: support ig link -> cached thumbnail in card background (saved in a cache folder)
-                AsyncImage(
-                    model = backgroundMediaLocalUrl,
-                    contentDescription = "Ping Pic",
-                    modifier = Modifier.matchParentSize(),
-                    contentScale = ContentScale.Crop
-                )
+                if (isVideoUrl(backgroundMediaLocalUrl)) {
+                    CardVideoBackground(
+                        videoUrl = backgroundMediaLocalUrl,
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clip(cardShape)
+                    )
+                } else {
+                    AsyncImage(
+                        model = backgroundMediaLocalUrl,
+                        contentDescription = "Ping Pic",
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clip(cardShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
             Box(
                 modifier = Modifier
@@ -192,6 +208,44 @@ fun HorizontallyPagedCard(
 }
 
 @Composable
+private fun CardVideoBackground(
+    videoUrl: String,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val exoPlayer = remember(context, videoUrl) {
+        ExoPlayer.Builder(context).build().apply {
+            setMediaItem(MediaItem.fromUri(videoUrl))
+            repeatMode = Player.REPEAT_MODE_ALL
+            volume = 0f
+            prepare()
+            playWhenReady = true
+        }
+    }
+
+    DisposableEffect(exoPlayer) {
+        onDispose {
+            exoPlayer.release()
+        }
+    }
+
+    AndroidView(
+        factory = { ctx ->
+            TextureView(ctx).apply {
+                exoPlayer.setVideoTextureView(this)
+            }
+        },
+        modifier = modifier.clipToBounds()
+    )
+}
+
+private fun isVideoUrl(url: String): Boolean {
+    val videoExtensions = listOf(".mp4", ".mkv", ".webm", ".avi", ".mov", ".3gp", ".m4v")
+    val lower = url.lowercase()
+    return videoExtensions.any { lower.contains(it) } || lower.contains("video")
+}
+
+@Composable
 fun PillShapedTranslucent(
     content: @Composable () -> Unit
 ) {
@@ -219,7 +273,6 @@ fun getShareableText(
         append(clickableLink)
     }
 }
-
 
 fun getClipData(
     context: Context,

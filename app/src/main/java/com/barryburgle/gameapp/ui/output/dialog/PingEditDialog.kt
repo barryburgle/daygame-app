@@ -69,8 +69,8 @@ fun PingEditDialog(
     var link by remember(ping) { mutableStateOf(ping?.link ?: "") }
     var picUri by remember(ping) { mutableStateOf(ping?.pic?.let { Uri.parse(it) }) }
 
-    val imagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
+    val mediaPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
         uri?.let {
             try {
@@ -166,17 +166,17 @@ fun PingEditDialog(
                             imageVector = Icons.Default.Delete,
                             color = MaterialTheme.colorScheme.surfaceVariant,
                             iconColor = MaterialTheme.colorScheme.onErrorContainer,
-                            contentDescription = "Delete Ping Pic"
+                            contentDescription = "Delete Ping Media"
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                     }
                     ToggleIcon(
                         flag = picUri != null, icon = R.drawable.pic, dotCondition = picUri != null
                     ) {
-                        imagePickerLauncher.launch("image/*")
+                        mediaPickerLauncher.launch(arrayOf("image/*", "video/*"))
                     }
                     Spacer(modifier = Modifier.width(8.dp))
-                    LittleBodyText("Tap on the pic icon to open and select the pic for the ping. No pic is stored in this app")
+                    LittleBodyText("Tap on the pic icon to select an image or video for the ping. No media is stored in this app")
                 }
             }
         },
