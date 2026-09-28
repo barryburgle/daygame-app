@@ -70,7 +70,7 @@ fun BackupCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        LargeTitleText(cardTitle)
+                        LargeTitleText(cardTitle, true)
                         IconShadowButton(
                             onClick = {
                                 coroutineScope.launch {

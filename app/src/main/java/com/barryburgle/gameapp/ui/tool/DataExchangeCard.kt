@@ -96,7 +96,7 @@ fun DataExchangeCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        LargeTitleText(cardTitle)
+                        LargeTitleText(cardTitle, true)
                         IconShadowButton(
                             onClick = {
                                 if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {

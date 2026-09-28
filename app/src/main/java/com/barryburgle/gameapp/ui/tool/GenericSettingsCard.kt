@@ -48,7 +48,7 @@ fun GenericSettingsCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        LargeTitleText(title)
+                        LargeTitleText(title, true)
                     }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,

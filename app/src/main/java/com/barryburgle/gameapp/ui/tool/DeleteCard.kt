@@ -55,7 +55,7 @@ fun DeleteCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        LargeTitleText(cardTitle)
+                        LargeTitleText(cardTitle, true)
                         IconShadowButton(
                             onClick = {
                                 onEvent(ToolEvent.SwitchIsCleaning)
