@@ -96,6 +96,7 @@ import com.barryburgle.gameapp.ui.input.dialog.SetDialog
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.input.dialog.DateMetronomeDialog
 import com.barryburgle.gameapp.ui.input.dialog.DateModelEditDialog
+import com.barryburgle.gameapp.ui.input.dialog.DatePhaseEditDialog
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
@@ -387,6 +388,21 @@ fun InputScreen(
                 allDateModels = state.allDateModels,
                 allDatePhases = state.allDatePhases,
                 onEvent = onEvent
+            )
+        }
+        if (state.showDateModelDialog) {
+            DateModelEditDialog(
+                dialogTitle = if (state.editDateModel != null) "Edit" else "Add",
+                onEvent = onEvent,
+                dateModel = state.editDateModel
+            )
+        }
+        if (state.showDatePhaseDialog && state.dateModelIdToAddDatePhase!=0L) {
+            DatePhaseEditDialog(
+                dialogTitle = if (state.editDatePhase != null) "Edit" else "Add",
+                onEvent = onEvent,
+                datePhase = state.editDatePhase,
+                dateModelId = state.dateModelIdToAddDatePhase
             )
         }
         LaunchedEffect(key1 = state.justSaved, key2 = state.backupActive) {
