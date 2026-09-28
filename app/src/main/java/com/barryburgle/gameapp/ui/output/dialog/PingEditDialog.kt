@@ -66,8 +66,8 @@ fun PingEditDialog(
 
     var title by remember(ping) { mutableStateOf(ping?.title ?: "") }
     var body by remember(ping) { mutableStateOf(ping?.body ?: "") }
-    var link by remember(ping) { mutableStateOf(ping?.link ?: "") }
-    var picUri by remember(ping) { mutableStateOf(ping?.pic?.let { Uri.parse(it) }) }
+    var webUrl by remember(ping) { mutableStateOf(ping?.webUrl ?: "") }
+    var localMediaUri by remember(ping) { mutableStateOf(ping?.localMediaUri?.let { Uri.parse(it) }) }
 
     val mediaPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -81,7 +81,7 @@ fun PingEditDialog(
                 e.printStackTrace()
             }
         }
-        picUri = uri
+        localMediaUri = uri
     }
 
     AlertDialog(
@@ -126,10 +126,10 @@ fun PingEditDialog(
                     body = it
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (link.isNotEmpty()) {
+                    if (webUrl.isNotEmpty()) {
                         IconShadowButton(
                             onClick = {
-                                link = ""
+                                webUrl = ""
                             },
                             imageVector = Icons.Default.Delete,
                             color = MaterialTheme.colorScheme.surfaceVariant,
@@ -139,15 +139,15 @@ fun PingEditDialog(
                         Spacer(modifier = Modifier.width(8.dp))
                     }
                     ToggleIcon(
-                        flag = link.isNotBlank(),
+                        flag = webUrl.isNotBlank(),
                         icon = R.drawable.link,
-                        dotCondition = link.startsWith("http")
+                        dotCondition = webUrl.startsWith("http")
                     ) {
                         val textFromClipboard = clipboardManager.getText()
                         if (textFromClipboard != null) {
                             val acquiredLink: String = textFromClipboard.toString()
                             if (acquiredLink.startsWith("http")) {
-                                link = acquiredLink
+                                webUrl = acquiredLink
                                 Toast.makeText(
                                     localContext, "Ping URL copied", Toast.LENGTH_LONG
                                 ).show()
@@ -155,13 +155,13 @@ fun PingEditDialog(
                         }
                     }
                     Spacer(modifier = Modifier.width(8.dp))
-                    LittleBodyText("Tap on the link icon to copy the ping link from your clipboard")
+                    LittleBodyText("Tap on the webUrl icon to copy the ping webUrl from your clipboard")
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (picUri != null) {
+                    if (localMediaUri != null) {
                         IconShadowButton(
                             onClick = {
-                                picUri = null
+                                localMediaUri = null
                             },
                             imageVector = Icons.Default.Delete,
                             color = MaterialTheme.colorScheme.surfaceVariant,
@@ -171,7 +171,9 @@ fun PingEditDialog(
                         Spacer(modifier = Modifier.width(8.dp))
                     }
                     ToggleIcon(
-                        flag = picUri != null, icon = R.drawable.pic, dotCondition = picUri != null
+                        flag = localMediaUri != null,
+                        icon = R.drawable.pic,
+                        dotCondition = localMediaUri != null
                     ) {
                         mediaPickerLauncher.launch(arrayOf("image/*", "video/*"))
                     }
@@ -188,8 +190,8 @@ fun PingEditDialog(
                     val pingToSave = Ping(
                         title = title,
                         body = body.ifBlank { null },
-                        link = link.ifBlank { null },
-                        pic = if (picUri == null) null else picUri?.toString()
+                        webUrl = webUrl.ifBlank { null },
+                        localMediaUri = if (localMediaUri == null) null else localMediaUri?.toString()
                     )
                     if (ping != null) {
                         pingToSave.id = ping.id

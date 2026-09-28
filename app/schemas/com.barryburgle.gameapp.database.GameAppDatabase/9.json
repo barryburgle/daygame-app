@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "828afe0d2723b0539c846832273562f5",
+    "identityHash": "433841dded640b0b85ad7126cb895cfa",
     "entities": [
       {
         "tableName": "abstract_session",
@@ -577,7 +577,7 @@
       },
       {
         "tableName": "ping",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `body` TEXT, `link` TEXT, `pic` TEXT, `audio` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `body` TEXT, `web_url` TEXT, `local_media_uri` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -597,18 +597,13 @@
             "affinity": "TEXT"
           },
           {
-            "fieldPath": "link",
-            "columnName": "link",
+            "fieldPath": "webUrl",
+            "columnName": "web_url",
             "affinity": "TEXT"
           },
           {
-            "fieldPath": "pic",
-            "columnName": "pic",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "audio",
-            "columnName": "audio",
+            "fieldPath": "localMediaUri",
+            "columnName": "local_media_uri",
             "affinity": "TEXT"
           }
         ],
@@ -734,7 +729,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '828afe0d2723b0539c846832273562f5')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '433841dded640b0b85ad7126cb895cfa')"
     ]
   }
 }

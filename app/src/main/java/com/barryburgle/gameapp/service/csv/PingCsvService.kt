@@ -27,7 +27,8 @@ class PingCsvService : AbstractCsvService<Ping>() {
         pingList.add(ping.id.toString())
         pingList.add(ping.title)
         pingList.add(ping.body.orEmpty())
-        pingList.add(ping.pic.orEmpty())
+        pingList.add(ping.webUrl.orEmpty())
+        pingList.add(ping.localMediaUri.orEmpty())
         //pingList.add(ping.link.orEmpty())
         //pingList.add(ping.audio.orEmpty()) // Not yet supported
         return pingList.toTypedArray()
@@ -38,8 +39,8 @@ class PingCsvService : AbstractCsvService<Ping>() {
         pingListFieldList.add("id")
         pingListFieldList.add("title")
         pingListFieldList.add("body")
-        pingListFieldList.add("link")
-        //pingListFieldList.add("pic")
+        pingListFieldList.add("web_url")
+        pingListFieldList.add("local_media_uri")
         //pingListFieldList.add("audio") // Not yet supported
         return pingListFieldList.toTypedArray()
     }
@@ -49,8 +50,8 @@ class PingCsvService : AbstractCsvService<Ping>() {
             id = fields[0].toLong(),
             title = fields[1],
             body = fields.getOrNull(2)?.takeIf { it.isNotBlank() },
-            pic = fields.getOrNull(4)?.takeIf { it.isNotBlank() },
-            //link = fields.getOrNull(3)?.takeIf { it.isNotBlank() },
+            localMediaUri = fields.getOrNull(3)?.takeIf { it.isNotBlank() },
+            webUrl = fields.getOrNull(4)?.takeIf { it.isNotBlank() },
             //audio = fields.getOrNull(5)?.takeIf { it.isNotBlank() }, // Not yet supported
         )
     }

@@ -133,13 +133,13 @@ fun FlightControlDialog(
                         HorizontallyPagedCard(
                             title = ping.title,
                             description = ping.body,
-                            clickableLink = ping.link,
-                            backgroundMediaLocalUrl = ping.pic,
+                            clickableLink = ping.webUrl,
+                            backgroundMediaLocalUrl = ping.localMediaUri,
                             firstActionButtonIcon = Icons.Default.ContentCopy,
                             onFirstActionButtonClick = {
                                 systemClipboard.setPrimaryClip(
                                     getClipData(
-                                        context, ping.title, ping.body, ping.link, ping.pic
+                                        context, ping.title, ping.body, ping.webUrl, ping.localMediaUri
                                     )
                                 )
                                 Toast.makeText(
@@ -147,10 +147,10 @@ fun FlightControlDialog(
                                 ).show()
                             },
                             onShareActionButtonClick = {
-                                val shareableText = getShareableText(ping.body, ping.link)
+                                val shareableText = getShareableText(ping.body, ping.webUrl)
                                 val sendIntent = Intent().apply {
-                                    if (!ping.pic.isNullOrBlank()) {
-                                        val imageUri = Uri.parse(ping.pic)
+                                    if (!ping.localMediaUri.isNullOrBlank()) {
+                                        val imageUri = Uri.parse(ping.localMediaUri)
                                         action = Intent.ACTION_SEND
                                         putExtra(Intent.EXTRA_STREAM, imageUri)
                                         if (shareableText.isNotBlank()) {
@@ -284,8 +284,8 @@ fun FlightControlDialog(
                                                             context,
                                                             selectedPing.title,
                                                             selectedPing.body,
-                                                            selectedPing.link,
-                                                            selectedPing.pic
+                                                            selectedPing.webUrl,
+                                                            selectedPing.localMediaUri
                                                         )
                                                     )
                                                     Toast.makeText(

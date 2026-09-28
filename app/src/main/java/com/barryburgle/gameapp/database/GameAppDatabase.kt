@@ -132,7 +132,7 @@ abstract class GameAppDatabase : RoomDatabase() {
         val MIGRATION_8_9: Migration = object : Migration(8, 9) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `ping` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `body` TEXT NULL, `link` TEXT NULL, `pic` TEXT NULL, `audio` TEXT NULL)"
+                    "CREATE TABLE IF NOT EXISTS `ping` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `body` TEXT NULL, `web_url` TEXT NULL, `local_media_uri` TEXT NULL)"
                 )
                 database.execSQL(
                     "CREATE TABLE IF NOT EXISTS `sent_ping` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ping_id` INTEGER NOT NULL, `lead_id` INTEGER NOT NULL, `sent_hour` TEXT NOT NULL, `reaction` TEXT NULL)"
