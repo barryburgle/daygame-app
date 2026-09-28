@@ -141,7 +141,7 @@ abstract class GameAppDatabase : RoomDatabase() {
                     "CREATE TABLE IF NOT EXISTS `date_model` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NULL, `phases` TEXT NOT NULL)"
                 )
                 database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `date_phase` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `duration` INTEGER NOT NULL, `notification_title` TEXT NOT NULL, `notification_desc` TEXT NOT NULL)"
+                    "CREATE TABLE IF NOT EXISTS `date_phase` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `duration` INTEGER NOT NULL)"
                 )
             }
         }
