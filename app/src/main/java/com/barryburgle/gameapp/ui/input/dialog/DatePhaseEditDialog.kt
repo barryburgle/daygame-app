@@ -20,19 +20,23 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
-import com.barryburgle.gameapp.event.GenericEvent
 import com.barryburgle.gameapp.model.date.DatePhase
+import com.barryburgle.gameapp.ui.input.CounterColumn
 import com.barryburgle.gameapp.ui.input.card.DeleteConfirmationDialog
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
-import com.barryburgle.gameapp.ui.utilities.setting.CountSetting
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 
 @Composable
 fun DatePhaseEditDialog(
-    dialogTitle: String, onEvent: (GameEvent) -> Unit, datePhase: DatePhase? = null
+    dialogTitle: String,
+    onEvent: (GameEvent) -> Unit,
+    datePhase: DatePhase? = null,
+    dateModelId: Long
 ) {
     val context = LocalContext.current
     val localContext = context.applicationContext
@@ -97,20 +101,29 @@ fun DatePhaseEditDialog(
                 ) {
                     description = it
                 }
-                // Improperly using CountSetting here because I need a counter with desc & horizontal +/- buttons
-                CountSetting(
-                    text = "Duration of ${if (datePhase != null) datePhase!!.title else "this"} date phase",
-                    description = "This date phase will last, in all the date models set up, ${if (datePhase != null) datePhase!!.duration else "15 (default)"} minutes before the next one starts with a new notification",
-                    count = duration.toInt(),
-                    countBy = 1,
-                    onEvent = onEvent as (GenericEvent) -> Unit,
-                    saveEvent = { input ->
-                        duration = input.toLong()
-                        object :
-                            GenericEvent {} // Doing this because CountSetting requires a GenericEvent
-                        // TODO: create a component similar to CountSetting, to use in not-setting places, that needs no GenericEvent
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(0.65f)
+                    ) {
+                        SmallTitleText("Duration of ${if (datePhase != null) datePhase!!.title else "this"} date phase")
+                        LittleBodyText("This date phase will last, in all the date models set up, ${if (datePhase != null) datePhase!!.duration else "15 (default)"} minutes before the next one starts with a new notification")
                     }
-                )
+                    CounterColumn(
+                        count = duration.toString(),
+                        label = "Minutes",
+                        onIncrement = {
+                            duration++
+                        },
+                        onDecrement = {
+                            duration--
+                        })
+                }
             }
         },
         confirmButton = {
@@ -127,7 +140,7 @@ fun DatePhaseEditDialog(
                         datePhaseToSave.id = datePhase.id
                     }
                     onEvent(
-                        GameEvent.SaveDatePhase(datePhaseToSave)
+                        GameEvent.SaveDatePhase(datePhaseToSave, dateModelId)
                     )
                     onEvent(GameEvent.SwitchJustSaved)
                     onEvent(GameEvent.HideDatePhaseDialog)
