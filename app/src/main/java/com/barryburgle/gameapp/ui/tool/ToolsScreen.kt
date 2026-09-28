@@ -109,6 +109,86 @@ fun ToolsScreen(
                 if (state.allSentPings.isEmpty()) "" else "${state.allSentPings.size} sent pings, "
             val settingsCountDesc =
                 if (state.allSettings.isEmpty()) "." else "${state.allSettings.size} settings."
+
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    DataEntryCard(
+                        state = state, onEvent = onEvent, modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    LiveSessionCard(
+                        state = state, onEvent = onEvent, modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    GameCard(
+                        state = state, onEvent = onEvent, modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    ChallengeCard(
+                        state = state, onEvent = onEvent, modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    RecordingsCard(
+                        state = state,
+                        onEvent = onEvent,
+                        modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    DashboardCard(
+                        state = state, onEvent = onEvent, modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    ThemeCard(
+                        state = state, onEvent = onEvent, modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    ShareCard(
+                        state = state, onEvent = onEvent, modifier = settingsCardModifier
+                    )
+                }
+            }
+            item {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(spaceFromLeft))
+                    BackupCard(
+                        cardTitle = "Backup",
+                        cardSubtitle = csvFindService.getLastBackupDate(state.exportFolder + "/" + state.backupFolder),
+                        state = state,
+                        onEvent = onEvent,
+                        modifier = settingsCardModifier,
+                        csvFindService = csvFindService
+                    )
+                }
+            }
             item {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
@@ -156,90 +236,11 @@ fun ToolsScreen(
             item {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
-                    BackupCard(
-                        cardTitle = "Backup",
-                        cardSubtitle = csvFindService.getLastBackupDate(state.exportFolder + "/" + state.backupFolder),
-                        state = state,
-                        onEvent = onEvent,
-                        modifier = settingsCardModifier,
-                        csvFindService = csvFindService
-                    )
-                }
-            }
-            item {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.width(spaceFromLeft))
                     DeleteCard(
                         cardTitle = "Wipe out",
                         state = state,
                         onEvent = onEvent,
                         modifier = settingsCardModifier
-                    )
-                }
-            }
-            item {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.width(spaceFromLeft))
-                    GameCard(
-                        state = state, onEvent = onEvent, modifier = settingsCardModifier
-                    )
-                }
-            }
-            item {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.width(spaceFromLeft))
-                    ChallengeCard(
-                        state = state, onEvent = onEvent, modifier = settingsCardModifier
-                    )
-                }
-            }
-            item {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.width(spaceFromLeft))
-                    DashboardCard(
-                        state = state, onEvent = onEvent, modifier = settingsCardModifier
-                    )
-                }
-            }
-            item {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.width(spaceFromLeft))
-                    DataEntryCard(
-                        state = state, onEvent = onEvent, modifier = settingsCardModifier
-                    )
-                }
-            }
-            item {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.width(spaceFromLeft))
-                    LiveSessionCard(
-                        state = state, onEvent = onEvent, modifier = settingsCardModifier
-                    )
-                }
-            }
-            item {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.width(spaceFromLeft))
-                    RecordingsCard(
-                        state = state,
-                        onEvent = onEvent,
-                        modifier = settingsCardModifier
-                    )
-                }
-            }
-            item {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.width(spaceFromLeft))
-                    ThemeCard(
-                        state = state, onEvent = onEvent, modifier = settingsCardModifier
-                    )
-                }
-            }
-            item {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.width(spaceFromLeft))
-                    ShareCard(
-                        state = state, onEvent = onEvent, modifier = settingsCardModifier
                     )
                 }
             }
