@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -39,8 +40,8 @@ import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.GameEvent
 import com.barryburgle.gameapp.model.date.DateModel
 import com.barryburgle.gameapp.model.date.DatePhase
-import com.barryburgle.gameapp.ui.input.card.DateModelCard
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
+import com.barryburgle.gameapp.ui.utilities.HorizontallyPagedCard
 import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.FlowDialog
@@ -71,43 +72,37 @@ fun DateMetronomeDialog(
         }
     }
 
-    FlowDialog(
-        modifier = Modifier.fillMaxHeight(0.6f),
-        onDismissRequest = {
-            onEvent(GameEvent.HideDateMetronomeDialog)
-            onEvent(GameEvent.SetIsInOverlayToFalse)
-        },
-        onConfirm = {
-            onEvent(GameEvent.HideDateMetronomeDialog)
-            onEvent(GameEvent.SetIsInOverlayToFalse)
-        },
-        title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
+    FlowDialog(modifier = Modifier.fillMaxHeight(0.6f), onDismissRequest = {
+        onEvent(GameEvent.HideDateMetronomeDialog)
+        onEvent(GameEvent.SetIsInOverlayToFalse)
+    }, onConfirm = {
+        onEvent(GameEvent.HideDateMetronomeDialog)
+        onEvent(GameEvent.SetIsInOverlayToFalse)
+    }, title = {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(0.65f),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Center
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(0.65f),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    LargeTitleText("Date Metronome", true)
-                    WavyPlaceholder("Create, edit and execute your date models")
-                }
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    IconShadowButton(
-                        onClick = { onEvent(GameEvent.EditDateModel(null)) },
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add date model"
-                    )
-                }
+                LargeTitleText("Date Metronome", true)
+                WavyPlaceholder("Create, edit and execute your date models")
+            }
+            Column(
+                horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.Center
+            ) {
+                IconShadowButton(
+                    onClick = { onEvent(GameEvent.EditDateModel(null)) },
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add date model"
+                )
             }
         }
-    ) { contentPadding ->
+    }) { contentPadding ->
         if (allDateModels.isEmpty()) {
             Column(
                 modifier = Modifier
@@ -121,14 +116,12 @@ fun DateMetronomeDialog(
             }
         } else {
             Column(
-                modifier = Modifier
-                    .fillMaxHeight()
+                modifier = Modifier.fillMaxHeight()
             ) {
                 Spacer(modifier = Modifier.height(75.dp))
                 DottedHorizontalPager(
                     items = allDateModels,
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     pageSpacing = 4.dp,
                     pagerState = pagerState
                 ) { dateModel, page ->
@@ -175,8 +168,7 @@ fun DateMetronomeDialog(
                                 currentSelectedModel?.let { model ->
                                     onEvent(
                                         GameEvent.EditDatePhase(
-                                            null,
-                                            model.id
+                                            null, model.id
                                         )
                                     )
                                 }
@@ -197,8 +189,7 @@ fun DateMetronomeDialog(
                     ) {
                         items(
                             count = currentPhases.size,
-                            key = { index -> currentPhases[index].id }
-                        ) { index ->
+                            key = { index -> currentPhases[index].id }) { index ->
                             val datePhase = currentPhases[index]
                             val relativeIndex =
                                 (index - listState.firstVisibleItemIndex).coerceAtLeast(0)
@@ -247,8 +238,7 @@ fun DateMetronomeDialog(
                                                             val movedPhase =
                                                                 updatedDisplayList.removeAt(index)
                                                             updatedDisplayList.add(
-                                                                targetIndex,
-                                                                movedPhase
+                                                                targetIndex, movedPhase
                                                             )
 
                                                             // Re-reverse back to synchronize with DateModel's original order
@@ -260,10 +250,8 @@ fun DateMetronomeDialog(
                                                             onEvent(GameEvent.EditDateModel(model))
                                                             totalDragOffsetY = 0f
                                                         }
-                                                    }
-                                                )
-                                            },
-                                        contentAlignment = Alignment.Center
+                                                    })
+                                            }, contentAlignment = Alignment.Center
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.DragHandle,
@@ -291,8 +279,7 @@ fun DateMetronomeDialog(
                                                 currentSelectedModel?.let { model ->
                                                     onEvent(
                                                         GameEvent.EditDatePhase(
-                                                            datePhase,
-                                                            model.id
+                                                            datePhase, model.id
                                                         )
                                                     )
                                                 }
