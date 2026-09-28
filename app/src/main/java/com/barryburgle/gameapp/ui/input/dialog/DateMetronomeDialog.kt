@@ -313,18 +313,13 @@ fun DateMetronomeDialog(
                                             imageVector = Icons.Default.Edit,
                                             contentDescription = "Edit phase"
                                         )
-                                        IconShadowButton(
-                                            onClick = { onEvent(GameEvent.DeleteDatePhase(datePhase.id)) },
-                                            imageVector = Icons.Default.Delete,
-                                            contentDescription = "Delete phase"
-                                        )
                                     }
                                     Spacer(modifier = Modifier.width(6.dp))
                                 }
                             }
                         }
                         item {
-                            Spacer(modifier = Modifier.height(20.dp))
+                            Spacer(modifier = Modifier.height(40.dp))
                         }
                     }
                     Box(
