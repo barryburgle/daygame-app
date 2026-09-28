@@ -382,6 +382,13 @@ fun InputScreen(
         if (state.isUpdatingChallenge) {
             ChallengeDialog(state = state, onEvent = onEvent, "Edit a challenge")
         }
+        if (state.showDateMetronomeDialog) {
+            DateMetronomeDialog(
+                allDateModels = state.allDateModels,
+                allDatePhases = state.allDatePhases,
+                onEvent = onEvent
+            )
+        }
         LaunchedEffect(key1 = state.justSaved, key2 = state.backupActive) {
             if (state.justSaved && state.backupActive) {
                 DataExchangeService.backup(state)
