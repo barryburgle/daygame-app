@@ -25,4 +25,16 @@ interface DateModelDao {
 
     @Query("SELECT * from date_model ORDER BY id DESC")
     fun getAll(): Flow<List<DateModel>>
+
+    @Query(
+        """
+        UPDATE date_model 
+        SET phases = CASE 
+            WHEN phases IS NULL OR phases = '' THEN ',' || :datePhaseId || ','
+            ELSE phases || :datePhaseId || ','
+        END 
+        WHERE id = :dateModelId
+        """
+    )
+    suspend fun addDatePhaseToModel(dateModelId: Long, datePhaseId: Long)
 }
