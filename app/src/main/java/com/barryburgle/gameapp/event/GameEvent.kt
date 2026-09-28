@@ -167,7 +167,7 @@ sealed interface GameEvent : GenericEvent {
         val dateModelId: Long
     ) : GameEvent
     data class SaveDateModel(val dateModel: DateModel) : GameEvent
-    data class EditDatePhase(val datePhase: DatePhase?) : GameEvent
-    data class SaveDatePhase(val datePhase: DatePhase) : GameEvent
+    data class EditDatePhase(val datePhase: DatePhase?, val dateModelId: Long) : GameEvent
+    data class SaveDatePhase(val datePhase: DatePhase, val dateModelId: Long?) : GameEvent
     data class DeleteDatePhase(val datePhaseId: Long) : GameEvent
 }
