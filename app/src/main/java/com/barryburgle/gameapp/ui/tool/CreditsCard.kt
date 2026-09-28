@@ -208,7 +208,7 @@ fun versionInfo(
     }
 }
 
-private fun isNewerVersion(current: String, latest: String): Boolean {
+fun isNewerVersion(current: String, latest: String): Boolean {
     val currentParts =
         current.removePrefix("v").removePrefix("V").split(".").map { it.toIntOrNull() ?: 0 }
     val latestParts =

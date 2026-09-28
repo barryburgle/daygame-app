@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.ui.navigation
 
 import android.annotation.SuppressLint
+import android.content.pm.PackageInfo
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -41,6 +43,7 @@ import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.barryburgle.gameapp.ui.stats.StatsScreen
 import com.barryburgle.gameapp.ui.stats.state.StatsState
 import com.barryburgle.gameapp.ui.tool.ToolsScreen
+import com.barryburgle.gameapp.ui.tool.isNewerVersion
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 
 @SuppressLint("ComposableDestinationInComposeScope")
@@ -58,6 +61,9 @@ fun Navigation(
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val context = LocalContext.current
+    val packageInfo: PackageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+    val currentVersion = packageInfo.versionName
     val items = listOf(
         BottomNavigationItem(
             title = "Game",
@@ -84,7 +90,10 @@ fun Navigation(
             title = "Settings",
             icon = painterResource(R.drawable.settings),
             modifier = Modifier.size(22.dp),
-            hasNews = toolState.latestAvailable != null && toolState.latestAvailable.isNotEmpty(),
+            hasNews = currentVersion != null && isNewerVersion(
+                currentVersion,
+                toolState.latestAvailable
+            ),
             destinationScreen = Screen.ToolScreen.route
         )
     )
