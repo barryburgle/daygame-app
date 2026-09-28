@@ -42,7 +42,7 @@ import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @Composable
 fun PingEditDialog(
-    dialogTitle: String, onEvent: (OutputEvent) -> Unit, ping: Ping? = null
+    onEvent: (OutputEvent) -> Unit, ping: Ping? = null
 ) {
     val context = LocalContext.current
     val localContext = context.applicationContext
@@ -96,6 +96,7 @@ fun PingEditDialog(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                val dialogTitle = if (ping == null) "Add a new" else "Edit the \"${ping.title}\""
                 LargeTitleText("${dialogTitle} ping")
                 IconShadowButton(
                     onClick = {

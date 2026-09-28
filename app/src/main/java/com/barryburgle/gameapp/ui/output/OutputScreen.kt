@@ -114,10 +114,10 @@ fun OutputScreen(
         )
     }
     if (state.showAddPingDialog) {
-        PingEditDialog("Add a new", onEvent)
+        PingEditDialog(onEvent)
     }
     if (state.showEditPingDialog && state.editPing != null) {
-        PingEditDialog("Edit the ${state.editPing!!.title}", onEvent, state.editPing)
+        PingEditDialog(onEvent, state.editPing)
     }
     Scaffold(
         topBar = {
