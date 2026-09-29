@@ -92,11 +92,17 @@ fun RecordingsView(
 ) {
     val NO_RECORDING_AVAILABLE = "No recordings available"
     if (!recordingsEnabled) return
-    var pendingDeletion by remember { mutableStateOf<String?>(null) }
-    pendingDeletion?.let { fileName ->
+    var pendingDeletion by remember { mutableStateOf<PendingDeletionState?>(null) }
+    pendingDeletion?.let { (fileName, recLocalDateTime) ->
         DeleteConfirmationDialog(
-            "Recording",
-            "Do you want to delete $fileName?",
+            if (recLocalDateTime == null) {
+                "recording?"
+            } else {
+                "recording acquired on " + recLocalDateTime.format(
+                    FormatService.DATE_TIME_FORMATTER
+                )
+            },
+            "Do you want to delete the recording file $fileName?",
             onConfirmRequest = {
                 onTapRecordingDelete(fileName)
                 pendingDeletion = null
@@ -148,7 +154,7 @@ fun RecordingsView(
         }
     }
 
-    // Auto-advance progress cursor while playing
+// Auto-advance progress cursor while playing
     LaunchedEffect(isThisPlaying, isDragging, currentRecording) {
         if (isThisPlaying && !isDragging) {
             val totalDuration = if (fileDurationMs > 0) fileDurationMs.toFloat() else 10000f
@@ -178,15 +184,6 @@ fun RecordingsView(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            if (currentRecording != null) {
-                IconShadowButton(
-                    onClick = { pendingDeletion = currentRecording },
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete recording",
-                    iconColor = MaterialTheme.colorScheme.onErrorContainer
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-            }
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -194,19 +191,36 @@ fun RecordingsView(
                     .background(entryBackground())
                     .clickable { dropdownExpanded = true }
                     .padding(10.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val filename =
-                        currentRecording?.let { name ->
+                contentAlignment = Alignment.Center) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AudioFile,
+                        contentDescription = "Recordings",
+                        modifier = Modifier
+                            .height(25.dp)
+                            .scale(1.3f)
+                    )
+                    Column(
+                        modifier = Modifier.fillMaxWidth(0.85f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        val filename = currentRecording?.let { name ->
                             if (name.length > 15) "${name.take(5)}...${name.takeLast(10)}" else name
                         } ?: NO_RECORDING_AVAILABLE
-                    RecordingMainInfo(fileDateWrittenText, fileDurationMs)
-                    if (filename != NO_RECORDING_AVAILABLE) {
-                        Spacer(modifier = Modifier.height(5.dp))
-                        LittleBodyText("Filename: " + filename)
-                        Spacer(modifier = Modifier.height(5.dp))
-                        WavyPlaceholder("Tap to select recordings")
+                        RecordingMainInfo(fileDateWrittenText, fileDurationMs)
+                        if (filename != NO_RECORDING_AVAILABLE) {
+                            Spacer(modifier = Modifier.height(5.dp))
+                            LittleBodyText(
+                                text = "File: " + filename,
+                                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+                            )
+                            Spacer(modifier = Modifier.height(5.dp))
+                            WavyPlaceholder("Tap to select recordings")
+                        }
                     }
                 }
                 Dropdown(
@@ -216,31 +230,65 @@ fun RecordingsView(
                     onItemClick = { recording ->
                         selectedRecording = recording
                         dropdownExpanded = false
+                    }) { recording ->
+                    var itemDateWritten by remember(recording) { mutableStateOf<LocalDateTime?>(null) }
+                    var itemDuration by remember(recording) { mutableIntStateOf(0) }
+
+                    LaunchedEffect(recording, recordingsFolder) {
+                        if (recordingsFolder.isNotEmpty()) {
+                            itemDateWritten = withContext(Dispatchers.IO) {
+                                getFileDateWritten(recordingsFolder, recording)
+                            }
+                            itemDuration = withContext(Dispatchers.IO) {
+                                RecordingService.durationOf(recordingsFolder, recording)
+                            }
+                        }
                     }
-                ) { recording ->
-                    RecordingMainInfo(
-                        getFileDateWritten(
-                            recordingsFolder,
-                            recording
-                        )?.format(FormatService.DATE_TIME_FORMATTER) ?: "",
-                        RecordingService.durationOf(recordingsFolder, recording)
-                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        RecordingMainInfo(
+                            fileDateWrittenText = itemDateWritten?.format(FormatService.DATE_TIME_FORMATTER)
+                                ?: "",
+                            fileDurationMs = itemDuration,
+                        )
+                    }
                 }
             }
             if (currentRecording != null) {
                 Spacer(modifier = Modifier.width(12.dp))
-                IconShadowButton(
-                    onClick = {
-                        if (isThisPlaying) {
-                            onTapPlaybackPause()
-                        } else {
-                            if (localProgress >= 1f) localProgress = 0f
-                            onTapPlaybackPlay(currentRecording)
-                        }
-                    },
-                    imageVector = if (isThisPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                    contentDescription = "Play/Pause",
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    IconShadowButton(
+                        onClick = {
+                            if (isThisPlaying) {
+                                onTapPlaybackPause()
+                            } else {
+                                if (localProgress >= 1f) localProgress = 0f
+                                onTapPlaybackPlay(currentRecording)
+                            }
+                        },
+                        imageVector = if (isThisPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                        contentDescription = "Play/Pause",
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    IconShadowButton(
+                        onClick = {
+                            pendingDeletion = PendingDeletionState(
+                                currentRecording,
+                                getFileDateWritten(recordingsFolder, currentRecording)
+                            )
+                        },
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete recording",
+                        iconColor = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                }
             }
         }
         AnimatedVisibility(
@@ -274,8 +322,7 @@ fun RecordingsView(
                             contentDescription = "Rewind 5 seconds"
                         )
                         LittleBodyText(
-                            text = "5",
-                            color = MaterialTheme.colorScheme.inversePrimary
+                            text = "5", color = MaterialTheme.colorScheme.inversePrimary
                         )
                     }
                     WavyProgressSlider(
@@ -305,8 +352,7 @@ fun RecordingsView(
                             contentDescription = "Forward 10 seconds"
                         )
                         LittleBodyText(
-                            text = "10",
-                            color = MaterialTheme.colorScheme.inversePrimary
+                            text = "10", color = MaterialTheme.colorScheme.inversePrimary
                         )
                     }
                 }
@@ -316,49 +362,46 @@ fun RecordingsView(
 }
 
 private fun getFileDateWritten(
-    recordingsFolder: String,
-    currentRecording: String
+    recordingsFolder: String, currentRecording: String
 ): LocalDateTime? {
-    val fetchedDateWrittenMs =
-        RecordingService.dateWrittenOf(recordingsFolder, currentRecording)
+    val fetchedDateWrittenMs = RecordingService.dateWrittenOf(recordingsFolder, currentRecording)
 
     return if (fetchedDateWrittenMs <= 0L) {
         LocalDateTime.now()
     } else {
-        Instant.ofEpochMilli(fetchedDateWrittenMs)
-            .atZone(ZoneId.systemDefault())
-            .toLocalDateTime()
+        Instant.ofEpochMilli(fetchedDateWrittenMs).atZone(ZoneId.systemDefault()).toLocalDateTime()
     }
 }
 
 @Composable
-private fun RecordingMainInfo(fileDateWrittenText: String, fileDurationMs: Int) {
+private fun RecordingMainInfo(
+    fileDateWrittenText: String,
+    fileDurationMs: Int
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Icon(
-            imageVector = Icons.Default.AudioFile,
-            contentDescription = "Recordings",
-            modifier = Modifier
-                .height(25.dp)
-        )
-        MediumBodyText(fileDateWrittenText)
-        Column(
-            modifier = Modifier.background(
-                MaterialTheme.colorScheme.onPrimary.copy(
-                    alpha = 0.2f
-                ),
-                RoundedCornerShape(10.dp)
-            )
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            LittleBodyText(
-                text = RecordingService.formatDurationMsToMinutesSecs(
-                    fileDurationMs
-                ),
-                modifier = Modifier.padding(3.dp)
-            )
+            MediumBodyText(fileDateWrittenText)
+            Column(
+                modifier = Modifier.background(
+                    MaterialTheme.colorScheme.onPrimary.copy(
+                        alpha = 0.2f
+                    ), RoundedCornerShape(10.dp)
+                )
+            ) {
+                LittleBodyText(
+                    text = RecordingService.formatDurationMsToMinutesSecs(
+                        fileDurationMs
+                    ), modifier = Modifier.padding(3.dp)
+                )
+            }
         }
     }
 }
@@ -472,3 +515,7 @@ private fun entryBackground(): Color = lerp(
 )
 
 private const val ENTRY_BACKGROUND_BLEND = 0.08f
+
+data class PendingDeletionState(
+    val fileName: String, val recLocalDateTime: LocalDateTime?
+)
