@@ -1,5 +1,8 @@
 package com.barryburgle.gameapp.ui.utilities
 
+// TODO: deleteEventConfirmationDialog and liveSessionPulsingColor are generic pieces that happen to
+//  live in EventCard.kt / InputScreen.kt - cleaner would be to move them under ui/utilities/ so a
+//  utility doesn't import from a screen or a card
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -27,12 +30,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.RotateLeft
 import androidx.compose.material.icons.filled.RotateRight
-import androidx.compose.material.icons.filled.Voicemail
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -59,20 +62,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.recording.RecordingStateEnum
+import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.service.recording.RecordingService
 import com.barryburgle.gameapp.ui.input.card.DeleteConfirmationDialog
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
-// TODO: deleteEventConfirmationDialog and liveSessionPulsingColor are generic pieces that happen to
-//  live in EventCard.kt / InputScreen.kt - cleaner would be to move them under ui/utilities/ so a
-//  utility doesn't import from a screen or a card
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dropdown.Dropdown
-import com.barryburgle.gameapp.ui.utilities.dropdown.SelectableOption
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 import kotlin.math.sin
 
 @Composable
@@ -120,13 +123,28 @@ fun RecordingsView(
     var localProgress by remember(currentRecording) { mutableFloatStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
 
-    // Read recording duration for progress calculation
+    var fileDateWritten by remember(currentRecording) { mutableStateOf<LocalDateTime?>(null) }
     var fileDurationMs by remember(currentRecording) { mutableIntStateOf(0) }
+    val fileDateWrittenText = remember(currentRecording, fileDateWritten) {
+        if (currentRecording == null) {
+            NO_RECORDING_AVAILABLE
+        } else {
+            fileDateWritten?.format(FormatService.DATE_TIME_FORMATTER) ?: ""
+        }
+    }
+
     LaunchedEffect(currentRecording, recordingsFolder) {
         if (currentRecording != null && recordingsFolder.isNotEmpty()) {
             fileDurationMs = withContext(Dispatchers.IO) {
                 RecordingService.durationOf(recordingsFolder, currentRecording)
             }
+
+            fileDateWritten = withContext(Dispatchers.IO) {
+                getFileDateWritten(recordingsFolder, currentRecording)
+            }
+        } else {
+            fileDurationMs = 0
+            fileDateWritten = null
         }
     }
 
@@ -175,29 +193,18 @@ fun RecordingsView(
                     .clip(RoundedCornerShape(20.dp))
                     .background(entryBackground())
                     .clickable { dropdownExpanded = true }
-                    .padding(horizontal = 16.dp, vertical = 10.dp),
+                    .padding(10.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     val filename =
-                        currentRecording?.removeSuffix(RecordingService.RECORDING_FILE_EXTENSION)
-                            ?.let { name ->
-                                if (name.length > 15) "${name.take(5)} ... ${name.takeLast(6)}" else name
-                            } ?: NO_RECORDING_AVAILABLE
-                    Row(
-                        modifier = Modifier.fillMaxWidth(0.95f),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Voicemail,
-                            contentDescription = "Recordings",
-                            modifier = Modifier
-                                .height(25.dp)
-                        )
-                        MediumBodyText(filename)
-                    }
+                        currentRecording?.let { name ->
+                            if (name.length > 15) "${name.take(5)}...${name.takeLast(10)}" else name
+                        } ?: NO_RECORDING_AVAILABLE
+                    RecordingMainInfo(fileDateWrittenText, fileDurationMs)
                     if (filename != NO_RECORDING_AVAILABLE) {
+                        Spacer(modifier = Modifier.height(5.dp))
+                        LittleBodyText("Filename: " + filename)
                         Spacer(modifier = Modifier.height(5.dp))
                         WavyPlaceholder("Tap to select recordings")
                     }
@@ -211,15 +218,13 @@ fun RecordingsView(
                         dropdownExpanded = false
                     }
                 ) { recording ->
-                    val cleanName =
-                        recording.removeSuffix(RecordingService.RECORDING_FILE_EXTENSION)
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        SelectableOption(cleanName)
-                    }
+                    RecordingMainInfo(
+                        getFileDateWritten(
+                            recordingsFolder,
+                            recording
+                        )?.format(FormatService.DATE_TIME_FORMATTER) ?: "",
+                        RecordingService.durationOf(recordingsFolder, recording)
+                    )
                 }
             }
             if (currentRecording != null) {
@@ -306,6 +311,54 @@ fun RecordingsView(
                     }
                 }
             }
+        }
+    }
+}
+
+private fun getFileDateWritten(
+    recordingsFolder: String,
+    currentRecording: String
+): LocalDateTime? {
+    val fetchedDateWrittenMs =
+        RecordingService.dateWrittenOf(recordingsFolder, currentRecording)
+
+    return if (fetchedDateWrittenMs <= 0L) {
+        LocalDateTime.now()
+    } else {
+        Instant.ofEpochMilli(fetchedDateWrittenMs)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime()
+    }
+}
+
+@Composable
+private fun RecordingMainInfo(fileDateWrittenText: String, fileDurationMs: Int) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Icon(
+            imageVector = Icons.Default.AudioFile,
+            contentDescription = "Recordings",
+            modifier = Modifier
+                .height(25.dp)
+        )
+        MediumBodyText(fileDateWrittenText)
+        Column(
+            modifier = Modifier.background(
+                MaterialTheme.colorScheme.onPrimary.copy(
+                    alpha = 0.2f
+                ),
+                RoundedCornerShape(10.dp)
+            )
+        ) {
+            LittleBodyText(
+                text = RecordingService.formatDurationMsToMinutesSecs(
+                    fileDurationMs
+                ),
+                modifier = Modifier.padding(3.dp)
+            )
         }
     }
 }

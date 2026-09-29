@@ -35,6 +35,7 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 class RecordingService : Service() {
 
@@ -123,6 +124,42 @@ class RecordingService : Service() {
             } catch (e: Exception) {
                 Log.e("RecordingService", e.message, e)
                 0
+            } finally {
+                retriever.release()
+            }
+        }
+
+        fun formatDurationMsToMinutesSecs(ms: Int): String {
+            val totalSeconds = ms / 1000
+            val minutes = totalSeconds / 60
+            val seconds = totalSeconds % 60
+            return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+        }
+
+        /**
+         * Extracts the date/time when the media file was created.
+         * Returns the timestamp in milliseconds, or 0 if unavailable.
+         */
+        fun dateWrittenOf(folder: String, fileName: String): Long {
+            val file = File(recordingsFolder(folder), fileName)
+            if (!file.exists()) return 0L
+
+            val retriever = MediaMetadataRetriever()
+            return try {
+                retriever.setDataSource(file.absolutePath)
+                val dateStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE)
+
+                if (dateStr != null) {
+                    // Android media metadata dates typically follow ISO 8601 formats like "YYYYMMDDTHHMMSS.000Z"
+                    val format = SimpleDateFormat("yyyyMMdd'T'HHmmss.SSS'Z'", Locale.US)
+                    format.parse(dateStr)?.time ?: file.lastModified()
+                } else {
+                    // Fallback to file system's last modified timestamp
+                    file.lastModified()
+                }
+            } catch (e: Exception) {
+                Log.e("RecordingService", "Failed to extract date from $fileName", e)
+                file.lastModified()
             } finally {
                 retriever.release()
             }

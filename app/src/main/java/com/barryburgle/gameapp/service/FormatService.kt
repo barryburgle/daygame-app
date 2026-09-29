@@ -10,9 +10,12 @@ class FormatService {
     companion object {
         val SAVE_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX")
         val SAVE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX")
-        val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        val DATE_FORMAT = "dd-MM-yyyy"
+        val DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT)
         val SHORT_YEAR_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yy")
-        val TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm")
+        val TIME_FORMAT = "HH:mm"
+        val TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT)
+        val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT + " " + DATE_FORMAT)
         val NO_DATE = "No date"
 
         fun getPerc(
@@ -32,7 +35,7 @@ class FormatService {
         fun getDate(
             localDate: String?
         ): String {
-            if(localDate==null){
+            if (localDate == null) {
                 return NO_DATE
             }
             return DATE_FORMATTER.format(parseDate(localDate))
@@ -41,7 +44,7 @@ class FormatService {
         fun getDateForCharLabel(
             localDate: String?
         ): String {
-            if(localDate==null){
+            if (localDate == null) {
                 return NO_DATE
             }
             return SHORT_YEAR_DATE_FORMATTER.format(parseDate(localDate))
