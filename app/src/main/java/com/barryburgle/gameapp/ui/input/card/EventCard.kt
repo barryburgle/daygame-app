@@ -981,7 +981,7 @@ fun DeleteConfirmationDialog(
         modifier = Modifier.shadow(elevation = 10.dp),
         onDismissRequest = onDismissRequest,
         title = {
-            LargeTitleText(text = "Delete " + title)
+            LargeTitleText(text = "Delete " + title, true)
         },
         text = {
             LittleBodyText(description)
