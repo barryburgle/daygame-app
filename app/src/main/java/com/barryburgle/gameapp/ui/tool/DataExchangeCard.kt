@@ -32,6 +32,8 @@ import com.barryburgle.gameapp.service.csv.AbstractCsvService
 import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.csv.ChallengeCsvService
 import com.barryburgle.gameapp.service.csv.DateCsvService
+import com.barryburgle.gameapp.service.csv.DateModelCsvService
+import com.barryburgle.gameapp.service.csv.DatePhaseCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.PinPointCsvService
 import com.barryburgle.gameapp.service.csv.PingCsvService
@@ -63,6 +65,8 @@ fun DataExchangeCard(
     pinPointCsvService: PinPointCsvService,
     pingCsvService: PingCsvService,
     sentPingCsvService: SentPingCsvService,
+    datePhaseCsvService: DatePhaseCsvService,
+    dateModelCsvService: DateModelCsvService,
     settingCsvService: SettingCsvService,
     csvFindService: CSVFindService,
     onEvent: (ToolEvent) -> Unit
@@ -578,6 +582,100 @@ fun DataExchangeCard(
                                     onEvent(ToolEvent.SetExportSentPingsFileName(it))
                                 } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
                                     onEvent(ToolEvent.SetImportSentPingsFileName(it))
+                                }
+                            }
+                        )
+                        FilenameComposable(
+                            cardTitle = cardTitle,
+                            icon,
+                            "date phase",
+                            textFieldColumnWidth,
+                            localContext,
+                            if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                state.exportDatePhasesFileName
+                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                state.importDatePhasesFileName
+                            } else "",
+                            buttonFunction = {
+                                importExportButtonFunction(
+                                    cardTitle,
+                                    datePhaseCsvService,
+                                    state.importFolder,
+                                    state.exportFolder,
+                                    state.importDatePhasesFileName,
+                                    state.exportDatePhasesFileName,
+                                    state.importHeader,
+                                    state.exportHeader,
+                                    state.allDatePhases,
+                                    onEvent,
+                                    localContext,
+                                    ToolEvent::SetAllDatePhases
+                                )
+                            },
+                            reloadFunction = {
+                                if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(
+                                        ToolEvent.SetImportDatePhasesFileName(
+                                            csvFindService.getLastFilenameInFolder(
+                                                state.importFolder,
+                                                "date_phase"
+                                            )
+                                        )
+                                    )
+                                }
+                            },
+                            filenameOnEvent = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetExportDatePhasesFileName(it))
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetImportDatePhasesFileName(it))
+                                }
+                            }
+                        )
+                        FilenameComposable(
+                            cardTitle = cardTitle,
+                            icon,
+                            "date model",
+                            textFieldColumnWidth,
+                            localContext,
+                            if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                state.exportDateModelsFileName
+                            } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                state.importDateModelsFileName
+                            } else "",
+                            buttonFunction = {
+                                importExportButtonFunction(
+                                    cardTitle,
+                                    dateModelCsvService,
+                                    state.importFolder,
+                                    state.exportFolder,
+                                    state.importDateModelsFileName,
+                                    state.exportDateModelsFileName,
+                                    state.importHeader,
+                                    state.exportHeader,
+                                    state.allDateModels,
+                                    onEvent,
+                                    localContext,
+                                    ToolEvent::SetAllDateModels
+                                )
+                            },
+                            reloadFunction = {
+                                if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(
+                                        ToolEvent.SetImportDateModelsFileName(
+                                            csvFindService.getLastFilenameInFolder(
+                                                state.importFolder,
+                                                "date_model"
+                                            )
+                                        )
+                                    )
+                                }
+                            },
+                            filenameOnEvent = {
+                                if (DataExchangeTypeEnum.EXPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetExportDateModelsFileName(it))
+                                } else if (DataExchangeTypeEnum.IMPORT.type == cardTitle) {
+                                    onEvent(ToolEvent.SetImportDateModelsFileName(it))
                                 }
                             }
                         )
