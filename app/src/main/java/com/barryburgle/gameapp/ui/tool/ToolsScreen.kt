@@ -25,6 +25,8 @@ import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.csv.ChallengeCsvService
 import com.barryburgle.gameapp.service.csv.DateCsvService
+import com.barryburgle.gameapp.service.csv.DateModelCsvService
+import com.barryburgle.gameapp.service.csv.DatePhaseCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.PinPointCsvService
 import com.barryburgle.gameapp.service.csv.PingCsvService
@@ -56,6 +58,8 @@ fun ToolsScreen(
     val pinPointCsvService = PinPointCsvService()
     val pingCsvService = PingCsvService()
     val sentPingCsvService = SentPingCsvService()
+    val datePhaseCsvService = DatePhaseCsvService()
+    val dateModelCsvService = DateModelCsvService()
     val settingCsvService = SettingCsvService()
     val csvFindService = CSVFindService()
     if (state.isCleaning) {
@@ -67,7 +71,7 @@ fun ToolsScreen(
         },
     ) { padding ->
         val dataExchangeCardModifier = Modifier
-            .height(1050.dp)
+            .height(1250.dp)
             .width(LocalConfiguration.current.screenWidthDp.dp - spaceFromLeft * 2)
             .shadow(
                 elevation = 5.dp, shape = MaterialTheme.shapes.large
@@ -206,6 +210,8 @@ fun ToolsScreen(
                         pinPointCsvService = pinPointCsvService,
                         pingCsvService = pingCsvService,
                         sentPingCsvService = sentPingCsvService,
+                        datePhaseCsvService = datePhaseCsvService,
+                        dateModelCsvService = dateModelCsvService,
                         settingCsvService = settingCsvService,
                         csvFindService = csvFindService
                     )
@@ -228,6 +234,8 @@ fun ToolsScreen(
                         pinPointCsvService = pinPointCsvService,
                         pingCsvService = pingCsvService,
                         sentPingCsvService = sentPingCsvService,
+                        datePhaseCsvService = datePhaseCsvService,
+                        dateModelCsvService = dateModelCsvService,
                         settingCsvService = settingCsvService,
                         csvFindService = csvFindService
                     )
