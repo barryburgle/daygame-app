@@ -135,6 +135,8 @@ class MainActivity : ComponentActivity() {
                         it.pinPointDao,
                         it.pingDao,
                         it.sentPingDao,
+                        it.datePhaseDao,
+                        it.dateModelDao,
                         it.settingDao
                     )
                 } as T

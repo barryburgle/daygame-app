@@ -52,6 +52,8 @@ data class ToolsState(
     override var allPinPoints: List<PinPoint> = emptyList(),
     override var allPings: List<Ping> = emptyList(),
     override var allSentPings: List<SentPing> = emptyList(),
+    override var allDatePhases: List<DatePhase> = emptyList(),
+    override var allDateModels: List<DateModel> = emptyList(),
     override var allSettings: List<Setting> = emptyList(),
     val lastSessionAverageQuantity: Int = 4,
     val lastSessionsShown: Int = 14,

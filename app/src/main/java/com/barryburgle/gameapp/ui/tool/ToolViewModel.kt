@@ -48,12 +48,14 @@ class ToolViewModel(
     private val pinPointDao: PinPointDao,
     private val pingDao: PingDao,
     private val sentPingDao: SentPingDao,
+    private val datePhaseDao: DatePhaseDao,
+    private val dateModelDao: DateModelDao,
     private val settingDao: SettingDao
 ) : ViewModel() {
     private val _state =
         MutableStateFlow(ToolsState())
 
-    val _allEntitiesState: Flow<AllEntitiesState> = CombineNine(
+    val _allEntitiesState: Flow<AllEntitiesState> = CombineEleven(
         abstractSessionDao.getAll(),
         leadDao.getAll(),
         dateDao.getAll(),
@@ -62,6 +64,8 @@ class ToolViewModel(
         pinPointDao.getAll(),
         pingDao.getAll(),
         sentPingDao.getAll(),
+        datePhaseDao.getAll(),
+        dateModelDao.getAll(),
         settingDao.getAll()
     ) { allSessions, allLeads, allDates, allSets, allChallenges, allPinPoints, allPings, allSentPings, allSettings ->
         AllEntitiesState(
@@ -73,6 +77,8 @@ class ToolViewModel(
             allPinPoints = allPinPoints,
             allPings = allPings,
             allSentPings = allSentPings,
+            allDatePhases = allDatePhases,
+            allDateModels = allDateModels,
             allSettings = allSettings
         )
     }
@@ -279,6 +285,8 @@ class ToolViewModel(
                 allPinPoints = allEntitiesState.allPinPoints,
                 allPings = allEntitiesState.allPings,
                 allSentPings = allEntitiesState.allSentPings,
+                allDatePhases = allEntitiesState.allDatePhases,
+                allDateModels = allEntitiesState.allDateModels,
                 allSettings = allEntitiesState.allSettings,
                 lastSessionAverageQuantity = averageLast,
                 exportHeader = importExportSettingState.exportHeader.toBoolean(),
@@ -710,6 +718,26 @@ class ToolViewModel(
                 }
                 val allSentPings = _state.value.allSentPings
                 viewModelScope.launch { sentPingDao.batchInsert(allSentPings) }
+            }
+
+            is ToolEvent.SetAllDatePhases -> {
+                _state.update {
+                    it.copy(
+                        allDatePhases = event.allDatePhases
+                    )
+                }
+                val allDatePhases = _state.value.allDatePhases
+                viewModelScope.launch { datePhaseDao.batchInsert(allDatePhases) }
+            }
+
+            is ToolEvent.SetAllDateModels -> {
+                _state.update {
+                    it.copy(
+                        allDateModels = event.allDateModels
+                    )
+                }
+                val allDateModels = _state.value.allDateModels
+                viewModelScope.launch { dateModelDao.batchInsert(allDateModels) }
             }
 
             is ToolEvent.SetAllSettings -> {
@@ -1473,5 +1501,7 @@ data class AllEntitiesState(
     val allPinPoints: List<PinPoint>,
     val allPings: List<Ping>,
     val allSentPings: List<SentPing>,
+    val allDatePhases: List<DatePhase>,
+    val allDateModels: List<DateModel>,
     val allSettings: List<Setting>
 )

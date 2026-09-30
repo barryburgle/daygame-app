@@ -2,6 +2,8 @@ package com.barryburgle.gameapp.event
 
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.date.DateModel
+import com.barryburgle.gameapp.model.date.DatePhase
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.model.ping.SentPing
@@ -46,6 +48,8 @@ sealed interface ToolEvent : GenericEvent {
     data class SetAllPinPoints(val allPinPoints: List<PinPoint>) : ToolEvent
     data class SetAllPings(val allPings: List<Ping>) : ToolEvent
     data class SetAllSentPings(val allSentPings: List<SentPing>) : ToolEvent
+    data class SetAllDatePhases(val allDatePhases: List<DatePhase>) : ToolEvent
+    data class SetAllDateModels(val allDateModels: List<DateModel>) : ToolEvent
     data class SetAllSettings(val allSettings: List<Setting>) : ToolEvent // TODO: complete
     data class SetLastSessionAverageQuantity(val lastSessionAverageQuantity: String) : ToolEvent
     data class SetLastSessionsShown(val lastSessionsShown: String) : ToolEvent
