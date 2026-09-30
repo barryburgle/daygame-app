@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
@@ -94,7 +95,8 @@ fun DateMetronomeDialog(
     LaunchedEffect(currentPhases) {
         localPhases = currentPhases
     }
-    FlowDialog(modifier = Modifier.fillMaxHeight(0.75f), onDismissRequest = {
+    val maxDialogHeight = LocalConfiguration.current.screenHeightDp.dp * 0.75f
+    FlowDialog(modifier = Modifier.heightIn(max = maxDialogHeight), onDismissRequest = {
         onEvent(GameEvent.HideDateMetronomeDialog)
         onEvent(GameEvent.SetIsInOverlayToFalse)
     }, onConfirm = {
@@ -137,8 +139,9 @@ fun DateMetronomeDialog(
                 WavyPlaceholder("Add some date models, they will come handy!")
             }
         } else {
+            val maxDatePhasesHeight = LocalConfiguration.current.screenHeightDp.dp * 0.5f
             Column(
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier.heightIn(maxDatePhasesHeight)
             ) {
                 Spacer(modifier = Modifier.height(75.dp))
                 DottedHorizontalPager(
