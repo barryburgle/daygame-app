@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.barryburgle.gameapp.dao.challenge.ChallengeDao
 import com.barryburgle.gameapp.dao.date.DateDao
+import com.barryburgle.gameapp.dao.date.DateModelDao
+import com.barryburgle.gameapp.dao.date.DatePhaseDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.ping.PingDao
 import com.barryburgle.gameapp.dao.ping.SentPingDao
@@ -14,6 +16,8 @@ import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.date.DateModel
+import com.barryburgle.gameapp.model.date.DatePhase
 import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.ping.Ping
@@ -23,10 +27,11 @@ import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.setting.Setting
 import com.barryburgle.gameapp.service.recording.RecordingService
-import com.barryburgle.gameapp.ui.CombineEighteen
+import com.barryburgle.gameapp.ui.CombineEleven
 import com.barryburgle.gameapp.ui.CombineFive
 import com.barryburgle.gameapp.ui.CombineFourteen
-import com.barryburgle.gameapp.ui.CombineNine
+import com.barryburgle.gameapp.ui.CombineSeventeen
+import com.barryburgle.gameapp.ui.CombineSix
 import com.barryburgle.gameapp.ui.CombineSixteen
 import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
@@ -67,7 +72,7 @@ class ToolViewModel(
         datePhaseDao.getAll(),
         dateModelDao.getAll(),
         settingDao.getAll()
-    ) { allSessions, allLeads, allDates, allSets, allChallenges, allPinPoints, allPings, allSentPings, allSettings ->
+    ) { allSessions, allLeads, allDates, allSets, allChallenges, allPinPoints, allPings, allSentPings, allDatePhases, allDateModels, allSettings ->
         AllEntitiesState(
             allSessions = allSessions,
             allLeads = allLeads,
@@ -1253,6 +1258,14 @@ class ToolViewModel(
 
             is ToolEvent.DeleteAllSentPings -> {
                 viewModelScope.launch { sentPingDao.deleteAll() }
+            }
+
+            is ToolEvent.DeleteAllDatePhases -> {
+                viewModelScope.launch { datePhaseDao.deleteAll() }
+            }
+
+            is ToolEvent.DeleteAllDateModels -> {
+                viewModelScope.launch { dateModelDao.deleteAll() }
             }
 
             is ToolEvent.DeleteAllSettings -> {

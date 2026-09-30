@@ -99,6 +99,8 @@ sealed interface ToolEvent : GenericEvent {
     object DeleteAllPinPoints : ToolEvent
     object DeleteAllPings : ToolEvent
     object DeleteAllSentPings : ToolEvent
+    object DeleteAllDatePhases : ToolEvent
+    object DeleteAllDateModels : ToolEvent
     object DeleteAllSettings : ToolEvent
 
     object SwitchLiveSessionNotification : ToolEvent

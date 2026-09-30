@@ -20,7 +20,7 @@ interface DateModelDao {
     @Query("DELETE FROM date_model WHERE id = :id")
     suspend fun deleteById(id: Long)
 
-    @Query("DELETE FROM date_phase")
+    @Query("DELETE FROM date_model")
     suspend fun deleteAll()
 
     @Query("SELECT * from date_model ORDER BY id DESC")

@@ -31,8 +31,7 @@ fun DeleteDialog(
     state: ToolsState,
     onEvent: (ToolEvent) -> Unit,
     description: String,
-    csvFindService: CSVFindService,
-    modifier: Modifier = Modifier.width(260.dp)
+    csvFindService: CSVFindService
 ) {
     val localContext = LocalContext.current.applicationContext
 
@@ -74,6 +73,12 @@ fun DeleteDialog(
                 }
                 if (state.deleteSentPings) {
                     onEvent(ToolEvent.DeleteAllSentPings)
+                }
+                if (state.deleteDatePhases) {
+                    onEvent(ToolEvent.DeleteAllDatePhases)
+                }
+                if (state.deleteDateModels) {
+                    onEvent(ToolEvent.DeleteAllDateModels)
                 }
                 if (state.deleteSettings) {
                     onEvent(ToolEvent.DeleteAllSettings)
@@ -164,6 +169,18 @@ fun DeleteDialog(
                         ToolEvent.SwitchDeleteSentPings
                     )
                     deleteTableSwitch(
+                        "date phases",
+                        state.deleteDatePhases,
+                        onEvent,
+                        ToolEvent.SwitchDeleteDatePhases
+                    )
+                    deleteTableSwitch(
+                        "date models",
+                        state.deleteDateModels,
+                        onEvent,
+                        ToolEvent.SwitchDeleteDateModels
+                    )
+                    deleteTableSwitch(
                         "settings",
                         state.deleteSettings,
                         onEvent,
@@ -184,7 +201,7 @@ fun DeleteDialog(
 }
 
 private fun getDeleteDescription(state: ToolsState): String {
-    if (!state.deleteSessions && !state.deleteLeads && !state.deleteDates && !state.deleteSets && !state.deleteChallenges && !state.deletePinPoints && !state.deletePings && !state.deleteSentPings) {
+    if (!state.deleteSessions && !state.deleteLeads && !state.deleteDates && !state.deleteSets && !state.deleteChallenges && !state.deletePinPoints && !state.deletePings && !state.deleteSentPings && !state.deleteDatePhases && !state.deleteDateModels) {
         return "No tables will be deleted, please select at least one option"
     }
     val deleteSessionsDescription =
@@ -200,8 +217,12 @@ private fun getDeleteDescription(state: ToolsState): String {
         if (state.deletePings) " ${state.allPings.size} pings," else ""
     val deleteSentPingsDescription =
         if (state.deleteSentPings) " ${state.allSentPings.size} sent pings," else ""
+    val deleteDatePhasesDescription =
+        if (state.deleteDatePhases) " ${state.allDatePhases.size} date phases," else ""
+    val deleteDateModelsDescription =
+        if (state.deleteDateModels) " ${state.allDateModels.size} date models," else ""
     val deleteDescription =
-        "Deleting${deleteSessionsDescription}${deleteLeadsDescription}${deleteDatesDescription}${deleteSetsDescription}${deleteChallengesDescription}${deletePinPointsDescription}${deletePingsDescription}${deleteSentPingsDescription}"
+        "Deleting${deleteSessionsDescription}${deleteLeadsDescription}${deleteDatesDescription}${deleteSetsDescription}${deleteChallengesDescription}${deletePinPointsDescription}${deletePingsDescription}${deleteSentPingsDescription}${deleteDatePhasesDescription}${deleteDateModelsDescription}"
     return deleteDescription.dropLast(1)
 }
 
