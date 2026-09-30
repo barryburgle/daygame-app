@@ -3,6 +3,8 @@ package com.barryburgle.gameapp.ui.tool.state
 import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.date.DateModel
+import com.barryburgle.gameapp.model.date.DatePhase
 import com.barryburgle.gameapp.model.enums.AudioRecordingQualityEnum
 import com.barryburgle.gameapp.model.enums.ThemeEnum
 import com.barryburgle.gameapp.model.lead.Lead
@@ -31,6 +33,10 @@ data class ToolsState(
     var importPingsFileName: String = "",
     var exportSentPingsFileName: String = "",
     var importSentPingsFileName: String = "",
+    override var exportDatePhasesFileName: String = "",
+    var importDatePhasesFileName: String = "",
+    override var exportDateModelsFileName: String = "",
+    var importDateModelsFileName: String = "",
     override var exportSettingsFileName: String = "",
     var importSettingsFileName: String = "",
     override var exportFolder: String = "",
@@ -107,6 +113,8 @@ data class ToolsState(
     exportSetsFileName,
     exportChallengesFileName,
     exportPinPointsFileName,
+    exportDatePhasesFileName,
+    exportDateModelsFileName,
     exportSettingsFileName,
     exportFolder,
     backupFolder,
