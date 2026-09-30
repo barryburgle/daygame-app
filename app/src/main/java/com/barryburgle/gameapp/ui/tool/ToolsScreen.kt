@@ -111,6 +111,10 @@ fun ToolsScreen(
                 if (state.allPings.isEmpty()) "" else "${state.allPings.size} pings, "
             val sentPingCountDesc =
                 if (state.allSentPings.isEmpty()) "" else "${state.allSentPings.size} sent pings, "
+            val datePhaseCountDesc =
+                if (state.allDatePhases.isEmpty()) "" else "${state.allDatePhases.size} date phases, "
+            val dateModelCountDesc =
+                if (state.allDateModels.isEmpty()) "" else "${state.allDateModels.size} date models, "
             val settingsCountDesc =
                 if (state.allSettings.isEmpty()) "." else "${state.allSettings.size} settings."
 
@@ -198,7 +202,7 @@ fun ToolsScreen(
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     DataExchangeCard(
                         cardTitle = "Export",
-                        cardSubtitle = "Holding ${sessionsCountDesc}${leadsCountDesc}${setsCountDesc}${datesCountDesc}${challengesCountDesc}${pinpointCountDesc}${pingCountDesc}${sentPingCountDesc}${settingsCountDesc}",
+                        cardSubtitle = "Holding ${sessionsCountDesc}${leadsCountDesc}${setsCountDesc}${datesCountDesc}${challengesCountDesc}${pinpointCountDesc}${pingCountDesc}${sentPingCountDesc}${datePhaseCountDesc}${dateModelCountDesc}${settingsCountDesc}",
                         state = state,
                         onEvent = onEvent,
                         modifier = dataExchangeCardModifier,
