@@ -76,13 +76,11 @@ class ToolViewModel(
             allSettings = allSettings
         )
     }
-    val _settingFilenameState: Flow<SettingFilenameState> = CombineEighteen(
+    val _settingFilenameState: Flow<SettingFilenameState> = CombineSixteen(
         settingDao.getExportSessionsFilename(),
         settingDao.getImportSessionsFilename(),
         settingDao.getExportLeadsFilename(),
         settingDao.getImportLeadsFilename(),
-        settingDao.getExportDatesFilename(),
-        settingDao.getImportDatesFilename(),
         settingDao.getExportSetsFilename(),
         settingDao.getImportSetsFilename(),
         settingDao.getExportChallengesFilename(),
@@ -95,14 +93,12 @@ class ToolViewModel(
         settingDao.getImportSentPingsFilename(),
         settingDao.getExportSettingsFilename(),
         settingDao.getImportSettingsFilename()
-    ) { exportSessions, importSessions, exportLeads, importLeads, exportDates, importDates, exportSets, importSets, exportChallenges, importChallenges, exportPinPoints, importPinPoints, exportPings, importPings, exportSentPings, importSentPings, exportSettings, importSettings ->
+    ) { exportSessions, importSessions, exportLeads, importLeads, exportSets, importSets, exportChallenges, importChallenges, exportPinPoints, importPinPoints, exportPings, importPings, exportSentPings, importSentPings, exportSettings, importSettings ->
         SettingFilenameState(
             exportSessionsFilename = exportSessions,
             importSessionsFilename = importSessions,
             exportLeadsFilename = exportLeads,
             importLeadsFilename = importLeads,
-            exportDatesFilename = exportDates,
-            importDatesFilename = importDates,
             exportSetsFilename = exportSets,
             importSetsFilename = importSets,
             exportChallengesFilename = exportChallenges,
@@ -115,6 +111,23 @@ class ToolViewModel(
             importSentPingsFilename = importSentPings,
             exportSettingsFilename = exportSettings,
             importSettingsFilename = importSettings,
+        )
+    }
+    val _dateFilenameState: Flow<DateFilenameState> = CombineSix(
+        settingDao.getExportDatesFilename(),
+        settingDao.getImportDatesFilename(),
+        settingDao.getExportDatePhasesFilename(),
+        settingDao.getImportDatePhasesFilename(),
+        settingDao.getExportDateModelsFilename(),
+        settingDao.getImportDateModelsFilename()
+    ) { exportDates, importDates, exportDatePhases, importDatePhases, exportDateModels, importDateModels ->
+        DateFilenameState(
+            exportDatesFilename = exportDates,
+            importDatesFilename = importDates,
+            exportDatePhasesFilename = exportDatePhases,
+            importDatePhasesFilename = importDatePhases,
+            exportDateModelsFilename = exportDateModels,
+            importDateModelsFilename = importDateModels
         )
     }
     val _importExportSettingState: Flow<ImportExportSettingState> = CombineFive(
@@ -208,11 +221,12 @@ class ToolViewModel(
     private val _recordingsFolder = settingDao.getRecordingsFolder()
     private val _recordingsEnabled = settingDao.getRecordingsEnabled()
     val state =
-        CombineSixteen(
+        CombineSeventeen(
             _state,
             _allEntitiesState,
             _importExportSettingState,
             _settingFilenameState,
+            _dateFilenameState,
             _generalSettingState,
             _liveSessionSettingState,
             _averageLast,
@@ -225,14 +239,18 @@ class ToolViewModel(
             _lastMonthsShown,
             _recordingsFolder,
             _recordingsEnabled
-        ) { state, allEntitiesState, importExportSettingState, settingFilenameState, generalSettingState, liveSessionSettingState, averageLast, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown, recordingsFolder, recordingsEnabled ->
+        ) { state, allEntitiesState, importExportSettingState, settingFilenameState, dateFilenameState, generalSettingState, liveSessionSettingState, averageLast, latestAvailable, latestPublishDate, latestChangelog, latestDownloadUrl, lastSessionsShown, lastWeeksShown, lastMonthsShown, recordingsFolder, recordingsEnabled ->
             state.copy(
                 exportSessionsFileName = settingFilenameState.exportSessionsFilename,
                 importSessionsFileName = settingFilenameState.importSessionsFilename,
                 exportLeadsFileName = settingFilenameState.exportLeadsFilename,
                 importLeadsFileName = settingFilenameState.importLeadsFilename,
-                exportDatesFileName = settingFilenameState.exportDatesFilename,
-                importDatesFileName = settingFilenameState.importDatesFilename,
+                exportDatesFileName = dateFilenameState.exportDatesFilename,
+                importDatesFileName = dateFilenameState.importDatesFilename,
+                exportDatePhasesFileName = dateFilenameState.exportDatePhasesFilename,
+                importDatePhasesFileName = dateFilenameState.importDatePhasesFilename,
+                exportDateModelsFileName = dateFilenameState.exportDateModelsFilename,
+                importDateModelsFileName = dateFilenameState.importDateModelsFilename,
                 exportSetsFileName = settingFilenameState.exportSetsFilename,
                 importSetsFileName = settingFilenameState.importSetsFilename,
                 exportChallengesFileName = settingFilenameState.exportChallengesFilename,
@@ -1374,8 +1392,6 @@ data class SettingFilenameState(
     val importSessionsFilename: String,
     val exportLeadsFilename: String,
     val importLeadsFilename: String,
-    val exportDatesFilename: String,
-    val importDatesFilename: String,
     val exportSetsFilename: String,
     val importSetsFilename: String,
     val exportChallengesFilename: String,
@@ -1388,6 +1404,15 @@ data class SettingFilenameState(
     val importSentPingsFilename: String,
     val exportSettingsFilename: String,
     val importSettingsFilename: String
+)
+
+data class DateFilenameState(
+    val exportDatesFilename: String,
+    val importDatesFilename: String,
+    val exportDatePhasesFilename: String,
+    val importDatePhasesFilename: String,
+    val exportDateModelsFilename: String,
+    val importDateModelsFilename: String,
 )
 
 data class GeneralSettingState(

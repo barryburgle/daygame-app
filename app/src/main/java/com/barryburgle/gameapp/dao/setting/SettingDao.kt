@@ -112,6 +112,12 @@ interface SettingDao {
         const val DEFAULT_SENT_PINGS_EXPORT_FILE_NAME: String = "sent_pings_export"
         const val DEFAULT_SENT_PINGS_IMPORT_FILE_NAME: String =
             "sent_pings_export_yyyy_mm_dd_hh_mm.csv"
+        const val DEFAULT_DATE_PHASES_EXPORT_FILE_NAME: String = "date_phases_export"
+        const val DEFAULT_DATE_PHASES_IMPORT_FILE_NAME: String =
+            "date_phases_export_yyyy_mm_dd_hh_mm.csv"
+        const val DEFAULT_DATE_MODELS_EXPORT_FILE_NAME: String = "date_models_export"
+        const val DEFAULT_DATE_MODELS_IMPORT_FILE_NAME: String =
+            "date_models_export_yyyy_mm_dd_hh_mm.csv"
         const val DEFAULT_SETTINGS_EXPORT_FILE_NAME: String = "settings_export"
         const val DEFAULT_SETTINGS_IMPORT_FILE_NAME: String =
             "settings_export_yyyy_mm_dd_hh_mm.csv"
@@ -232,6 +238,18 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SENT_PINGS_IMPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${IMPORT_SENT_PINGS_FILE_NAME_ID}'")
     fun getImportSentPingsFilename(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_DATE_PHASES_EXPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${EXPORT_DATE_PHASES_FILE_NAME_ID}'")
+    fun getExportDatePhasesFilename(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_DATE_PHASES_IMPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${IMPORT_DATE_PHASES_FILE_NAME_ID}'")
+    fun getImportDatePhasesFilename(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_DATE_MODELS_EXPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${EXPORT_DATE_MODELS_FILE_NAME_ID}'")
+    fun getExportDateModelsFilename(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_DATE_MODELS_IMPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${IMPORT_DATE_MODELS_FILE_NAME_ID}'")
+    fun getImportDateModelsFilename(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SETTINGS_EXPORT_FILE_NAME}' ELSE value END FROM setting WHERE id = '${EXPORT_SETTINGS_FILE_NAME_ID}'")
     fun getExportSettingsFilename(): Flow<String>
