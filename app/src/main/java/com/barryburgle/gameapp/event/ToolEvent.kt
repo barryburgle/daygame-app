@@ -72,6 +72,8 @@ sealed interface ToolEvent : GenericEvent {
     object SwitchDeletePinPoints : ToolEvent
     object SwitchDeletePings : ToolEvent
     object SwitchDeleteSentPings : ToolEvent
+    object SwitchDeleteDatePhases : ToolEvent
+    object SwitchDeleteDateModels : ToolEvent
     object SwitchDeleteSettings : ToolEvent
     object SwitchIsCleaning : ToolEvent
     object SwitchThemeSysFollow : ToolEvent

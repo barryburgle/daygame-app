@@ -991,6 +991,22 @@ class ToolViewModel(
                 }
             }
 
+            is ToolEvent.SwitchDeleteDatePhases -> {
+                _state.update {
+                    it.copy(
+                        deleteDatePhases = _state.value.deleteDatePhases.not()
+                    )
+                }
+            }
+
+            is ToolEvent.SwitchDeleteDateModels -> {
+                _state.update {
+                    it.copy(
+                        deleteDateModels = _state.value.deleteDateModels.not()
+                    )
+                }
+            }
+
             is ToolEvent.SwitchDeleteSettings -> {
                 _state.update {
                     it.copy(

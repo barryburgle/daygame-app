@@ -82,6 +82,8 @@ data class ToolsState(
     var deletePinPoints: Boolean = false,
     var deletePings: Boolean = false,
     var deleteSentPings: Boolean = false,
+    var deleteDatePhases: Boolean = false,
+    var deleteDateModels: Boolean = false,
     var deleteSettings: Boolean = false,
     var isCleaning: Boolean = false,
     var themeSysFollow: Boolean = false,
