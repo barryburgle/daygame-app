@@ -27,6 +27,10 @@ sealed interface ToolEvent : GenericEvent {
     data class SetImportPingsFileName(val importPingsFileName: String) : ToolEvent
     data class SetExportSentPingsFileName(val exportSentPingsFileName: String) : ToolEvent
     data class SetImportSentPingsFileName(val importSentPingsFileName: String) : ToolEvent
+    data class SetExportDatePhasesFileName(val exportDatePhasesFileName: String) : ToolEvent
+    data class SetImportDatePhasesFileName(val importDatePhasesFileName: String) : ToolEvent
+    data class SetExportDateModelsFileName(val exportDateModelsFileName: String) : ToolEvent
+    data class SetImportDateModelsFileName(val importDateModelsFileName: String) : ToolEvent
     data class SetExportSettingsFileName(val exportSettingsFileName: String) : ToolEvent
     data class SetImportSettingsFileName(val importSettingsFileName: String) : ToolEvent
     data class SetExportFolder(val exportFolder: String) : ToolEvent

@@ -475,6 +475,54 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SetExportDatePhasesFileName -> {
+                _state.update {
+                    it.copy(
+                        exportDatePhasesFileName = event.exportDatePhasesFileName
+                    )
+                }
+                val exportDatePhasesFileName = _state.value.exportDatePhasesFileName
+                val setting =
+                    Setting(SettingDao.EXPORT_DATE_PHASES_FILE_NAME_ID, exportDatePhasesFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetImportDatePhasesFileName -> {
+                _state.update {
+                    it.copy(
+                        importDatePhasesFileName = event.importDatePhasesFileName
+                    )
+                }
+                val importDatePhasesFileName = _state.value.importDatePhasesFileName
+                val setting =
+                    Setting(SettingDao.IMPORT_DATE_PHASES_FILE_NAME_ID, importDatePhasesFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetExportDateModelsFileName -> {
+                _state.update {
+                    it.copy(
+                        exportDateModelsFileName = event.exportDateModelsFileName
+                    )
+                }
+                val exportDateModelsFileName = _state.value.exportDateModelsFileName
+                val setting =
+                    Setting(SettingDao.EXPORT_DATE_MODELS_FILE_NAME_ID, exportDateModelsFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
+            is ToolEvent.SetImportDateModelsFileName -> {
+                _state.update {
+                    it.copy(
+                        importDateModelsFileName = event.importDateModelsFileName
+                    )
+                }
+                val importDateModelsFileName = _state.value.importDateModelsFileName
+                val setting =
+                    Setting(SettingDao.IMPORT_DATE_MODELS_FILE_NAME_ID, importDateModelsFileName)
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetExportSettingsFileName -> {
                 _state.update {
                     it.copy(
