@@ -50,11 +50,11 @@ class FluidLineChartRenderer(
 
     private inline fun withClipping(c: Canvas, drawBlock: () -> Unit) {
         val saveCount = c.save()
-        val canvasWidth = c.width.toFloat()
         val canvasHeight = c.height.toFloat()
 
         val contentLeft = mViewPortHandler.contentLeft()
-        val clipRight = contentLeft + ((canvasWidth - contentLeft) * mAnimator.phaseX)
+        val contentRight = mViewPortHandler.contentRight()
+        val clipRight = contentLeft + ((contentRight - contentLeft) * mAnimator.phaseX)
 
         c.clipRect(0f, 0f, clipRight, canvasHeight)
 
@@ -256,7 +256,9 @@ fun OutputLineChart(
                             barChart.setVisibleXRangeMaximum(12f)
                             barChart.moveViewToX(normalizedBarEntryList.size.toFloat())
                         }
-                        barChart.animateX(900, Easing.EaseInCubic)
+                        barChart.post {
+                            barChart.animateX(900, Easing.EaseInCubic)
+                        }
                         barChart
                     })
             }
