@@ -104,6 +104,10 @@ class DataExchangeService {
                     pingCsvService.getBackupFileName(),
                     state.allSentPings,
                     sentPingCsvService.getBackupFileName(),
+                    state.allDatePhases,
+                    datePhaseCsvService.getBackupFileName(),
+                    state.allDateModels,
+                    dateModelCsvService.getBackupFileName(),
                     state.allSettings,
                     settingCsvService.getBackupFileName(),
                     state.exportFolder + "/" + state.backupFolder,
@@ -175,6 +179,10 @@ class DataExchangeService {
             exportPingsFileName: String,
             allSentPings: List<SentPing>,
             exportSentPingsFileName: String,
+            allDatePhases: List<DatePhase>,
+            exportDatePhasesFileName: String,
+            allDateModels: List<DateModel>,
+            exportDateModelsFileName: String,
             allSettings: List<Setting>,
             exportSettingsFileName: String,
             exportFolder: String,
@@ -256,6 +264,26 @@ class DataExchangeService {
                 allSentPings,
                 exportFolder,
                 exportSentPingsFileName,
+                exportHeader,
+                lastBackup,
+                true,
+                true
+            )
+            backupAndClean(
+                datePhaseCsvService,
+                allDatePhases,
+                exportFolder,
+                exportDatePhasesFileName,
+                exportHeader,
+                lastBackup,
+                true,
+                true
+            )
+            backupAndClean(
+                dateModelCsvService,
+                allDateModels,
+                exportFolder,
+                exportDateModelsFileName,
                 exportHeader,
                 lastBackup,
                 true,
