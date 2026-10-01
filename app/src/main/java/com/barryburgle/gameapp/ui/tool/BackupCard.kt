@@ -74,6 +74,13 @@ fun BackupCard(
                             onClick = {
                                 coroutineScope.launch {
                                     DataExchangeService.backup(state)
+                                    DataExchangeService.backupPingsAndSentPings(
+                                        state.allPings,
+                                        state.allSentPings,
+                                        state.lastBackup,
+                                        state.exportFolder,
+                                        state.backupFolder
+                                    )
                                     Toast.makeText(
                                         localContext,
                                         "Successfully backed up all tables",
