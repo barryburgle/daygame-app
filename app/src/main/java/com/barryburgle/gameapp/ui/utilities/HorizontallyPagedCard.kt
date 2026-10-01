@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -59,12 +61,13 @@ fun HorizontallyPagedCard(
     onShareActionButtonClick: () -> Unit,
     onTouchToEditClick: () -> Unit
 ) {
-    val textColor =
-        if (backgroundMediaLocalUrl != null) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.onPrimary
+    val hasMedia = !backgroundMediaLocalUrl.isNullOrBlank()
+    val textColor = MaterialTheme.colorScheme.onPrimary
     val context = LocalContext.current
     val cardShape = RoundedCornerShape(16.dp)
     Box(
         modifier = Modifier
+            .height(170.dp)
             .padding(8.dp)
             .shadow(elevation = 12.dp, shape = cardShape, clip = false)
     ) {
@@ -78,37 +81,10 @@ fun HorizontallyPagedCard(
                     onTouchToEditClick()
                 }
         ) {
-            if (!backgroundMediaLocalUrl.isNullOrBlank()) {
+            if (hasMedia) {
                 // TODO: support ig link -> cached thumbnail in card background (saved in a cache folder)
-                if (isVideoUrl(backgroundMediaLocalUrl)) {
-                    CardVideoBackground(
-                        videoUrl = backgroundMediaLocalUrl,
-                        modifier = Modifier
-                            .matchParentSize()
-                            .clip(cardShape)
-                    )
-                } else {
-                    AsyncImage(
-                        model = backgroundMediaLocalUrl,
-                        contentDescription = "Ping Pic",
-                        modifier = Modifier
-                            .matchParentSize()
-                            .clip(cardShape),
-                        contentScale = ContentScale.Crop
-                    )
-                }
+                RenderMedia(backgroundMediaLocalUrl, cardShape, Modifier.matchParentSize())
             }
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .background(
-                        if (!backgroundMediaLocalUrl.isNullOrBlank()) {
-                            Color.Black.copy(alpha = 0.45f)
-                        } else {
-                            Color.Transparent
-                        }
-                    )
-            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -121,25 +97,39 @@ fun HorizontallyPagedCard(
                         .weight(1f)
                         .padding(end = 8.dp)
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        modifier = Modifier.fillMaxHeight(),
+                        verticalArrangement = Arrangement.SpaceBetween
                     ) {
-                        PillShapedTranslucent {
-                            MediumTitleText(
-                                text = title,
-                                color = textColor
-                            )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            PillShapedTranslucent {
+                                MediumTitleText(
+                                    text = title,
+                                    color = textColor
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            WavyPlaceholder("Touch to edit", color = textColor.copy(alpha = 0.5f))
                         }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        WavyPlaceholder("Touch to edit", color = textColor.copy(alpha = 0.5f))
-                    }
-                    if (!description.isNullOrBlank()) {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        LittleBodyText(
-                            text = "\"$description\"",
-                            color = textColor
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (!description.isNullOrBlank()) {
+                                Spacer(modifier = Modifier.height(4.dp))
+                                val shownDescription =
+                                    if (description.length <= 100) description else description.take(
+                                        100
+                                    ) + "..."
+                                LittleBodyText(
+                                    text = "\"$shownDescription\"",
+                                    color = textColor
+                                )
+                            }
+                        }
                     }
 
                     if (!clickableLink.isNullOrBlank()) {
@@ -182,7 +172,8 @@ fun HorizontallyPagedCard(
                     }
                 }
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     IconShadowButton(
@@ -203,6 +194,49 @@ fun HorizontallyPagedCard(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun RenderMedia(
+    backgroundMediaLocalUrl: String,
+    cardShape: RoundedCornerShape,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.clip(cardShape)
+    ) {
+        if (isVideoUrl(backgroundMediaLocalUrl)) {
+            CardVideoBackground(
+                videoUrl = backgroundMediaLocalUrl,
+                modifier = Modifier.matchParentSize()
+            )
+        } else {
+            AsyncImage(
+                model = backgroundMediaLocalUrl,
+                contentDescription = "Ping Pic",
+                modifier = Modifier.matchParentSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.Transparent,
+                            Color.Transparent,
+                            Color.Transparent,
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.75f),
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.85f),
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.95f),
+                            MaterialTheme.colorScheme.primary,
+                        )
+                    )
+                )
+        )
     }
 }
 
@@ -251,7 +285,7 @@ fun PillShapedTranslucent(
     Row(
         modifier = Modifier
             .background(
-                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.25f),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                 shape = RoundedCornerShape(10.dp)
             )
             .padding(horizontal = 10.dp)
