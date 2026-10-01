@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.enums.DataExchangeTypeEnum
 import com.barryburgle.gameapp.service.csv.AbstractCsvService
@@ -139,6 +140,7 @@ fun DataExchangeCard(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         LittleBodyText(cardSubtitle)
+                        // TODO: header setting should be unique across the two DataExchangeCard instances to avoid exporting with header and importing without -> crash
                         RowTitle(
                             "${cardTitle} folder:", "Header:", textFieldColumnWidth
                         )
@@ -700,7 +702,9 @@ fun DataExchangeCard(
                                     state.exportSettingsFileName,
                                     state.importHeader,
                                     state.exportHeader,
-                                    state.allSettings,
+                                    // We need to filter out from backup the changelog because it causes backup validation
+                                    // problems: no need to store it as publicly available
+                                    state.allSettings.filterNot { it.id == SettingDao.LATEST_CHANGELOG_ID },
                                     onEvent,
                                     localContext,
                                     ToolEvent::SetAllSettings

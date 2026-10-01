@@ -2,6 +2,7 @@ package com.barryburgle.gameapp.service.exchange
 
 import android.content.Context
 import android.widget.Toast
+import com.barryburgle.gameapp.dao.setting.SettingDao
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
@@ -289,9 +290,11 @@ class DataExchangeService {
                 true,
                 true
             )
+            // We need to filter out from backup the changelog because it causes backup validation
+            // problems: no need to store it as publicly available
             backupAndClean(
                 settingCsvService,
-                allSettings,
+                allSettings.filterNot { it.id == SettingDao.LATEST_CHANGELOG_ID },
                 exportFolder,
                 exportSettingsFileName,
                 exportHeader,
@@ -363,10 +366,12 @@ class DataExchangeService {
                 exportFolder, exportDateModelsFileName, exportHeader,
                 allDateModels
             )
+            // We need to filter out from export the changelog because it causes backup validation
+            // problems: no need to store it as publicly available
             val validSettingExport = exportAndValidate(
                 settingCsvService,
                 exportFolder, exportSettingsFileName, exportHeader,
-                allSettings
+                allSettings.filterNot { it.id == SettingDao.LATEST_CHANGELOG_ID }
             )
             return validSessionExport && validLeadExport && validDateExport && validSetExport && validChallengeExport && validPinPointExport && validDatePhaseExport && validDateModelExport && validSettingExport
         }
