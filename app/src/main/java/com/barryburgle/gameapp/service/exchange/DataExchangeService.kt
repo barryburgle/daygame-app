@@ -5,6 +5,8 @@ import android.widget.Toast
 import com.barryburgle.gameapp.event.ToolEvent
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.date.Date
+import com.barryburgle.gameapp.model.date.DateModel
+import com.barryburgle.gameapp.model.date.DatePhase
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.model.ping.SentPing
@@ -16,6 +18,8 @@ import com.barryburgle.gameapp.service.csv.AbstractCsvService
 import com.barryburgle.gameapp.service.csv.CSVFindService
 import com.barryburgle.gameapp.service.csv.ChallengeCsvService
 import com.barryburgle.gameapp.service.csv.DateCsvService
+import com.barryburgle.gameapp.service.csv.DateModelCsvService
+import com.barryburgle.gameapp.service.csv.DatePhaseCsvService
 import com.barryburgle.gameapp.service.csv.LeadCsvService
 import com.barryburgle.gameapp.service.csv.PinPointCsvService
 import com.barryburgle.gameapp.service.csv.PingCsvService
@@ -41,6 +45,8 @@ class DataExchangeService {
         val pinPointCsvService: PinPointCsvService = PinPointCsvService()
         val pingCsvService: PingCsvService = PingCsvService()
         val sentPingCsvService: SentPingCsvService = SentPingCsvService()
+        val datePhaseCsvService: DatePhaseCsvService = DatePhaseCsvService()
+        val dateModelCsvService: DateModelCsvService = DateModelCsvService()
         val settingCsvService: SettingCsvService = SettingCsvService()
 
         suspend fun backupPingsAndSentPings(
@@ -280,6 +286,10 @@ class DataExchangeService {
             exportChallengesFileName: String,
             allPinPoints: List<PinPoint>,
             exportPinPointsFileName: String,
+            allDatePhases: List<DatePhase>,
+            exportDatePhasesFileName: String,
+            allDateModels: List<DateModel>,
+            exportDateModelsFileName: String,
             allSettings: List<Setting>,
             exportSettingsFileName: String,
             exportFolder: String,
@@ -315,12 +325,22 @@ class DataExchangeService {
                 exportFolder, exportPinPointsFileName, exportHeader,
                 allPinPoints
             )
+            val validDatePhaseExport = exportAndValidate(
+                datePhaseCsvService,
+                exportFolder, exportDatePhasesFileName, exportHeader,
+                allDatePhases
+            )
+            val validDateModelExport = exportAndValidate(
+                dateModelCsvService,
+                exportFolder, exportDateModelsFileName, exportHeader,
+                allDateModels
+            )
             val validSettingExport = exportAndValidate(
                 settingCsvService,
                 exportFolder, exportSettingsFileName, exportHeader,
                 allSettings
             )
-            return validSessionExport && validLeadExport && validDateExport && validSetExport && validChallengeExport && validPinPointExport && validSettingExport
+            return validSessionExport && validLeadExport && validDateExport && validSetExport && validChallengeExport && validPinPointExport && validDatePhaseExport && validDateModelExport && validSettingExport
         }
 
         fun import(
@@ -332,6 +352,8 @@ class DataExchangeService {
             importPinPointsFileName: String,
             importPingsFileName: String,
             importSentPingsFileName: String,
+            importDatePhasesFileName: String,
+            importDateModelsFileName: String,
             importSettingsFileName: String,
             importFolder: String,
             importHeader: Boolean,
@@ -410,6 +432,26 @@ class DataExchangeService {
                 },
                 { ToolEvent.SetAllSentPings(it) }
             )
+            var datePhasesImported = safeImport(
+                {
+                    datePhaseCsvService.importRows(
+                        importFolder,
+                        importDatePhasesFileName,
+                        importHeader
+                    )
+                },
+                { ToolEvent.SetAllDatePhases(it) }
+            )
+            var dateModelsImported = safeImport(
+                {
+                    dateModelCsvService.importRows(
+                        importFolder,
+                        importDateModelsFileName,
+                        importHeader
+                    )
+                },
+                { ToolEvent.SetAllDateModels(it) }
+            )
             var settingsImported = safeImport(
                 {
                     settingCsvService.importRows(
@@ -420,7 +462,7 @@ class DataExchangeService {
                 },
                 { ToolEvent.SetAllSettings(it) }
             )
-            return sessionsImported && leadsImported && datesImported && setsImported && challengesImported && pinPointsImported && pingsImported && sentPingsImported && settingsImported
+            return sessionsImported && leadsImported && datesImported && setsImported && challengesImported && pinPointsImported && pingsImported && sentPingsImported && datePhasesImported && dateModelsImported && settingsImported
         }
 
         fun exportAll(
@@ -441,6 +483,10 @@ class DataExchangeService {
                 state.exportChallengesFileName,
                 state.allPinPoints,
                 state.exportPinPointsFileName,
+                state.allDatePhases,
+                state.exportDatePhasesFileName,
+                state.allDateModels,
+                state.exportDateModelsFileName,
                 state.allSettings,
                 state.exportSettingsFileName,
                 state.exportFolder,
@@ -509,6 +555,16 @@ class DataExchangeService {
                         state.importFolder + "/" + state.backupFolder,
                         "sent_ping"
                     )
+                val importDatePhasesFileName =
+                    if (!fromBackupFolder) state.importDatePhasesFileName else csvFindService.getLastFilenameInFolder(
+                        state.importFolder + "/" + state.backupFolder,
+                        "date_phase"
+                    )
+                val importDateModelsFileName =
+                    if (!fromBackupFolder) state.importDateModelsFileName else csvFindService.getLastFilenameInFolder(
+                        state.importFolder + "/" + state.backupFolder,
+                        "date_model"
+                    )
                 val importSettingsFileName =
                     if (!fromBackupFolder) state.importSettingsFileName else csvFindService.getLastFilenameInFolder(
                         state.importFolder + "/" + state.backupFolder,
@@ -525,6 +581,8 @@ class DataExchangeService {
                     importPinPointsFileName,
                     importPingsFileName,
                     importSentPingsFileName,
+                    importDatePhasesFileName,
+                    importDateModelsFileName,
                     importSettingsFileName,
                     importFolder,
                     true,
