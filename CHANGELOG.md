@@ -8,6 +8,7 @@
 - "Pull O'Clock": press the timer button (or start a recording) on Live Session card before starting the set and get a notification to remind to close/pull after customizable amount of in-set minutes ⏱️
 - The "Daygame Dice" is all you need: challenge yourself on a Live Session 🎲
 - Pinpoints week vs. day-time chart: know when most of the interaction happen at a glance 👀
+- Get reminded of you last taken sticking points when starting a Live Session: they will appear in your notification and stay there for all the session 🪄
 - Pinpoints on map can now be filtered by type: show where the juiciest interactions happened 📍
 - Tap on the sitting reminder notification to open the timer for some rest 🕐
 - Tap on any chart in Dashboard to get to view the whole time series in landscape 📊

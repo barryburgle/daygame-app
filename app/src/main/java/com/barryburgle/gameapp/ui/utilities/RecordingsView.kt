@@ -389,18 +389,20 @@ private fun RecordingMainInfo(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             MediumBodyText(fileDateWrittenText)
-            Column(
-                modifier = Modifier.background(
-                    MaterialTheme.colorScheme.onPrimary.copy(
-                        alpha = 0.2f
-                    ), RoundedCornerShape(10.dp)
-                )
-            ) {
-                LittleBodyText(
-                    text = RecordingService.formatDurationMsToMinutesSecs(
-                        fileDurationMs
-                    ), modifier = Modifier.padding(3.dp)
-                )
+            if (fileDurationMs != 0) {
+                Column(
+                    modifier = Modifier.background(
+                        MaterialTheme.colorScheme.onPrimary.copy(
+                            alpha = 0.2f
+                        ), RoundedCornerShape(10.dp)
+                    )
+                ) {
+                    LittleBodyText(
+                        text = RecordingService.formatDurationMsToMinutesSecs(
+                            fileDurationMs
+                        ), modifier = Modifier.padding(3.dp)
+                    )
+                }
             }
         }
     }
