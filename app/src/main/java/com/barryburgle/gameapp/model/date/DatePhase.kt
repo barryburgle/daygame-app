@@ -12,4 +12,22 @@ open class DatePhase(
     @ColumnInfo(name = "duration") var duration: Long = 15
 ) {
     constructor() : this(0, "", "", 0)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is DatePhase) return false
+
+        return id == other.id &&
+                title == other.title &&
+                description == other.description &&
+                duration == other.duration
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + description.hashCode()
+        result = 31 * result + duration.hashCode()
+        return result
+    }
 }

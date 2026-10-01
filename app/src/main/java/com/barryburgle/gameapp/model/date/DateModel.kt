@@ -15,4 +15,22 @@ open class DateModel(
     @ColumnInfo(name = "phases") var phases: List<Long> = emptyList()
 ) {
     constructor() : this(0, "", "", emptyList())
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is DateModel) return false
+
+        return id == other.id &&
+                title == other.title &&
+                description == other.description &&
+                phases == other.phases
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + (description?.hashCode() ?: 0)
+        result = 31 * result + phases.hashCode()
+        return result
+    }
 }
