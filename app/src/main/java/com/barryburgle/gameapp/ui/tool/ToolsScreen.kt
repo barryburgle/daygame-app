@@ -222,6 +222,8 @@ fun ToolsScreen(
                 }
             }
             item {
+                // TODO: when pressing on "Import all" of the following card should we refresh all the import filenames? Or ask the user if he wants to refresh all the filenames or keep the current?
+                // TODO: investigate why when importing without header the row count at db is the same - 1 as if we imported the file with the header set to on
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.width(spaceFromLeft))
                     DataExchangeCard(
