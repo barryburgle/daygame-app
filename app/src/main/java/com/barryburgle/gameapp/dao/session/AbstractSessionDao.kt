@@ -87,4 +87,7 @@ interface AbstractSessionDao {
 
     @Query("SELECT * from abstract_session WHERE start_hour = end_hour ORDER BY session_date DESC, end_hour DESC LIMIT 1")
     fun getLastLiveSession(): Flow<AbstractSession>
+
+    @Query("SELECT sticking_points FROM abstract_session WHERE sticking_points IS NOT NULL AND TRIM(sticking_points) != '' ORDER BY session_date DESC, end_hour DESC LIMIT 1")
+    fun getLastSessionStickingPoints(): Flow<String?>
 }

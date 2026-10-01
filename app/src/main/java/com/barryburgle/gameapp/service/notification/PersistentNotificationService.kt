@@ -51,6 +51,7 @@ class PersistentNotificationService : Service() {
     private val fusedLocationClient by lazy {
         LocationServices.getFusedLocationProviderClient(this)
     }
+    private var pastStickingPoints: String = ""
 
     private fun updateServiceState(intent: Intent?) {
         if (intent?.hasExtra(LIVE_SESSIONS_START_HOUR) == true) {
@@ -121,7 +122,8 @@ class PersistentNotificationService : Service() {
                     updateNotification(
                         updatedSession.sets,
                         updatedSession.convos,
-                        updatedSession.contacts
+                        updatedSession.contacts,
+                        pastStickingPoints
                     )
                 }
             } catch (e: Exception) {
@@ -189,7 +191,8 @@ class PersistentNotificationService : Service() {
                     updateNotification(
                         updatedSession.sets,
                         updatedSession.convos,
-                        updatedSession.contacts
+                        updatedSession.contacts,
+                        pastStickingPoints
                     )
                 }
             } catch (e: Exception) {
@@ -256,7 +259,8 @@ class PersistentNotificationService : Service() {
                         updateNotification(
                             updatedSession.sets,
                             updatedSession.convos,
-                            updatedSession.contacts
+                            updatedSession.contacts,
+                            pastStickingPoints
                         )
                     }
                 }
@@ -337,10 +341,43 @@ class PersistentNotificationService : Service() {
                 return START_STICKY
             }
         }
-        return updateNotification(0, 0, 0)
+
+        loadInitialNotificationData(abstractSessionDao)
+        return START_STICKY
     }
 
-    fun updateNotification(sets: Int, conversations: Int, contacts: Int): Int {
+    private fun loadInitialNotificationData(abstractSessionDao: AbstractSessionDao) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val liveSession = abstractSessionDao.getLastLiveSession().firstOrNull()
+                val fetchedLastStickingPoints =
+                    abstractSessionDao.getLastSessionStickingPoints().firstOrNull()
+                if (!fetchedLastStickingPoints.isNullOrEmpty()) {
+                    pastStickingPoints = fetchedLastStickingPoints
+                }
+                withContext(Dispatchers.Main) {
+                    updateNotification(
+                        liveSession?.sets ?: 0,
+                        liveSession?.convos ?: 0,
+                        liveSession?.contacts ?: 0,
+                        pastStickingPoints
+                    )
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    updateNotification(0, 0, 0, pastStickingPoints)
+                }
+            }
+        }
+    }
+
+    fun updateNotification(
+        sets: Int,
+        conversations: Int,
+        contacts: Int,
+        pastSessionStickingPoints: String?
+    ): Int {
         val newSetPendingIntent = PendingIntent.getService(
             this, 0, Intent(this, PersistentNotificationService::class.java).apply {
                 action = ACTION_NEW_SET
@@ -361,41 +398,47 @@ class PersistentNotificationService : Service() {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
             }, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        var contentText = ""
+
+        val titleText = "Session started at $startHour"
+        var contentText =
+            if (!pastSessionStickingPoints.isNullOrEmpty()) "Last sticking points:\n$pastSessionStickingPoints\n\n" else ""
+        contentText += "This session:"
         if (sets > 0) {
-            contentText += "$sets set"
-            if (sets > 1) {
-                contentText += "s"
-            }
+            contentText += " $sets set"
+            if (sets > 1) contentText += "s"
         }
         if (conversations > 0) {
             contentText += ", $conversations conversation"
-            if (conversations > 1) {
-                contentText += "s"
-            }
+            if (conversations > 1) contentText += "s"
         }
         if (contacts > 0) {
             contentText += ", $contacts contact"
-            if (contacts > 1) {
-                contentText += "s"
-            }
+            if (contacts > 1) contentText += "s"
         }
         val notification = NotificationCompat.Builder(
             this, NotificationService.LIVE_SESSION_NOTIFICATION_CHANNEL_ID
         ).setSmallIcon(R.drawable.notification)
-            .setContentTitle("Session started at " + startHour)
+            .setContentTitle(titleText)
             .setContentText(contentText)
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .setBigContentTitle(titleText)
+                    .bigText(contentText)
+            )
             .setOngoing(true).setOnlyAlertOnce(true).setContentIntent(tapPendingIntent)
-            .addAction(R.drawable.set_action, "New set", newSetPendingIntent)
+            .addAction(R.drawable.set_action, "🚶 New set", newSetPendingIntent)
             .addAction(
                 R.drawable.conversation_action,
-                "New conversation",
+                "💬 New conversation",
                 newConversationPendingIntent
             )
-            .addAction(R.drawable.contact_action, "New contact", newContactPendingIntent).setStyle(
-                androidx.media.app.NotificationCompat.MediaStyle()
-                    .setShowActionsInCompactView(0, 1, 2)
-            ).setPriority(NotificationCompat.PRIORITY_LOW).build()
+            .addAction(
+                R.drawable.contact_action,
+                "\uD83D\uDCF2 New contact",
+                newContactPendingIntent
+            )
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(100, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
