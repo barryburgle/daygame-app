@@ -51,7 +51,6 @@ fun BackupCard(
             containerColor = MaterialTheme.colorScheme.surface
         ), shape = MaterialTheme.shapes.large
     ) {
-        val textFieldHeight = 55.dp
         val textFieldColumnWidth = 230.dp
         val localContext = LocalContext.current.applicationContext
         Row(
