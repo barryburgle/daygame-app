@@ -344,6 +344,7 @@ fun InputScreen(
                     boxModifier = Modifier
                         .offset(y = -spaceFromNavBar - 18.dp)
                         .scale(1.3f)
+                        .shadow(elevation = 10.dp, shape = CircleShape)
                         .clip(CircleShape)
                         .rotate(rotationAngle),
                     imageVector = Icons.Default.Add,
