@@ -26,6 +26,17 @@ fun LiveSessionCard(
         ) {
             onEvent(ToolEvent.SwitchLiveSessionNotification)
         }
+        if (state.liveSessionNotificationEnabled) {
+            Spacer(modifier = Modifier.height(5.dp))
+            SwitchSetting(
+                "Show past sticking points",
+                state.showStickingPointsInLiveSessionNotificationEnabled && state.liveSessionNotificationEnabled,
+                description = "Show the last non-empty sticking points in Live Session persistent notification from past sessions"
+            ) {
+                onEvent(ToolEvent.SwitchShowStickingPointsInLiveSessionNotification)
+            }
+        }
+        Spacer(modifier = Modifier.height(5.dp))
         SwitchSetting(
             "Live Session sitting reminder", state.liveSessionSittingReminderEnabled,
             description = "Reminds you to have a sit every ${state.liveSessionSittingReminderInterval} minutes during Live Session"

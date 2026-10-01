@@ -40,6 +40,7 @@ open class ExportState(
     open var pinPointInteractions: Boolean = true,
     open var generateiDate: Boolean = true,
     open var liveSessionNotificationEnabled: Boolean = true,
+    open var showStickingPointsInLiveSessionNotificationEnabled: Boolean = false,
     open var liveSessionSittingReminderEnabled: Boolean = true,
     open var liveSessionSittingReminderInterval: Int = 30,
     open var liveSessionShareEnabled: Boolean = true,

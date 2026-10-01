@@ -104,6 +104,7 @@ sealed interface ToolEvent : GenericEvent {
     object DeleteAllSettings : ToolEvent
 
     object SwitchLiveSessionNotification : ToolEvent
+    object SwitchShowStickingPointsInLiveSessionNotification : ToolEvent
     object SwitchLiveSessionSittingReminder : ToolEvent
     class SetLiveSessionSittingReminderInterval(val interval: String) : ToolEvent
     object SwitchWriteHerReminder : ToolEvent

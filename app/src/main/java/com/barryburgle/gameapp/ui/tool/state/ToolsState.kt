@@ -100,6 +100,7 @@ data class ToolsState(
     var theme: String = ThemeEnum.LIGHT.type,
     var deleteConfirmationPrompt: String = "",
     override var liveSessionNotificationEnabled: Boolean = true,
+    override var showStickingPointsInLiveSessionNotificationEnabled: Boolean = false,
     override var liveSessionSittingReminderEnabled: Boolean = true,
     override var liveSessionSittingReminderInterval: Int = 30,
     override var liveSessionShareEnabled: Boolean = true,

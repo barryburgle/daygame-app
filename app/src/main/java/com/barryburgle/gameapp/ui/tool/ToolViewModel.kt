@@ -33,7 +33,6 @@ import com.barryburgle.gameapp.ui.CombineFourteen
 import com.barryburgle.gameapp.ui.CombineSeventeen
 import com.barryburgle.gameapp.ui.CombineSix
 import com.barryburgle.gameapp.ui.CombineSixteen
-import com.barryburgle.gameapp.ui.CombineThirteen
 import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -190,7 +189,7 @@ class ToolViewModel(
         )
     }
 
-    val _liveSessionSettingState: Flow<LiveSessionSettingState> = CombineThirteen(
+    val _liveSessionSettingState: Flow<LiveSessionSettingState> = CombineFourteen(
         settingDao.getPinPointInteractions(),
         settingDao.getGenerateiDate(),
         settingDao.getFollowCount(),
@@ -203,8 +202,9 @@ class ToolViewModel(
         settingDao.getLiveSessionNotificationEnabled(),
         settingDao.getLiveSessionSittingReminderEnabled(),
         settingDao.getLiveSessionSittingReminderInterval(),
+        settingDao.getShowStickingPointsInLiveSessionNotificationEnabled(),
         settingDao.getLiveSessionShareEnabled()
-    ) { pinPointInteractions, generateiDate, followCount, writeHerAfterReminderEnabled, writeHerReminderInterval, pullOClockReminderInterval, audioRecordingQuality, triggerPullOClockWithRecordingsEnable, stopRecordingOnNewEntryEnable, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, liveSessionShareEnabled ->
+    ) { pinPointInteractions, generateiDate, followCount, writeHerAfterReminderEnabled, writeHerReminderInterval, pullOClockReminderInterval, audioRecordingQuality, triggerPullOClockWithRecordingsEnable, stopRecordingOnNewEntryEnable, liveSessionNotificationEnabled, liveSessionSittingReminderEnabled, liveSessionSittingReminderInterval, showStickingPointsInLiveSessionNotificationEnabled, liveSessionShareEnabled ->
         LiveSessionSettingState(
             pinPointInteractions = pinPointInteractions,
             generateiDate = generateiDate,
@@ -218,6 +218,7 @@ class ToolViewModel(
             liveSessionNotificationEnabled = liveSessionNotificationEnabled,
             liveSessionSittingReminderEnabled = liveSessionSittingReminderEnabled,
             liveSessionSittingReminderInterval = liveSessionSittingReminderInterval,
+            showStickingPointsInLiveSessionNotificationEnabled = showStickingPointsInLiveSessionNotificationEnabled,
             liveSessionShareEnabled = liveSessionShareEnabled
         )
     }
@@ -1366,6 +1367,22 @@ class ToolViewModel(
                 viewModelScope.launch { settingDao.insert(setting) }
             }
 
+            is ToolEvent.SwitchShowStickingPointsInLiveSessionNotification -> {
+                _state.update {
+                    it.copy(
+                        showStickingPointsInLiveSessionNotificationEnabled = _state.value.showStickingPointsInLiveSessionNotificationEnabled.not()
+                    )
+                }
+                val showStickingPointsInNotificationEnabled =
+                    _state.value.showStickingPointsInLiveSessionNotificationEnabled
+                val setting =
+                    Setting(
+                        SettingDao.SHOW_STICKING_POINTS_IN_LIVE_SESSION_NOTIFICATION_ID,
+                        showStickingPointsInNotificationEnabled.toString()
+                    )
+                viewModelScope.launch { settingDao.insert(setting) }
+            }
+
             is ToolEvent.SetPullOClockReminderInterval -> {
                 _state.update {
                     it.copy(
@@ -1502,6 +1519,7 @@ data class LiveSessionSettingState(
     val liveSessionNotificationEnabled: String,
     val liveSessionSittingReminderEnabled: String,
     val liveSessionSittingReminderInterval: String,
+    val showStickingPointsInLiveSessionNotificationEnabled: String,
     val liveSessionShareEnabled: String
 )
 

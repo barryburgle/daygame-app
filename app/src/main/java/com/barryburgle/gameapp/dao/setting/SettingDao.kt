@@ -75,6 +75,7 @@ interface SettingDao {
         const val DEFAULT_CHALLENGE_GOAL_ID: String = "default_challenge_goal"
         const val THEME_ID: String = "theme_id"
         const val LIVE_SESSION_NOTIFICATION_ENABLED_ID: String = "live_session_notification_enabled"
+        const val SHOW_STICKING_POINTS_IN_LIVE_SESSION_NOTIFICATION_ID: String = "show_sticking_points_in_live_session_notification"
         const val LIVE_SESSION_SITTING_REMINDER_ENABLED_ID: String =
             "live_session_sitting_reminder_enabled"
         const val LIVE_SESSION_SITTING_REMINDER_INTERVAL_ID: String =
@@ -162,6 +163,7 @@ interface SettingDao {
         const val DEFAULT_NOTIFICATION_TIME: String = "18:00"
 
         const val DEFAULT_LIVE_SESSION_NOTIFICATION_FLAG: String = "true"
+        const val DEFAULT_SHOW_STICKING_POINTS_IN_LIVE_SESSION_NOTIFICATION_FLAG: String = "false"
         const val DEFAULT_LIVE_SESSION_SITTING_REMINDER_FLAG: String = "true"
         const val DEFAULT_LIVE_SESSION_SITTING_REMINDER_INTERVAL: String = "30"
         const val DEFAULT_LIVE_SESSION_SHARE_FLAG: String = "false"
@@ -382,6 +384,9 @@ interface SettingDao {
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LIVE_SESSION_NOTIFICATION_FLAG}' ELSE value END FROM setting WHERE id = '${LIVE_SESSION_NOTIFICATION_ENABLED_ID}'")
     fun getLiveSessionNotificationEnabled(): Flow<String>
+
+    @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_SHOW_STICKING_POINTS_IN_LIVE_SESSION_NOTIFICATION_FLAG}' ELSE value END FROM setting WHERE id = '${SHOW_STICKING_POINTS_IN_LIVE_SESSION_NOTIFICATION_ID}'")
+    fun getShowStickingPointsInLiveSessionNotificationEnabled(): Flow<String>
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN '${DEFAULT_LIVE_SESSION_SITTING_REMINDER_FLAG}' ELSE value END FROM setting WHERE id = '${LIVE_SESSION_SITTING_REMINDER_ENABLED_ID}'")
     fun getLiveSessionSittingReminderEnabled(): Flow<String>
