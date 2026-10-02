@@ -1,24 +1,14 @@
 package com.barryburgle.gameapp.ui.stats.chart
 
 import android.graphics.Color
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.graphics.luminance
 import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.github.mikephil.charting.charts.ScatterChart
@@ -28,19 +18,8 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.ScatterData
 import com.github.mikephil.charting.data.ScatterDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
-import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import kotlin.random.Random
-
-private data class ChartPointItem(
-    val dayWithOffset: Float,
-    val timeVal: Float,
-    val baseAlpha: Int
-)
 
 @Composable
 fun PinPointScatterChart(
@@ -49,71 +28,9 @@ fun PinPointScatterChart(
     val primaryColor = MaterialTheme.colorScheme.primary.toArgb()
     val gridColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f).toArgb()
     val inChartTextSize = 12f
-
-    var themeColorArgb = MaterialTheme.colorScheme.primary.toArgb()
-    val isThemeColorArgbDark = themeColorArgb.luminance < 0.5f
-    if (!isThemeColorArgbDark) {
-        themeColorArgb = MaterialTheme.colorScheme.onPrimary.toArgb()
-    }
-    val themeRed = Color.red(themeColorArgb)
-    val themeGreen = Color.green(themeColorArgb)
-    val themeBlue = Color.blue(themeColorArgb)
-
-    val chartItems = remember(pinPoints) {
-        pinPoints.map { pinPoint ->
-            val dayBase = pinPoint.dayOfWeek.toFloat()
-            val randomOffset = (Random.nextFloat() - 0.5f) * 0.6f
-            val dayWithOffset = dayBase + randomOffset
-
-            val timeVal = try {
-                val ldt = LocalDateTime.parse(pinPoint.localTimestamp.substring(0, 19))
-                ldt.hour + ldt.minute / 60f
-            } catch (e: Exception) {
-                12f
-            }
-
-            val baseAlpha = when (pinPoint.pinPointType.lowercase()) {
-                PinPointTypeEnum.SET.getField().lowercase() -> 80
-                PinPointTypeEnum.CONVERSATION.getField().lowercase() -> 120
-                PinPointTypeEnum.CONTACT.getField().lowercase() -> 200
-                else -> 80
-            }
-
-            ChartPointItem(dayWithOffset, timeVal, baseAlpha)
-        }.sortedBy { it.dayWithOffset }
-    }
-
-    val animatables = remember(chartItems) {
-        List(chartItems.size) { Animatable(0f) }
-    }
-
-    var animationFrameTick by remember { mutableStateOf(0L) }
-
-    LaunchedEffect(chartItems) {
-        if (chartItems.isEmpty()) return@LaunchedEffect
-
-        val renderLoop = launch {
-            while (isActive) {
-                withFrameNanos { time -> animationFrameTick = time }
-            }
-        }
-
-        val animJobs = chartItems.indices.map { index ->
-            launch {
-                delay(index * 10L)
-                animatables[index].animateTo(
-                    targetValue = 1f,
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy, // Overshoots diameter (bouncy pop)
-                        stiffness = Spring.StiffnessLow
-                    )
-                )
-            }
-        }
-
-        animJobs.joinAll()
-        renderLoop.cancel()
-    }
+    val themeRed = Color.red(MaterialTheme.colorScheme.primary.toArgb())
+    val themeGreen = Color.green(MaterialTheme.colorScheme.primary.toArgb())
+    val themeBlue = Color.blue(MaterialTheme.colorScheme.primary.toArgb())
 
     AndroidView(
         modifier = Modifier
@@ -181,64 +98,75 @@ fun PinPointScatterChart(
             }
         },
         update = { chart ->
-            @Suppress("UNUSED_VARIABLE")
-            val tick = animationFrameTick
+            val layer1Entries = mutableListOf<Entry>()
+            val layer1Colors = mutableListOf<Int>()
+            val layer2Entries = mutableListOf<Entry>()
+            val layer2Colors = mutableListOf<Int>()
+            val layer3Entries = mutableListOf<Entry>()
+            val layer3Colors = mutableListOf<Int>()
 
-            val dataSets = mutableListOf<IScatterDataSet>()
+            pinPoints.forEach { pinPoint ->
+                val dayBase = pinPoint.dayOfWeek.toFloat()
+                val randomOffset = (Random.nextFloat() - 0.5f) * 0.6f
+                val dayWithOffset = dayBase + randomOffset
 
-            chartItems.forEachIndexed { index, item ->
-                val scale = animatables.getOrNull(index)?.value ?: 0f
-
-                if (scale > 0.01f) {
-                    val entry = Entry(item.dayWithOffset, item.timeVal)
-
-                    val outerColor = Color.argb(
-                        (item.baseAlpha * 0.15f).toInt(),
-                        themeRed,
-                        themeGreen,
-                        themeBlue
-                    )
-                    val midColor = Color.argb(
-                        (item.baseAlpha * 0.5f).toInt(),
-                        themeRed,
-                        themeGreen,
-                        themeBlue
-                    )
-                    val coreColor = Color.argb(item.baseAlpha, themeRed, themeGreen, themeBlue)
-
-                    val setOuter = ScatterDataSet(listOf(entry), "Outer_$index").apply {
-                        color = outerColor
-                        setScatterShape(ScatterChart.ScatterShape.CIRCLE)
-                        scatterShapeSize = (75f * scale).coerceAtLeast(0.1f)
-                        setDrawValues(false)
-                    }
-
-                    val setMid = ScatterDataSet(listOf(entry), "Mid_$index").apply {
-                        color = midColor
-                        setScatterShape(ScatterChart.ScatterShape.CIRCLE)
-                        scatterShapeSize = (40f * scale).coerceAtLeast(0.1f)
-                        setDrawValues(false)
-                    }
-
-                    val setCore = ScatterDataSet(listOf(entry), "Core_$index").apply {
-                        color = coreColor
-                        setScatterShape(ScatterChart.ScatterShape.CIRCLE)
-                        scatterShapeSize = (18f * scale).coerceAtLeast(0.1f)
-                        setDrawValues(false)
-                    }
-
-                    dataSets.add(setOuter)
-                    dataSets.add(setMid)
-                    dataSets.add(setCore)
+                val timeVal = try {
+                    val ldt = LocalDateTime.parse(pinPoint.localTimestamp.substring(0, 19))
+                    ldt.hour + ldt.minute / 60f
+                } catch (e: Exception) {
+                    12f
                 }
+
+                val entry = Entry(dayWithOffset, timeVal)
+                val baseAlpha = when (pinPoint.pinPointType.lowercase()) {
+                    PinPointTypeEnum.SET.getField().lowercase() -> 80
+                    PinPointTypeEnum.CONVERSATION.getField().lowercase() -> 120
+                    PinPointTypeEnum.CONTACT.getField().lowercase() -> 200
+                    else -> 80
+                }
+
+                layer1Entries.add(entry)
+                layer1Colors.add(Color.argb(baseAlpha, themeRed, themeGreen, themeBlue))
+                layer2Entries.add(entry)
+                layer2Colors.add(
+                    Color.argb(
+                        (baseAlpha * 0.5f).toInt(),
+                        themeRed,
+                        themeGreen,
+                        themeBlue
+                    )
+                )
+                layer3Entries.add(entry)
+                layer3Colors.add(
+                    Color.argb(
+                        (baseAlpha * 0.15f).toInt(),
+                        themeRed,
+                        themeGreen,
+                        themeBlue
+                    )
+                )
             }
 
-            if (dataSets.isNotEmpty()) {
-                chart.data = ScatterData(dataSets)
-            } else {
-                chart.clear()
+            val set1 = ScatterDataSet(layer1Entries, "Core").apply {
+                colors = layer1Colors
+                setScatterShape(ScatterChart.ScatterShape.CIRCLE)
+                scatterShapeSize = 18f
+                setDrawValues(false)
+            }
+            val set2 = ScatterDataSet(layer2Entries, "Mid").apply {
+                colors = layer2Colors
+                setScatterShape(ScatterChart.ScatterShape.CIRCLE)
+                scatterShapeSize = 40f
+                setDrawValues(false)
+            }
+            val set3 = ScatterDataSet(layer3Entries, "Outer").apply {
+                colors = layer3Colors
+                setScatterShape(ScatterChart.ScatterShape.CIRCLE)
+                scatterShapeSize = 75f
+                setDrawValues(false)
             }
 
+            chart.data = ScatterData(set3, set2, set1)
             chart.notifyDataSetChanged()
             chart.invalidate()
         }

@@ -1,10 +1,8 @@
 package com.barryburgle.gameapp.ui.stats
 
 import android.view.MotionEvent
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -40,7 +37,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.graphics.luminance
 import com.barryburgle.gameapp.event.StatsEvent
 import com.barryburgle.gameapp.model.pinpoint.PinPointTypeEnum
 import com.barryburgle.gameapp.ui.stats.state.StatsState
@@ -49,10 +45,8 @@ import com.barryburgle.gameapp.ui.utilities.dropdown.Dropdown
 import com.barryburgle.gameapp.ui.utilities.dropdown.SelectableOption
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -72,10 +66,9 @@ fun HeatmapCard(
     var expanded by remember { mutableStateOf(false) }
     val selectedTypes = state.mapPinPointsTypeSelectionList.filterIsInstance<PinPointTypeEnum>()
 
-    var themeColorArgb = MaterialTheme.colorScheme.primary.toArgb()
-    val isThemeColorArgbDark = themeColorArgb.luminance < 0.5f
-    if (!isThemeColorArgbDark) {
-        themeColorArgb = MaterialTheme.colorScheme.onPrimary.toArgb()
+    var themeColorArgb = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+    if (isSystemInDarkTheme()) {
+        themeColorArgb = MaterialTheme.colorScheme.surface.toArgb()
     }
     val themeRed = android.graphics.Color.red(themeColorArgb)
     val themeGreen = android.graphics.Color.green(themeColorArgb)
@@ -103,114 +96,57 @@ fun HeatmapCard(
     }
 
     LaunchedEffect(state.typeFilteredMapPinPoints, themeColorArgb) {
-        val sortedPinpoints = state.typeFilteredMapPinPoints.sortedBy { it.longitude }
-        val geoPoints = sortedPinpoints.map { GeoPoint(it.latitude, it.longitude) }
-        val boundingBox =
-            if (geoPoints.isNotEmpty()) BoundingBox.fromGeoPoints(geoPoints) else null
+        withContext(Dispatchers.Default) {
+            val geoPoints =
+                state.typeFilteredMapPinPoints.map { GeoPoint(it.latitude, it.longitude) }
+            val boundingBox =
+                if (geoPoints.isNotEmpty()) BoundingBox.fromGeoPoints(geoPoints) else null
 
-        if (boundingBox != null && sortedPinpoints.size > 1) {
-            mapInstance.zoomToBoundingBox(boundingBox, false, 90)
-        } else if (geoPoints.isNotEmpty()) {
-            mapInstance.controller.setZoom(16.5)
-            mapInstance.controller.setCenter(geoPoints.first())
-        }
+            val computedGlowOverlays = state.typeFilteredMapPinPoints.map { pinpoint ->
+                val center = GeoPoint(pinpoint.latitude, pinpoint.longitude)
 
-        if (sortedPinpoints.isEmpty()) {
-            mapInstance.overlays.clear()
-            mapInstance.invalidate()
-            return@LaunchedEffect
-        }
-
-        val animatables = List(sortedPinpoints.size) { Animatable(0f) }
-
-        val renderJob = launch {
-            while (isActive) {
-                mapInstance.overlays.clear()
-                sortedPinpoints.forEachIndexed { index, pinpoint ->
-                    val scale = animatables[index].value
-                    if (scale > 0.01f) {
-                        val center = GeoPoint(pinpoint.latitude, pinpoint.longitude)
-
-                        val targetAlpha = when (pinpoint.pinPointType.lowercase()) {
-                            PinPointTypeEnum.SET.getField().lowercase() -> 80
-                            PinPointTypeEnum.CONVERSATION.getField().lowercase() -> 120
-                            PinPointTypeEnum.CONTACT.getField().lowercase() -> 200
-                            else -> 80
-                        }
-
-                        val glowLayers = listOf(
-                            Pair(15.0 * scale, targetAlpha),
-                            Pair(30.0 * scale, (targetAlpha * 0.5f).toInt()),
-                            Pair(60.0 * scale, (targetAlpha * 0.15f).toInt())
-                        )
-
-                        glowLayers.forEach { (radius, calculatedAlpha) ->
-                            mapInstance.overlays.add(Polygon(mapInstance).apply {
-                                points = Polygon.pointsAsCircle(center, radius.coerceAtLeast(0.1))
-                                fillColor = android.graphics.Color.argb(
-                                    calculatedAlpha.coerceIn(0, 255),
-                                    themeRed,
-                                    themeGreen,
-                                    themeBlue
-                                )
-                                strokeColor = android.graphics.Color.TRANSPARENT
-                                setOnClickListener { _, _, _ -> true }
-                            })
-                        }
-                    }
+                val targetAlpha = when (pinpoint.pinPointType.lowercase()) {
+                    PinPointTypeEnum.SET.getField().lowercase() -> 80
+                    PinPointTypeEnum.CONVERSATION.getField().lowercase() -> 120
+                    PinPointTypeEnum.CONTACT.getField().lowercase() -> 200
+                    else -> 80
                 }
-                mapInstance.invalidate()
-                withFrameNanos { }
-            }
-        }
 
-        val animationJobs = sortedPinpoints.indices.map { i ->
-            launch {
-                delay(i * 10L)
-                animatables[i].animateTo(
-                    targetValue = 1f,
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy, // Overshoots / pops diameter then spring-settles
-                        stiffness = Spring.StiffnessLow
-                    )
+                listOf(
+                    Pair(Polygon.pointsAsCircle(center, 15.0), targetAlpha),
+                    Pair(Polygon.pointsAsCircle(center, 30.0), (targetAlpha * 0.5f).toInt()),
+                    Pair(Polygon.pointsAsCircle(center, 60.0), (targetAlpha * 0.15f).toInt())
                 )
             }
-        }
 
-        animationJobs.joinAll()
-        renderJob.cancel()
+            withContext(Dispatchers.Main) {
+                mapInstance.overlays.clear()
 
-        mapInstance.overlays.clear()
-        sortedPinpoints.forEach { pinpoint ->
-            val center = GeoPoint(pinpoint.latitude, pinpoint.longitude)
-            val targetAlpha = when (pinpoint.pinPointType.lowercase()) {
-                PinPointTypeEnum.SET.getField().lowercase() -> 80
-                PinPointTypeEnum.CONVERSATION.getField().lowercase() -> 120
-                PinPointTypeEnum.CONTACT.getField().lowercase() -> 200
-                else -> 80
-            }
+                computedGlowOverlays.forEach { glowLayers ->
+                    glowLayers.forEach { (pointsList, calculatedAlpha) ->
+                        mapInstance.overlays.add(Polygon(mapInstance).apply {
+                            points = pointsList
+                            fillColor = android.graphics.Color.argb(
+                                calculatedAlpha.coerceIn(0, 255),
+                                themeRed,
+                                themeGreen,
+                                themeBlue
+                            )
+                            strokeColor = android.graphics.Color.TRANSPARENT
+                            setOnClickListener { _, _, _ -> true }
+                        })
+                    }
+                }
 
-            val glowLayers = listOf(
-                Pair(15.0, targetAlpha),
-                Pair(30.0, (targetAlpha * 0.5f).toInt()),
-                Pair(60.0, (targetAlpha * 0.15f).toInt())
-            )
-
-            glowLayers.forEach { (radius, calculatedAlpha) ->
-                mapInstance.overlays.add(Polygon(mapInstance).apply {
-                    points = Polygon.pointsAsCircle(center, radius)
-                    fillColor = android.graphics.Color.argb(
-                        calculatedAlpha.coerceIn(0, 255),
-                        themeRed,
-                        themeGreen,
-                        themeBlue
-                    )
-                    strokeColor = android.graphics.Color.TRANSPARENT
-                    setOnClickListener { _, _, _ -> true }
-                })
+                if (boundingBox != null && state.typeFilteredMapPinPoints.size > 1) {
+                    mapInstance.zoomToBoundingBox(boundingBox, false, 90)
+                } else if (geoPoints.isNotEmpty()) {
+                    mapInstance.controller.setZoom(16.5)
+                    mapInstance.controller.setCenter(geoPoints.first())
+                }
+                mapInstance.invalidate()
             }
         }
-        mapInstance.invalidate()
     }
 
     DisposableEffect(mapInstance) {
@@ -302,8 +238,7 @@ fun HeatmapCard(
                                             onCheckedChange = null
                                         )
                                     },
-                                    optionName = type.getField()
-                                        .replaceFirstChar { it.uppercase() } + "s"
+                                    optionName = type.getField().replaceFirstChar { it.uppercase() } + "s"
                                 )
                             }
                         }
