@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -36,6 +37,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -51,6 +53,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,10 +70,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -122,6 +127,11 @@ fun InputScreen(
     var isExpanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val localContext = context.applicationContext
+
+    var topBarHeightPx by remember { mutableIntStateOf(0) }
+    val density = LocalDensity.current
+    val topBarHeightDp = with(density) { topBarHeightPx.toDp() }
+
     val blurBackground by animateDpAsState(
         targetValue = if (isExpanded or state.isInOverlay) 10.dp else 0.dp,
         animationSpec = tween(durationMillis = 350),
@@ -136,7 +146,10 @@ fun InputScreen(
         Row(
             modifier = Modifier
                 .blur(blurBackground)
-                .fillMaxHeight()
+                .wrapContentHeight()
+                .onGloballyPositioned { coordinates ->
+                    topBarHeightPx = coordinates.size.height
+                }
         ) {
             gameTopBar(
                 state, onEvent, spaceFromLeft
@@ -421,13 +434,11 @@ fun InputScreen(
                     .fillMaxSize()
                     .blur(blurBackground),
                 verticalArrangement = Arrangement.spacedBy(spaceFromLeft),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                    top = spaceFromLeft - 12.dp, bottom = padding.calculateBottomPadding() + 5.dp
+                contentPadding = PaddingValues(
+                    top = topBarHeightDp + spaceFromLeft,
+                    bottom = padding.calculateBottomPadding() + 5.dp
                 )
             ) {
-                item {
-                    Spacer(modifier = Modifier.height(120.dp))
-                }
                 var showingLiveSessionCard = false
                 if (!state.allEvents.isEmpty()) {
                     val sessionList =
@@ -668,8 +679,7 @@ fun gameTopBar(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp),
-        verticalArrangement = Arrangement.SpaceBetween,
+            .wrapContentHeight()
     ) {
         val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
         Row(
@@ -679,19 +689,23 @@ fun gameTopBar(
                 .background(color = MaterialTheme.colorScheme.background)
         ) {}
         Row(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
         ) {
             Column(
-                modifier = Modifier.background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            semiOpaqueBackground,
-                            semiOpaqueBackground.copy(alpha = 0.7f),
-                            androidx.compose.ui.graphics.Color.Transparent
-                        ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                semiOpaqueBackground,
+                                semiOpaqueBackground.copy(alpha = 0.7f),
+                                androidx.compose.ui.graphics.Color.Transparent
+                            ),
+                        )
                     )
-                ),
-                verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row(
                     modifier = Modifier
