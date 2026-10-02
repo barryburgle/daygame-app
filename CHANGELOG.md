@@ -16,6 +16,7 @@
 - Now backups only tables with new data 💾
 - Now all the exports are validated against app database after every single export 🚧
 - Pinpoints timeline on Live Session card and in session report ──●─
+- Export your stats or results as image tapping the share button 🖼️
 - Last 3 periods plotted as line chart on Summary card 📌
 - Lead contact button on lead card 🔗
 - Now you can edit leads from the Dashboard tab 🪪

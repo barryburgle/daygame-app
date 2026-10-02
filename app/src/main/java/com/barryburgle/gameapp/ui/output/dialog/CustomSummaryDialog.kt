@@ -1,9 +1,12 @@
 package com.barryburgle.gameapp.ui.output.dialog
 
+import android.content.ClipData
+import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,8 +21,12 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -29,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.model.enums.HeatmapEntityEnum
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.service.bitmap.BitmapService
 import com.barryburgle.gameapp.ui.output.getSeries
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
@@ -36,6 +44,7 @@ import com.barryburgle.gameapp.ui.utilities.dialog.FlowDialog
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 data class SummaryEntryModel(
@@ -54,7 +63,11 @@ fun CustomSummaryDialog(
     onEvent: (OutputEvent) -> Unit
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
-    val localContext = LocalContext.current.applicationContext
+    val context = LocalContext.current
+    val localContext = context.applicationContext
+    val coroutineScope = rememberCoroutineScope()
+    val graphicsLayer = rememberGraphicsLayer()
+
     val perfFontSize = 50.sp
     val descriptionFontSize = 10.sp
 
@@ -269,22 +282,56 @@ fun CustomSummaryDialog(
                 ) {
                     IconShadowButton(
                         onClick = {
-                            clipboardManager.setText(AnnotatedString(reportText))
-                            Toast.makeText(
-                                localContext,
-                                "Summary report copied",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            coroutineScope.launch {
+                                val bitmap = try {
+                                    graphicsLayer.toImageBitmap().asAndroidBitmap()
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    null
+                                }
+                                // TODO: export also title and desc from dialog
+                                val imageUri = bitmap?.let {
+                                    BitmapService.saveBitmapToCache(
+                                        context, it
+                                    )
+                                }
 
-                            val sendIntent: Intent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                putExtra(Intent.EXTRA_TEXT, reportText)
-                                type = "text/plain"
+                                if (imageUri != null) {
+                                    val systemClipboard =
+                                        context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                                    val clipData = ClipData.newUri(
+                                        context.contentResolver,
+                                        "Summary Report",
+                                        imageUri
+                                    ).apply {
+                                        addItem(ClipData.Item(reportText))
+                                    }
+                                    systemClipboard.setPrimaryClip(clipData)
+                                } else {
+                                    clipboardManager.setText(AnnotatedString(reportText))
+                                }
+                                Toast.makeText(
+                                    localContext,
+                                    "Summary report & card copied",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                val sendIntent: Intent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(Intent.EXTRA_TEXT, reportText)
+                                    if (imageUri != null) {
+                                        putExtra(Intent.EXTRA_STREAM, imageUri)
+                                        type = "image/png"
+                                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                    } else {
+                                        type = "text/plain"
+                                    }
+                                }
+                                val shareIntent =
+                                    Intent.createChooser(sendIntent, "Share summary report")
+                                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                localContext.startActivity(shareIntent)
                             }
-                            val shareIntent =
-                                Intent.createChooser(sendIntent, "Share summary report")
-                            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            localContext.startActivity(shareIntent)
                         },
                         imageVector = Icons.Default.Share,
                         contentDescription = "Share Summary"
@@ -293,70 +340,79 @@ fun CustomSummaryDialog(
             }
         }
     ) { contentPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 480.dp),
-            contentPadding = contentPadding,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(summaryEntries.size) { index ->
-                val entry = summaryEntries[index]
-                val rowBackgroundColor = if (entry.isRatio) {
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
-                } else {
-                    MaterialTheme.colorScheme.primary
+        Box(
+            modifier = Modifier.drawWithContent {
+                graphicsLayer.record {
+                    this@drawWithContent.drawContent()
                 }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = rowBackgroundColor,
-                            shape = RoundedCornerShape(10.dp)
-                        ),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (entry.isIndex || entry.isRatio) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            DescribedQuantifier(
-                                quantity = entry.average,
-                                quantityFontSize = perfFontSize,
-                                description = entry.label,
-                                descriptionFontSize = descriptionFontSize
-                            )
-                        }
+                drawContent()
+            }
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 480.dp),
+                contentPadding = contentPadding,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(summaryEntries.size) { index ->
+                    val entry = summaryEntries[index]
+                    val rowBackgroundColor = if (entry.isRatio) {
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
                     } else {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            horizontalArrangement = Arrangement.SpaceAround
-                        ) {
-                            DescribedQuantifier(
-                                quantity = entry.total.toInt().toString(),
-                                quantityFontSize = perfFontSize,
-                                description = "${entry.label} (Total)",
-                                descriptionFontSize = descriptionFontSize
-                            )
-                            DescribedQuantifier(
-                                quantity = entry.average,
-                                quantityFontSize = perfFontSize,
-                                description = "${entry.label} (Avg)",
-                                descriptionFontSize = descriptionFontSize
-                            )
+                        MaterialTheme.colorScheme.primary
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = rowBackgroundColor,
+                                shape = RoundedCornerShape(10.dp)
+                            ),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (entry.isIndex || entry.isRatio) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                DescribedQuantifier(
+                                    quantity = entry.average,
+                                    quantityFontSize = perfFontSize,
+                                    description = entry.label,
+                                    descriptionFontSize = descriptionFontSize
+                                )
+                            }
+                        } else {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.SpaceAround
+                            ) {
+                                DescribedQuantifier(
+                                    quantity = entry.total.toInt().toString(),
+                                    quantityFontSize = perfFontSize,
+                                    description = "${entry.label} (Total)",
+                                    descriptionFontSize = descriptionFontSize
+                                )
+                                DescribedQuantifier(
+                                    quantity = entry.average,
+                                    quantityFontSize = perfFontSize,
+                                    description = "${entry.label} (Avg)",
+                                    descriptionFontSize = descriptionFontSize
+                                )
+                            }
                         }
                     }
                 }
-            }
-            item {
-                Spacer(modifier = Modifier.height(5.dp))
+                item {
+                    Spacer(modifier = Modifier.height(5.dp))
+                }
             }
         }
     }

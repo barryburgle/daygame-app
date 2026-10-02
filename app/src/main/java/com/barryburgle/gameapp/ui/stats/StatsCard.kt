@@ -1,5 +1,7 @@
 package com.barryburgle.gameapp.ui.stats
 
+import android.content.ClipData
+import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -25,11 +27,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -38,11 +44,13 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.barryburgle.gameapp.service.bitmap.BitmapService
 import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
@@ -84,13 +92,24 @@ fun StatsCard(
     val perfFontSize = 15.sp
     val descriptionFontSize = 10.sp
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
-    val localContext = LocalContext.current.applicationContext
+    val context = LocalContext.current
+    val localContext = context.applicationContext
+    val coroutineScope = rememberCoroutineScope()
+    val graphicsLayer = rememberGraphicsLayer()
 
-    val pageCount = if (fourthQuantifierQuantity != null && fifthQuantifierQuantity != null) 2 else 1
+    val pageCount =
+        if (fourthQuantifierQuantity != null && fifthQuantifierQuantity != null) 2 else 1
     val pagerState = rememberPagerState(pageCount = { pageCount })
 
+    val cardModifier = modifier.drawWithContent {
+        graphicsLayer.record {
+            this@drawWithContent.drawContent()
+        }
+        drawContent()
+    }
+
     Card(
-        modifier = modifier,
+        modifier = cardModifier,
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         shape = MaterialTheme.shapes.large
     ) {
@@ -139,54 +158,89 @@ fun StatsCard(
                         ) {
                             IconShadowButton(
                                 onClick = {
-                                    val histogramData = exportStats(
-                                        title,
-                                        description,
-                                        firstQuantifierQuantity,
-                                        firstQuantifierDescription,
-                                        secondQuantifierQuantity,
-                                        secondQuantifierDescription,
-                                        thirdQuantifierQuantity,
-                                        thirdQuantifierDescription,
-                                        fourthQuantifierQuantity,
-                                        fourthQuantifierDescription,
-                                        fifthQuantifierQuantity,
-                                        fifthQuantifierDescription,
-                                        firstPerformanceQuantity,
-                                        firstPerformanceDescription,
-                                        secondPerformanceQuantity,
-                                        secondPerformanceDescription,
-                                        thirdPerformanceQuantity,
-                                        thirdPerformanceDescription,
-                                        fourthPerformanceQuantity,
-                                        fourthPerformanceDescription,
-                                        fifthPerformanceQuantity,
-                                        fifthPerformanceDescription
-                                    )
-                                    if (copyReportOnClipboard) {
-                                        clipboardManager.setText(
-                                            AnnotatedString(histogramData)
+                                    coroutineScope.launch {
+                                        val histogramData = exportStats(
+                                            title,
+                                            description,
+                                            firstQuantifierQuantity,
+                                            firstQuantifierDescription,
+                                            secondQuantifierQuantity,
+                                            secondQuantifierDescription,
+                                            thirdQuantifierQuantity,
+                                            thirdQuantifierDescription,
+                                            fourthQuantifierQuantity,
+                                            fourthQuantifierDescription,
+                                            fifthQuantifierQuantity,
+                                            fifthQuantifierDescription,
+                                            firstPerformanceQuantity,
+                                            firstPerformanceDescription,
+                                            secondPerformanceQuantity,
+                                            secondPerformanceDescription,
+                                            thirdPerformanceQuantity,
+                                            thirdPerformanceDescription,
+                                            fourthPerformanceQuantity,
+                                            fourthPerformanceDescription,
+                                            fifthPerformanceQuantity,
+                                            fifthPerformanceDescription
                                         )
-                                        Toast.makeText(
-                                            localContext,
-                                            "Summary copied",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                    val sendIntent: Intent = Intent().apply {
-                                        action = Intent.ACTION_SEND
-                                        putExtra(
-                                            Intent.EXTRA_TEXT,
-                                            histogramData
+
+                                        val bitmap = try {
+                                            graphicsLayer.toImageBitmap().asAndroidBitmap()
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                            null
+                                        }
+
+                                        val imageUri = bitmap?.let {
+                                            BitmapService.saveBitmapToCache(
+                                                context, it
+                                            )
+                                        }
+
+                                        if (copyReportOnClipboard) {
+                                            if (imageUri != null) {
+                                                val systemClipboard =
+                                                    context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                                                val clipData = ClipData.newUri(
+                                                    context.contentResolver,
+                                                    "$title Stats",
+                                                    imageUri
+                                                ).apply {
+                                                    addItem(ClipData.Item(histogramData))
+                                                }
+                                                systemClipboard.setPrimaryClip(clipData)
+                                            } else {
+                                                clipboardManager.setText(
+                                                    AnnotatedString(histogramData)
+                                                )
+                                            }
+                                            Toast.makeText(
+                                                localContext,
+                                                "Stats & card copied",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                        val sendIntent: Intent = Intent().apply {
+                                            action = Intent.ACTION_SEND
+                                            putExtra(
+                                                Intent.EXTRA_TEXT,
+                                                histogramData
+                                            )
+                                            if (imageUri != null) {
+                                                putExtra(Intent.EXTRA_STREAM, imageUri)
+                                                type = "image/png"
+                                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                            } else {
+                                                type = "text/plain"
+                                            }
+                                        }
+                                        val shareIntent = Intent.createChooser(
+                                            sendIntent,
+                                            "Share stats"
                                         )
-                                        type = "text/plain"
+                                        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        localContext.startActivity(shareIntent)
                                     }
-                                    val shareIntent = Intent.createChooser(
-                                        sendIntent,
-                                        "Share stats"
-                                    )
-                                    shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    localContext.startActivity(shareIntent)
                                 },
                                 imageVector = Icons.Default.Share,
                                 contentDescription = "Share Stats"
@@ -254,6 +308,7 @@ fun StatsCard(
                                         }
                                     }
                                 }
+
                                 1 -> {
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),

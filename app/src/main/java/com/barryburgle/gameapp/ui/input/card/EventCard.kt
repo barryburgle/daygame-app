@@ -1,5 +1,7 @@
 package com.barryburgle.gameapp.ui.input.card
 
+import android.content.ClipData
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
@@ -39,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,7 +55,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathOperation
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -75,6 +80,7 @@ import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.EntityService.Companion.getParsedHour
 import com.barryburgle.gameapp.service.EntityService.Companion.getTime
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.service.bitmap.BitmapService
 import com.barryburgle.gameapp.service.notification.PersistentNotificationService
 import com.barryburgle.gameapp.ui.input.card.body.ChallengeBody
 import com.barryburgle.gameapp.ui.input.card.body.DateBody
@@ -92,6 +98,7 @@ import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -118,6 +125,9 @@ fun EventCard(
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
     val localContext = context.applicationContext
+    val coroutineScope = rememberCoroutineScope()
+    val graphicsLayer = rememberGraphicsLayer()
+
     var liveSessionTime: Long = 0
     var liveSessionLeads: Int = 0
     var showCancelLiveSessionConfirmDialog by remember { mutableStateOf(false) }
@@ -405,66 +415,99 @@ fun EventCard(
                         ) {
                             IconShadowButton(
                                 onClick = {
-                                    var leadsToShare = leads
-                                    if (neverShareLeadInfo) {
-                                        leadsToShare = listOf()
-                                    }
-                                    var report = sortableGameEvent.event.shareReport(leadsToShare)
-                                    report = when (sortableGameEvent.classType) {
-                                        AbstractSession::class.java.simpleName -> {
-                                            val abstractSession =
-                                                sortableGameEvent.event as AbstractSession
-                                            abstractSession.shareSessionReport(
-                                                leadsToShare, pinPoints
+                                    coroutineScope.launch {
+                                        var leadsToShare = leads
+                                        if (neverShareLeadInfo) {
+                                            leadsToShare = listOf()
+                                        }
+                                        var report =
+                                            sortableGameEvent.event.shareReport(leadsToShare)
+                                        report = when (sortableGameEvent.classType) {
+                                            AbstractSession::class.java.simpleName -> {
+                                                val abstractSession =
+                                                    sortableGameEvent.event as AbstractSession
+                                                abstractSession.shareSessionReport(
+                                                    leadsToShare, pinPoints
+                                                )
+                                            }
+
+                                            Date::class.java.simpleName -> {
+                                                val eventDate = sortableGameEvent.event as Date
+                                                eventDate.shareDateReport(
+                                                    leadsToShare, simplePlusOneReport
+                                                )
+                                            }
+
+                                            AchievedChallenge::class.java.simpleName -> {
+                                                val achievedChallenge =
+                                                    sortableGameEvent.event as AchievedChallenge
+                                                achievedChallenge.getAchievedChallengeReport(false)
+                                            }
+
+                                            else -> report
+                                        }
+
+                                        val bitmap = try {
+                                            graphicsLayer.toImageBitmap().asAndroidBitmap()
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                            null
+                                        }
+
+                                        val imageUri = bitmap?.let {
+                                            BitmapService.saveBitmapToCache(
+                                                context, it
                                             )
                                         }
 
-                                        Date::class.java.simpleName -> {
-                                            val eventDate = sortableGameEvent.event as Date
-                                            eventDate.shareDateReport(
-                                                leadsToShare, simplePlusOneReport
-                                            )
+                                        if (copyReportOnClipboard) {
+                                            if (imageUri != null) {
+                                                val systemClipboard =
+                                                    context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                                                val clipData = ClipData.newUri(
+                                                    context.contentResolver,
+                                                    "Event Report",
+                                                    imageUri
+                                                ).apply {
+                                                    addItem(ClipData.Item(report))
+                                                }
+                                                systemClipboard.setPrimaryClip(clipData)
+                                            } else {
+                                                clipboardManager.setText(AnnotatedString(report))
+                                            }
+                                            Toast.makeText(
+                                                localContext,
+                                                "${sortableGameEvent.event.getEventTitle()} report & card copied",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
 
-                                        AchievedChallenge::class.java.simpleName -> {
-                                            val achievedChallenge =
-                                                sortableGameEvent.event as AchievedChallenge
-                                            achievedChallenge.getAchievedChallengeReport(false)
+                                        val sendIntent: Intent = Intent().apply {
+                                            action = Intent.ACTION_SEND
+                                            putExtra(Intent.EXTRA_TEXT, report)
+                                            if (imageUri != null) {
+                                                putExtra(Intent.EXTRA_STREAM, imageUri)
+                                                type = "image/png"
+                                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                            } else {
+                                                type = "text/plain"
+                                            }
                                         }
 
-                                        else -> report
-                                    }
-                                    if (copyReportOnClipboard) {
-                                        clipboardManager.setText(
-                                            AnnotatedString(
-                                                report
-                                            )
+                                        val eventDescription = when (sortableGameEvent.classType) {
+                                            AbstractSession::class.java.simpleName -> " session "
+                                            Date::class.java.simpleName -> " date "
+                                            SingleSet::class.java.simpleName -> " set "
+                                            Challenge::class.java.simpleName -> " challenge "
+                                            else -> " "
+                                        }
+
+                                        val shareIntent = Intent.createChooser(
+                                            sendIntent, "Share${eventDescription}report"
                                         )
-                                        Toast.makeText(
-                                            localContext,
-                                            "${sortableGameEvent.event.getEventTitle()} report copied",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        localContext.startActivity(shareIntent)
                                     }
-                                    val sendIntent: Intent = Intent().apply {
-                                        action = Intent.ACTION_SEND
-                                        putExtra(
-                                            Intent.EXTRA_TEXT, report
-                                        )
-                                        type = "text/plain"
-                                    }
-                                    var eventDescription = when (sortableGameEvent.classType) {
-                                        AbstractSession::class.java.simpleName -> " session "
-                                        Date::class.java.simpleName -> " date "
-                                        SingleSet::class.java.simpleName -> " set "
-                                        Challenge::class.java.simpleName -> " challenge "
-                                        else -> " "
-                                    }
-                                    val shareIntent = Intent.createChooser(
-                                        sendIntent, "Share${eventDescription}report"
-                                    )
-                                    shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    localContext.startActivity(shareIntent)
                                 },
                                 imageVector = Icons.Default.Share,
                                 contentDescription = "Share Event"

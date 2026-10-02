@@ -1,5 +1,7 @@
 package com.barryburgle.gameapp.ui.input.card
 
+import android.content.ClipData
+import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -24,11 +26,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -39,6 +45,7 @@ import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.model.challenge.AchievedChallenge
 import com.barryburgle.gameapp.model.stat.AggregatedPeriod
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.service.bitmap.BitmapService
 import com.barryburgle.gameapp.ui.input.card.body.ChallengeBody
 import com.barryburgle.gameapp.ui.input.card.body.SummaryBody
 import com.barryburgle.gameapp.ui.input.state.InputState
@@ -48,6 +55,7 @@ import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import com.github.mikephil.charting.data.BarEntry
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @ExperimentalMaterial3Api
@@ -57,7 +65,11 @@ fun SummaryCard(
     modifier: Modifier = Modifier,
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
-    val localContext = LocalContext.current.applicationContext
+    val context = LocalContext.current
+    val localContext = context.applicationContext
+    val coroutineScope = rememberCoroutineScope()
+    val graphicsLayer = rememberGraphicsLayer()
+
     val noEvents = state.allEvents.isEmpty()
     var updatedDate by remember { mutableStateOf("") }
     var weekSets by remember { mutableStateOf(0) }
@@ -157,8 +169,14 @@ fun SummaryCard(
             }
         }
         if (isChallengeValid == true || state.showCurrentWeekSummary || state.showCurrentMonthSummary) {
+            val cardModifier = modifier.drawWithContent {
+                graphicsLayer.record {
+                    this@drawWithContent.drawContent()
+                }
+                drawContent()
+            }
             Card(
-                modifier = modifier,
+                modifier = cardModifier,
                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                 shape = MaterialTheme.shapes.large
             ) {
@@ -219,46 +237,82 @@ fun SummaryCard(
                                     ) {
                                         IconShadowButton(
                                             onClick = {
-                                                var histogramData = exportSummary(
-                                                    state,
-                                                    updatedDate,
-                                                    weekSets,
-                                                    weekContacts,
-                                                    weekDates,
-                                                    monthSets,
-                                                    monthContacts,
-                                                    monthDates,
-                                                    weekTimeSpent,
-                                                    monthTimeSpent,
-                                                    lastChallenge,
-                                                    isChallengeValid
-                                                )
-                                                if (state.copyReportOnClipboard) {
-                                                    clipboardManager.setText(
-                                                        AnnotatedString(
+                                                coroutineScope.launch {
+                                                    val histogramData = exportSummary(
+                                                        state,
+                                                        updatedDate,
+                                                        weekSets,
+                                                        weekContacts,
+                                                        weekDates,
+                                                        monthSets,
+                                                        monthContacts,
+                                                        monthDates,
+                                                        weekTimeSpent,
+                                                        monthTimeSpent,
+                                                        lastChallenge,
+                                                        isChallengeValid
+                                                    )
+
+                                                    val bitmap = try {
+                                                        graphicsLayer.toImageBitmap()
+                                                            .asAndroidBitmap()
+                                                    } catch (e: Exception) {
+                                                        e.printStackTrace()
+                                                        null
+                                                    }
+
+                                                    val imageUri = bitmap?.let {
+                                                        BitmapService.saveBitmapToCache(
+                                                            context, it
+                                                        )
+                                                    }
+
+                                                    if (state.copyReportOnClipboard) {
+                                                        if (imageUri != null) {
+                                                            val systemClipboard =
+                                                                context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                                                            val clipData = ClipData.newUri(
+                                                                context.contentResolver,
+                                                                "Summary Report",
+                                                                imageUri
+                                                            ).apply {
+                                                                addItem(ClipData.Item(histogramData))
+                                                            }
+                                                            systemClipboard.setPrimaryClip(clipData)
+                                                        } else {
+                                                            clipboardManager.setText(
+                                                                AnnotatedString(
+                                                                    histogramData
+                                                                )
+                                                            )
+                                                        }
+                                                        Toast.makeText(
+                                                            localContext,
+                                                            "Summary & card copied",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
+                                                    val sendIntent: Intent = Intent().apply {
+                                                        action = Intent.ACTION_SEND
+                                                        putExtra(
+                                                            Intent.EXTRA_TEXT,
                                                             histogramData
                                                         )
+                                                        if (imageUri != null) {
+                                                            putExtra(Intent.EXTRA_STREAM, imageUri)
+                                                            type = "image/png"
+                                                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                                        } else {
+                                                            type = "text/plain"
+                                                        }
+                                                    }
+                                                    val shareIntent = Intent.createChooser(
+                                                        sendIntent,
+                                                        "Share summary"
                                                     )
-                                                    Toast.makeText(
-                                                        localContext,
-                                                        "Summary copied",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
+                                                    shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                                    localContext.startActivity(shareIntent)
                                                 }
-                                                val sendIntent: Intent = Intent().apply {
-                                                    action = Intent.ACTION_SEND
-                                                    putExtra(
-                                                        Intent.EXTRA_TEXT,
-                                                        histogramData
-                                                    )
-                                                    type = "text/plain"
-                                                }
-                                                val shareIntent = Intent.createChooser(
-                                                    sendIntent,
-                                                    "Share summary"
-                                                )
-                                                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                                localContext.startActivity(shareIntent)
                                             },
                                             imageVector = Icons.Default.Share,
                                             contentDescription = "Share Summary"
