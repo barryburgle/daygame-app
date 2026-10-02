@@ -139,109 +139,6 @@ fun StatsScreen(
                     }
                 }
             }
-            if (state.allPinPoints.isNotEmpty()) {
-                item {
-                    Row {
-                        Spacer(
-                            modifier = Modifier.width(spaceFromLeft)
-                        )
-                        HeatmapCard(
-                            modifier = cardModifier.height(400.dp),
-                            title = "Pinpoints",
-                            statCardIcon = Icons.Default.PinDrop,
-                            description = "See where the real game is played",
-                            state = state,
-                            onEvent = onEvent
-                        )
-                    }
-                }
-                item {
-                    Row {
-                        Spacer(
-                            modifier = Modifier.width(spaceFromLeft)
-                        )
-                        PinPointScatterCard(
-                            modifier = cardModifier.height(400.dp),
-                            title = "Pinpoints in time",
-                            statCardIcon = Icons.Default.PinDrop,
-                            description = "Know your best schedule",
-                            state = state,
-                            onEvent = onEvent
-                        )
-                    }
-                }
-            }
-            if (state.allSets.isNotEmpty()) {
-                item {
-                    Row {
-                        Spacer(
-                            modifier = Modifier.width(spaceFromLeft)
-                        )
-                        val conversations: Int =
-                            state.allSets.filter { set -> set.conversation }.size
-                        val contacts: Int = state.allSets.filter { set -> set.contact }.size
-                        val instantDates: Int =
-                            state.allSets.filter { set -> set.instantDate }.size
-                        val recorded: Int = state.allSets.filter { set -> set.recorded }.size
-                        val avgContactTime: Long =
-                            GlobalStatsService.computeAvgContactTime(state.allSets, contacts)
-                        val contactSentence =
-                            if (avgContactTime != 0L) "on average a contact each ${avgContactTime} minutes" else "no contacts yet"
-                        val setSpentHours =
-                            GlobalStatsService.computeSetsSpentHours(state.allSets)
-                        val setSpentMinutes =
-                            GlobalStatsService.computeSetsSpentMinutes(state.allSets)
-                        var timeSpentSentence = "${setSpentMinutes} minutes"
-                        if (setSpentHours != 0L) {
-                            val minutesDifference = setSpentMinutes - setSpentHours * 60
-                            timeSpentSentence =
-                                "${setSpentHours} hours and " + "${minutesDifference} minutes"
-                        }
-                        StatsCard(
-                            modifier = cardModifier,
-                            title = "Single Sets",
-                            statCardIcon = Icons.Default.PersonAddAlt1,
-                            description = "${timeSpentSentence} spent on single sets, " + contactSentence,
-                            copyReportOnClipboard = state.copyReportOnClipboard,
-                            firstQuantifierQuantity = "${state.allSets.size}",
-                            firstQuantifierIcon = R.drawable.set_action,
-                            firstQuantifierDescription = "Sets",
-                            secondQuantifierQuantity = "${conversations}",
-                            secondQuantifierIcon = R.drawable.conversation_action,
-                            secondQuantifierDescription = "Conversations",
-                            thirdQuantifierQuantity = "${contacts}",
-                            thirdQuantifierIcon = R.drawable.contact_action,
-                            thirdQuantifierDescription = "Contacts",
-                            fourthQuantifierQuantity = "${instantDates}",
-                            fourthQuantifierDescription = "Instant\nDates",
-                            fifthQuantifierQuantity = "${recorded}",
-                            fifthQuantifierDescription = "Recorded\nSets",
-                            firstPerformanceQuantity = "${
-                                GlobalStatsService.computeGenericRatio(
-                                    state.allSets.size,
-                                    conversations
-                                )
-                            } %",
-                            firstPerformanceDescription = "Conversation\nRatio",
-                            secondPerformanceQuantity = "${
-                                GlobalStatsService.computeGenericRatio(
-                                    state.allSets.size,
-                                    contacts
-                                )
-                            } %",
-                            secondPerformanceDescription = "Contact\nRatio",
-                            thirdPerformanceQuantity = "${
-                                GlobalStatsService.computeGenericRatio(
-                                    state.allSets.size,
-                                    instantDates
-                                )
-                            } %",
-                            thirdPerformanceDescription = "iDate\nRatio",
-                            countFontSize = 35.sp
-                        )
-                    }
-                }
-            }
             if (state.allLeads.isNotEmpty()) {
                 item {
                     Row {
@@ -345,6 +242,109 @@ fun StatsScreen(
                                 )
                             } %",
                             fourthPerformanceDescription = "Lay to Kiss\nRatio",
+                            countFontSize = 35.sp
+                        )
+                    }
+                }
+            }
+            if (state.allPinPoints.isNotEmpty()) {
+                item {
+                    Row {
+                        Spacer(
+                            modifier = Modifier.width(spaceFromLeft)
+                        )
+                        HeatmapCard(
+                            modifier = cardModifier.height(400.dp),
+                            title = "Pinpoints",
+                            statCardIcon = Icons.Default.PinDrop,
+                            description = "See where the real game is played",
+                            state = state,
+                            onEvent = onEvent
+                        )
+                    }
+                }
+                item {
+                    Row {
+                        Spacer(
+                            modifier = Modifier.width(spaceFromLeft)
+                        )
+                        PinPointScatterCard(
+                            modifier = cardModifier.height(400.dp),
+                            title = "Pinpoints in time",
+                            statCardIcon = Icons.Default.PinDrop,
+                            description = "Know your best schedule",
+                            state = state,
+                            onEvent = onEvent
+                        )
+                    }
+                }
+            }
+            if (state.allSets.isNotEmpty()) {
+                item {
+                    Row {
+                        Spacer(
+                            modifier = Modifier.width(spaceFromLeft)
+                        )
+                        val conversations: Int =
+                            state.allSets.filter { set -> set.conversation }.size
+                        val contacts: Int = state.allSets.filter { set -> set.contact }.size
+                        val instantDates: Int =
+                            state.allSets.filter { set -> set.instantDate }.size
+                        val recorded: Int = state.allSets.filter { set -> set.recorded }.size
+                        val avgContactTime: Long =
+                            GlobalStatsService.computeAvgContactTime(state.allSets, contacts)
+                        val contactSentence =
+                            if (avgContactTime != 0L) "on average a contact each ${avgContactTime} minutes" else "no contacts yet"
+                        val setSpentHours =
+                            GlobalStatsService.computeSetsSpentHours(state.allSets)
+                        val setSpentMinutes =
+                            GlobalStatsService.computeSetsSpentMinutes(state.allSets)
+                        var timeSpentSentence = "${setSpentMinutes} minutes"
+                        if (setSpentHours != 0L) {
+                            val minutesDifference = setSpentMinutes - setSpentHours * 60
+                            timeSpentSentence =
+                                "${setSpentHours} hours and " + "${minutesDifference} minutes"
+                        }
+                        StatsCard(
+                            modifier = cardModifier,
+                            title = "Single Sets",
+                            statCardIcon = Icons.Default.PersonAddAlt1,
+                            description = "${timeSpentSentence} spent on single sets, " + contactSentence,
+                            copyReportOnClipboard = state.copyReportOnClipboard,
+                            firstQuantifierQuantity = "${state.allSets.size}",
+                            firstQuantifierIcon = R.drawable.set_action,
+                            firstQuantifierDescription = "Sets",
+                            secondQuantifierQuantity = "${conversations}",
+                            secondQuantifierIcon = R.drawable.conversation_action,
+                            secondQuantifierDescription = "Conversations",
+                            thirdQuantifierQuantity = "${contacts}",
+                            thirdQuantifierIcon = R.drawable.contact_action,
+                            thirdQuantifierDescription = "Contacts",
+                            fourthQuantifierQuantity = "${instantDates}",
+                            fourthQuantifierDescription = "Instant\nDates",
+                            fifthQuantifierQuantity = "${recorded}",
+                            fifthQuantifierDescription = "Recorded\nSets",
+                            firstPerformanceQuantity = "${
+                                GlobalStatsService.computeGenericRatio(
+                                    state.allSets.size,
+                                    conversations
+                                )
+                            } %",
+                            firstPerformanceDescription = "Conversation\nRatio",
+                            secondPerformanceQuantity = "${
+                                GlobalStatsService.computeGenericRatio(
+                                    state.allSets.size,
+                                    contacts
+                                )
+                            } %",
+                            secondPerformanceDescription = "Contact\nRatio",
+                            thirdPerformanceQuantity = "${
+                                GlobalStatsService.computeGenericRatio(
+                                    state.allSets.size,
+                                    instantDates
+                                )
+                            } %",
+                            thirdPerformanceDescription = "iDate\nRatio",
                             countFontSize = 35.sp
                         )
                     }
