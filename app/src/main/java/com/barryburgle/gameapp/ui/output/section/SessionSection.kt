@@ -134,7 +134,7 @@ fun LazyListScope.SessionSection(
                 LabeledBarEntry(
                     BarEntry(
                         it.toFloat(),
-                        abstractSession.convoRatio.toFloat()
+                        abstractSession.convoRatio.toFloat() * 100
                     ),
                     FormatService.getDateForCharLabel(abstractSession.date)
                 )
@@ -157,7 +157,7 @@ fun LazyListScope.SessionSection(
                 LabeledBarEntry(
                     BarEntry(
                         it.toFloat(),
-                        abstractSession.contactRatio.toFloat()
+                        abstractSession.contactRatio.toFloat() * 100
                     ),
                     FormatService.getDateForCharLabel(abstractSession.date)
                 )

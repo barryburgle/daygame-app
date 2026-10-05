@@ -240,7 +240,7 @@ fun LazyListScope.WeekSection(
                         GlobalStatsService.computeGenericRatio(
                             singleWeek.sets.toInt(),
                             aggregatedWeekDates.get(it).dates.toInt()
-                        ).toFloat()
+                        ).toFloat() * 100
                     ),
                     singleWeek.label
                 )
