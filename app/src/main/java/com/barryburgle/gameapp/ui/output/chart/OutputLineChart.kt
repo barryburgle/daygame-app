@@ -51,10 +51,10 @@ class FluidLineChartRenderer(
     private inline fun withClipping(c: Canvas, drawBlock: () -> Unit) {
         val saveCount = c.save()
         val canvasHeight = c.height.toFloat()
+        val canvasWidth = c.width.toFloat()
 
         val contentLeft = mViewPortHandler.contentLeft()
-        val contentRight = mViewPortHandler.contentRight()
-        val clipRight = contentLeft + ((contentRight - contentLeft) * mAnimator.phaseX)
+        val clipRight = contentLeft + ((canvasWidth - contentLeft) * mAnimator.phaseX)
 
         c.clipRect(0f, 0f, clipRight, canvasHeight)
 
@@ -154,7 +154,11 @@ fun OutputLineChart(
                                 legendActive,
                                 isScrollable
                             )
-                        barChart.renderer = FluidLineChartRenderer(barChart, barChart.animator, barChart.viewPortHandler)
+                        barChart.renderer = FluidLineChartRenderer(
+                            barChart,
+                            barChart.animator,
+                            barChart.viewPortHandler
+                        )
                         if (showLabels) {
                             val xAxisLabels = labeledEntries.map { it.label }
                             if (xAxisLabels.isNotEmpty()) {
@@ -169,7 +173,11 @@ fun OutputLineChart(
                                     isGranularityEnabled = true
                                     setLabelCount(25, false)
                                 }
-                                barChart.setXAxisRenderer(object : XAxisRenderer(barChart.viewPortHandler, barChart.xAxis, barChart.getTransformer(YAxis.AxisDependency.LEFT)) {
+                                barChart.setXAxisRenderer(object : XAxisRenderer(
+                                    barChart.viewPortHandler,
+                                    barChart.xAxis,
+                                    barChart.getTransformer(YAxis.AxisDependency.LEFT)
+                                ) {
                                     override fun drawLabel(
                                         c: Canvas?,
                                         formattedLabel: String?,
@@ -182,8 +190,18 @@ fun OutputLineChart(
                                         val lines = formattedLabel.split("\n")
                                         var currentY = y
                                         for (line in lines) {
-                                            Utils.drawXAxisValue(c, line, x, currentY, mAxisLabelPaint, anchor, angleDegrees)
-                                            currentY += mAxisLabelPaint.textSize + Utils.convertDpToPixel(2f)
+                                            Utils.drawXAxisValue(
+                                                c,
+                                                line,
+                                                x,
+                                                currentY,
+                                                mAxisLabelPaint,
+                                                anchor,
+                                                angleDegrees
+                                            )
+                                            currentY += mAxisLabelPaint.textSize + Utils.convertDpToPixel(
+                                                2f
+                                            )
                                         }
                                     }
                                 })
@@ -292,7 +310,7 @@ fun styleLineChart(
         legend.isEnabled = legendActive
         legend.textColor = onSurfacecolor
         legend.textSize = inChartTextSize
-        extraRightOffset = 20f
+        extraRightOffset = 25f
         extraBottomOffset = 30f
     }
     return lineChart
