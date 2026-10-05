@@ -12,9 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.barryburgle.gameapp.manager.SessionManager
@@ -94,6 +97,9 @@ fun OutputLineChart(
     modifier: Modifier = Modifier,
     showLabels: Boolean = false
 ) {
+    val context = LocalContext.current
+    val lineChart = remember { LineChart(context) }
+
     val normalizedBarEntryList = labeledEntries.mapIndexed { index, labeledEntry ->
         BarEntry((index).toFloat(), labeledEntry.entry.y)
     }
@@ -106,6 +112,11 @@ fun OutputLineChart(
     val commonLineWidth = 1f
     val inChartValueTextSize = 12f
     val inChartLabelTextSize = 10f
+    LaunchedEffect(labeledEntries) {
+        lineChart.postDelayed({
+            lineChart.animateX(900, Easing.EaseInCubic)
+        }, 100)
+    }
     Column(
         modifier = modifier
             .background(
@@ -144,21 +155,23 @@ fun OutputLineChart(
                 AndroidView(
                     modifier = Modifier
                         .fillMaxSize(),
-                    factory = { context ->
-                        val barChart =
-                            styleLineChart(
-                                LineChart(context),
-                                surfaceColor,
-                                onSurfaceColor,
-                                inChartValueTextSize,
-                                legendActive,
-                                isScrollable
-                            )
-                        barChart.renderer = FluidLineChartRenderer(
-                            barChart,
-                            barChart.animator,
-                            barChart.viewPortHandler
+                    factory = {
+                        styleLineChart(
+                            lineChart,
+                            surfaceColor,
+                            onSurfaceColor,
+                            inChartValueTextSize,
+                            legendActive,
+                            isScrollable
                         )
+                        lineChart.renderer = FluidLineChartRenderer(
+                            lineChart,
+                            lineChart.animator,
+                            lineChart.viewPortHandler
+                        )
+                        lineChart
+                    },
+                    update = { barChart ->
                         if (showLabels) {
                             val xAxisLabels = labeledEntries.map { it.label }
                             if (xAxisLabels.isNotEmpty()) {
@@ -274,11 +287,10 @@ fun OutputLineChart(
                             barChart.setVisibleXRangeMaximum(12f)
                             barChart.moveViewToX(normalizedBarEntryList.size.toFloat())
                         }
-                        barChart.post {
-                            barChart.animateX(900, Easing.EaseInCubic)
-                        }
-                        barChart
-                    })
+                        barChart.notifyDataSetChanged()
+                        barChart.invalidate()
+                    }
+                )
             }
         }
     }
