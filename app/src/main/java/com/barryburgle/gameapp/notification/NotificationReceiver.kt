@@ -67,7 +67,8 @@ class NotificationReceiver : BroadcastReceiver() {
         notificationService.showNotification(
             notificationTitle,
             notificationContent,
-            pendingIntent
+            pendingIntent,
+            requestCode
         )
     }
 }
