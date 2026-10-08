@@ -370,7 +370,7 @@ fun EventCard(
                     }
                     eventHeader(
                         listOf(
-                            sortableGameEvent.event.getHeaderWeekday(),
+                            sortableGameEvent.event.getHeaderWeekday().take(3),
                             sortableGameEvent.event.getHeaderDate(),
                             sortableGameEvent.event.getHeaderTime(),
                             eventDuration
