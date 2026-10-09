@@ -38,9 +38,9 @@ All data are stored locally, on your device *only*. The app provides four tabs:
   - know which ages/countries your leads & dates actually skew on
 - **Settings Tab** is where you can tweak the app settings for data entry, sessions, summaries, recordings, dashboard, themes and backup
 
-| Game Tab                                                                                                  | Dashboard Tab                                                                                                  | Results Tab                                                                                                  | Settings Tab                                                                                                  |
-|-----------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
-| ![...loading...](https://github.com/barryburgle/daygame-app/blob/main/resources/screen/game.png?raw=true) | ![...loading...](https://github.com/barryburgle/daygame-app/blob/main/resources/screen/dashboard.png?raw=true) | ![...loading...](https://github.com/barryburgle/daygame-app/blob/main/resources/screen/results.png?raw=true) | ![...loading...](https://github.com/barryburgle/daygame-app/blob/main/resources/screen/settings.png?raw=true) |
+| Game Tab                                                 | Dashboard Tab                                            | Results Tab                                             | Settings Tab                                                |
+|----------------------------------------------------------|----------------------------------------------------------|---------------------------------------------------------|-------------------------------------------------------------|
+| ![...loading...](resources/screen/game_tab.gif?raw=true) | ![...loading...](resources/screen/dash_tab.gif?raw=true) | ![...loading...](resources/screen/res_tab.gif?raw=true) | ![...loading...](resources/screen/setting_tag.gif?raw=true) |
 
 ## Download
 
