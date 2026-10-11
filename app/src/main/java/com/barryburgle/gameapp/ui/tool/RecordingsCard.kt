@@ -104,7 +104,7 @@ fun RecordingsCard(
 
     GenericSettingsCard("Recordings", modifier) {
         SwitchSetting(
-            "Enable Live session recordings", state.recordingsEnabled,
+            "Live Session recordings", state.recordingsEnabled,
             description = "Record sets during a Live Session and play it back from session cards"
         ) {
             if (state.recordingsEnabled) {
@@ -174,9 +174,9 @@ fun RecordingsCard(
             }
             Spacer(modifier = Modifier.height(8.dp))
             SwitchSetting(
-                "Stop recording on new set/conversation/contact/lead entry",
+                "Stop recording on new set/conversation/contact entry",
                 state.stopRecordingOnNewEntryEnable,
-                description = "Tapping any \"+\" Live Session card button will not only increase sets, conversations or contacts or allow you to insert a lead, but also stop the ongoing (if any) recording and save it"
+                description = "Tapping any \"+\" Live Session card button will not only increase sets, conversations or contacts, but also stop the ongoing (if any) recording and save it"
             ) {
                 onEvent(ToolEvent.SwitchStopRecordingOnNewEntryEnable)
             }
