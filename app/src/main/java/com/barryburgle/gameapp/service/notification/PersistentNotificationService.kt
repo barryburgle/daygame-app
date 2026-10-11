@@ -401,10 +401,9 @@ class PersistentNotificationService : Service() {
 
         val titleText = "Session started at $startHour"
         var contentText =
-            if (!pastSessionStickingPoints.isNullOrEmpty()) "Last sticking points:\n$pastSessionStickingPoints\n\n" else ""
-        contentText += "This session:"
+            if (!pastSessionStickingPoints.isNullOrEmpty()) "Last sticking points:\n$pastSessionStickingPoints\n" else ""
         if (sets > 0) {
-            contentText += " $sets set"
+            contentText += "This session: $sets set"
             if (sets > 1) contentText += "s"
         }
         if (conversations > 0) {
@@ -426,15 +425,15 @@ class PersistentNotificationService : Service() {
                     .bigText(contentText)
             )
             .setOngoing(true).setOnlyAlertOnce(true).setContentIntent(tapPendingIntent)
-            .addAction(R.drawable.set_action, "🚶 New set", newSetPendingIntent)
+            .addAction(R.drawable.set_action, "Set", newSetPendingIntent)
             .addAction(
                 R.drawable.conversation_action,
-                "💬 New conversation",
+                "Conversation",
                 newConversationPendingIntent
             )
             .addAction(
                 R.drawable.contact_action,
-                "\uD83D\uDCF2 New contact",
+                "Contact",
                 newContactPendingIntent
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
