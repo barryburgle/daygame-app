@@ -26,6 +26,14 @@ fun LiveSessionCard(
         ) {
             onEvent(ToolEvent.SwitchLiveSessionNotification)
         }
+        Spacer(modifier = Modifier.height(5.dp))
+        SwitchSetting(
+            "Pinpoint interactions",
+            state.pinPointInteractions,
+            description = "When enabled space and time for each new interaction on Live Session are acquired. Requires full location access"
+        ) {
+            onEvent(ToolEvent.SwitchPinPointInteractions)
+        }
         if (state.liveSessionNotificationEnabled) {
             Spacer(modifier = Modifier.height(5.dp))
             SwitchSetting(
@@ -35,6 +43,14 @@ fun LiveSessionCard(
             ) {
                 onEvent(ToolEvent.SwitchShowStickingPointsInLiveSessionNotification)
             }
+        }
+        Spacer(modifier = Modifier.height(5.dp))
+        SwitchSetting(
+            "Follow count",
+            state.followCount,
+            description = "When inserting a live or normal session increases sets if conversations is increased, increases sets and conversations if contacts is increased, increase sets conversations and contacts if a new lead is inserted"
+        ) {
+            onEvent(ToolEvent.SwitchFollowCount)
         }
         Spacer(modifier = Modifier.height(5.dp))
         SwitchSetting(
@@ -50,6 +66,23 @@ fun LiveSessionCard(
             countBy = 5,
             onEvent = onEvent as (GenericEvent) -> Unit,
             saveEvent = ToolEvent::SetLiveSessionSittingReminderInterval
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        SwitchSetting(
+            "Remind to write her",
+            state.writeHerAfterReminderEnabled,
+            description = "If enabled reminds you to write every lead you got after a settable amount of minutes"
+        ) {
+            onEvent(ToolEvent.SwitchWriteHerReminder)
+        }
+        Spacer(modifier = Modifier.height(5.dp))
+        CountSetting(
+            text = "Write her after ${state.writeHerReminderInterval} minutes",
+            description = "After every new lead insertion a notification will be scheduled in ${state.writeHerReminderInterval} minutes to remind you to write her",
+            count = state.writeHerReminderInterval,
+            countBy = 5,
+            onEvent = onEvent as (GenericEvent) -> Unit,
+            saveEvent = ToolEvent::SetWriteHerReminderInterval
         )
         Spacer(modifier = Modifier.height(5.dp))
         SwitchSetting(
