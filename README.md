@@ -9,7 +9,6 @@
 </div>
 
 <h1 align="center">Daygame</h1>
-<h3 align="center">The Android app</h3>
 
 <br />
 
@@ -43,6 +42,8 @@ All data are stored locally, on your device *only*. The app provides four tabs:
   - know which ages/countries your leads & dates actually skew on
 - **Settings Tab** is where you can tweak the app settings for data entry, sessions, summaries, recordings, dashboard, themes and backup
 
+For a more detailed feature list check [below](https://github.com/barryburgle/daygame-app/blob/main/README.md#features).
+
 ## Download
 
 You can download the app .apk installer on the release page clicking on the following badge:
@@ -58,10 +59,12 @@ You can download the app .apk installer on the release page clicking on the foll
 
 ### Warning
 
-Android is - by default - blocking app installation out of verified stores. To be able to install Daygame you will therefore need to:
+Android is - by default - blocking app installation out of verified stores.
+In the future things will get [even worse](https://keepandroidopen.org).
+Currently, to be able to install the Daygame app you will therefore need to:
 1. Search on your phone Settings "Install unknown apps"
 2. Enable any app you're installing Daygame *from* to install unknown apps: if you're opening the `daygame-vX.Y.Z.apk` file from your browser enable that, if you're opening it from the file manager, enable that.
-Daygame will not be distributed through Android verified stores, but the code is free, open and forkable.
+Daygame will *never* be distributed through Android verified stores, but the code is free, open and forkable.
 
 ## Features
 
