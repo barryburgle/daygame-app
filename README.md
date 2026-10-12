@@ -52,7 +52,7 @@ You can download the app .apk installer on the release page clicking on the foll
   <img src="https://i.ibb.co/q0mdc4Z/get-it-on-github.png" alt="Get it on Github" height="80">
 </a>
 <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/barryburgle/daygame-app">
-  <img src="resources/assets/readme/get-it-on-obtainium.png" alt="Get it on Obtainium" height="80">
+  <img src="https://raw.githubusercontent.com/barryburgle/daygame-app/main/resources/assets/readme/get-it-on-obtainium.png" alt="Get it on Obtainium" height="80">
 </a>
 </div>
 
