@@ -1,10 +1,15 @@
 <div align="center">
+<br />
 <img src="resources/screen/screens.png">
+</div>
+
+<div align="center">
 <br />
 <img src="app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp" />
 </div>
 
 <h1 align="center">Daygame</h1>
+<h3 align="center">The Android app</h3>
 
 <br />
 
@@ -38,10 +43,6 @@ All data are stored locally, on your device *only*. The app provides four tabs:
   - know which ages/countries your leads & dates actually skew on
 - **Settings Tab** is where you can tweak the app settings for data entry, sessions, summaries, recordings, dashboard, themes and backup
 
-| Game Tab                                                 | Dashboard Tab                                            | Results Tab                                             | Settings Tab                                                |
-|----------------------------------------------------------|----------------------------------------------------------|---------------------------------------------------------|-------------------------------------------------------------|
-| ![...loading...](resources/screen/game_tab.gif?raw=true) | ![...loading...](resources/screen/dash_tab.gif?raw=true) | ![...loading...](resources/screen/res_tab.gif?raw=true) | ![...loading...](resources/screen/setting_tag.gif?raw=true) |
-
 ## Download
 
 You can download the app .apk installer on the release page clicking on the following badge:
@@ -49,6 +50,9 @@ You can download the app .apk installer on the release page clicking on the foll
 <div align="center">
 <a href="https://github.com/barryburgle/daygame-app/releases/latest">
   <img src="https://i.ibb.co/q0mdc4Z/get-it-on-github.png" alt="Get it on Github" height="80">
+</a>
+<a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/barryburgle/daygame-app">
+  <img src="resources/assets/readme/get-it-on-obtainium.png" alt="Get it on Obtainium" height="80">
 </a>
 </div>
 
@@ -64,6 +68,8 @@ Daygame will not be distributed through Android verified stores, but the code is
 Here it follows the list of the features the Daygame App provides to the player.
 
 #### Game Tab
+
+![...loading...](resources/screen/game_tab.gif?raw=true)
 
 In this tab of the app you'll find the collection of all your sorted-in-time Game events (sessions, single sets, dates, challenges) with ordering and filtering possibilities.
 On top of the Game events list the Daygame App will display (if enabled by settings) a "Summary" card, with the last week/month/challenge and the achieved effort.
@@ -84,6 +90,9 @@ Here it is the list of the features:
 - Start & run the "Date Metronome", a series of date phases that will notify you while on date to make the date progress with the right rhythm!
 
 #### Dashboard Tab
+
+![...loading...](resources/screen/dash_tab.gif?raw=true)
+
 In this tab of the app you'll get a complete dashboard about your - recent - Game.
 This tab should brief the player on how it's currently going plotting and showing the stats in time.
 The Dashboard also contains a new way to stay relevant for your leads:  "Flight Control"! Send and keep track of your pings & leads. 
@@ -97,6 +106,9 @@ Here it is the list of the features:
 - Tap on any chart to get the whole scrollable time series plotted in landscape
 
 #### Results Tab
+
+![...loading...](resources/screen/res_tab.gif?raw=true)
+
 This tab holds the cumulative stats of your Game, the achieved results and the overall map of your interactions in space and time.
 Every result card is shareable with wings and friends.
 Here it is the list of the features:
@@ -108,6 +120,9 @@ Here it is the list of the features:
 - Visualize & share your dates' histogram/pie chart distributions by lead's age, lead's country and date number
 
 #### Settings Tab
+
+![...loading...](resources/screen/setting_tag.gif?raw=true)
+
 In this tab you will find all the setting you may want to tune to make the app serving *your* Game needs.
 Here it is the list of the features divided by settings sections:
 - Data Entry settings
