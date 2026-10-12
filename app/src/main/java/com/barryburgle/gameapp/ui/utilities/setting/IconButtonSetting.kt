@@ -12,12 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
 
 @Composable
 fun IconButtonSetting(
     text: String,
     imageVector: ImageVector,
+    description: String? = null,
     contentDescription: String?, onClick: () -> Unit
 ) {
     Row(
@@ -30,6 +32,9 @@ fun IconButtonSetting(
                 .fillMaxWidth(0.75f)
         ) {
             SmallTitleText(text)
+            if (description != null) {
+                LittleBodyText(description)
+            }
         }
         Spacer(modifier = Modifier.width(5.dp))
         Column(

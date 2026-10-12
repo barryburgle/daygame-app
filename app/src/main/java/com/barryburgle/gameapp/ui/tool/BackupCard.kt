@@ -129,6 +129,7 @@ fun BackupCard(
                         )
                         IconButtonSetting(
                             text = "Import all backups",
+                            description = "Imports in the app's tables all the most-recent past backups present in the backup folder",
                             imageVector = Icons.Default.CloudDownload,
                             contentDescription = "Import all",
                             onClick = {
@@ -146,7 +147,8 @@ fun BackupCard(
                             onEvent(ToolEvent.SwitchBackupActive)
                         }
                         SwitchSetting(
-                            "Backup before update", state.backupBeforeUpdate
+                            "Backup before update", state.backupBeforeUpdate,
+                            description = "Triggers backup creation when clicking on the link to download the newer Daygame App release in the Credits settings card"
                         ) {
                             onEvent(ToolEvent.SwitchBackupBeforeUpdate)
                         }

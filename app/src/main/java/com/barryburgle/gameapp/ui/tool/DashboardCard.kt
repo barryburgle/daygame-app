@@ -53,7 +53,7 @@ fun DashboardCard(
         CountSetting(
             text = "Show ${state.shownNationalities} nationalities",
             count = state.shownNationalities,
-            description = "Show only ${state.shownNationalities} countries in nationalities bar charts and country selector on lead insertion (min 1 to max 8)",
+            description = "Show only ${state.shownNationalities} countries in leads' & dates' nationalities distribution Results tab bar charts and lead insert dialog (min 1 to max 8)",
             onEvent = onEvent as (GenericEvent) -> Unit,
             saveEvent = ToolEvent::SetShownNationalities
         )

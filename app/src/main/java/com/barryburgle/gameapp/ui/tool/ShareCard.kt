@@ -22,7 +22,8 @@ fun ShareCard(
             onEvent(ToolEvent.SwitchSimplePlusOneReport)
         }
         SwitchSetting(
-            "Never share lead info", state.neverShareLeadInfo
+            "Never share lead info", state.neverShareLeadInfo,
+            description = "Omits sharing any acquired lead info on session, set or date event sharing"
         ) {
             onEvent(ToolEvent.SwitchNeverShareLeadInfo)
         }
