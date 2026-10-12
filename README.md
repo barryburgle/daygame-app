@@ -199,7 +199,9 @@ The project is open to forks, further improvements and feedbacks.
 
 If you want to become a contributor you need to:
 - be an active daygamer 😉
+
 and:
+
 - be an Android/JVM Software Engineer or
 - be a UX/UI Android/mobile Designer or
 - be an Android/JVM DevOps Engineer or
