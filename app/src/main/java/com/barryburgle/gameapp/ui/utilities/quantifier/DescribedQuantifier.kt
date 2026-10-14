@@ -103,6 +103,7 @@ fun DescribedQuantifier(
                         shownQuantity = quantity
                     }
                     val oldShownQuantity = if (oldQuantity.isBlank()) "No" else oldQuantity
+                    val isNumeric = shownQuantity.all { it.isDigit() }
                     Box(
                         modifier = Modifier.wrapContentSize(), contentAlignment = Alignment.TopEnd
                     ) {
@@ -111,27 +112,35 @@ fun DescribedQuantifier(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            for (charIndex in shownQuantity.indices) {
-                                val oldChar = oldShownQuantity.getOrNull(charIndex)
-                                val newChar = shownQuantity[charIndex]
-                                val oldDigit = oldChar?.toString()?.toIntOrNull() ?: 0
-                                val newDigit = newChar.toString().toIntOrNull() ?: 0
-                                val char = if (oldChar == newChar) {
-                                    oldShownQuantity[charIndex]
-                                } else {
-                                    shownQuantity[charIndex]
+                            if (isNumeric) {
+                                for (charIndex in shownQuantity.indices) {
+                                    val oldChar = oldShownQuantity.getOrNull(charIndex)
+                                    val newChar = shownQuantity[charIndex]
+                                    val oldDigit = oldChar?.toString()?.toIntOrNull() ?: 0
+                                    val newDigit = newChar.toString().toIntOrNull() ?: 0
+                                    val char = if (oldChar == newChar) {
+                                        oldShownQuantity[charIndex]
+                                    } else {
+                                        shownQuantity[charIndex]
+                                    }
+                                    AnimatedContent(
+                                        targetState = char, transitionSpec = {
+                                            integerTransitionSpec(newDigit, oldDigit)
+                                        }, label = "DescribedQuantifierDigitSlide"
+                                    ) { targetChar ->
+                                        Text(
+                                            text = targetChar.toString(),
+                                            fontSize = quantityFontSize,
+                                            fontWeight = FontWeight.Black
+                                        )
+                                    }
                                 }
-                                AnimatedContent(
-                                    targetState = char, transitionSpec = {
-                                        integerTransitionSpec(newDigit, oldDigit)
-                                    }, label = "DescribedQuantifierDigitSlide"
-                                ) { targetChar ->
-                                    Text(
-                                        text = targetChar.toString(),
-                                        fontSize = quantityFontSize,
-                                        fontWeight = FontWeight.Black
-                                    )
-                                }
+                            } else {
+                                Text(
+                                    text = shownQuantity,
+                                    fontSize = quantityFontSize,
+                                    fontWeight = FontWeight.Black
+                                )
                             }
                         }
 

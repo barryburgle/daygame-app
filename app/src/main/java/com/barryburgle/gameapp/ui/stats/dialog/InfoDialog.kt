@@ -217,24 +217,14 @@ fun exportHistogramDataPoints(
 
 fun getHistogramDataPoints(completeHistogram: List<Any>): List<Pair<String, String>> {
     var descriptionFrequencyPairs: List<Pair<String, String>> = emptyList()
-    val maxCountryNameLength = 13
     for (histogramDataPoint in completeHistogram) {
         var description = ""
         var frequency = ""
         when (histogramDataPoint) {
             is CategoryHistogram -> {
                 val tempHistogramDataPoint = histogramDataPoint
-                var countryName =
-                    CountryEnum.getCountryNameByAlpha3(tempHistogramDataPoint.category)
-                var extreme = countryName.length
-                var suffix = ""
-                if (countryName.length > maxCountryNameLength) {
-                    extreme = maxCountryNameLength
-                    suffix = "..."
-                }
-                countryName = countryName.substring(0, extreme) + suffix
                 description =
-                    CountryEnum.getFlagByAlpha3(tempHistogramDataPoint.category) + " " + countryName
+                    CountryEnum.getFlagByAlpha3(tempHistogramDataPoint.category)
                 frequency = tempHistogramDataPoint.frequency.toInt().toString()
             }
 
