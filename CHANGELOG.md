@@ -1,4 +1,4 @@
-# Version 1.14.0 (2026-08-dd)
+# Version 1.14.0 (2026-10-14)
 **Features**
 - Record in-app your sets during a Live Session and play them back later 🎤
 - "Flight control": never forget to ping a lead, send the same ping twice, or let leads fall off ever again 📡 
