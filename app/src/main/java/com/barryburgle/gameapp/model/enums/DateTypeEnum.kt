@@ -45,18 +45,17 @@ enum class DateTypeEnum(private val type: String) {
 
         fun getDateNumber(dateNumber: Int, writeDate: Boolean): String {
             // TODO: move to its own class in future if needed
-            var dateNumberSuffix = "th"
-            var dateNumberCount = dateNumber.toString()
             if (dateNumber == 0) {
                 return "iDate"
-            } else if (dateNumber == 1) {
-                dateNumberSuffix = "st"
-            } else if (dateNumber == 2) {
-                dateNumberSuffix = "nd"
-            } else if (dateNumber == 3) {
-                dateNumberSuffix = "rd"
             }
-            var dateDescription = dateNumberCount + dateNumberSuffix
+            val dateNumberSuffix = when {
+                dateNumber in 11..13 -> "th"
+                dateNumber % 10 == 1 -> "st"
+                dateNumber % 10 == 2 -> "nd"
+                dateNumber % 10 == 3 -> "rd"
+                else -> "th"
+            }
+            var dateDescription = "$dateNumber$dateNumberSuffix"
             if (writeDate) {
                 dateDescription = dateDescription + " date"
             }
