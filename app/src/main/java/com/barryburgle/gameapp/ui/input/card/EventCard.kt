@@ -73,6 +73,8 @@ import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.EventTypeEnum
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.ping.Ping
+import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
@@ -92,6 +94,7 @@ import com.barryburgle.gameapp.ui.input.dialog.shareEvent
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.input.liveSessionPulsingColor
 import com.barryburgle.gameapp.ui.output.LeadCard
+import com.barryburgle.gameapp.ui.output.rememberLeadTimelineEvents
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
@@ -120,7 +123,13 @@ fun EventCard(
     recordings: List<String> = emptyList(),
     recordingsFolder: String = "",
     recordingsEnabled: Boolean = false,
-    pullOClockReminderInterval: Int = 7
+    pullOClockReminderInterval: Int = 7,
+    allSessions: List<AbstractSession> = emptyList(),
+    allSets: List<SingleSet> = emptyList(),
+    allDates: List<Date> = emptyList(),
+    allPings: List<Ping> = emptyList(),
+    allSentPings: List<SentPing> = emptyList(),
+    allPinPoints: List<PinPoint> = emptyList()
 ) {
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
@@ -806,7 +815,13 @@ fun EventCard(
                                             LeadsRow(
                                                 semiOpaqueBackground,
                                                 leads,
-                                                onEvent
+                                                onEvent,
+                                                allSessions,
+                                                allSets,
+                                                allDates,
+                                                allPings,
+                                                allSentPings,
+                                                allPinPoints
                                             )
                                         }
                                     }
@@ -944,7 +959,13 @@ private fun eventHeader(headerParts: List<String>) {
 private fun LeadsRow(
     semiOpaqueBackground: Color,
     leads: List<Lead>,
-    onEvent: (GameEvent) -> Unit
+    onEvent: (GameEvent) -> Unit,
+    allSessions: List<AbstractSession> = emptyList(),
+    allSets: List<SingleSet> = emptyList(),
+    allDates: List<Date> = emptyList(),
+    allPings: List<Ping> = emptyList(),
+    allSentPings: List<SentPing> = emptyList(),
+    allPinPoints: List<PinPoint> = emptyList()
 ) {
     LazyRow(
         modifier = Modifier
@@ -967,43 +988,47 @@ private fun LeadsRow(
                 val localContext = LocalContext.current.applicationContext
                 val uriHandler = LocalUriHandler.current
                 LeadCard(
+                    lead = lead, events = rememberLeadTimelineEvents(
                     lead = lead,
-                    onEditClick = {
-                        onEvent(GameEvent.SetIsInOverlayToTrue)
-                        onEvent(
-                            GameEvent.EditLead(
-                                lead, true
-                            )
+                    allSessions = allSessions,
+                    allSets = allSets,
+                    allDates = allDates,
+                    allPings = allPings,
+                    allSentPings = allSentPings,
+                    allPinPoints = allPinPoints
+                ), onEditClick = {
+                    onEvent(GameEvent.SetIsInOverlayToTrue)
+                    onEvent(
+                        GameEvent.EditLead(
+                            lead, true
                         )
-                        onEvent(
-                            GameEvent.ShowLeadDialog(
-                                false, false
-                            )
+                    )
+                    onEvent(
+                        GameEvent.ShowLeadDialog(
+                            false, false
                         )
-                    },
-                    onLinkClick = {
-                        if (lead.contact == ContactTypeEnum.NUMBER.getField() && lead.contactLookupKey != null) {
-                            try {
-                                val uri = Uri.withAppendedPath(
-                                    ContactsContract.Contacts.CONTENT_LOOKUP_URI,
-                                    lead.contactLookupKey
-                                )
-                                uriHandler.openUri(uri.toString())
-                            } catch (e: Exception) {
-                                Toast.makeText(
-                                    localContext,
-                                    "Could not open contact",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        } else if (lead.contact == ContactTypeEnum.SOCIAL.getField() && lead.instagramUrl != null && lead.instagramUrl!!.isNotBlank()) {
-                            uriHandler.openUri(lead.instagramUrl!!)
-                        } else {
+                    )
+                }, onLinkClick = {
+                    if (lead.contact == ContactTypeEnum.NUMBER.getField() && lead.contactLookupKey != null) {
+                        try {
+                            val uri = Uri.withAppendedPath(
+                                ContactsContract.Contacts.CONTENT_LOOKUP_URI,
+                                lead.contactLookupKey
+                            )
+                            uriHandler.openUri(uri.toString())
+                        } catch (e: Exception) {
                             Toast.makeText(
-                                localContext, "No contact found", Toast.LENGTH_SHORT
+                                localContext, "Could not open contact", Toast.LENGTH_SHORT
                             ).show()
                         }
-                    })
+                    } else if (lead.contact == ContactTypeEnum.SOCIAL.getField() && lead.instagramUrl != null && lead.instagramUrl!!.isNotBlank()) {
+                        uriHandler.openUri(lead.instagramUrl!!)
+                    } else {
+                        Toast.makeText(
+                            localContext, "No contact found", Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
             }
             item {
                 Spacer(modifier = Modifier.width(10.dp))

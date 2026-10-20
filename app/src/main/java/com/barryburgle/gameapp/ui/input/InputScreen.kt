@@ -470,7 +470,13 @@ fun InputScreen(
                                         state.recordings,
                                         state.recordingsFolder,
                                         state.recordingsEnabled,
-                                        state.pullOClockReminderInterval
+                                        state.pullOClockReminderInterval,
+                                        allSessions = state.allSessions,
+                                        allSets = state.allSets,
+                                        allDates = state.allDates,
+                                        allPings = state.allPings,
+                                        allSentPings = state.allSentPings,
+                                        allPinPoints = state.allPinPoints
                                     )
                                 }
                             }
@@ -512,7 +518,13 @@ fun InputScreen(
                                 recordingState = state.recordingState,
                                 recordings = state.recordings,
                                 recordingsFolder = state.recordingsFolder,
-                                recordingsEnabled = state.recordingsEnabled
+                                recordingsEnabled = state.recordingsEnabled,
+                                allSessions = state.allSessions,
+                                allSets = state.allSets,
+                                allDates = state.allDates,
+                                allPings = state.allPings,
+                                allSentPings = state.allSentPings,
+                                allPinPoints = state.allPinPoints
                             )
                         }
                     }
