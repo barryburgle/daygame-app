@@ -298,12 +298,12 @@ fun getShareableText(
     description: String?,
     clickableLink: String?
 ) = buildString {
-    if (!description.isNullOrBlank()) {
-        append(description)
-    }
     if (!clickableLink.isNullOrBlank()) {
         if (isNotEmpty()) append("\n")
         append(clickableLink)
+    }
+    if (!description.isNullOrBlank()) {
+        append(description)
     }
 }
 
