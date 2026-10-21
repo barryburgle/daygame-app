@@ -1,10 +1,13 @@
 package com.barryburgle.gameapp.ui.input.button
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -21,6 +24,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.ui.input.liveSessionPulsingColor
 
+/**
+ * Layout width of a floating input button slot. It matches the layout width of the main add
+ * button ([com.barryburgle.gameapp.ui.utilities.button.IconShadowButton], 48.dp) so that all
+ * buttons in the expanded menu share the exact same horizontal center.
+ */
+private val ButtonSlotWidth = 48.dp
+
+/** Layout height of a floating input button slot (button + label). */
+private val ButtonSlotHeight = 80.dp
+
 @Composable
 fun FloatingInputButton(
     icon: ImageVector? = null,
@@ -33,41 +46,49 @@ fun FloatingInputButton(
     val tint =
         if (animate) liveSessionPulsingColor(animationColor) else MaterialTheme.colorScheme.inversePrimary
 
-    Column(
-        modifier = Modifier.height(80.dp), horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = Modifier
+            .width(ButtonSlotWidth)
+            .height(ButtonSlotHeight),
+        contentAlignment = Alignment.TopCenter
     ) {
-        FloatingActionButton(
-            onClick = onClick,
-            modifier = Modifier.size(40.dp),
-            contentColor = MaterialTheme.colorScheme.inversePrimary,
-            containerColor = MaterialTheme.colorScheme.tertiary,
-            shape = CircleShape
+        Column(
+            modifier = Modifier.wrapContentWidth(unbounded = true),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            when {
-                icon != null -> {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = description,
-                        tint = tint
-                    )
-                }
+            FloatingActionButton(
+                onClick = onClick,
+                modifier = Modifier.size(40.dp),
+                contentColor = MaterialTheme.colorScheme.inversePrimary,
+                containerColor = MaterialTheme.colorScheme.tertiary,
+                shape = CircleShape
+            ) {
+                when {
+                    icon != null -> {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = description,
+                            tint = tint
+                        )
+                    }
 
-                drawableRes != null -> {
-                    Icon(
-                        painter = painterResource(id = drawableRes),
-                        contentDescription = description,
-                        tint = tint,
-                        modifier = Modifier.scale(0.7f)
-                    )
+                    drawableRes != null -> {
+                        Icon(
+                            painter = painterResource(id = drawableRes),
+                            contentDescription = description,
+                            tint = tint,
+                            modifier = Modifier.scale(0.7f)
+                        )
+                    }
                 }
             }
+            Spacer(modifier = Modifier.height(5.dp))
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
         }
-        Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            text = description,
-            style = MaterialTheme.typography.bodySmall,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onPrimary
-        )
     }
 }

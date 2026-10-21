@@ -69,6 +69,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.ClipboardManager
@@ -76,6 +77,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -128,6 +130,7 @@ fun InputScreen(
     var isExpanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val localContext = context.applicationContext
+    val haptic = LocalHapticFeedback.current
 
     var topBarHeightPx by remember { mutableIntStateOf(0) }
     val density = LocalDensity.current
@@ -172,12 +175,15 @@ fun InputScreen(
                 )
             }
             Column(
-                horizontalAlignment = Alignment.End, modifier = Modifier.offset(x = -20.dp)
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .offset(x = -20.dp)
+                    .padding(bottom = spaceFromNavBar + 18.dp)
             ) {
                 Column(
                     modifier = Modifier
                         .height(500.dp)
-                        .offset(y = -120.dp),
+                        .offset(y = -22.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceAround
                 ) {
@@ -346,11 +352,11 @@ fun InputScreen(
                 }
                 IconShadowButton(
                     onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                         isRotated = !isRotated
                         isExpanded = !isExpanded
                     },
                     boxModifier = Modifier
-                        .offset(y = -spaceFromNavBar - 18.dp)
                         .scale(1.3f)
                         .shadow(elevation = 10.dp, shape = CircleShape)
                         .clip(CircleShape)
