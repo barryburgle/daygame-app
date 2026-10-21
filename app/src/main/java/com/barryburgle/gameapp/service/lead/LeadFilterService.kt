@@ -99,13 +99,14 @@ class LeadFilterService {
                         if (it.isLowerCase()) it.titlecase() else it.toString()
                     }
                     val dateLabel = if (date.dateNumber > 0) {
-                        "${DateTypeEnum.getDateNumber(date.dateNumber, true)} · $dateType"
+                        "${DateTypeEnum.getDateNumber(date.dateNumber, true)} · $dateTypeLabel"
                     } else {
-                        "$dateType date"
+                        "$dateTypeLabel date"
                     }
                     events += LeadTimelineEvent.DateEvent(
                         timestamp = timestamp,
-                        description = dateLabel + if (outcomes.isNotBlank()) " ($outcomes)" else ""
+                        description = dateLabel,
+                        dateType = date.dateType,
                         flags = flags
                     )
                 }
