@@ -19,6 +19,7 @@ fun HourMaterialDialog(
     theme: String,
     onValueChange: (String) -> Unit
 ) {
+    TrackDialogOverlay()
     MaterialDialog(
         dialogState = hourDialogState, elevation = 10.dp, buttons = {
             positiveButton(

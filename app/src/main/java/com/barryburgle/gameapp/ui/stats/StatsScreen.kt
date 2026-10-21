@@ -1,5 +1,7 @@
 package com.barryburgle.gameapp.ui.stats
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -21,7 +23,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
@@ -41,6 +45,7 @@ import com.barryburgle.gameapp.ui.stats.section.SessionsHistogramsSection
 import com.barryburgle.gameapp.ui.stats.state.StatsState
 import com.barryburgle.gameapp.ui.utilities.BlurStatusBar
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
+import com.barryburgle.gameapp.ui.utilities.dialog.DialogOverlayState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +56,11 @@ fun StatsScreen(
     // TODO: for each one of the cards "Sessions", "Leads" and "Dates" the default version that should be displayed should be a contracted one with only absolute counts, leading to showing performances on a dropdown arrow touch
     val heigh: Dp = 250.dp
     val width: Dp = 320.dp
+    val blurBackground by animateDpAsState(
+        targetValue = if (DialogOverlayState.isDialogOpen) 10.dp else 0.dp,
+        animationSpec = tween(durationMillis = 350),
+        label = "blurBackground"
+    )
     Scaffold(
         topBar = {
             BlurStatusBar()
@@ -61,7 +71,7 @@ fun StatsScreen(
                 state = state, onEvent = onEvent
             )
         }
-        InsertInvite(state, 0.dp)
+        InsertInvite(state, blurBackground)
         val cardModifier = Modifier
             .shadow(
                 elevation = 5.dp, shape = MaterialTheme.shapes.large
@@ -70,6 +80,7 @@ fun StatsScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .blur(blurBackground)
                 .offset(
                     y = spaceFromTop - 20.dp
                 ), verticalArrangement = Arrangement.spacedBy(spaceFromLeft)

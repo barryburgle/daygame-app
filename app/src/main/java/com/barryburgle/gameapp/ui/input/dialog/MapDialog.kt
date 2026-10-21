@@ -43,6 +43,7 @@ import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.dialog.TrackDialogOverlay
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import org.osmdroid.util.BoundingBox
@@ -62,6 +63,7 @@ fun MapDialog(
     onEvent: (GameEvent) -> Unit,
     onDismiss: () -> Unit
 ) {
+    TrackDialogOverlay()
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
     val textColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
     val onPrimaryColor = MaterialTheme.colorScheme.onPrimary.toArgb()

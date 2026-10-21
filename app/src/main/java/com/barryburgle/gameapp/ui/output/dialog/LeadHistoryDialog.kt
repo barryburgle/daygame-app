@@ -54,6 +54,7 @@ import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.animation.VerticalProgressBarBrush
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.FlowDialog
+import com.barryburgle.gameapp.ui.utilities.dialog.TrackDialogOverlay
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
@@ -108,6 +109,7 @@ fun LeadHistoryDialog(
     events: List<LeadTimelineEvent>,
     onDismissRequest: () -> Unit
 ) {
+    TrackDialogOverlay()
     val clipboardManager = LocalClipboardManager.current
     val localContext = LocalContext.current.applicationContext
     val maxDialogHeight = (LocalConfiguration.current.screenHeightDp * 0.85f).dp

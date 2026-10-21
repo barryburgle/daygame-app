@@ -1738,22 +1738,6 @@ class InputViewModel(
                 }
             }
 
-            is GameEvent.SetIsInOverlayToTrue -> {
-                _state.update {
-                    it.copy(
-                        isInOverlay = true
-                    )
-                }
-            }
-
-            is GameEvent.SetIsInOverlayToFalse -> {
-                _state.update {
-                    it.copy(
-                        isInOverlay = false
-                    )
-                }
-            }
-
             is GameEvent.SaveChallenge -> {
                 viewModelScope.launch {
                     val isUpdatingChallenge = state.value.isUpdatingChallenge

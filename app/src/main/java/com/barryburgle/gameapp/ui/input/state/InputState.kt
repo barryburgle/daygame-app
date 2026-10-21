@@ -137,7 +137,6 @@ data class InputState(
     val sessionsByMonth: List<AggregatedSessions> = emptyList(),
     val datesByWeek: List<AggregatedDates> = emptyList(),
     val datesByMonth: List<AggregatedDates> = emptyList(),
-    var isInOverlay: Boolean = false,
     var challengeName: String = "",
     var challengeDescription: String = "",
     var challengeStartDate: String = "",

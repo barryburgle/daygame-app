@@ -41,6 +41,7 @@ import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogTimeFormSection
+import com.barryburgle.gameapp.ui.utilities.dialog.TrackDialogOverlay
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,6 +52,7 @@ fun SessionDialog(
     description: String,
     modifier: Modifier = Modifier
 ) {
+    TrackDialogOverlay()
     val localContext = LocalContext.current.applicationContext
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     var latestDateValue = state.date
@@ -72,7 +74,6 @@ fun SessionDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier.shadow(elevation = 10.dp),
         onDismissRequest = {
-            onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideDialog)
         },
         title = {
@@ -125,7 +126,6 @@ fun SessionDialog(
                                     },
                                     imageVector = Icons.Default.Add,
                                     contentDescription = "Add a lead"
-                                    // TODO: the blur stys set on when inserting a lead on the session and then getting back to game events view
                                 )
                             }
                         }
@@ -243,7 +243,6 @@ fun SessionDialog(
                     ).show()
                 } else {
                     onEvent(GameEvent.SaveAbstractSession)
-                    onEvent(GameEvent.SetIsInOverlayToFalse)
                     onEvent(GameEvent.HideDialog)
                     onEvent(GameEvent.SwitchJustSaved)
                     Toast.makeText(
@@ -254,7 +253,6 @@ fun SessionDialog(
         },
         dismissButton = {
             DismissButton {
-                onEvent(GameEvent.SetIsInOverlayToFalse)
                 onEvent(GameEvent.HideDialog)
             }
         })

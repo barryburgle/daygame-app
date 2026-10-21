@@ -22,6 +22,7 @@ import com.barryburgle.gameapp.ui.tool.state.ToolsState
 import com.barryburgle.gameapp.ui.tool.utils.Switch
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
 import com.barryburgle.gameapp.ui.utilities.dialog.FlowDialog
+import com.barryburgle.gameapp.ui.utilities.dialog.TrackDialogOverlay
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import com.barryburgle.gameapp.ui.utilities.text.title.SmallTitleText
@@ -33,6 +34,7 @@ fun DeleteDialog(
     description: String,
     csvFindService: CSVFindService
 ) {
+    TrackDialogOverlay()
     val localContext = LocalContext.current.applicationContext
 
     FlowDialog(

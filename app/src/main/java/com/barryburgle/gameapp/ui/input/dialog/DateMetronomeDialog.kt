@@ -57,6 +57,7 @@ import com.barryburgle.gameapp.ui.utilities.HorizontallyPagedCard
 import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.FlowDialog
+import com.barryburgle.gameapp.ui.utilities.dialog.TrackDialogOverlay
 import com.barryburgle.gameapp.ui.utilities.selection.DottedHorizontalPager
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
@@ -69,6 +70,7 @@ fun DateMetronomeDialog(
     copyDateModelToShareToClipboard: Boolean,
     onEvent: (GameEvent) -> Unit
 ) {
+    TrackDialogOverlay()
     val pagerState = rememberPagerState(pageCount = { allDateModels.size })
     val listState = rememberLazyListState()
     val density = LocalDensity.current
@@ -98,10 +100,8 @@ fun DateMetronomeDialog(
     val maxDialogHeight = LocalConfiguration.current.screenHeightDp.dp * 0.75f
     FlowDialog(modifier = Modifier.heightIn(max = maxDialogHeight), onDismissRequest = {
         onEvent(GameEvent.HideDateMetronomeDialog)
-        onEvent(GameEvent.SetIsInOverlayToFalse)
     }, onConfirm = {
         onEvent(GameEvent.HideDateMetronomeDialog)
-        onEvent(GameEvent.SetIsInOverlayToFalse)
     }, title = {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -164,7 +164,6 @@ fun DateMetronomeDialog(
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 onEvent(GameEvent.HideDateMetronomeDialog)
-                                onEvent(GameEvent.SetIsInOverlayToFalse)
                             },
                             onShareActionButtonClick = {
                                 var dateModelToShare =

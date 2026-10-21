@@ -46,6 +46,7 @@ import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.FlowDialog
+import com.barryburgle.gameapp.ui.utilities.dialog.TrackDialogOverlay
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
@@ -54,6 +55,7 @@ import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
 fun DateModelEditDialog(
     onEvent: (GameEvent) -> Unit, dateModel: DateModel? = null, datePhases: List<DatePhase>
 ) {
+    TrackDialogOverlay()
     val context = LocalContext.current
     val localContext = context.applicationContext
     var showDeleteDateModelDialog by remember { mutableStateOf(false) }

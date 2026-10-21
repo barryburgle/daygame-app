@@ -53,6 +53,7 @@ import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
 import com.barryburgle.gameapp.ui.utilities.animation.VerticalProgressBarBrush
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.FlowDialog
+import com.barryburgle.gameapp.ui.utilities.dialog.TrackDialogOverlay
 import com.barryburgle.gameapp.ui.utilities.getClipData
 import com.barryburgle.gameapp.ui.utilities.getShareableText
 import com.barryburgle.gameapp.ui.utilities.selection.DottedHorizontalPager
@@ -68,6 +69,7 @@ fun FlightControlDialog(
     allSentPings: List<SentPing> = emptyList(),
     onEvent: (OutputEvent) -> Unit
 ) {
+    TrackDialogOverlay()
     val pingsByIdMap: Map<Long, Ping> = allPings.associateBy { it.id }
     val sentPingsByLeadIdMap: Map<Long, List<SentPing>> = allSentPings.groupBy { it.leadId }
     val pagerState = rememberPagerState(pageCount = { allPings.size })

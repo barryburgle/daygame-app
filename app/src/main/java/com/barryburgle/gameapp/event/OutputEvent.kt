@@ -20,8 +20,6 @@ sealed interface OutputEvent : GenericEvent {
     data class SetLeadAge(val age: String) : OutputEvent
     data class SaveLead(val lead: Lead) : OutputEvent
     data class DeleteLead(val leadId: Long) : OutputEvent
-    object SetIsInOverlayToTrue : OutputEvent
-    object SetIsInOverlayToFalse : OutputEvent
     object ShowFlightControlDialog : OutputEvent
     object HideFlightControlDialog : OutputEvent
     object ShowPingEditDialog : OutputEvent

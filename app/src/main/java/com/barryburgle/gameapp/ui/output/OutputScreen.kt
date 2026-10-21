@@ -68,6 +68,7 @@ import com.barryburgle.gameapp.ui.utilities.BasicAnimatedVisibility
 import com.barryburgle.gameapp.ui.utilities.BlurStatusBar
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.dialog.DialogOverlayState
 import com.barryburgle.gameapp.ui.utilities.selection.ScrollableSorter
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.MediumTitleText
@@ -89,7 +90,7 @@ fun OutputScreen(
     var heatmapEntitySelected by remember { mutableStateOf(HeatmapEntityEnum.SETS) }
     var isCustomSummaryMode by remember { mutableStateOf(false) }
     val blurBackground by animateDpAsState(
-        targetValue = if (state.isInOverlay || state.isUpdatingLead) 10.dp else 0.dp,
+        targetValue = if (DialogOverlayState.isDialogOpen) 10.dp else 0.dp,
         animationSpec = tween(durationMillis = 350),
         label = "blurBackground"
     )
@@ -301,7 +302,6 @@ fun OutputScreen(
                                         allPinPoints = state.allPinPoints
                                     ),
                                     onEditClick = {
-                                        onEvent(OutputEvent.SetIsInOverlayToTrue)
                                         onEvent(OutputEvent.EditLead(lead, true))
                                     }
                                 )

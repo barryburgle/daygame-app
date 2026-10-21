@@ -54,6 +54,7 @@ import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.dialog.TrackDialogOverlay
 import com.barryburgle.gameapp.ui.utilities.dropdown.Dropdown
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
@@ -99,7 +100,6 @@ fun InputLeadDialog(
                 onEvent(GameEvent.RollbackContactPinPointForLeadInsertDismissal(state.leadSessionId))
             }
             onEvent(GameEvent.SwitchSaveLeadToLiveSession)
-            onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideLeadDialog)
         },
         onScheduleReminder = { interval, leadDesc, notificationLink ->
@@ -107,7 +107,6 @@ fun InputLeadDialog(
         },
         onPostConfirm = {
             onEvent(GameEvent.SwitchSaveLeadToLiveSession)
-            onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideLeadDialog)
             onEvent(GameEvent.SwitchJustSaved)
         },
@@ -151,12 +150,10 @@ fun OutputLeadDialog(
         onSetLead = { onEvent(OutputEvent.SaveLead(it)) },
         onDeleteLead = { onEvent(OutputEvent.DeleteLead(state.leadId)) },
         onDismiss = {
-            onEvent(OutputEvent.SetIsInOverlayToFalse)
             onEvent(OutputEvent.HideLeadDialog)
         },
         onScheduleReminder = null,
         onPostConfirm = {
-            onEvent(OutputEvent.SetIsInOverlayToFalse)
             onEvent(OutputEvent.HideLeadDialog)
         },
         description = description,
@@ -198,6 +195,7 @@ fun LeadDialogContent(
     description: String,
     modifier: Modifier = Modifier.height(480.dp)
 ) {
+    TrackDialogOverlay()
     val lead = Lead()
     val localContext = LocalContext.current
     val clipboardManager: ClipboardManager = LocalClipboardManager.current

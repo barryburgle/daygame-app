@@ -34,6 +34,7 @@ import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dropdown.Dropdown
 import com.barryburgle.gameapp.ui.utilities.dropdown.SelectableOption
+import com.barryburgle.gameapp.ui.utilities.dialog.TrackDialogOverlay
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @Composable
@@ -43,6 +44,7 @@ fun ChallengeDialog(
     description: String,
     modifier: Modifier = Modifier.height(600.dp)
 ) {
+    TrackDialogOverlay()
     val localContext = LocalContext.current.applicationContext
     var challengeTypesExpanded by remember { mutableStateOf(false) }
     var challengeGoalStart =
@@ -59,7 +61,6 @@ fun ChallengeDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier.shadow(elevation = 10.dp),
         onDismissRequest = {
-            onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideDialog)
         },
         title = {
@@ -188,7 +189,6 @@ fun ChallengeDialog(
                         .show()
                 } else {
                     onEvent(GameEvent.SaveChallenge)
-                    onEvent(GameEvent.SetIsInOverlayToFalse)
                     onEvent(GameEvent.HideDialog)
                     onEvent(GameEvent.SwitchJustSaved)
                     Toast.makeText(localContext, "Challenge saved", Toast.LENGTH_SHORT).show()
@@ -197,7 +197,6 @@ fun ChallengeDialog(
         },
         dismissButton = {
             DismissButton {
-                onEvent(GameEvent.SetIsInOverlayToFalse)
                 onEvent(GameEvent.HideDialog)
             }
         }

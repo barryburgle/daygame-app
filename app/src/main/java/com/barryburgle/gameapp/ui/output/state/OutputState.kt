@@ -45,7 +45,6 @@ data class OutputState(
     val mostPopularLeadsNationalities: List<CategoryHistogram> = emptyList(),
     val suggestLeadsNationality: Boolean = true,
     val shownNationalities: Int = 6,
-    val isInOverlay: Boolean = false,
     val showFlightControlDialog: Boolean = false,
     val showAddPingDialog: Boolean = false,
     val showEditPingDialog: Boolean = false,

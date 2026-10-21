@@ -53,6 +53,7 @@ import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogTimeFormSection
+import com.barryburgle.gameapp.ui.utilities.dialog.TrackDialogOverlay
 import com.barryburgle.gameapp.ui.utilities.dropdown.Dropdown
 import com.barryburgle.gameapp.ui.utilities.dropdown.SelectableOption
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
@@ -65,6 +66,7 @@ fun DateDialog(
     description: String,
     modifier: Modifier = Modifier
 ) {
+    TrackDialogOverlay()
     val localContext = LocalContext.current.applicationContext
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     var latestDateValue = state.date
@@ -86,7 +88,6 @@ fun DateDialog(
         modifier = modifier
             .shadow(elevation = 10.dp),
         onDismissRequest = {
-            onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideDialog)
         },
         title = {
@@ -434,7 +435,6 @@ fun DateDialog(
                     Toast.makeText(localContext, "Please choose a lead", Toast.LENGTH_SHORT).show()
                 } else {
                     onEvent(GameEvent.SaveDate)
-                    onEvent(GameEvent.SetIsInOverlayToFalse)
                     onEvent(GameEvent.HideDialog)
                     onEvent(GameEvent.SwitchJustSaved)
                     Toast.makeText(localContext, "Date saved", Toast.LENGTH_SHORT).show()
@@ -443,7 +443,6 @@ fun DateDialog(
         },
         dismissButton = {
             DismissButton {
-                onEvent(GameEvent.SetIsInOverlayToFalse)
                 onEvent(GameEvent.HideDialog)
             }
         })

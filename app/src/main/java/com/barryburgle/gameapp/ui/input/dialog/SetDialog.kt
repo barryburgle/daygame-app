@@ -44,6 +44,7 @@ import com.barryburgle.gameapp.ui.utilities.ToggleIcon
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogFormSectionDescription
 import com.barryburgle.gameapp.ui.utilities.dialog.DialogTimeFormSection
+import com.barryburgle.gameapp.ui.utilities.dialog.TrackDialogOverlay
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
 
 @Composable
@@ -53,6 +54,7 @@ fun SetDialog(
     description: String,
     modifier: Modifier = Modifier
 ) {
+    TrackDialogOverlay()
     val localContext = LocalContext.current.applicationContext
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     var latestDateValue = state.date
@@ -63,7 +65,6 @@ fun SetDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier.shadow(elevation = 10.dp),
         onDismissRequest = {
-            onEvent(GameEvent.SetIsInOverlayToFalse)
             onEvent(GameEvent.HideDialog)
         },
         title = {
@@ -283,7 +284,6 @@ fun SetDialog(
                     ).show()
                 } else {
                     onEvent(GameEvent.SaveSet)
-                    onEvent(GameEvent.SetIsInOverlayToFalse)
                     onEvent(GameEvent.HideDialog)
                     onEvent(GameEvent.SwitchJustSaved)
                     Toast.makeText(localContext, "Set saved", Toast.LENGTH_SHORT).show()
@@ -292,7 +292,6 @@ fun SetDialog(
         },
         dismissButton = {
             DismissButton {
-                onEvent(GameEvent.SetIsInOverlayToFalse)
                 onEvent(GameEvent.HideDialog)
             }
         })

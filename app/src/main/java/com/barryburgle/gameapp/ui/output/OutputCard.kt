@@ -36,6 +36,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.barryburgle.gameapp.ui.output.chart.LabeledBarEntry
 import com.barryburgle.gameapp.ui.output.chart.OutputLineChart
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.dialog.TrackDialogOverlay
 import java.util.UUID
 
 private data class FullScreenChartState(
@@ -137,6 +138,7 @@ fun OutputCard(
                 },
                 properties = DialogProperties(usePlatformDefaultWidth = false)
             ) {
+                TrackDialogOverlay()
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center

@@ -98,6 +98,7 @@ import com.barryburgle.gameapp.ui.output.rememberLeadTimelineEvents
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.dialog.TrackDialogOverlay
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.body.MediumBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
@@ -566,7 +567,6 @@ fun EventCard(
                                                     )
                                                 )
                                             }
-                                            onEvent(GameEvent.SetIsInOverlayToTrue)
                                             onEvent(
                                                 GameEvent.EditSession(
                                                     sortableGameEvent.event as AbstractSession
@@ -595,7 +595,6 @@ fun EventCard(
                                             onEvent(
                                                 GameEvent.SetRecorded((sortableGameEvent.event as SingleSet).recorded)
                                             )
-                                            onEvent(GameEvent.SetIsInOverlayToTrue)
                                             onEvent(
                                                 GameEvent.EditSet(
                                                     sortableGameEvent.event as SingleSet
@@ -624,7 +623,6 @@ fun EventCard(
                                             onEvent(
                                                 GameEvent.SetRecorded((sortableGameEvent.event as Date).recorded)
                                             )
-                                            onEvent(GameEvent.SetIsInOverlayToTrue)
                                             onEvent(
                                                 GameEvent.EditDate(
                                                     sortableGameEvent.event as Date
@@ -667,7 +665,6 @@ fun EventCard(
                                             onEvent(
                                                 GameEvent.SetChallengeTweetUrl((sortableGameEvent.event as AchievedChallenge).challenge.tweetUrl!!)
                                             )
-                                            onEvent(GameEvent.SetIsInOverlayToTrue)
                                             onEvent(
                                                 GameEvent.EditChallenge(
                                                     (sortableGameEvent.event as AchievedChallenge).challenge
@@ -997,7 +994,6 @@ private fun LeadsRow(
                     allSentPings = allSentPings,
                     allPinPoints = allPinPoints
                 ), onEditClick = {
-                    onEvent(GameEvent.SetIsInOverlayToTrue)
                     onEvent(
                         GameEvent.EditLead(
                             lead, true
@@ -1024,6 +1020,7 @@ private fun LeadsRow(
 fun DeleteConfirmationDialog(
     title: String, description: String, onConfirmRequest: () -> Unit, onDismissRequest: () -> Unit
 ) {
+    TrackDialogOverlay()
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = Modifier.shadow(elevation = 10.dp),

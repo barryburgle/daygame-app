@@ -145,9 +145,6 @@ sealed interface GameEvent : GenericEvent {
     data class SetConversation(val conversation: Boolean?) : GameEvent
     data class SetContact(val contact: Boolean?) : GameEvent
     data class SetInstantDate(val instantDate: Boolean?) : GameEvent
-    object SetIsInOverlayToTrue : GameEvent
-    object SetIsInOverlayToFalse : GameEvent
-
     object SaveChallenge : GameEvent
     data class SetChallengeName(val challengeName: String) : GameEvent
     data class SetChallengeDescription(val challengeDescription: String) : GameEvent

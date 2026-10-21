@@ -178,8 +178,7 @@ class OutputViewModel(
                         leadNationality = event.lead.nationality,
                         leadAge = event.lead.age,
                         leadContactLookupKey = event.lead.contactLookupKey,
-                        leadInstagramUrl = event.lead.instagramUrl,
-                        isInOverlay = true
+                        leadInstagramUrl = event.lead.instagramUrl
                     )
                 }
             }
@@ -188,7 +187,6 @@ class OutputViewModel(
                 _state.update {
                     it.copy(
                         isUpdatingLead = false,
-                        isInOverlay = false,
                         leadName = "",
                         leadContact = "",
                         leadNationality = "",
@@ -197,18 +195,6 @@ class OutputViewModel(
                         leadContactLookupKey = null,
                         leadInstagramUrl = null
                     )
-                }
-            }
-
-            is OutputEvent.SetIsInOverlayToTrue -> {
-                _state.update {
-                    it.copy(isInOverlay = true)
-                }
-            }
-
-            is OutputEvent.SetIsInOverlayToFalse -> {
-                _state.update {
-                    it.copy(isInOverlay = false)
                 }
             }
 
@@ -261,7 +247,6 @@ class OutputViewModel(
                 _state.update {
                     it.copy(
                         isUpdatingLead = false,
-                        isInOverlay = false,
                         leadName = "",
                         leadContact = "",
                         leadNationality = "",
@@ -280,7 +265,6 @@ class OutputViewModel(
                 _state.update {
                     it.copy(
                         isUpdatingLead = false,
-                        isInOverlay = false,
                         leadName = "",
                         leadContact = "",
                         leadNationality = "",

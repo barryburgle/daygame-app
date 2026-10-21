@@ -19,6 +19,7 @@ fun DateMaterialDialog(
     theme: String,
     onValueChange: (String) -> Unit
 ) {
+    TrackDialogOverlay()
     MaterialDialog(
         dialogState = dateDialogState, elevation = 10.dp, buttons = {
             positiveButton(

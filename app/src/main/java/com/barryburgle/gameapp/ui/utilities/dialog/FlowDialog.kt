@@ -32,6 +32,7 @@ fun FlowDialog(
     modifier: Modifier = Modifier,
     content: @Composable (PaddingValues) -> Unit
 ) {
+    TrackDialogOverlay()
     val semiOpaqueBackground = MaterialTheme.colorScheme.surfaceVariant
 
     Dialog(

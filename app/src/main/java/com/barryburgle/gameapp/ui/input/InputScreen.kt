@@ -104,6 +104,7 @@ import com.barryburgle.gameapp.ui.input.dialog.SetDialog
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.utilities.InsertInvite
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
+import com.barryburgle.gameapp.ui.utilities.dialog.DialogOverlayState
 import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
 import com.barryburgle.gameapp.ui.utilities.selection.MultiChoiceButton
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
@@ -133,7 +134,7 @@ fun InputScreen(
     val topBarHeightDp = with(density) { topBarHeightPx.toDp() }
 
     val blurBackground by animateDpAsState(
-        targetValue = if (isExpanded or state.isInOverlay) 10.dp else 0.dp,
+        targetValue = if (isExpanded or DialogOverlayState.isDialogOpen) 10.dp else 0.dp,
         animationSpec = tween(durationMillis = 350),
         label = "blurBackground"
     )
@@ -191,7 +192,6 @@ fun InputScreen(
                             animate = false,
                             animationColor = MaterialTheme.colorScheme.background
                         ) {
-                            onEvent(GameEvent.SetIsInOverlayToTrue)
                             onEvent(GameEvent.ShowDateMetronomeDialog)
                             isExpanded = false
                             isRotated = false
@@ -205,7 +205,6 @@ fun InputScreen(
                         FloatingInputButton(
                             EventTypeEnum.DATE.getIcon()!!, EventTypeEnum.DATE.getField(), false
                         ) {
-                            onEvent(GameEvent.SetIsInOverlayToTrue)
                             onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.DATE))
                             isExpanded = false
                             isRotated = false
@@ -219,7 +218,6 @@ fun InputScreen(
                         FloatingInputButton(
                             EventTypeEnum.SET.getIcon()!!, EventTypeEnum.SET.getField(), false
                         ) {
-                            onEvent(GameEvent.SetIsInOverlayToTrue)
                             onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SET))
                             isExpanded = false
                             isRotated = false
@@ -235,7 +233,6 @@ fun InputScreen(
                             EventTypeEnum.SESSION.getField(),
                             false
                         ) {
-                            onEvent(GameEvent.SetIsInOverlayToTrue)
                             onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.SESSION))
                             isExpanded = false
                             isRotated = false
@@ -251,7 +248,6 @@ fun InputScreen(
                             EventTypeEnum.CHALLENGE.getField(),
                             false
                         ) {
-                            onEvent(GameEvent.SetIsInOverlayToTrue)
                             onEvent(GameEvent.ShowDialog(true, false, EventTypeEnum.CHALLENGE))
                             isExpanded = false
                             isRotated = false
@@ -281,7 +277,6 @@ fun InputScreen(
                                 )
                             )
                             onEvent(GameEvent.SaveAbstractSession)
-                            onEvent(GameEvent.SetIsInOverlayToFalse)
                             isExpanded = false
                             isRotated = false
                             Toast.makeText(
