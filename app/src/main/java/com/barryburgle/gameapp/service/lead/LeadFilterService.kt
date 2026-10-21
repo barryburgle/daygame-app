@@ -71,15 +71,16 @@ class LeadFilterService {
             matchedSets.forEach { set ->
                 val timestamp = if (set.startHour.isNotBlank()) set.startHour else set.insertTime
                 if (timestamp.isNotBlank()) {
-                    val details = listOfNotNull(
-                        if (set.conversation) "talked" else null,
-                        if (set.contact) "closed" else null,
-                        if (set.instantDate) "instant date" else null,
-                        if (set.recorded) "recorded" else null
-                    ).joinToString(", ")
+                    val flags = listOfNotNull(
+                        if (set.conversation) LeadTimelineFlag.TALKED else null,
+                        if (set.contact) LeadTimelineFlag.CLOSED else null,
+                        if (set.instantDate) LeadTimelineFlag.INSTANT_DATE else null,
+                        if (set.recorded) LeadTimelineFlag.RECORDED else null
+                    )
                     events += LeadTimelineEvent.SetEvent(
                         timestamp = timestamp,
-                        description = "Set" + if (details.isNotBlank()) ": $details" else ""
+                        description = "Set",
+                        flags = flags
                     )
                 }
             }
@@ -87,14 +88,14 @@ class LeadFilterService {
             matchedDates.forEach { date ->
                 val timestamp = if (date.startHour.isNotBlank()) date.startHour else date.insertTime
                 if (timestamp.isNotBlank()) {
-                    val outcomes = listOfNotNull(
-                        if (date.pull) "pulled" else null,
-                        if (date.bounce) "bounced" else null,
-                        if (date.kiss) "kissed" else null,
-                        if (date.lay) "laid" else null,
-                        if (date.recorded) "recorded" else null
-                    ).joinToString(", ")
-                    val dateType = date.dateType.replaceFirstChar {
+                    val flags = listOfNotNull(
+                        if (date.pull) LeadTimelineFlag.PULLED else null,
+                        if (date.bounce) LeadTimelineFlag.BOUNCED else null,
+                        if (date.kiss) LeadTimelineFlag.KISSED else null,
+                        if (date.lay) LeadTimelineFlag.LAID else null,
+                        if (date.recorded) LeadTimelineFlag.RECORDED else null
+                    )
+                    val dateTypeLabel = date.dateType.replaceFirstChar {
                         if (it.isLowerCase()) it.titlecase() else it.toString()
                     }
                     val dateLabel = if (date.dateNumber > 0) {
@@ -105,6 +106,7 @@ class LeadFilterService {
                     events += LeadTimelineEvent.DateEvent(
                         timestamp = timestamp,
                         description = dateLabel + if (outcomes.isNotBlank()) " ($outcomes)" else ""
+                        flags = flags
                     )
                 }
             }
