@@ -162,7 +162,6 @@ fun SessionDialog(
                                         allPinPoints = state.allPinPoints
                                     ),
                                     onEditClick = {}, // Dropping any edit lead support from session dialog -> The user should be able to edit the lead by the LeadCard edit button
-                                    onLinkClick = {},
                                     shortCut = true
                                 )
                             }

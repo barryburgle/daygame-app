@@ -1008,26 +1008,6 @@ private fun LeadsRow(
                             false, false
                         )
                     )
-                }, onLinkClick = {
-                    if (lead.contact == ContactTypeEnum.NUMBER.getField() && lead.contactLookupKey != null) {
-                        try {
-                            val uri = Uri.withAppendedPath(
-                                ContactsContract.Contacts.CONTENT_LOOKUP_URI,
-                                lead.contactLookupKey
-                            )
-                            uriHandler.openUri(uri.toString())
-                        } catch (e: Exception) {
-                            Toast.makeText(
-                                localContext, "Could not open contact", Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    } else if (lead.contact == ContactTypeEnum.SOCIAL.getField() && lead.instagramUrl != null && lead.instagramUrl!!.isNotBlank()) {
-                        uriHandler.openUri(lead.instagramUrl!!)
-                    } else {
-                        Toast.makeText(
-                            localContext, "No contact found", Toast.LENGTH_SHORT
-                        ).show()
-                    }
                 })
             }
             item {
