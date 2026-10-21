@@ -102,6 +102,7 @@ The Dashboard also contains a new way to stay relevant for your leads:  "Flight 
 Here it is the list of the features:
 - Visualize your effort through time on the history grid. Select the events it should show between sets, conversations, contacts, session index, dates, date recordings, pulled dates, bounced dates, kissed dates and dates that ended up in a lay
 - Scroll your leads and edit/delete them, knowing when you got those. Tap on the link button to get back in contact with them
+- Visualize the timeline of events for each single lead: tap on one and see all the events related. Pipelining leads has never been simpler!
 - "Flight Control" is the ping manager you were waiting for: it will be impossible to forget to ping her from now on!
 - Visualize your efforts over sessions in terms of absolute stats and session ratios
 - Visualize your efforts over weeks, both in terms of session stats and dates

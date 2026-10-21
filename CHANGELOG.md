@@ -1,3 +1,11 @@
+# Version 1.15.0 (2026-11-dd)
+**Features**
+- Know the date & pings timeline for all the leads by tapping on them ──●─
+
+**Bugfixes**
+- Blur behind dialogs
+- Charts animations
+
 # Version 1.14.0 (2026-10-14)
 **Features**
 - Record in-app your sets during a Live Session and play them back later 🎤
