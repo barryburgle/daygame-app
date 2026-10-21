@@ -41,6 +41,7 @@ import com.barryburgle.gameapp.ui.output.getSeries
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.barryburgle.gameapp.ui.utilities.button.IconShadowButton
 import com.barryburgle.gameapp.ui.utilities.dialog.FlowDialog
+import com.barryburgle.gameapp.ui.utilities.dialog.TrackDialogOverlay
 import com.barryburgle.gameapp.ui.utilities.quantifier.DescribedQuantifier
 import com.barryburgle.gameapp.ui.utilities.text.body.LittleBodyText
 import com.barryburgle.gameapp.ui.utilities.text.title.LargeTitleText
@@ -62,6 +63,7 @@ fun CustomSummaryDialog(
     state: OutputState,
     onEvent: (OutputEvent) -> Unit
 ) {
+    TrackDialogOverlay()
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
     val localContext = context.applicationContext
