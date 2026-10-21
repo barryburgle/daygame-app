@@ -9,6 +9,7 @@ import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.ui.output.dialog.LeadTimelineEvent
+import com.barryburgle.gameapp.ui.output.dialog.LeadTimelineFlag
 import java.time.OffsetDateTime
 
 class LeadFilterService {
@@ -57,15 +58,6 @@ class LeadFilterService {
                     latitude = metPinpoint?.latitude,
                     longitude = metPinpoint?.longitude
                 )
-            }
-
-            matchedSession?.let { session ->
-                if (session.startHour.isNotBlank()) {
-                    events += LeadTimelineEvent.SessionEvent(
-                        timestamp = session.startHour,
-                        description = "Session: ${session.sets} sets, ${session.convos} convos, ${session.contacts} contacts"
-                    )
-                }
             }
 
             matchedSets.forEach { set ->
