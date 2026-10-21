@@ -7,6 +7,7 @@ import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
 import com.barryburgle.gameapp.dao.ping.PingDao
 import com.barryburgle.gameapp.dao.ping.SentPingDao
+import com.barryburgle.gameapp.dao.pinpoint.PinPointDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
 import com.barryburgle.gameapp.dao.set.SetDao
@@ -15,7 +16,7 @@ import com.barryburgle.gameapp.event.OutputEvent
 import com.barryburgle.gameapp.manager.SessionManager
 import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.ui.CombineFour
-import com.barryburgle.gameapp.ui.CombineNineteen
+import com.barryburgle.gameapp.ui.CombineTwenty
 import com.barryburgle.gameapp.ui.output.state.OutputState
 import com.barryburgle.gameapp.ui.utilities.dialog.passInitialValue
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +35,7 @@ class OutputViewModel(
     private val setDao: SetDao,
     private val pingDao: PingDao,
     private val sentPingDao: SentPingDao,
+    private val pinPointDao: PinPointDao,
 ) : ViewModel() {
     private val _state = MutableStateFlow(OutputState())
     private val _allSessions = abstractSessionDao.getAll()
@@ -42,6 +44,7 @@ class OutputViewModel(
     private val _allSet = setDao.getAll()
     private val _allPing = pingDao.getAll()
     private val _allSentPing = sentPingDao.getAll()
+    private val _allPinPoint = pinPointDao.getAll()
     private val _sessionsByWeek = aggregatedSessionsDao.groupStatsByWeekNumber()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _sessionsByMonth = aggregatedSessionsDao.groupStatsByMonth()
@@ -77,7 +80,7 @@ class OutputViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), BackupSettingsState())
 
 
-    val state = CombineNineteen(
+    val state = CombineTwenty(
         _state,
         _allSessions,
         _allLeads,
@@ -85,6 +88,7 @@ class OutputViewModel(
         _allSet,
         _allPing,
         _allSentPing,
+        _allPinPoint,
         _sessionsByWeek,
         _sessionsByMonth,
         _datesByWeek,
@@ -97,7 +101,7 @@ class OutputViewModel(
         _shownNationalities,
         _mostPopularLeadsNationalities,
         _backupSettings
-    ) { state, allSessions, allLeads, allDates, allSets, allPings, allSentPings, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast, lastSessionsShown, lastWeeksShown, lastMonthsShown, suggestLeadsNationality, shownNationalities, mostPopularLeadsNationalities, backupSettings ->
+    ) { state, allSessions, allLeads, allDates, allSets, allPings, allSentPings, allPinPoints, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, averageLast, lastSessionsShown, lastWeeksShown, lastMonthsShown, suggestLeadsNationality, shownNationalities, mostPopularLeadsNationalities, backupSettings ->
         state.copy(
             allSessions = SessionManager.normalizeSessionsIds(allSessions),
             allLeads = allLeads,
@@ -105,6 +109,7 @@ class OutputViewModel(
             allSets = allSets,
             allSentPings = allSentPings,
             allPings = allPings,
+            allPinPoints = allPinPoints,
             sessionsByWeek = sessionsByWeek,
             sessionsByMonth = sessionsByMonth,
             datesByWeek = datesByWeek,

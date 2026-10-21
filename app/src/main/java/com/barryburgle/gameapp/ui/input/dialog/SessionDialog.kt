@@ -34,6 +34,7 @@ import com.barryburgle.gameapp.ui.input.CounterColumn
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyTextComponent
 import com.barryburgle.gameapp.ui.input.state.InputState
 import com.barryburgle.gameapp.ui.output.LeadCard
+import com.barryburgle.gameapp.ui.output.rememberLeadTimelineEvents
 import com.barryburgle.gameapp.ui.tool.dialog.ConfirmButton
 import com.barryburgle.gameapp.ui.tool.dialog.DismissButton
 import com.barryburgle.gameapp.ui.utilities.DialogConstant
@@ -151,6 +152,15 @@ fun SessionDialog(
                             }) {
                                 LeadCard(
                                     lead = lead,
+                                    events = rememberLeadTimelineEvents(
+                                        lead = lead,
+                                        allSessions = state.allSessions,
+                                        allSets = state.allSets,
+                                        allDates = state.allDates,
+                                        allPings = state.allPings,
+                                        allSentPings = state.allSentPings,
+                                        allPinPoints = state.allPinPoints
+                                    ),
                                     onEditClick = {}, // Dropping any edit lead support from session dialog -> The user should be able to edit the lead by the LeadCard edit button
                                     onLinkClick = {},
                                     shortCut = true

@@ -5,6 +5,7 @@ import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
 import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.model.stat.AggregatedDates
 import com.barryburgle.gameapp.model.stat.AggregatedSessions
@@ -18,6 +19,7 @@ data class OutputState(
     override var allSets: List<SingleSet> = emptyList(),
     override var allPings: List<Ping> = emptyList(),
     override var allSentPings: List<SentPing> = emptyList(),
+    override var allPinPoints: List<PinPoint> = emptyList(),
     val sessionsByWeek: List<AggregatedSessions> = emptyList(),
     val sessionsByMonth: List<AggregatedSessions> = emptyList(),
     val datesByWeek: List<AggregatedDates> = emptyList(),
@@ -57,5 +59,6 @@ data class OutputState(
     allSessions,
     allLeads,
     allDates,
-    allSets
+    allSets,
+    allPinPoints = allPinPoints
 )

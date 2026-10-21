@@ -73,6 +73,8 @@ class MainActivity : ComponentActivity() {
                         it.dateDao,
                         it.setDao,
                         it.challengeDao,
+                        it.pingDao,
+                        it.sentPingDao,
                         it.pinPointDao,
                         it.dateModelDao,
                         it.datePhaseDao,
@@ -97,7 +99,8 @@ class MainActivity : ComponentActivity() {
                         it.dateDao,
                         it.setDao,
                         it.pingDao,
-                        it.sentPingDao
+                        it.sentPingDao,
+                        it.pinPointDao
                     )
                 } as T
             }

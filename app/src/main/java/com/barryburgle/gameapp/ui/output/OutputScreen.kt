@@ -291,6 +291,15 @@ fun OutputScreen(
                             item {
                                 LeadCard(
                                     lead = lead,
+                                    events = rememberLeadTimelineEvents(
+                                        lead = lead,
+                                        allSessions = state.allSessions,
+                                        allSets = state.allSets,
+                                        allDates = state.allDates,
+                                        allPings = state.allPings,
+                                        allSentPings = state.allSentPings,
+                                        allPinPoints = state.allPinPoints
+                                    ),
                                     onEditClick = {
                                         onEvent(OutputEvent.SetIsInOverlayToTrue)
                                         onEvent(OutputEvent.EditLead(lead, true))

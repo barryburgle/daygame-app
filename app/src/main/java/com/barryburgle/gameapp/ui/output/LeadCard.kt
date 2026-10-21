@@ -1,6 +1,7 @@
 package com.barryburgle.gameapp.ui.output
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,14 +16,27 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.ping.Ping
+import com.barryburgle.gameapp.model.ping.SentPing
+import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
+import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.FormatService
+import com.barryburgle.gameapp.service.lead.LeadFilterService
+import com.barryburgle.gameapp.ui.output.dialog.LeadHistoryDialog
+import com.barryburgle.gameapp.ui.output.dialog.LeadTimelineEvent
 import com.barryburgle.gameapp.ui.output.icon.LeadContactButtonIcon
 import com.barryburgle.gameapp.ui.theme.AlertHigh
 import com.barryburgle.gameapp.ui.theme.AlertLow
@@ -36,8 +50,21 @@ import java.time.temporal.ChronoUnit
 
 @Composable
 fun LeadCard(
-    lead: Lead, onEditClick: () -> Unit, onLinkClick: () -> Unit, shortCut: Boolean = false
+    lead: Lead,
+    events: List<LeadTimelineEvent> = emptyList(),
+    onEditClick: () -> Unit,
+    shortCut: Boolean = false
 ) {
+    var showLeadHistoryDialog by remember { mutableStateOf(false) }
+    if (showLeadHistoryDialog) {
+        LeadHistoryDialog(
+            lead = lead,
+            events = events,
+            onDismissRequest = {
+                showLeadHistoryDialog = false
+            },
+        )
+    }
     val cardColor = MaterialTheme.colorScheme.surface
     var displayName = lead.name
     if (displayName.isNotBlank()) {
@@ -52,6 +79,9 @@ fun LeadCard(
                 .shadow(
                     elevation = 10.dp, shape = MaterialTheme.shapes.large
                 )
+                .clickable {
+                    showLeadHistoryDialog = true
+                }
         ) {
             Row(
                 modifier = Modifier
@@ -118,6 +148,31 @@ fun LeadCard(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun rememberLeadTimelineEvents(
+    lead: Lead,
+    allSessions: List<AbstractSession> = emptyList(),
+    allSets: List<SingleSet> = emptyList(),
+    allDates: List<Date> = emptyList(),
+    allPings: List<Ping> = emptyList(),
+    allSentPings: List<SentPing> = emptyList(),
+    allPinPoints: List<PinPoint> = emptyList()
+): List<LeadTimelineEvent> {
+    return remember(
+        lead, allSessions, allSets, allDates, allPings, allSentPings, allPinPoints
+    ) {
+        LeadFilterService.buildLeadTimelineEvents(
+            lead,
+            allSessions,
+            allSets,
+            allDates,
+            allPings,
+            allSentPings,
+            allPinPoints
+        )
     }
 }
 

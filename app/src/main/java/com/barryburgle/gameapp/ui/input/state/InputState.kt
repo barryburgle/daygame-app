@@ -14,6 +14,8 @@ import com.barryburgle.gameapp.model.enums.SessionSortType
 import com.barryburgle.gameapp.model.enums.SetSortType
 import com.barryburgle.gameapp.model.game.SortableGameEvent
 import com.barryburgle.gameapp.model.lead.Lead
+import com.barryburgle.gameapp.model.ping.Ping
+import com.barryburgle.gameapp.model.ping.SentPing
 import com.barryburgle.gameapp.model.recording.RecordingState
 import com.barryburgle.gameapp.model.session.AbstractSession
 import com.barryburgle.gameapp.model.session.PinPoint
@@ -83,6 +85,8 @@ data class InputState(
     override var allSets: List<SingleSet> = emptyList(),
     override var allChallenges: List<AchievedChallenge> = emptyList(),
     override var allPinPoints: List<PinPoint> = emptyList(),
+    override var allPings: List<Ping> = emptyList(),
+    override var allSentPings: List<SentPing> = emptyList(),
     override var allSettings: List<Setting> = emptyList(),
     override var backupActive: Boolean = true,
     override var lastBackup: Int = 3,

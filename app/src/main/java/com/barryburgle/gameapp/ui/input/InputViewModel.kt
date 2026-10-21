@@ -15,6 +15,8 @@ import com.barryburgle.gameapp.dao.date.DateDao
 import com.barryburgle.gameapp.dao.date.DateModelDao
 import com.barryburgle.gameapp.dao.date.DatePhaseDao
 import com.barryburgle.gameapp.dao.lead.LeadDao
+import com.barryburgle.gameapp.dao.ping.PingDao
+import com.barryburgle.gameapp.dao.ping.SentPingDao
 import com.barryburgle.gameapp.dao.pinpoint.PinPointDao
 import com.barryburgle.gameapp.dao.session.AbstractSessionDao
 import com.barryburgle.gameapp.dao.session.AggregatedSessionsDao
@@ -49,9 +51,9 @@ import com.barryburgle.gameapp.service.set.SetService
 import com.barryburgle.gameapp.ui.CombineEighteen
 import com.barryburgle.gameapp.ui.CombineFive
 import com.barryburgle.gameapp.ui.CombineNine
-import com.barryburgle.gameapp.ui.CombineNineteen
 import com.barryburgle.gameapp.ui.CombineSeven
 import com.barryburgle.gameapp.ui.CombineSeventeen
+import com.barryburgle.gameapp.ui.CombineTwentyone
 import com.barryburgle.gameapp.ui.input.dialog.InputDialogConstant
 import com.barryburgle.gameapp.ui.input.state.DialogSettingsState
 import com.barryburgle.gameapp.ui.input.state.ExportSettingsState
@@ -91,6 +93,8 @@ class InputViewModel(
     private val dateDao: DateDao,
     private val setDao: SetDao,
     private val challengeDao: ChallengeDao,
+    private val pingDao: PingDao,
+    private val sentPingDao: SentPingDao,
     private val pinPointDao: PinPointDao,
     private val dateModelDao: DateModelDao,
     private val datePhaseDao: DatePhaseDao,
@@ -176,6 +180,8 @@ class InputViewModel(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _allPinPoints = pinPointDao.getAll()
+    private val _allPings = pingDao.getAll()
+    private val _allSentPings = sentPingDao.getAll()
     private val _allDateModels = dateModelDao.getAll()
     private val _allDatePhases = datePhaseDao.getAll()
     private val _allSettings = settingDao.getAll()
@@ -467,7 +473,7 @@ class InputViewModel(
             gameEventSortType = gameEventSortType
         )
     }
-    val state = CombineNineteen(
+    val state = CombineTwentyone(
         _state,
         _exportSettings,
         _dialogSettings,
@@ -475,6 +481,8 @@ class InputViewModel(
         _recordingsSettings,
         _sortTypes,
         _allEvents,
+        _allPings,
+        _allSentPings,
         _showSessions,
         _showSets,
         _showDates,
@@ -488,9 +496,9 @@ class InputViewModel(
         RecordingService.state,
         _recordings
     ) { state, exportSettings, dialogSettings, shareSettings, recordingsSettings, sortTypes,
-        allEvents, showSessions, showSets, showDates, showChallenges, mostPopularLeadsNationalities,
-        sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth, theme, recordingState,
-        recordings ->
+        allEvents, allPings, allSentPings, showSessions, showSets, showDates, showChallenges,
+        mostPopularLeadsNationalities, sessionsByWeek, sessionsByMonth, datesByWeek, datesByMonth,
+        theme, recordingState, recordings ->
         state.copy(
             allSessions = exportSettings.allSessions,
             allLeads = exportSettings.allLeads,
@@ -498,6 +506,8 @@ class InputViewModel(
             allSets = exportSettings.allSets,
             allChallenges = exportSettings.allChallenges,
             allPinPoints = exportSettings.allPinPoints,
+            allPings = allPings,
+            allSentPings = allSentPings,
             allSettings = exportSettings.allSettings,
             sessionSortType = sortTypes.sessionSortType,
             dateSortType = sortTypes.dateSortType,
