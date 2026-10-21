@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -112,10 +113,28 @@ fun OutputLineChart(
     val commonLineWidth = 1f
     val inChartValueTextSize = 12f
     val inChartLabelTextSize = 10f
+    val chartAnimator = lineChart.animator
     LaunchedEffect(labeledEntries) {
-        lineChart.postDelayed({
-            lineChart.animateX(900, Easing.EaseInCubic)
-        }, 100)
+        val durationMillis = 900f
+        chartAnimator.phaseX = 0f
+        lineChart.invalidate()
+        var startNanos = -1L
+        while (true) {
+            val frameNanos = withFrameNanos { it }
+            if (startNanos < 0L && (lineChart.width == 0 || lineChart.height == 0)) {
+                continue
+            }
+            if (startNanos < 0L) {
+                startNanos = frameNanos
+            }
+            val elapsedMillis = (frameNanos - startNanos) / 1_000_000f
+            val progress = (elapsedMillis / durationMillis).coerceIn(0f, 1f)
+            chartAnimator.phaseX = Easing.EaseInCubic.getInterpolation(progress)
+            lineChart.invalidate()
+            if (progress >= 1f) {
+                break
+            }
+        }
     }
     Column(
         modifier = modifier
