@@ -35,9 +35,21 @@ class LeadFilterService {
             val matchedSentPings = allSentPings.filter { it.leadId == leadId }
 
             val metPinpoint = allPinPoints.firstOrNull { it.id == lead.pinPointId }
+            val acquiredSetTimestamp = matchedSets
+                .mapNotNull { set ->
+                    val timestamp = if (set.startHour.isNotBlank()) set.startHour else set.insertTime
+                    timestamp.takeIf { it.isNotBlank() }
+                }
+                .minByOrNull { parseTimestamp(it) ?: OffsetDateTime.MAX }
 
-            val metTimestamp =
-                metPinpoint?.localTimestamp?.takeIf { it.isNotBlank() } ?: lead.insertTime
+            val sessionTimestamp = matchedSession?.let { session ->
+                if (session.startHour.isNotBlank()) session.startHour else session.insertTime
+            }?.takeIf { it.isNotBlank() }
+
+            val metTimestamp = metPinpoint?.localTimestamp?.takeIf { it.isNotBlank() }
+                ?: sessionTimestamp
+                ?: acquiredSetTimestamp
+                ?: lead.insertTime
             if (metTimestamp.isNotBlank()) {
                 events += LeadTimelineEvent.MetPinpoint(
                     timestamp = metTimestamp,
