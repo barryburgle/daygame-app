@@ -190,7 +190,7 @@ fun LeadDialogContent(
     onSetLead: (Lead) -> Unit,
     onDeleteLead: (Long) -> Unit,
     onDismiss: () -> Unit,
-    onScheduleReminder: ((interval: Int, leadDesc: String, notificationLink: String) -> Unit)? = null,
+    onScheduleReminder: ((interval: Int, leadDesc: String, notificationLink: String?) -> Unit)? = null,
     onPostConfirm: () -> Unit,
     description: String,
     modifier: Modifier = Modifier.height(480.dp)
@@ -478,11 +478,16 @@ fun LeadDialogContent(
                     onSetLead(lead)
                 }
                 onPostConfirm()
-                val notificationLink =
-                    if (ContactTypeEnum.SOCIAL.equals(lead.contact) && lead.instagramUrl != null) lead.instagramUrl!! else Uri.withAppendedPath(
-                        ContactsContract.Contacts.CONTENT_LOOKUP_URI,
-                        lead.contactLookupKey
-                    ).toString()
+                val notificationLink = when {
+                    lead.contact == ContactTypeEnum.SOCIAL.getField() && !lead.instagramUrl.isNullOrBlank() ->
+                        lead.instagramUrl
+                    lead.contact == ContactTypeEnum.NUMBER.getField() && !lead.contactLookupKey.isNullOrBlank() ->
+                        Uri.withAppendedPath(
+                            ContactsContract.Contacts.CONTENT_LOOKUP_URI,
+                            lead.contactLookupKey
+                        ).toString()
+                    else -> null
+                }
                 if (writeHerAfterReminderEnabled && onScheduleReminder != null) {
                     onScheduleReminder(
                         writeHerReminderInterval,

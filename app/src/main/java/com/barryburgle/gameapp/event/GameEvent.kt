@@ -34,7 +34,7 @@ sealed interface GameEvent : GenericEvent {
     data class ScheduleWriteHerAfterReminder(
         val interval: Int,
         val leadDesc: String,
-        val leadLink: String
+        val leadLink: String?
     ) : GameEvent
 
     data class SetDate(val date: String) : GameEvent
