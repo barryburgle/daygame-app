@@ -108,10 +108,14 @@ fun OutputScreen(
     }
     if (state.showFlightControlDialog) {
         FlightControlDialog(
-            state.allPings,
-            state.allLeads,
-            state.allSentPings,
-            onEvent
+            allPings = state.allPings,
+            allLeads = state.allLeads,
+            allSentPings = state.allSentPings,
+            allSessions = state.allSessions,
+            allSets = state.allSets,
+            allDates = state.allDates,
+            allPinPoints = state.allPinPoints,
+            onEvent = onEvent
         )
     }
     if (state.showAddPingDialog) {

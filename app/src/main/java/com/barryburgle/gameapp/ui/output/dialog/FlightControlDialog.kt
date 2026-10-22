@@ -7,6 +7,7 @@ import android.net.Uri
 import android.provider.ContactsContract
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +29,11 @@ import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -38,15 +43,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.barryburgle.gameapp.event.OutputEvent
+import com.barryburgle.gameapp.model.date.Date
 import com.barryburgle.gameapp.model.enums.ContactTypeEnum
 import com.barryburgle.gameapp.model.enums.CountryEnum
 import com.barryburgle.gameapp.model.lead.Lead
 import com.barryburgle.gameapp.model.ping.Ping
 import com.barryburgle.gameapp.model.ping.SentPing
+import com.barryburgle.gameapp.model.session.AbstractSession
+import com.barryburgle.gameapp.model.session.PinPoint
+import com.barryburgle.gameapp.model.set.SingleSet
 import com.barryburgle.gameapp.service.FormatService
 import com.barryburgle.gameapp.ui.input.dialog.text.WavyPlaceholder
 import com.barryburgle.gameapp.ui.output.getDaysFromNow
 import com.barryburgle.gameapp.ui.output.getLeadAlertColor
+import com.barryburgle.gameapp.ui.output.rememberLeadTimelineEvents
 import com.barryburgle.gameapp.ui.output.icon.LeadContactButtonIcon
 import com.barryburgle.gameapp.ui.utilities.HorizontallyPagedCard
 import com.barryburgle.gameapp.ui.utilities.animation.AnimatedStaggeredItem
@@ -67,9 +77,14 @@ fun FlightControlDialog(
     allPings: List<Ping> = emptyList(),
     allLeads: List<Lead> = emptyList(),
     allSentPings: List<SentPing> = emptyList(),
+    allSessions: List<AbstractSession> = emptyList(),
+    allSets: List<SingleSet> = emptyList(),
+    allDates: List<Date> = emptyList(),
+    allPinPoints: List<PinPoint> = emptyList(),
     onEvent: (OutputEvent) -> Unit
 ) {
     TrackDialogOverlay()
+    var historyLead by remember { mutableStateOf<Lead?>(null) }
     val pingsByIdMap: Map<Long, Ping> = allPings.associateBy { it.id }
     val sentPingsByLeadIdMap: Map<Long, List<SentPing>> = allSentPings.groupBy { it.leadId }
     val pagerState = rememberPagerState(pageCount = { allPings.size })
@@ -203,7 +218,8 @@ fun FlightControlDialog(
                                         .background(
                                             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                                             shape = RoundedCornerShape(10.dp)
-                                        ),
+                                        )
+                                        .clickable { historyLead = lead },
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
@@ -347,6 +363,23 @@ fun FlightControlDialog(
                 }
             }
         }
+    }
+
+    val selectedHistoryLead = historyLead
+    if (selectedHistoryLead != null) {
+        LeadHistoryDialog(
+            lead = selectedHistoryLead,
+            events = rememberLeadTimelineEvents(
+                lead = selectedHistoryLead,
+                allSessions = allSessions,
+                allSets = allSets,
+                allDates = allDates,
+                allPings = allPings,
+                allSentPings = allSentPings,
+                allPinPoints = allPinPoints
+            ),
+            onDismissRequest = { historyLead = null }
+        )
     }
 }
 
