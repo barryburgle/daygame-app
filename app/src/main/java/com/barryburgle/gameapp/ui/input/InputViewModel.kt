@@ -648,7 +648,7 @@ class InputViewModel(
                         event.abstractSession.id!!,
                         EventTypeEnum.SESSION.getField().lowercase()
                     )
-                    abstractSessionDao.delete(event.abstractSession)
+                    abstractSessionDao.deleteById(event.abstractSession.id!!)
                     // delete recording files safely in IO thread
                     withContext(Dispatchers.IO) {
                         RecordingService.deleteRecordingsOf(folder, event.abstractSession.id!!)
@@ -967,9 +967,7 @@ class InputViewModel(
 
             is GameEvent.DeletePinPoint -> {
                 viewModelScope.launch {
-                    pinPointDao.delete(
-                        event.pinPoint
-                    )
+                    pinPointDao.deleteById(event.pinPoint.id!!)
                 }
             }
 
@@ -1455,7 +1453,7 @@ class InputViewModel(
 
             is GameEvent.DeleteDate -> {
                 viewModelScope.launch {
-                    dateDao.delete(event.date)
+                    dateDao.deleteById(event.date.id!!)
                 }
             }
 
@@ -1681,7 +1679,7 @@ class InputViewModel(
                         event.set.id!!,
                         EventTypeEnum.SET.getField().lowercase()
                     )
-                    setDao.delete(event.set)
+                    setDao.deleteById(event.set.id!!)
                 }
             }
 
@@ -1839,7 +1837,7 @@ class InputViewModel(
 
             is GameEvent.DeleteChallenge -> {
                 viewModelScope.launch {
-                    challengeDao.delete(event.challenge)
+                    challengeDao.deleteById(event.challenge.id!!)
                 }
             }
 

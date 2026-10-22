@@ -16,7 +16,6 @@ interface DateModelDao {
     @Insert(onConflict = REPLACE)
     suspend fun insert(dateModel: DateModel): Long
 
-    // TODO: refactor all delete methods and understand if better to delete by object id or by object
     @Query("DELETE FROM date_model WHERE id = :id")
     suspend fun deleteById(id: Long)
 

@@ -1,7 +1,6 @@
 package com.barryburgle.gameapp.dao.date
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
@@ -25,8 +24,8 @@ interface DateDao {
     @Insert(onConflict = REPLACE)
     suspend fun insert(date: Date): Long
 
-    @Delete
-    suspend fun delete(date: Date)
+    @Query("DELETE FROM meeting WHERE id = :id")
+    suspend fun deleteById(id: Long)
 
     @Query("DELETE FROM meeting")
     suspend fun deleteAll()

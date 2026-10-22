@@ -1,7 +1,6 @@
 package com.barryburgle.gameapp.dao.set
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
@@ -17,8 +16,8 @@ interface SetDao {
     @Insert(onConflict = REPLACE)
     suspend fun insert(singleSet: SingleSet): Long
 
-    @Delete
-    suspend fun delete(singleSet: SingleSet)
+    @Query("DELETE FROM single_set WHERE id = :id")
+    suspend fun deleteById(id: Long)
 
     @Query("DELETE FROM single_set")
     suspend fun deleteAll()

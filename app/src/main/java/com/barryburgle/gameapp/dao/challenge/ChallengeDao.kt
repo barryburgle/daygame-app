@@ -1,7 +1,6 @@
 package com.barryburgle.gameapp.dao.challenge
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
@@ -41,8 +40,8 @@ interface ChallengeDao {
     @Insert(onConflict = REPLACE)
     suspend fun insert(challenge: Challenge): Long
 
-    @Delete
-    suspend fun delete(challenge: Challenge)
+    @Query("DELETE FROM challenge WHERE id = :id")
+    suspend fun deleteById(id: Long)
 
     @Query("DELETE FROM challenge")
     suspend fun deleteAll()

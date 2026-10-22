@@ -1,7 +1,6 @@
 package com.barryburgle.gameapp.dao.pinpoint
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
@@ -17,8 +16,8 @@ interface PinPointDao {
     @Insert(onConflict = REPLACE)
     suspend fun insert(pinpoint: PinPoint): Long
 
-    @Delete
-    suspend fun delete(pinpoint: PinPoint)
+    @Query("DELETE FROM pinpoint WHERE id = :id")
+    suspend fun deleteById(id: Long)
 
     @Query("UPDATE pinpoint SET pinpoint_type = :newPinpointType WHERE id = (SELECT id FROM pinpoint WHERE source_event_id = :sourceEventId AND source_event_type = \"set\" ORDER BY id DESC LIMIT 1)")
     suspend fun updatePinpointTypeForSetPinPoint(

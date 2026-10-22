@@ -1,7 +1,6 @@
 package com.barryburgle.gameapp.dao.date
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
@@ -17,7 +16,6 @@ interface DatePhaseDao {
     @Insert(onConflict = REPLACE)
     suspend fun insert(datePhase: DatePhase): Long
 
-    // TODO: refactor all delete methods and understand if better to delete by object id or by object
     @Query("DELETE FROM date_phase WHERE id = :id")
     suspend fun deleteById(id: Long)
 
